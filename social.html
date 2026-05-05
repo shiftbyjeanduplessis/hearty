@@ -6,7 +6,7 @@
 <title>Hearty — Community</title>
 <link rel="stylesheet" href="/css/hearty-theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/glp-supabase-config.js?v=999"></script>
+<script src="/glp-supabase-config.js?v=1001"></script>
 <script>
 (function(){
   // Hard bridge: if the external config is cached/missing, expose the Supabase client here too.
@@ -456,10 +456,13 @@
 
   async function loadProfile(){
     if (!(await requireUser())) return null;
-    const { data, error } = await sb.from(PROFILES_TABLE).select('user_id,first_name,user_name,account_email,avatar_url,avatar_path').eq('user_id', currentUser.id).maybeSingle();
+    const { data, error } = await sb
+      .from(PROFILES_TABLE)
+      .select('id,display_name,avatar_url,avatar_path')
+      .eq('id', currentUser.id)
+      .maybeSingle();
     if (error && error.code !== 'PGRST116') console.warn(error);
-    profile = data || { user_id: currentUser.id, first_name: '', user_name: '', avatar_url: '', avatar_path: '' };
-    profile.display_name = profile.user_name || profile.first_name || profile.account_email || ''; 
+    profile = data || { id: currentUser.id, display_name: '', avatar_url: '', avatar_path: '' };
     const input = document.getElementById('displayNameInput');
     if (input && !input.value) input.value = profile.display_name || '';
     document.getElementById('profileDisplayName').textContent = profile.display_name || 'Your profile';
@@ -490,13 +493,12 @@
         avatarUrl = await uploadToBucket(PROFILE_BUCKET, avatarPath, selectedProfileImage);
       }
       const { error } = await sb.from(PROFILES_TABLE).upsert({
-        user_id: currentUser.id,
-        user_name: name,
-        first_name: name,
+        id: currentUser.id,
+        display_name: name,
         avatar_url: avatarUrl,
         avatar_path: avatarPath,
         updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
+      }, { onConflict: 'id' });
       if (error) throw error;
       selectedProfileImage = null;
       await loadProfile();
@@ -504,7 +506,7 @@
       showToast('Profile saved.');
     } catch (err) {
       console.warn(err);
-      showToast('Profile photo could not be saved. Check the profile-photos bucket and policies.');
+      showToast(selectedProfileImage ? 'Profile photo could not be saved. Check the profile-photos bucket and policies.' : 'Profile could not be saved. Check profiles table policy.');
     }
   }
 
@@ -531,8 +533,7 @@
         body,
         image_path: image.imagePath,
         image_url: image.imageUrl,
-        expires_at: expiresAt,
-        metadata: {}
+        expires_at: expiresAt
       });
       if (error) throw error;
       input.value = '';
@@ -540,7 +541,7 @@
       await renderAll();
     } catch (err) {
       console.warn(err);
-      showToast('Post could not be saved. Check community-images storage and table policies.');
+      showToast('Post could not be saved. Check community_posts table columns/policies.');
     }
   }
 
@@ -732,6 +733,5 @@
   });
 })();
 </script>
-  <script src="/js/hearty-updater.js?v=1.0.1"></script>
 </body>
 </html>
