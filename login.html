@@ -15,12 +15,15 @@
   <script src="/glp-supabase-config.js"></script>
   <style>
     :root{--login-ink:#102033;--login-muted:#5d6f7e;--login-line:rgba(180,200,220,.5);--login-card:rgba(255,255,255,.9);--login-blue:#1167d8;--login-blue-deep:#0756c8;--login-shadow:0 24px 70px rgba(50,80,110,.18)}
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.10),transparent 55%),radial-gradient(900px 460px at 100% 100%,rgba(20,184,166,.09),transparent 55%),linear-gradient(180deg,#f7fbff,#eef5fb);display:flex;align-items:center;justify-content:center;padding:24px;color:var(--login-ink)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.10),transparent 55%),radial-gradient(900px 460px at 100% 100%,rgba(20,184,166,.09),transparent 55%),linear-gradient(180deg,#f7fbff,#eef5fb);display:flex;align-items:center;justify-content:center;padding:24px;color:var(--login-ink)}
     .auth-card{width:100%;max-width:430px;background:var(--login-card);border:1px solid var(--login-line);border-radius:30px;box-shadow:var(--login-shadow);padding:34px 26px 30px;text-align:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
     .auth-logo{height:64px;width:auto;max-width:300px;object-fit:contain;display:block;margin:0 auto 10px}.auth-tagline{font-size:.98rem;font-weight:650;color:var(--login-muted)}
     .auth-title{margin:14px 0 8px;font-size:1.9rem;line-height:1.05;font-weight:800;letter-spacing:-.04em}.subtitle{color:var(--login-muted);font-size:15px;margin-bottom:22px;line-height:1.5}
     input{width:100%;border-radius:16px;border:1px solid #d7e2ec;padding:15px 16px;font-size:16px;margin-bottom:14px;outline:none;background:rgba(255,255,255,.96);color:var(--login-ink)}
-    input:focus{border-color:rgba(17,103,216,.45);box-shadow:0 0 0 4px rgba(17,103,216,.10)} button{width:100%;border:0;border-radius:16px;padding:15px 16px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;transition:.18s ease}button:active{transform:scale(.985)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}.primary{background:linear-gradient(180deg,var(--login-blue),var(--login-blue-deep));color:white;box-shadow:0 12px 24px rgba(17,103,216,.25)}.ghost{background:white;color:#123;border:1px solid #d7e2ec}.message{margin-top:18px;font-size:14px;color:var(--login-muted);min-height:22px;line-height:1.4}
+    input:focus{border-color:rgba(17,103,216,.45);box-shadow:0 0 0 4px rgba(17,103,216,.10)}
+    button{width:100%;border:0;border-radius:16px;padding:15px 16px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;transition:.18s ease}
+    button:active{transform:scale(.985)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}.primary{background:linear-gradient(180deg,var(--login-blue),var(--login-blue-deep));color:white;box-shadow:0 12px 24px rgba(17,103,216,.25)}.ghost{background:white;color:#123;border:1px solid #d7e2ec}.message{margin-top:18px;font-size:14px;color:var(--login-muted);min-height:22px;line-height:1.4}
     @media(max-width:560px){body{padding:18px}.auth-card{padding:30px 20px 26px;border-radius:28px}.auth-logo{height:56px}.auth-title{font-size:1.75rem}}
   </style>
 </head>
@@ -44,27 +47,21 @@
       const message = document.getElementById('message');
       const supabase = window.supabaseClient || window.heartySupabase;
       let redirecting = false;
+      let userIsActing = false;
 
       function setMessage(text){ if (message) message.textContent = text || ''; }
-      function setBusy(isBusy){
-        if (sendBtn) sendBtn.disabled = !!isBusy;
-        if (googleBtn) googleBtn.disabled = !!isBusy;
-      }
+      function setBusy(isBusy){ sendBtn.disabled = isBusy; googleBtn.disabled = isBusy; }
 
-      if (!supabase || !supabase.auth) {
-        setMessage('Login connection failed. Check glp-supabase-config.js.');
-        setBusy(true);
-        console.error('[Hearty Login] Missing Supabase client on window.');
-        return;
+      function hashParams(){
+        const hash = (window.location.hash || '').replace(/^#/, '');
+        return new URLSearchParams(hash);
       }
 
       async function ensureProfile(){
         try {
-          const { data, error } = await supabase.auth.getUser();
-          if (error) console.warn('[Hearty Login] getUser warning:', error);
+          const { data } = await supabase.auth.getUser();
           const user = data && data.user;
           if (!user) return;
-
           const provider = user.app_metadata?.provider || 'email';
           await supabase.from('profiles').upsert({
             user_id: user.id,
@@ -88,47 +85,67 @@
         window.location.replace('/home.html');
       }
 
-      function getHashParams(){
-        const hash = window.location.hash || '';
-        if (!hash || hash.length < 2) return new URLSearchParams();
-        return new URLSearchParams(hash.slice(1));
+      async function finishMagicLinkFromHash(){
+        const params = hashParams();
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        if (!accessToken || !refreshToken) return false;
+
+        setBusy(true);
+        setMessage('Completing sign in...');
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
+        });
+        if (error) throw error;
+        if (data && data.session) {
+          history.replaceState(null, document.title, window.location.pathname);
+          await sendToHome();
+          return true;
+        }
+        return false;
       }
 
-      async function handleRedirectSession(){
+      async function finishOAuthCode(){
+        if (!window.location.search.includes('code=')) return false;
+        setBusy(true);
+        setMessage('Completing sign in...');
+        const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (error) throw error;
+        if (data && data.session) {
+          history.replaceState(null, document.title, window.location.pathname);
+          await sendToHome();
+          return true;
+        }
+        return false;
+      }
+
+      async function checkExistingSession(){
+        const { data } = await supabase.auth.getSession();
+        if (data && data.session) {
+          await sendToHome();
+          return true;
+        }
+        return false;
+      }
+
+      async function boot(){
+        if (!supabase || !supabase.auth) {
+          setMessage('Login connection failed. Check glp-supabase-config.js.');
+          setBusy(true);
+          console.error('[Hearty Login] Missing Supabase client on window.');
+          return;
+        }
+
         try {
-          setMessage('Checking sign in...');
-
-          // Google OAuth / PKCE callback: /login.html?code=...
-          if (window.location.search.includes('code=')) {
-            const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-            if (error) console.warn('[Hearty Login] Code exchange failed:', error);
-          }
-
-          // Email magic-link implicit callback: /login.html#access_token=...&refresh_token=...
-          const hashParams = getHashParams();
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          if (accessToken && refreshToken) {
-            const { error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken
-            });
-            if (error) console.warn('[Hearty Login] Hash session set failed:', error);
-            // Remove tokens from the visible URL after storing the session.
-            history.replaceState(null, document.title, window.location.pathname);
-          }
-
-          for (let i = 0; i < 20; i++) {
-            const { data } = await supabase.auth.getSession();
-            if (data && data.session) return sendToHome();
-            await new Promise(r => setTimeout(r, 200));
-          }
-
+          if (await finishMagicLinkFromHash()) return;
+          if (await finishOAuthCode()) return;
+          if (await checkExistingSession()) return;
           setMessage('');
           setBusy(false);
         } catch (err) {
-          console.warn('[Hearty Login] Redirect/session check failed:', err);
-          setMessage('Could not finish sign in. Please try again.');
+          console.error('[Hearty Login] Sign-in completion failed:', err);
+          setMessage(err.message || 'Could not complete sign in. Please try again.');
           setBusy(false);
         }
       }
@@ -137,6 +154,7 @@
         const email = emailInput.value.trim();
         if (!email) { setMessage('Please enter your email address.'); return; }
         try {
+          userIsActing = true;
           setBusy(true);
           setMessage('Sending login link...');
           const { error } = await supabase.auth.signInWithOtp({
@@ -149,12 +167,14 @@
           console.error('[Hearty Login] Email login failed:', err);
           setMessage(err.message || 'Could not send login link.');
         } finally {
+          userIsActing = false;
           setBusy(false);
         }
       });
 
       googleBtn.addEventListener('click', async function(){
         try {
+          userIsActing = true;
           setBusy(true);
           setMessage('Opening Google sign in...');
           const { error } = await supabase.auth.signInWithOAuth({
@@ -165,13 +185,18 @@
         } catch (err) {
           console.error('[Hearty Login] Google login failed:', err);
           setMessage(err.message || 'Could not open Google sign in.');
+          userIsActing = false;
           setBusy(false);
         }
       });
 
       emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendBtn.click(); });
-      supabase.auth.onAuthStateChange(function(_event, session){ if (session) sendToHome(); });
-      handleRedirectSession();
+
+      supabase?.auth?.onAuthStateChange(function(_event, session){
+        if (session && !redirecting && !userIsActing) sendToHome();
+      });
+
+      boot();
     })();
   </script>
 </body>
