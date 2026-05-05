@@ -880,8 +880,59 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
   }
 
-  const weightHistory = readJSON(STORAGE_KEYS.weightHistory, [])
-    .map(item => ({ date: item.date, weight: Number(item.weight) }))
+  const HEARTY_PROGRESS_KEY = 'heartyProgressV1';
+
+  function numberFrom(value){
+    const n = Number(String(value ?? '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function normaliseWeightEntry(item){
+    if(!item || typeof item !== 'object') return null;
+    const date = item.date || item.day || (item.createdAt ? String(item.createdAt).slice(0,10) : '') || (item.loggedAt ? String(item.loggedAt).slice(0,10) : '');
+    const weight = numberFrom(item.weightKg ?? item.currentWeightKg ?? item.weight ?? item.value ?? item.kg);
+    if(!date || !Number.isFinite(weight) || weight <= 0) return null;
+    return { date, weight };
+  }
+
+  function readSharedProgress(){
+    const shared = readJSON(HEARTY_PROGRESS_KEY, {});
+    return shared && typeof shared === 'object' && !Array.isArray(shared) ? shared : {};
+  }
+
+  const sharedProgress = readSharedProgress();
+  const legacyProgress = readJSON('hearty_progress', {});
+  const profileProgress = readJSON('hearty_profile', {});
+
+  const combinedWeightSources = []
+    .concat(Array.isArray(sharedProgress.weighIns) ? sharedProgress.weighIns : [])
+    .concat(readJSON(STORAGE_KEYS.weightHistory, []))
+    .concat(readJSON('hearty_weight_logs', []));
+
+  const weightByDate = new Map();
+  combinedWeightSources.forEach(item => {
+    const entry = normaliseWeightEntry(item);
+    if(entry) weightByDate.set(entry.date, entry);
+  });
+
+  if(!weightByDate.size){
+    const fallbackWeight = numberFrom(
+      sharedProgress.currentWeightKg ??
+      sharedProgress.currentWeight ??
+      legacyProgress.currentWeightKg ??
+      legacyProgress.currentWeight ??
+      profileProgress.currentWeightKg ??
+      profileProgress.currentWeight ??
+      (profileProgress.progress && (profileProgress.progress.currentWeightKg ?? profileProgress.progress.currentWeight)) ??
+      localStorage.getItem('heartyCurrentWeightKg') ??
+      localStorage.getItem('heartyTodayWeightKg')
+    );
+    if(Number.isFinite(fallbackWeight) && fallbackWeight > 0){
+      weightByDate.set(isoDate(new Date()), { date: isoDate(new Date()), weight: fallbackWeight });
+    }
+  }
+
+  const weightHistory = Array.from(weightByDate.values())
     .filter(item => item.date && Number.isFinite(item.weight))
     .sort((a,b) => parseDate(a.date) - parseDate(b.date));
 
@@ -890,7 +941,15 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
   const currentEntry = hasWeightData ? weightHistory[weightHistory.length - 1] : null;
   const startWeight = startEntry ? Number(startEntry.weight) : null;
   const currentWeight = currentEntry ? Number(currentEntry.weight) : null;
-  const targetWeightRaw = localStorage.getItem(STORAGE_KEYS.targetWeight) || body.dataset.targetWeight || '';
+  const targetWeightRaw =
+    localStorage.getItem(STORAGE_KEYS.targetWeight) ||
+    sharedProgress.targetWeightKg ||
+    sharedProgress.targetWeight ||
+    legacyProgress.targetWeightKg ||
+    legacyProgress.targetWeight ||
+    (profileProgress.progress && (profileProgress.progress.targetWeightKg || profileProgress.progress.targetWeight)) ||
+    body.dataset.targetWeight ||
+    '';
   const targetWeight = targetWeightRaw !== '' ? Number(targetWeightRaw) : null;
   const goalDateString = localStorage.getItem(STORAGE_KEYS.goalDate) || '';
   const goalDate = goalDateString ? parseDate(goalDateString) : null;
@@ -1137,8 +1196,61 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     }
   ];
 
+  function normalisePhotoRow(item){
+    if(!item || typeof item !== 'object') return null;
+    const date = item.date || item.day || (item.createdAt ? String(item.createdAt).slice(0,10) : '');
+    const type = item.type || item.angle || item.view || item.slot;
+    const image = item.image || item.previewUrl || item.url || item.dataUrl || item.src;
+    if(!date || !type || !image) return null;
+    if(!['front','side','back'].includes(type)) return null;
+    return { date, type, image };
+  }
+
+  function collectProgressPhotoRows(){
+    const rows = [];
+    const addRows = value => {
+      if(Array.isArray(value)){
+        value.forEach(item => {
+          const row = normalisePhotoRow(item);
+          if(row) rows.push(row);
+        });
+      }
+    };
+
+    addRows(sharedProgress.photoLogs);
+    addRows(readJSON(STORAGE_KEYS.photoLog, []));
+
+    const photoSets = readJSON('hearty_progress_photos', []);
+    if(Array.isArray(photoSets)){
+      photoSets.forEach(set => {
+        if(!set || !set.date || !set.slots) return;
+        ['front','side','back'].forEach(type => {
+          const slot = set.slots[type];
+          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src);
+          if(image) rows.push({ date:set.date, type, image });
+        });
+      });
+    }
+
+    if(sharedProgress.photoLogs && typeof sharedProgress.photoLogs === 'object' && !Array.isArray(sharedProgress.photoLogs)){
+      Object.keys(sharedProgress.photoLogs).forEach(date => {
+        const set = sharedProgress.photoLogs[date];
+        if(!set) return;
+        ['front','side','back'].forEach(type => {
+          const slot = set[type] || (set.slots && set.slots[type]);
+          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src || (typeof slot === 'string' ? slot : ''));
+          if(image) rows.push({ date, type, image });
+        });
+      });
+    }
+
+    const unique = new Map();
+    rows.forEach(row => unique.set(`${row.date}:${row.type}`, row));
+    return Array.from(unique.values());
+  }
+
   function buildPhotos(){
-    const saved = readJSON(STORAGE_KEYS.photoLog, null);
+    const saved = collectProgressPhotoRows();
     if(!Array.isArray(saved) || !saved.length) return placeholderPhotoSets;
     const grouped = new Map();
     saved.forEach(item => {
