@@ -145,6 +145,101 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
 @media(max-width:760px){.support-hero{min-height:0;padding:20px}.reason-grid{grid-template-columns:1fr}.reason-btn{min-height:112px}.two-col{grid-template-columns:1fr}.advice-list{grid-template-columns:1fr}.off-row{justify-content:center}}
 
 @media(max-width:760px){.shell{padding:14px 14px 24px}.topbar{min-height:78px;padding:0 14px;border-radius:20px}.brand-logo{height:40px}.page-header{margin:0 0 16px;padding:2px 2px 0;gap:12px;flex-direction:column;align-items:flex-start}.page-header-subcopy{font-size:.95rem}.card{padding:18px;border-radius:22px}.reason-grid,.two-col{grid-template-columns:1fr}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.bottom-nav .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.bottom-nav .nav-item svg{width:18px;height:18px}}
+
+/* === Layout notes fix: header band, centred key support button, restore knowledge/tools calm layout === */
+.topbar{
+  border-radius:26px!important;
+  background:
+    radial-gradient(520px 150px at 10% 0%, rgba(47,109,246,.12), transparent 55%),
+    radial-gradient(420px 150px at 100% 0%, rgba(245,158,11,.10), transparent 55%),
+    linear-gradient(180deg,rgba(255,255,255,.86),rgba(246,250,255,.72))!important;
+  box-shadow:0 16px 34px rgba(14,31,53,.09)!important;
+}
+.page-header{
+  padding:20px 20px 18px!important;
+  margin:0 0 18px!important;
+  border:1px solid rgba(143,163,184,.20);
+  border-radius:28px;
+  background:
+    radial-gradient(520px 180px at 0% 0%, rgba(47,109,246,.10), transparent 58%),
+    linear-gradient(180deg,rgba(255,255,255,.86),rgba(248,251,255,.68));
+  box-shadow:0 14px 30px rgba(14,31,53,.07);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.page-greeting{font-size:clamp(2rem,3.5vw,2.7rem)!important}
+.status-pill{align-self:center}
+.off-row{
+  justify-content:center!important;
+  margin-top:24px!important;
+}
+.off-btn{
+  width:min(100%,420px)!important;
+  min-height:58px!important;
+  padding:0 28px!important;
+  border-radius:22px!important;
+  font-size:.98rem!important;
+  letter-spacing:.01em;
+  background:linear-gradient(180deg,#ffffff,#f6f9ff)!important;
+  box-shadow:0 16px 28px rgba(47,109,246,.10), inset 0 1px 0 rgba(255,255,255,.92)!important;
+}
+.off-btn.active{
+  background:linear-gradient(180deg,#ecfdf3,#ffffff)!important;
+  box-shadow:0 16px 28px rgba(22,163,74,.10), inset 0 1px 0 rgba(255,255,255,.92)!important;
+}
+.knowledge-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.94))!important;
+  border:1px solid rgba(154,173,197,.16)!important;
+  box-shadow:var(--shadow-soft)!important;
+}
+.tools-shell{
+  padding:0!important;
+  border:none!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.tools-shell summary{
+  padding:15px 16px;
+  border-radius:20px;
+  border:1px solid rgba(154,173,197,.16);
+  background:rgba(255,255,255,.82);
+  box-shadow:var(--shadow-soft);
+}
+.tool-item{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.94))!important}
+@media(max-width:760px){
+  .page-header{padding:18px!important;border-radius:24px}
+  .status-pill{width:100%;justify-content:center}
+  .off-btn{width:100%!important;min-height:56px!important}
+}
+
+/* === Restore deeper knowledge base and richer tool library === */
+.knowledge-card{padding:18px!important}
+.knowledge-card ul{margin:12px 0 0;padding-left:18px;color:#667486;font-size:.9rem;line-height:1.55;font-weight:600}
+.knowledge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.knowledge-mini{padding:13px 13px 12px;border-radius:18px;border:1px solid rgba(154,173,197,.15);background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,255,.88));box-shadow:var(--shadow-soft)}
+.knowledge-mini strong{display:block;font-size:.88rem;letter-spacing:-.02em;color:#172435;margin-bottom:5px}
+.knowledge-mini span{display:block;color:#68778a;font-size:.82rem;line-height:1.42;font-weight:600}
+.tools-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tool-item{min-height:104px}
+.tool-tag{display:inline-flex;margin-bottom:8px;padding:5px 8px;border-radius:999px;background:rgba(47,109,246,.08);color:#2f6df6;font-size:.68rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+@media(max-width:760px){.knowledge-grid,.tools-list{grid-template-columns:1fr}.tool-item{min-height:0}}
+
+
+/* === Old Support knowledge base + tool library restored only === */
+.knowledge-card.knowledge-dense{padding:18px 18px 16px!important;min-height:0!important}
+.knowledge-lead{color:#506174;font-size:.95rem;line-height:1.55;margin:0 0 12px;font-weight:600}
+.knowledge-points{display:grid;gap:10px;margin:0 0 12px}
+.knowledge-point{padding:12px 14px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.94));border:1px solid rgba(150,166,186,.16);box-shadow:var(--shadow-soft)}
+.knowledge-point b{display:block;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:#7a8798;margin-bottom:5px}
+.knowledge-point span{display:block;color:#5f6f82;line-height:1.5;font-size:.9rem;font-weight:600}
+.knowledge-more{margin-top:8px;border-top:1px solid rgba(150,166,186,.16);padding-top:10px}
+.knowledge-more summary{list-style:none;cursor:pointer;font-size:.88rem;font-weight:800;color:#2f6df6}
+.knowledge-more summary::-webkit-details-marker{display:none}
+.knowledge-more p{margin:10px 0 0;color:#607084;line-height:1.58;font-size:.9rem;font-weight:600}
+.tools-list{grid-template-columns:1fr!important}
+.tool-item{min-height:0!important;display:block!important}
+.tool-copy{margin-top:5px;color:#66778d;font-size:.9rem;line-height:1.55;font-weight:600}
+
 </style>
 </head>
 <body data-page="support">
@@ -254,32 +349,135 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
         ['Exercise', 'Use a lighter support session. Keep movement gentle and stop if symptoms worsen.'],
         ['Hydration', 'Small sips count. Do not force large volumes at once.']
       ],
-      knowledge: ['Nausea days are not failed days.', 'The goal is to keep the routine alive while lowering friction. A small protein-focused meal is still a win.'],
-      tools: [['Ginger tea', 'May help settle nausea for some people.'], ['Plain crackers or toast', 'Useful when richer foods feel difficult.'], ['Smaller portions', 'Try half portions more often rather than one large meal.']]
+      knowledge: {
+        topic: 'Nausea',
+        title: 'Nausea days are not failed days.',
+        body: 'The goal is to keep the routine alive while lowering friction. A small protein-focused meal, gentle hydration and light movement still count as a win.',
+        cards: [
+          ['Meal rhythm', 'Think smaller, plainer and more regular rather than one big meal.'],
+          ['Protein anchor', 'Use an easy protein anchor first, then add extras only if they feel manageable.'],
+          ['Hydration pace', 'Tiny sips across the day are usually easier than forcing a large bottle.'],
+          ['Movement floor', 'Keep movement gentle. The win is not losing the day completely.']
+        ]
+      },
+      tools: [
+        ['Food','Plain crackers or toast','Useful when richer foods feel difficult.'],
+        ['Drink','Ginger tea','May feel settling for some people.'],
+        ['Meal size','Half portions','Try half portions more often rather than one large meal.'],
+        ['Protein','Low-fat yoghurt','A soft protein anchor when appetite is low.'],
+        ['Protein','Eggs','Simple, familiar and easy to portion.'],
+        ['Routine','Sit upright after eating','Keeps the day calmer and more comfortable.'],
+        ['Movement','Easy walk','Only gentle movement today; no pushing.'],
+        ['Boundary','Skip rich meals','Avoid making the day harder with heavy sauces or greasy foods.']
+      ]
     },
     bloating: {
-      label: 'Bloating', title: 'Bloating support is on', copy: 'Hearty will keep meals simpler and reduce pressure while your body settles.',
+      label: 'Bloating',
+      title: 'Bloating support is on',
+      copy: 'Hearty will keep meals simpler and reduce pressure while your body settles.',
       advice: [['Meals','Keep meals uncomplicated and avoid stacking too many heavy ingredients.'],['Exercise','Gentle walking is often a better fit than hard training.'],['Rhythm','Stay consistent without trying to “make up” for the day.']],
-      knowledge: ['Bloating can make normal portions feel harder.', 'Support Mode lowers complexity so the plan remains doable.'],
-      tools: [['Warm fluids','Can feel easier than cold drinks.'],['Gentle walk','A short easy walk may help comfort.'],['Simple meals','Protein plus one gentle vegetable can be enough.']]
+      knowledge: {
+        topic: 'Bloating',
+        title: 'Bloating support is about simplification.',
+        body: 'The app should lower meal complexity, reduce pressure and keep the routine steady while comfort improves.',
+        cards: [
+          ['Simpler plate', 'Protein plus one gentle vegetable is enough for a support meal.'],
+          ['Cooked over complex', 'Cooked, simple meals often feel easier than large mixed meals.'],
+          ['No overcorrection', 'Do not suddenly punish the day or force a perfect reset.'],
+          ['Gentle walking', 'A small walk can be a better fit than a hard workout.']
+        ]
+      },
+      tools: [
+        ['Drink','Warm fluids','Can feel easier than cold drinks.'],
+        ['Movement','Gentle walk','A short easy walk may help comfort.'],
+        ['Meal','Simple cooked meal','Protein plus one gentle vegetable can be enough.'],
+        ['Portion','Smaller plate','Reduce volume without skipping the whole meal.'],
+        ['Food','Soup-style meal','A softer option when heavy meals feel wrong.'],
+        ['Routine','Slow eating','Less rushing, less discomfort.'],
+        ['Boundary','Avoid stacking extras','Keep sauces, extras and rich add-ons minimal.'],
+        ['Recovery','Calm evening','Avoid turning the day into a compensation cycle.']
+      ]
     },
     fatigue: {
-      label: 'Fatigue', title: 'Fatigue support is on', copy: 'Hearty will lower exercise intensity and keep the daily plan manageable.',
+      label: 'Fatigue',
+      title: 'Fatigue support is on',
+      copy: 'Hearty will lower exercise intensity and keep the daily plan manageable.',
       advice: [['Exercise','Default to a reduced support session. This counts as showing up, not a regression.'],['Meals','Aim for protein and hydration first.'],['Recovery','Prioritise sleep and a calmer evening routine.']],
-      knowledge: ['Fatigue days need a smaller target.', 'The win is preserving consistency without forcing performance.'],
-      tools: [['Short walk','Ten minutes is enough if that is the honest capacity today.'],['Earlier night','Recovery is part of the plan.'],['Simple protein','Yoghurt, eggs, tuna, chicken, or cottage cheese can keep it easy.']]
+      knowledge: {
+        topic: 'Fatigue',
+        title: 'Fatigue days need a smaller target.',
+        body: 'The win is preserving consistency without forcing performance. Support Mode should make the day easier, not empty.',
+        cards: [
+          ['Minimum viable day', 'Protein, water and light movement are enough.'],
+          ['Training rule', 'Reduced exercise is still adherence. It does not reset progress.'],
+          ['Food effort', 'Use low-prep meals instead of trying to cook perfectly.'],
+          ['Recovery', 'Sleep and a calmer evening are part of the plan.']
+        ]
+      },
+      tools: [
+        ['Movement','10-minute walk','Enough if that is the honest capacity today.'],
+        ['Recovery','Earlier night','Recovery is part of the plan.'],
+        ['Protein','Simple protein','Yoghurt, eggs, tuna, chicken, or cottage cheese can keep it easy.'],
+        ['Meal','Leftovers','Use what is already prepared.'],
+        ['Drink','Water checkpoint','One glass now beats a perfect plan later.'],
+        ['Planning','One-task rule','Pick the smallest next action and stop overloading the day.'],
+        ['Exercise','Reduced session','Keep the habit without chasing performance.'],
+        ['Boundary','No make-up pressure','Do not try to repay the day with punishment.']
+      ]
     },
     low_appetite: {
-      label: 'Low appetite', title: 'Low appetite support is on', copy: 'Hearty will favour smaller protein-first options rather than large meals.',
+      label: 'Low appetite',
+      title: 'Low appetite support is on',
+      copy: 'Hearty will favour smaller protein-first options rather than large meals.',
       advice: [['Meals','Protein-first snack-style meals are okay today.'],['Hydration','Keep fluids steady.'],['Progress','The aim is not perfect eating — it is preventing a protein crash.']],
-      knowledge: ['Low appetite is common for GLP-1 users.', 'Smaller protein anchors can protect muscle while keeping the day realistic.'],
-      tools: [['Low-fat yoghurt','A simple protein anchor.'],['Cottage cheese','Easy snack-style protein.'],['Small tuna portion','Useful when a full meal is too much.']]
+      knowledge: {
+        topic: 'Low appetite',
+        title: 'Low appetite support protects the protein floor.',
+        body: 'The goal is not to force large meals. The goal is to keep enough protein and fluid coming in so the plan stays safe and realistic.',
+        cards: [
+          ['Protein-first', 'Start with protein before worrying about the full meal.'],
+          ['Snack-style meals', 'Small protein snacks can replace large meals on difficult days.'],
+          ['Volume down', 'Lower-volume foods are the right tool here.'],
+          ['Consistency', 'Small intake repeated is better than skipping the day.']
+        ]
+      },
+      tools: [
+        ['Protein','Low-fat yoghurt','A simple protein anchor.'],
+        ['Protein','Cottage cheese','Easy snack-style protein.'],
+        ['Protein','Small tuna portion','Useful when a full meal is too much.'],
+        ['Protein','Eggs','Small, familiar, and easy to scale.'],
+        ['Meal size','Mini meals','Use two or three small anchors instead of one plate.'],
+        ['Drink','Smooth texture option','A yoghurt bowl or smoothie-style option can feel easier.'],
+        ['Planning','Protein first reminder','Do this before adding starch or extras.'],
+        ['Boundary','Do not skip all day','Even a small anchor protects momentum.']
+      ]
     },
     constipation: {
-      label: 'Constipation', title: 'Constipation support is on', copy: 'Hearty will nudge hydration, fibre-aware choices, and gentle movement.',
+      label: 'Constipation',
+      title: 'Constipation support is on',
+      copy: 'Hearty will nudge hydration, fibre-aware choices, and gentle movement.',
       advice: [['Meals','Fibre-aware choices help, but do not suddenly overcorrect.'],['Hydration','Steady water intake matters.'],['Movement','Gentle walking can support routine and digestion.']],
-      knowledge: ['Constipation support should be steady, not extreme.', 'The app should encourage water, fibre-aware foods, and movement without turning it into a medical protocol.'],
-      tools: [['Water rhythm','Small regular glasses across the day.'],['Fruit choice','Prunes, kiwi, or berries may help some people.'],['Easy walk','Gentle movement can support digestion.']]
+      knowledge: {
+        topic: 'Constipation',
+        title: 'Constipation support should be steady, not extreme.',
+        body: 'The app should encourage water, fibre-aware foods and gentle movement without turning it into a medical protocol.',
+        cards: [
+          ['Water rhythm', 'Small regular glasses across the day matter.'],
+          ['Fibre-aware', 'Add helpful foods gradually rather than suddenly overdoing fibre.'],
+          ['Movement', 'Gentle walking can support routine and comfort.'],
+          ['Clinician line', 'Persistent or severe symptoms belong with a clinician.']
+        ]
+      },
+      tools: [
+        ['Drink','Water rhythm','Small regular glasses across the day.'],
+        ['Food','Kiwi, berries or prunes','Fruit choices that may help some people.'],
+        ['Movement','Easy walk','Gentle movement can support digestion.'],
+        ['Meal','Cooked vegetables','Steady, fibre-aware food support.'],
+        ['Routine','Bathroom routine','Give the body a calm regular window.'],
+        ['Boundary','No sudden extremes','Do not overcorrect with a massive fibre jump.'],
+        ['Check','Symptom watch','Escalate persistent or severe symptoms to a clinician.'],
+        ['Plan','Hydration before extras','Water comes before adding more interventions.']
+      ]
     }
   };
 
@@ -314,13 +512,132 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
     wrap.innerHTML = data.map(item => `<div class="advice-item"><b>${item[0]}</b><span>${item[1]}</span></div>`).join('');
   }
 
+
+    
+    const knowledgeCards = {
+      'nausea': {
+        topic: 'Nausea',
+        lead: 'Nausea is one of the most common early side effects. The goal is usually not perfection, but keeping food and fluids manageable enough that the day does not unravel.',
+        points: [
+          ['Why it happens', 'Slower digestion means food can sit in the stomach longer, which can create that unsettled feeling.'],
+          ['What usually helps', 'Smaller meals, slower eating, simpler foods, and steady sips of fluid tend to work better than forcing a full normal meal.'],
+          ['What to avoid', 'Large portions, very rich foods, and long gaps without food or fluids can make things feel worse.']
+        ],
+        more: 'If nausea becomes strong enough to stop food and fluids completely, or keeps escalating, it should be taken more seriously rather than pushed through.'
+      },
+      'fatigue': {
+        topic: 'Fatigue',
+        lead: 'Fatigue often shows up when intake drops, hydration slips, or the body is still adapting. It does not always mean something is wrong, but it does need context.',
+        points: [
+          ['Why it happens', 'Lower intake, dehydration, disrupted routine, and the adjustment phase can all affect energy.'],
+          ['What usually helps', 'Fluids, enough protein, simpler days, and avoiding pressure to train or perform as normal can settle things down.'],
+          ['What to watch', 'Persistent fatigue needs a different conversation than one or two tired days after a rough intake patch.']
+        ],
+        more: 'Energy changes often improve once eating rhythm, hydration, and routine become more stable. If they do not, that is when it becomes more important to look deeper.'
+      },
+      'constipation': {
+        topic: 'Constipation',
+        lead: 'Constipation is common because digestion is slower and food volume often drops. It is easier to manage when caught early than when ignored for days.',
+        points: [
+          ['Why it happens', 'Lower intake, lower fibre, slower digestion, and dehydration can all contribute.'],
+          ['What usually helps', 'Fluids, consistent intake, movement, and targeted support tools can all help together.'],
+          ['What to avoid', 'Very low food intake for too long and waiting until it becomes severe usually make recovery slower.']
+        ],
+        more: 'If constipation becomes painful, prolonged, or clearly worsening, it moves beyond a simple support issue and needs more attention.'
+      },
+      'bloating': {
+        topic: 'Bloating',
+        lead: 'Bloating can feel frustrating because it makes eating seem harder even when you are trying to do the right things.',
+        points: [
+          ['Why it happens', 'Food sitting in the stomach longer can create pressure and discomfort.'],
+          ['What usually helps', 'Smaller portions, slower pacing, and keeping meals simpler when symptoms are active.'],
+          ['What to avoid', 'Heavy meals, rushing meals, and trying to eat a full normal intake when the stomach clearly is not coping well.']
+        ],
+        more: 'Bloating is usually more about how the stomach is handling the day than about failure. The response is usually to simplify, not to force.'
+      },
+      'low-appetite': {
+        topic: 'Low appetite',
+        lead: 'Low appetite is part of how treatment works, but it can create problems when it becomes so strong that intake falls too far for too long.',
+        points: [
+          ['Why it happens', 'Appetite suppression is expected, but your body still needs enough nutrition and protein.'],
+          ['What usually helps', 'Smaller meals, softer foods, protein snacks, and reducing the gap between eating opportunities.'],
+          ['What to avoid', 'Treating very low appetite as a reason to stop eating altogether for the day.']
+        ],
+        more: 'The goal is not to force hunger. It is to build a simpler rhythm that still gives the body enough to work with.'
+      },
+      'hair-loss': {
+        topic: 'Hair loss',
+        lead: 'Hair loss is not usually felt day to day, but it worries people a lot. It is often linked more to rapid loss and low intake than to the medication itself.',
+        points: [
+          ['Why it happens', 'Rapid weight loss, very low intake, and prolonged under-eating can all contribute to temporary shedding.'],
+          ['What usually helps', 'Adequate protein, steadier intake, and avoiding long periods of very low nutrition.'],
+          ['What to expect', 'This is often temporary and improves once intake and body stress settle.']
+        ],
+        more: 'It is important not to promise prevention. The aim is risk reduction and better support, not pretending there is a guaranteed fix.'
+      },
+      'loose-skin': {
+        topic: 'Loose skin',
+        lead: 'Loose skin is another concern that people think about early. It is affected by factors you can influence and factors you cannot.',
+        points: [
+          ['What affects it', 'Rate of weight loss, age, genetics, and skin elasticity all play a role.'],
+          ['What may help', 'Slower loss, resistance training, hydration, and time can improve the way things look and feel.'],
+          ['What not to promise', 'No tool or supplement can promise prevention.']
+        ],
+        more: 'This is best framed honestly: there are supportive habits, but there is no perfect guarantee.'
+      },
+      'reflux': {
+        topic: 'Reflux',
+        lead: 'Reflux can become more noticeable when digestion is slower and the stomach feels under pressure after meals.',
+        points: [
+          ['Why it happens', 'Slower digestion can increase pressure and make reflux easier to trigger.'],
+          ['What usually helps', 'Smaller meals, lighter meals, and not lying down straight after eating.'],
+          ['What to avoid', 'Large evening meals and forcing one more meal when the stomach already feels full.']
+        ],
+        more: 'The response is usually to reduce pressure on the stomach rather than to keep adding more food into an already uncomfortable situation.'
+      }
+    };
+    const dailyKnowledgeOrder = ['nausea','fatigue','constipation','bloating','low-appetite','hair-loss','loose-skin','reflux'];
+const SUPPORT_TOOLS = [
+  { name: "Protein support", copy: "Useful when meals are too small or appetite is low. Protein can help protect muscle and make low-intake days less disruptive." },
+  { name: "Hydration support", copy: "Steady hydration often helps more than people expect. Use this when headaches, fatigue, dizziness, or low intake make water easy to forget." },
+  { name: "Electrolyte support", copy: "Most useful when hydration has clearly been poor, the weather is hot, or dizziness and fatigue seem linked to low fluids. Not something everyone needs every day." },
+  { name: "Ginger tea", copy: "A simple nausea support option. Best used when nausea is mild to moderate or meals are starting to feel hard to face." },
+  { name: "Peppermint tea", copy: "Can be useful when digestion feels unsettled, bloating is noticeable, or the stomach feels uncomfortable." },
+  { name: "Magnesium", copy: "Sometimes used as part of constipation support. Best treated as a targeted tool, not a default daily add-on for everyone." },
+  { name: "Vitamin B12", copy: "Can matter when food intake has been low for long enough that energy and nutrition may be affected. It is not a catch-all fix for every tired day." },
+  { name: "Creatine", copy: "Most useful when resistance training is part of the plan and preserving strength and muscle matters. Not a basic requirement for every user." },
+  { name: "Simple crackers or dry toast", copy: "Not a supplement, but often one of the most practical tools on nausea days because it is plain, predictable, and easier to tolerate." },
+  { name: "Soft protein snack", copy: "Things like yoghurt, cottage cheese, or a protein shake can help when a full meal feels like too much but intake still needs support." }
+];
+
   function renderKnowledge(state){
     const wrap = document.getElementById('knowledgeCard');
     const tools = document.getElementById('toolsList');
-    const data = state.active && reasons[state.reason] ? reasons[state.reason] : null;
-    wrap.innerHTML = data ? `<span class="knowledge-topic">${data.label}</span><h3>${data.knowledge[0]}</h3><p>${data.knowledge[1]}</p>` : `<span class="knowledge-topic">Daily support</span><h3>Use Support Mode before the day falls apart.</h3><p>Pick the closest reason and let the app reduce pressure. Turning support on is a smart adjustment, not a failure.</p>`;
-    const toolRows = data ? data.tools : [['Support Mode','Use it early when symptoms or low capacity show up.'],['Off button','Turn support off when you are ready to return to the normal plan.'],['Doctor guidance','Target weight and medication decisions should stay with the clinician.']];
-    tools.innerHTML = toolRows.map(t => `<div class="tool-item"><div class="tool-name">${t[0]}</div><p>${t[1]}</p></div>`).join('');
+    if (wrap) {
+      const todayIndex = Math.floor(Date.now() / 86400000);
+      const key = dailyKnowledgeOrder[todayIndex % dailyKnowledgeOrder.length];
+      const card = knowledgeCards[key];
+      wrap.classList.add('knowledge-dense');
+      wrap.innerHTML = `
+        <div class="knowledge-topic">${card.topic}</div>
+        <p class="knowledge-lead">${card.lead}</p>
+        <div class="knowledge-points">
+          ${card.points.map(([h,p]) => `<div class="knowledge-point"><b>${h}</b><span>${p}</span></div>`).join('')}
+        </div>
+        <details class="knowledge-more">
+          <summary>Read more</summary>
+          <p>${card.more}</p>
+        </details>
+      `;
+    }
+    if (tools) {
+      tools.innerHTML = SUPPORT_TOOLS.map(t => `
+        <div class="tool-item">
+          <div class="tool-name">${t.name}</div>
+          <div class="tool-copy">${t.copy}</div>
+        </div>
+      `).join('');
+    }
   }
 
   function activeRangeDays(){
