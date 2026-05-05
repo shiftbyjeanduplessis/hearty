@@ -533,8 +533,7 @@
         body,
         image_path: image.imagePath,
         image_url: image.imageUrl,
-        expires_at: expiresAt,
-        metadata: {}
+        expires_at: expiresAt
       });
       if (error) throw error;
       input.value = '';
@@ -542,7 +541,7 @@
       await renderAll();
     } catch (err) {
       console.warn(err);
-      showToast('Post could not be saved. Check community-images storage and table policies.');
+      showToast('Post could not be saved. Check community_posts table columns/policies.');
     }
   }
 
