@@ -165,8 +165,12 @@ html.hearty-home-rendered .ring-progress{
       input.setAttribute('capture','environment');
       input.hidden = true;
       input.id = inputId(k);
+      input.dataset.uploadScope = 'progress-photo';
+      input.dataset.progressPhotoInput = k;
       document.body.appendChild(input);
-      input.addEventListener('change', function(){
+      input.addEventListener('change', function(e){
+        if(!e || !e.target || e.target.dataset.uploadScope !== 'progress-photo' || e.target.dataset.progressPhotoInput !== k) return;
+        e.stopPropagation();
         var file = input.files && input.files[0];
         if(!file) return;
         var reader = new FileReader();
@@ -7110,7 +7114,13 @@ function completeWalkTask(){
 
 Object.entries(photoInputs).forEach(([key, input]) => {
   if(!input) return;
-  input.addEventListener('change', () => {
+  input.dataset.uploadScope = 'progress-photo';
+  input.dataset.progressPhotoInput = key;
+  input.addEventListener('change', (event) => {
+    if(!event || !event.target || event.target.dataset.uploadScope !== 'progress-photo' || event.target.dataset.progressPhotoInput !== key) return;
+    event.stopPropagation();
+    if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    if(!['front','side','back'].includes(key)) return;
     const file = input.files && input.files[0];
     if(!file) return;
     const reader = new FileReader();
@@ -7125,7 +7135,7 @@ Object.entries(photoInputs).forEach(([key, input]) => {
       updatePhotoSheetUI();
     };
     reader.readAsDataURL(file);
-  });
+  }, true);
 });
 
 document.querySelectorAll('[data-photo-approve]').forEach(btn => {
