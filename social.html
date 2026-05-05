@@ -6,7 +6,21 @@
 <title>Hearty — Community</title>
 <link rel="stylesheet" href="/css/hearty-theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/glp-supabase-config.js"></script>
+<script src="/glp-supabase-config.js?v=999"></script>
+<script>
+(function(){
+  // Hard bridge: if the external config is cached/missing, expose the Supabase client here too.
+  var SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M';
+  if (!window.supabaseClient && window.supabase && window.supabase.createClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+  }
+  window.heartySupabase = window.supabaseClient || window.heartySupabase;
+  window.heartySupabaseClient = window.supabaseClient || window.heartySupabaseClient;
+})();
+</script>
 <script src="/js/hearty-data-layer.v1.js"></script>
 <script src="/js/hearty-supabase-sync.v1.js"></script>
 <script src="/js/hearty-theme.js"></script>
@@ -379,7 +393,7 @@
     if (!sb) {
       usingSupabase = false;
       currentUser = null;
-      showToast('App connection missing. Check glp-supabase-config.js is loaded.');
+      showToast('Community bridge missing. Hard refresh and check Supabase config.');
       return false;
     }
 
