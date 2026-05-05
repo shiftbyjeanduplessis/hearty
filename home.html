@@ -1,8 +1,95 @@
 
 <!DOCTYPE html>
 
-<html lang="en" data-theme="clean_blue">
-<head>
+<html data-theme="clean_blue" lang="en">
+<head><style id="hearty-home-stability-authority-style">
+/* HOME STABILITY AUTHORITY: prevents raw ring/progress flash and layout jump */
+html:not(.hearty-home-rendered) .rings,
+html:not(.hearty-home-rendered) .progress-band{
+  opacity:0 !important;
+  visibility:hidden !important;
+}
+html.hearty-home-rendered .rings,
+html.hearty-home-rendered .progress-band{
+  opacity:1 !important;
+  visibility:visible !important;
+  transition:opacity .14s ease !important;
+}
+.ring-block,
+.ring-wrap,
+.ring-progress,
+.hydration-card,
+.hydration-compact,
+.hydration-new,
+.hydration-add-btn,
+#waterGlass,
+#waterUndo,
+.water-undo-new{
+  transform:none !important;
+  animation:none !important;
+}
+.ring-block:hover,
+.card:hover,
+.hydration-add-btn:hover,
+.hydration-add-btn:active,
+.hydration-add-btn.pressed,
+#waterGlass:hover,
+#waterGlass:active,
+#waterUndo:hover,
+#waterUndo:active{
+  transform:none !important;
+  animation:none !important;
+}
+.ring-progress{
+  transition:none !important;
+}
+html.hearty-home-rendered .ring-progress{
+  transition:stroke-dashoffset .25s ease !important;
+}
+.progress-band{
+  display:block !important;
+  min-height:0 !important;
+}
+.progress-band .progress-main{
+  color:var(--ink,#132235) !important;
+  font-weight:900 !important;
+}
+.progress-band .progress-meta,
+.progress-band .progress-microcopy,
+.progress-band .goal-labels span{
+  color:var(--muted,#6f7c8d) !important;
+}
+.progress-band .goalbar{
+  position:relative !important;
+  display:block !important;
+  height:12px !important;
+  min-height:12px !important;
+  border-radius:999px !important;
+  overflow:visible !important;
+  background:rgba(143,163,184,.22) !important;
+  margin-top:14px !important;
+}
+.progress-band .goalbar-fill{
+  display:block !important;
+  height:100% !important;
+  min-width:0 !important;
+  border-radius:999px !important;
+  background:linear-gradient(90deg,#22b8a7,#2f6df6) !important;
+}
+.progress-band .goal-marker{
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+}
+.progress-band .goal-labels{
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+}
+@media(max-width:640px){
+  .progress-band .goal-labels{display:grid !important;grid-template-columns:1fr !important;}
+  .progress-band .goal-labels span{text-align:left !important;}
+}
+</style>
 <script id="hearty-photo-emergency-fix">
 (function(){
   'use strict';
@@ -240,10 +327,9 @@
   else { ensureSheet(); render(); }
 })();
 </script>
-
 <script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Hearty — Home</title>
 <script src="/js/hearty-data-layer.v1.js"></script>
 <style>
@@ -5024,7 +5110,6 @@ html[data-theme="sunlit"] .status-pill.expired{
   color: #9a4f45 !important;
 }
 </style>
-
 <style id="hearty-home-final-theme-application">
 /* FINAL THEME APPLICATION */
 body{
@@ -5660,8 +5745,6 @@ html[data-theme="sunlit"] .home-theme-btn.active{
   .topbar .icon-btn, header.topbar .icon-btn{width:42px !important; height:42px !important; border-radius:14px !important;}
 }
 </style>
-
-
 <style id="home-layout-final-v5">
 /* Layout refinement requested:
    Row 1: Support + Hydration (same exact height)
@@ -5742,8 +5825,6 @@ html[data-theme="sunlit"] .home-theme-btn.active{
   }
 }
 </style>
-
-
 <style id="water-button-center-dark-fix">
 html[data-theme="midnight"] .hydration-add-btn,
 html[data-theme="rose_aurora"] .hydration-add-btn{
@@ -5778,7 +5859,6 @@ html[data-theme="rose_aurora"] .hydration-add-text{
   line-height:1 !important;
 }
 </style>
-
 <style id="home-layout-fix-final">
 /* Final layout cleanup: hydration spacing, date position, medication restore */
 .status-strip{align-items:flex-start !important;margin:4px 0 14px !important;}
@@ -5812,9 +5892,8 @@ html[data-theme="rose_aurora"] .hydration-add-text{
   #statusMedLayout.home-grid > #todaysRhythmCard{grid-column:auto !important;}
 }
 </style>
-
 <!-- Shared Hearty theme system -->
-<link rel="stylesheet" href="/css/hearty-theme.css">
+<link href="/css/hearty-theme.css" rel="stylesheet"/>
 <script src="/js/hearty-theme.js"></script>
 <style>
 /* HOME onboarding modal input fix only */
@@ -5854,8 +5933,6 @@ html[data-theme="rose_aurora"] .hydration-add-text{
   box-shadow: 0 0 0 4px rgba(47,109,246,.10);
 }
 </style>
-
-
 <style id="home-first-day-and-meter-final-fix">
 #todaysRhythmCard{
   scroll-margin-top:96px;
@@ -5887,7 +5964,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 }
 </style>
 </head>
-
 <style id="home-empty-medication-visibility-fix">
 /* Hide empty Home header/injection placeholders completely.
    Existing page CSS uses display:flex !important on #injectionCard,
@@ -5904,8 +5980,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
   box-shadow:var(--shadow) !important;
 }
 </style>
-
-
 <!-- FINAL VISUAL FIX: top support/hydration spacing + medication alignment -->
 <style id="hearty-home-visual-alignment-final-v2">
   /* 1) Pull Support + Hydration closer to the progress box */
@@ -6102,7 +6176,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
     }
   }
 </style>
-</head>
+
 <body data-page="home">
 <div class="shell" id="pageRoot">
 <header class="topbar">
@@ -6117,9 +6191,8 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 <h1 class="headline">Hi, Jean</h1>
 <div class="subline" id="dailyStatusLine">Today looks steady — keep the basics moving</div>
 </div>
-<div class="day-pill" id="homeDayPill" hidden></div>
+<div class="day-pill" hidden="" id="homeDayPill"></div>
 </div>
-
 <div class="layout">
 <div class="stack">
 <section class="card hero-card">
@@ -6237,7 +6310,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </button>
 </div>
 </section>
-<section class="card compact-card injection-card medication-compact medication-card" id="injectionCard" hidden>
+<section class="card compact-card injection-card medication-compact medication-card" hidden="" id="injectionCard">
 <div class="section-label">MEDICATION</div>
 <div class="medication-topline">
 <div class="compact-title injection-title">No medication schedule set</div>
@@ -6406,7 +6479,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </div>
 <div class="sheet-actions">
 <button class="sheet-btn sheet-btn-secondary" data-close-sheet="photoSheet" type="button">Close</button>
-<button class="sheet-btn sheet-btn-primary" id="completePhotoCheckInBtn" type="button" disabled>Add front photo to complete</button>
+<button class="sheet-btn sheet-btn-primary" disabled="" id="completePhotoCheckInBtn" type="button">Add front photo to complete</button>
 </div>
 </div>
 </div>
@@ -6434,40 +6507,40 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
               Focus on protein at the first meal you can tolerate. Small frequent meals are acceptable on harder days. A short walk and hydration can improve tolerance, but do not force volume if nausea is elevated.
             </div>
 </div>
-</section>
+
 </div>
 <div class="stack">
 </div>
 </div>
-<nav class="bottom-nav" aria-label="Page selector">
-  <a class="nav-item active" href="home.html" aria-current="page">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5h5v5"/></svg>
-    <span>Home</span>
-  </a>
-  <a class="nav-item" href="meals.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8"/><path d="M4.5 3v5.2A2.5 2.5 0 0 0 7 10.7a2.5 2.5 0 0 0 2.5-2.5V3"/><path d="M7 11v10"/><path d="M16.5 3v18"/><path d="M16.5 3c2.2 1.2 3.5 3.2 3.5 5.8 0 2.4-1.2 4.2-3.5 5.1"/></svg>
-    <span>Meals</span>
-  </a>
-  <a class="nav-item" href="exercise.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3.5 9v6"/><path d="M20.5 9v6"/><path d="M6.5 12h11"/></svg>
-    <span>Exercise</span>
-  </a>
-  <a class="nav-item" href="progress.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7.5 15.5l3.2-3.2 2.4 2.4 4.8-6"/><path d="M17.9 8.7h-3.2"/><path d="M17.9 8.7v3.2"/></svg>
-    <span>Progress</span>
-  </a>
-  <a class="nav-item" href="support.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.6c-.2 0-.4-.07-.56-.22C6.2 15.65 3 12.75 3 8.95 3 6.05 5.2 4 7.8 4c1.55 0 3.05.72 4.2 1.96C13.15 4.72 14.65 4 16.2 4 18.8 4 21 6.05 21 8.95c0 3.8-3.2 6.7-8.44 11.43-.16.15-.36.22-.56.22Z"/></svg>
-    <span>Support</span>
-  </a>
-  <a class="nav-item" href="social.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 11a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="M15.8 10.2a2.7 2.7 0 1 0 0-5.4"/><path d="M3.8 20c.6-3.2 2.3-5 4.7-5s4.1 1.8 4.7 5"/><path d="M13.8 15.4c2.3.2 3.8 1.8 4.4 4.6"/></svg>
-    <span>Social</span>
-  </a>
-  <a class="nav-item" href="settings.html">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21.3a2.1 2.1 0 0 1-4.2 0v-.07a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-1.98.36l-.05.05a2.1 2.1 0 0 1-2.97-2.97l.05-.05A1.8 1.8 0 0 0 3.8 15a1.8 1.8 0 0 0-1.66-1.1H2.1a2.1 2.1 0 0 1 0-4.2h.07A1.8 1.8 0 0 0 3.8 8a1.8 1.8 0 0 0-.36-1.98l-.05-.05A2.1 2.1 0 1 1 6.36 3l.05.05A1.8 1.8 0 0 0 8.4 3.4 1.8 1.8 0 0 0 9.5 1.75V1.7a2.1 2.1 0 0 1 4.2 0v.07a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 1.98-.36l.05-.05A2.1 2.1 0 1 1 19.8 6l-.05.05A1.8 1.8 0 0 0 19.4 8c.24.68.86 1.1 1.58 1.1h.12a2.1 2.1 0 0 1 0 4.2h-.12A1.8 1.8 0 0 0 19.4 15Z"/></svg>
-    <span>Settings</span>
-  </a>
+<nav aria-label="Page selector" class="bottom-nav">
+<a aria-current="page" class="nav-item active" href="home.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-5h5v5"></path></svg>
+<span>Home</span>
+</a>
+<a class="nav-item" href="meals.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 3v8"></path><path d="M4.5 3v5.2A2.5 2.5 0 0 0 7 10.7a2.5 2.5 0 0 0 2.5-2.5V3"></path><path d="M7 11v10"></path><path d="M16.5 3v18"></path><path d="M16.5 3c2.2 1.2 3.5 3.2 3.5 5.8 0 2.4-1.2 4.2-3.5 5.1"></path></svg>
+<span>Meals</span>
+</a>
+<a class="nav-item" href="exercise.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M6.5 6.5v11"></path><path d="M17.5 6.5v11"></path><path d="M3.5 9v6"></path><path d="M20.5 9v6"></path><path d="M6.5 12h11"></path></svg>
+<span>Exercise</span>
+</a>
+<a class="nav-item" href="progress.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.2-3.2 2.4 2.4 4.8-6"></path><path d="M17.9 8.7h-3.2"></path><path d="M17.9 8.7v3.2"></path></svg>
+<span>Progress</span>
+</a>
+<a class="nav-item" href="support.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 20.6c-.2 0-.4-.07-.56-.22C6.2 15.65 3 12.75 3 8.95 3 6.05 5.2 4 7.8 4c1.55 0 3.05.72 4.2 1.96C13.15 4.72 14.65 4 16.2 4 18.8 4 21 6.05 21 8.95c0 3.8-3.2 6.7-8.44 11.43-.16.15-.36.22-.56.22Z"></path></svg>
+<span>Support</span>
+</a>
+<a class="nav-item" href="social.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M8.5 11a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path><path d="M15.8 10.2a2.7 2.7 0 1 0 0-5.4"></path><path d="M3.8 20c.6-3.2 2.3-5 4.7-5s4.1 1.8 4.7 5"></path><path d="M13.8 15.4c2.3.2 3.8 1.8 4.4 4.6"></path></svg>
+<span>Social</span>
+</a>
+<a class="nav-item" href="settings.html">
+<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21.3a2.1 2.1 0 0 1-4.2 0v-.07a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-1.98.36l-.05.05a2.1 2.1 0 0 1-2.97-2.97l.05-.05A1.8 1.8 0 0 0 3.8 15a1.8 1.8 0 0 0-1.66-1.1H2.1a2.1 2.1 0 0 1 0-4.2h.07A1.8 1.8 0 0 0 3.8 8a1.8 1.8 0 0 0-.36-1.98l-.05-.05A2.1 2.1 0 1 1 6.36 3l.05.05A1.8 1.8 0 0 0 8.4 3.4 1.8 1.8 0 0 0 9.5 1.75V1.7a2.1 2.1 0 0 1 4.2 0v.07a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 1.98-.36l.05-.05A2.1 2.1 0 1 1 19.8 6l-.05.05A1.8 1.8 0 0 0 19.4 8c.24.68.86 1.1 1.58 1.1h.12a2.1 2.1 0 0 1 0 4.2h-.12A1.8 1.8 0 0 0 19.4 15Z"></path></svg>
+<span>Settings</span>
+</a>
 </nav>
 </div>
 <script>
@@ -7402,7 +7475,6 @@ if(headlineEl && nm && nm.trim()){
   });
 })();
 </script>
-
 <script id="hearty-theme-sync">
 (function(){
   try {
@@ -7447,7 +7519,6 @@ if(headlineEl && nm && nm.trim()){
   }
 }
 </style>
-
 <style id="home-final-topbar-support-hydration-fix-v7">
 /* FINAL lock: use Settings topbar chrome exactly */
 .topbar{
@@ -7616,7 +7687,6 @@ html[data-theme='sunlit'] .brand-logo{filter:none !important; box-shadow:none !i
   #statusMedLayout > .status-med-side{grid-template-columns:1fr !important;}
 }
 </style>
-
 <style id="home-mobile-hydration-and-vibrancy-fix">
 /* Mobile order: hydration directly under progress */
 @media (max-width: 820px){
@@ -7674,8 +7744,6 @@ html[data-theme="sunlit"] .ring-value{
   color:#3a2816 !important;
 }
 </style>
-
-
 <style id="home-sunlit-ring-vibrancy-final">
 html[data-theme="sunlit"] .ring-block{
   background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,248,238,.96)) !important;
@@ -7727,7 +7795,6 @@ html[data-theme="sunlit"] .goal-marker{
   box-shadow:0 8px 18px rgba(213,123,23,.20) !important;
 }
 </style>
-
 <style id="home-progress-left-align-fix">
 /* Keep the current layout and colors, just pull the progress card left to line up with the card system below */
 .layout > .stack > .hero-card{
@@ -7745,8 +7812,6 @@ html[data-theme="sunlit"] .goal-marker{
   }
 }
 </style>
-
-
 <style id="home-final-authoritative-align-and-logo">
 /* Remove any late logo tinting and show only after prepaint sync */
 html[data-theme='sunlit'] .brand-logo{filter:none !important;box-shadow:none !important;mix-blend-mode:normal !important;image-rendering:auto !important;}
@@ -7815,8 +7880,6 @@ html[data-theme='sunlit'] .brand-logo{filter:none !important;box-shadow:none !im
   new MutationObserver(syncLogo).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 })();
 </script>
-
-
 <style id="home-final-two-row-layout-v10">
 /* exact requested layout:
    row 1: support | hydration
@@ -7895,8 +7958,6 @@ html[data-theme='sunlit'] .brand-logo{filter:none !important;box-shadow:none !im
   }
 }
 </style>
-
-
 <style id="home-two-column-stack-exact-fix">
 /* exact requested lower layout */
 #statusMedLayout{
@@ -7941,7 +8002,6 @@ html[data-theme='sunlit'] .brand-logo{filter:none !important;box-shadow:none !im
   }
 }
 </style>
-
 <style id="home-actual-two-column-fix-v12">
 /* Actual lower layout fix */
 #statusMedLayout{
@@ -8002,7 +8062,6 @@ html[data-theme='sunlit'] .brand-logo{filter:none !important;box-shadow:none !im
   }
 }
 </style>
-
 <style id="home-polish-pass-v13">
 /* === POLISH PASS: unified layout spacing + vibrant sunlit === */
 .home-grid{
@@ -8125,7 +8184,6 @@ html[data-theme="sunlit"] .spark{
   }
 }
 </style>
-
 <style id="home-actual-grid-v15">
 /* actual requested block move */
 #statusMedLayout.home-grid{
@@ -8168,7 +8226,6 @@ html[data-theme="sunlit"] .spark{
   #statusMedLayout.home-grid > #markerMiniRow{min-height:auto !important;}
 }
 </style>
-
 <style id="rose-progress-block-dark-fix">
 html[data-theme="rose_aurora"] .ring-block{
   background: linear-gradient(180deg, rgba(36,26,42,.96), rgba(24,18,28,.96)) !important;
@@ -8225,7 +8282,6 @@ html[data-theme="rose_aurora"] .hydration-count-chip{
 html[data-theme="rose_aurora"] .water-undo-clean{color:#d8b27a !important;}
 html[data-theme="rose_aurora"] .water-undo-clean:disabled{color:rgba(216,178,122,.38) !important; opacity:1 !important;}
 </style>
-
 <style id="rose-water-button-fix-v21-realselectors">
 html[data-theme="rose_aurora"] .hydration-add-btn{
   background:linear-gradient(180deg, rgba(58,39,49,.96), rgba(39,27,35,.98)) !important;
@@ -8259,7 +8315,6 @@ html[data-theme="rose_aurora"] .water-undo-new{
 }
 html[data-theme="rose_aurora"] .water-undo-new svg{stroke:currentColor !important;}
 </style>
-
 <style id="rose-protocol-buttons-match-water-v22">
 html[data-theme="rose_aurora"] .task-icon-btn{
   background:linear-gradient(180deg, rgba(58,39,49,.96), rgba(39,27,35,.98)) !important;
@@ -8283,8 +8338,6 @@ html[data-theme="rose_aurora"] .task-icon-btn svg{
   stroke:currentColor !important;
 }
 </style>
-
-
 <style id="rose-protocol-buttons-lighten-v23">
 html[data-theme="rose_aurora"] .task-icon-btn{
   background:linear-gradient(180deg, rgba(88,62,76,.96), rgba(66,46,58,.98)) !important;
@@ -8305,7 +8358,6 @@ html[data-theme="rose_aurora"] .task-icon-btn.done{
   box-shadow:0 12px 22px rgba(12,6,14,.22), inset 0 1px 0 rgba(255,255,255,.06) !important;
 }
 </style>
-
 <style id="rose-gold-protocol-buttons-final">
 /* ===== ROSE AURORA: GOLD PROTOCOL BUTTONS ===== */
 html[data-theme="rose_aurora"] .task-icon-btn{
@@ -8326,8 +8378,6 @@ html[data-theme="rose_aurora"] .task-icon-btn:active{
     inset 0 1px 0 rgba(255,255,255,.25) !important;
 }
 </style>
-
-
 <style id="midnight-protocol-buttons-accent-v25">
 /* ===== MIDNIGHT: ACCENT PROTOCOL BUTTONS ===== */
 html[data-theme="midnight"] .task-icon-btn{
@@ -8348,8 +8398,6 @@ html[data-theme="midnight"] .task-icon-btn:active{
     inset 0 1px 0 rgba(255,255,255,.22) !important;
 }
 </style>
-
-
 <style id="midnight-progress-water-fix-v26">
 html[data-theme="midnight"] .ring-block{
   background: linear-gradient(180deg, rgba(24,34,52,.96), rgba(15,24,38,.94)) !important;
@@ -8426,8 +8474,6 @@ html[data-theme="midnight"] .hydration-count-chip{
   box-shadow: inset 0 1px 0 rgba(255,255,255,.03), 0 10px 22px rgba(2,8,23,.22) !important;
 }
 </style>
-
-
 <style id="water-button-full-icon-fix">
 /* Make the droplet become the main button visual */
 .hydration-add-btn{
@@ -8476,7 +8522,6 @@ html[data-theme="rose_aurora"] .hydration-add-icon{
   color:#f1d7a3 !important;
 }
 </style>
-
 <style id="water-button-dark-clone-light-position-fix">
 /* Clone the light-theme water icon geometry/positioning onto dark themes.
    Do not redesign the icon, only normalize its placement. */
@@ -8523,7 +8568,6 @@ html[data-theme="rose_aurora"] .hydration-add-text{
   text-align:center !important;
 }
 </style>
-
 <style id="light-theme-protocol-button-colour-v32">
 /* Light themes only: add a little colour to Today's Protocol action buttons */
 html[data-theme="clean_blue"] .task-icon-btn{
@@ -8560,7 +8604,6 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   box-shadow: 0 10px 22px rgba(143,106,42,.10), inset 0 1px 0 rgba(255,255,255,.92) !important;
 }
 </style>
-
 <!-- PATCH: first-action / press-me treatment for Today's Protocol buttons -->
 <style id="hearty-press-me-button-patch">
   #todaysRhythmCard.first-use-mode{
@@ -8712,69 +8755,59 @@ html[data-theme="sunlit"] .task-icon-btn.done{
 })();
 </script>
 <!-- END PATCH -->
-
-
 <!-- Hearty core setup sheet: Home-owned onboarding only. Weigh-ins and photos stay in the Get Started block. -->
 <div aria-hidden="true" class="task-sheet-overlay" id="coreSetupSheet">
-  <div aria-labelledby="coreSetupTitle" aria-modal="true" class="task-sheet core-setup-sheet" role="dialog">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <div>
-        <div class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</div>
-        <div class="sheet-copy" id="coreSetupCopy">A quick setup so your Home screen starts cleanly. Weigh-ins and photos are handled in the Get Started block.</div>
-      </div>
-      <button aria-label="Close setup" class="sheet-close" data-core-setup-close type="button">×</button>
-    </div>
-
-    <div class="core-setup-progress" aria-hidden="true">
-      <span class="core-step-dot active" data-core-dot="1"></span>
-      <span class="core-step-dot" data-core-dot="2"></span>
-      <span class="core-step-dot" data-core-dot="3"></span>
-      <span class="core-step-dot" data-core-dot="4"></span>
-      <span class="core-step-dot" data-core-dot="5"></span>
-    </div>
-
-    <div class="core-setup-fields">
-      <section class="core-setup-step active" data-core-step="1">
-        <div class="core-step-kicker">Step 1 of 5</div>
-        <h2 class="core-step-title">What should we call you?</h2>
-        <p class="core-step-copy">This is the name Hearty will use on your Home screen.</p>
-        <label class="field full"><span class="label">First name</span><input class="input" id="coreSetupName" autocomplete="given-name" placeholder="First name" /></label>
-      </section>
-
-      <section class="core-setup-step" data-core-step="2">
-        <div class="core-step-kicker">Step 2 of 5</div>
-        <h2 class="core-step-title">Goal weight</h2>
-        <p class="core-step-copy">Only enter this if your doctor has given you a target weight. You can leave it blank.</p>
-        <label class="field full"><span class="label">Doctor-provided target weight</span><input class="input" id="coreSetupTargetWeight" inputmode="decimal" placeholder="Optional" /></label>
-      </section>
-
-      <section class="core-setup-step" data-core-step="3">
-        <div class="core-step-kicker">Step 3 of 5</div>
-        <h2 class="core-step-title">Medication type</h2>
-        <p class="core-step-copy">Choose your medication, or skip this if you are not using one yet.</p>
-        <label class="field full"><span class="label">Medication</span><select class="select" id="coreSetupMedication"><option value="">Choose option</option><option value="Mounjaro">Mounjaro</option><option value="Ozempic">Ozempic</option><option value="Wegovy">Wegovy</option><option value="Saxenda">Saxenda</option><option value="Other">Other</option><option value="not_using">Not using medication yet</option><option value="prefer_not">Prefer not to say</option></select></label>
-      </section>
-
-      <section class="core-setup-step" data-core-step="4">
-        <div class="core-step-kicker">Step 4 of 5</div>
-        <h2 class="core-step-title">Medication frequency</h2>
-        <p class="core-step-copy">Not everyone injects once per week, so Hearty should not assume that.</p>
-        <label class="field full"><span class="label">How often do you take it?</span><select class="select" id="coreSetupFrequency"><option value="">Choose frequency</option><option value="weekly">Once weekly</option><option value="twice_weekly">Twice weekly</option><option value="daily">Daily</option><option value="every_other_day">Every other day</option><option value="custom">Custom schedule</option></select></label>
-      </section>
-
-      <section class="core-setup-step" data-core-step="5" id="coreSetupDaysStep">
-        <div class="core-step-kicker">Step 5 of 5</div>
-        <h2 class="core-step-title" id="coreSetupDaysTitle">Injection days</h2>
-        <p class="core-step-copy" id="coreSetupDaysCopy">Choose the day or days that match your medication schedule.</p>
-        <div class="field full" id="coreSetupDaysField"><span class="label">Which day or days?</span><div class="core-day-grid"><label><input type="checkbox" value="Monday" data-core-med-day> Monday</label><label><input type="checkbox" value="Tuesday" data-core-med-day> Tuesday</label><label><input type="checkbox" value="Wednesday" data-core-med-day> Wednesday</label><label><input type="checkbox" value="Thursday" data-core-med-day> Thursday</label><label><input type="checkbox" value="Friday" data-core-med-day> Friday</label><label><input type="checkbox" value="Saturday" data-core-med-day> Saturday</label><label><input type="checkbox" value="Sunday" data-core-med-day> Sunday</label></div></div>
-      </section>
-    </div>
-
-    <div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
-  </div>
+<div aria-labelledby="coreSetupTitle" aria-modal="true" class="task-sheet core-setup-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head">
+<div>
+<div class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</div>
+<div class="sheet-copy" id="coreSetupCopy">A quick setup so your Home screen starts cleanly. Weigh-ins and photos are handled in the Get Started block.</div>
 </div>
-
+<button aria-label="Close setup" class="sheet-close" data-core-setup-close="" type="button">×</button>
+</div>
+<div aria-hidden="true" class="core-setup-progress">
+<span class="core-step-dot active" data-core-dot="1"></span>
+<span class="core-step-dot" data-core-dot="2"></span>
+<span class="core-step-dot" data-core-dot="3"></span>
+<span class="core-step-dot" data-core-dot="4"></span>
+<span class="core-step-dot" data-core-dot="5"></span>
+</div>
+<div class="core-setup-fields">
+<section class="core-setup-step active" data-core-step="1">
+<div class="core-step-kicker">Step 1 of 5</div>
+<h2 class="core-step-title">What should we call you?</h2>
+<p class="core-step-copy">This is the name Hearty will use on your Home screen.</p>
+<label class="field full"><span class="label">First name</span><input autocomplete="given-name" class="input" id="coreSetupName" placeholder="First name"/></label>
+</section>
+<section class="core-setup-step" data-core-step="2">
+<div class="core-step-kicker">Step 2 of 5</div>
+<h2 class="core-step-title">Goal weight</h2>
+<p class="core-step-copy">Only enter this if your doctor has given you a target weight. You can leave it blank.</p>
+<label class="field full"><span class="label">Doctor-provided target weight</span><input class="input" id="coreSetupTargetWeight" inputmode="decimal" placeholder="Optional"/></label>
+</section>
+<section class="core-setup-step" data-core-step="3">
+<div class="core-step-kicker">Step 3 of 5</div>
+<h2 class="core-step-title">Medication type</h2>
+<p class="core-step-copy">Choose your medication, or skip this if you are not using one yet.</p>
+<label class="field full"><span class="label">Medication</span><select class="select" id="coreSetupMedication"><option value="">Choose option</option><option value="Mounjaro">Mounjaro</option><option value="Ozempic">Ozempic</option><option value="Wegovy">Wegovy</option><option value="Saxenda">Saxenda</option><option value="Other">Other</option><option value="not_using">Not using medication yet</option><option value="prefer_not">Prefer not to say</option></select></label>
+</section>
+<section class="core-setup-step" data-core-step="4">
+<div class="core-step-kicker">Step 4 of 5</div>
+<h2 class="core-step-title">Medication frequency</h2>
+<p class="core-step-copy">Not everyone injects once per week, so Hearty should not assume that.</p>
+<label class="field full"><span class="label">How often do you take it?</span><select class="select" id="coreSetupFrequency"><option value="">Choose frequency</option><option value="weekly">Once weekly</option><option value="twice_weekly">Twice weekly</option><option value="daily">Daily</option><option value="every_other_day">Every other day</option><option value="custom">Custom schedule</option></select></label>
+</section>
+<section class="core-setup-step" data-core-step="5" id="coreSetupDaysStep">
+<div class="core-step-kicker">Step 5 of 5</div>
+<h2 class="core-step-title" id="coreSetupDaysTitle">Injection days</h2>
+<p class="core-step-copy" id="coreSetupDaysCopy">Choose the day or days that match your medication schedule.</p>
+<div class="field full" id="coreSetupDaysField"><span class="label">Which day or days?</span><div class="core-day-grid"><label><input data-core-med-day="" type="checkbox" value="Monday"/> Monday</label><label><input data-core-med-day="" type="checkbox" value="Tuesday"/> Tuesday</label><label><input data-core-med-day="" type="checkbox" value="Wednesday"/> Wednesday</label><label><input data-core-med-day="" type="checkbox" value="Thursday"/> Thursday</label><label><input data-core-med-day="" type="checkbox" value="Friday"/> Friday</label><label><input data-core-med-day="" type="checkbox" value="Saturday"/> Saturday</label><label><input data-core-med-day="" type="checkbox" value="Sunday"/> Sunday</label></div></div>
+</section>
+</div>
+<div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
+</div>
+</div>
 <style id="hearty-core-setup-wizard-patch">
 .core-setup-fields{display:grid;gap:12px;margin-top:8px;}
 #coreSetupSheet .field{display:grid;gap:8px;}
@@ -8937,7 +8970,6 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(showCoreSetupIfNeeded, 450); });
 })();
 </script>
-
 <script id="hearty-first-use-clean-final-guard">
 (function(){
   function forceCleanIfFirstUse(){
@@ -8957,7 +8989,6 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   setTimeout(forceCleanIfFirstUse, 300);
 })();
 </script>
-
 <script id="hearty-clean-default-final-watch-v2">
 (function(){
   function cleanIfAccidentalSunlit(){
@@ -9128,7 +9159,6 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   setTimeout(removeBadges, 300);
 })();
 </script>
-
 <script id="home-safe-settings-gear-wire">
 (function(){
   document.addEventListener('DOMContentLoaded', function(){
@@ -9162,8 +9192,6 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   setTimeout(run, 300);
 })();
 </script>
-
-
 <style id="home-discussed-final-overrides-v2">
 /* Stronger first-day Welcome glow */
 #todaysRhythmCard.first-use-mode{
@@ -9235,7 +9263,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   }
 }
 </style>
-
 <script id="home-discussed-final-logic-v2">
 (function(){
   function safeJson(value, fallback){
@@ -9312,9 +9339,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   setTimeout(run, 1000);
 })();
 </script>
-
-
-
 <style id="home-mobile-support-hydration-final-tune">
 /* Final mobile tune: pull Support Mode content upward and give the water amount room */
 @media (max-width:820px){
@@ -9415,9 +9439,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   }
 }
 </style>
-
-
-
 <style id="hearty-support-and-lessons-final-patch">
 /* Stronger first-use welcome glow */
 #todaysRhythmCard.first-use-mode{
@@ -9533,15 +9554,12 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   font-weight:600;
 }
 </style>
-
-
 <style id="hearty-remove-protocol-lesson-final">
   /* Keep lessons as a standalone card only. Remove duplicate lesson row from Today's Protocol. */
   #lessonTaskItem{
     display:none !important;
   }
 </style>
-
 <script id="hearty-lessons-goal-support-final-patch">
 (function(){
   const TOTAL_LESSONS = 10;
@@ -9711,9 +9729,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   setTimeout(boot, 1000);
 })();
 </script>
-
-
-
 <style id="hearty-lesson-icon-bar-restore-final">
   /* Restore the visual identity of the single standalone lesson card only. */
   #lessonCard.lesson-visible{
@@ -9801,9 +9816,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
     }
   }
 </style>
-
-
-
 <style id="hearty-recovery-final-patch-css">
 /* Recovery patch: keep previously finished Home UI while fixing the live bugs. */
 #injectionCard[hidden],#homeDayPill[hidden],#homeDayPill:empty{display:none !important;}
@@ -9923,9 +9935,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   document.addEventListener('click',()=>setTimeout(()=>{forceFirstUseGlow();updateHydration();renderMedication();},80),true);
 })();
 </script>
-
-
-
 <!-- PATCH: onboarding day limits, header polish, medication compact card, hydration 250ml/progress hard-fix -->
 <style id="hearty-home-current-pass-fixes">
   /* 1) Header/status strip polish: remove the accidental square white band and keep the pill clean. */
@@ -10207,9 +10216,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   document.addEventListener('click', function(){ setTimeout(function(){ renderHydration(); compactMedicationCard(); },60); }, true);
 })();
 </script>
-
-
-
 <!-- PATCH: final first-use glow + photo check-in hard guard -->
 <style id="hearty-home-final-override-v3">
 /* Final Home stabiliser: do not show empty medication cards; keep badges hidden for v1. */
@@ -10316,7 +10322,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
 .ring-progress.teal{stroke:var(--ring-b, #06c2a8) !important;}
 .ring-progress.violet{stroke:var(--ring-c, #b85cff) !important;}
 </style>
-
 <script id="hearty-home-final-state-stabiliser-v3">
 (function(){
   const CIRC = 339.292;
@@ -10639,8 +10644,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   window.heartyUpdateRings = updateAllRings;
 })();
 </script>
-
-
 <style id="hearty-injection-card-useful-final-css">
 #injectionCard{
   display:flex !important;
@@ -10667,7 +10670,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
 .home-injection-check.done{background:linear-gradient(180deg,#dcfce7,#f0fdf4);}
 .home-injection-box{margin-right:8px;}
 </style>
-
 <script id="hearty-pwa-install-fullscreen-fix-v3">
 (function(){
   let promptEvt = null;
@@ -10700,9 +10702,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   }, { once:true });
 })();
 </script>
-
-
-
 <style id="hearty-home-spacing-medication-lessons-final-v1">
 /* Final Home polish: tighter upper grid, aligned headers, cleaner water logger, useful medication card, readable lessons. */
 #statusMedLayout{
@@ -10852,9 +10851,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   #lessonCard .lesson-body{max-height:420px !important;}
 }
 </style>
-
-
-
 <!-- FINAL MICRO-SPACING FIX: medication card and row gaps -->
 <style id="home-final-micro-spacing-fix-v11">
   /* Pull the second row closer to Support/Hydration */
@@ -10953,7 +10949,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
     }
   }
 </style>
-
 <script id="hearty-medication-card-copy-final-v1">
 (function(){
   const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -11013,9 +11008,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   setTimeout(render,300); setTimeout(render,1000);
 })();
 </script>
-
-
-
 <style id="hearty-day1-glow-progress-strip-final-fix">
 /* Keep Welcome/Protocol green glow active while today's first-day tasks are still in progress. */
 #todaysRhythmCard.hearty-welcome-glow-locked{
@@ -11081,7 +11073,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   .goal-labels span,.goal-labels span:nth-child(2),.goal-labels span:nth-child(3){text-align:left !important;}
 }
 </style>
-
 <script id="hearty-day1-glow-progress-strip-final-fix">
 (function(){
   const TODAY = new Date().toISOString().slice(0,10);
@@ -11248,9 +11239,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   setTimeout(run, 900);
 })();
 </script>
-
-
-
 <style id="hearty-progress-strip-final-fix-v1">
 .progress-band{
   display:block !important;
@@ -11293,7 +11281,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   gap:10px !important;
 }
 </style>
-
 <script id="hearty-progress-strip-final-fix-v1">
 (function(){
   const TODAY = new Date().toISOString().slice(0,10);
@@ -11467,9 +11454,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }, true);
 })();
 </script>
-
-
-
 <style id="hearty-photo-flow-single-source-final-v2">
   /* HOME photo flow: single source of truth. Front is required; side/back optional. */
   #completePhotoCheckInBtn[disabled]{
@@ -11838,8 +11822,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   window.heartyCompletePhotosNow = completePhotoFlow;
 })();
 </script>
-
-
 <!-- PHOTO BUTTON RESCUE PATCH v3: must be last script on page -->
 <style id="hearty-photo-rescue-v3-css">
   #photoSheet.show{
@@ -12086,6 +12068,281 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   window.heartyPhotoComplete = saveComplete;
 })();
 </script>
+<script id="hearty-home-stability-authority-js">
+(function(){
+  'use strict';
+  const TODAY = new Date().toISOString().slice(0,10);
+  const CIRC = 339.292;
 
-</body>
+  function readJSON(key, fallback){
+    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
+  }
+  function writeJSON(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+  }
+  function kg(value){
+    const n = parseFloat(String(value ?? '').replace(',','.'));
+    return Number.isFinite(n) && n > 20 && n < 350 ? n : null;
+  }
+  function fmtKg(n){ return n == null ? '—' : `${Math.round(n * 10) / 10} kg`; }
+  function fmtL(ml){
+    const n = Number(ml) || 0;
+    const l = n / 1000;
+    return l.toFixed(n % 1000 === 0 ? 0 : 2).replace(/\.00$/,'').replace(/0$/,'');
+  }
+  function setText(selOrEl, text){
+    const el = typeof selOrEl === 'string' ? document.querySelector(selOrEl) : selOrEl;
+    if(el) el.textContent = text;
+  }
+  function setRing(circle, pct){
+    if(!circle) return;
+    const safe = Math.max(0, Math.min(100, Number(pct) || 0));
+    circle.style.strokeDasharray = String(CIRC);
+    circle.style.strokeDashoffset = String(CIRC - (CIRC * safe / 100));
+    const wrap = circle.closest('.ring-wrap');
+    if(wrap) wrap.dataset.progress = String(Math.round(safe));
+  }
+
+  function profileObjects(){
+    return {
+      profile: readJSON('hearty_profile', {}),
+      progress: readJSON('hearty_progress', {}),
+      settings: readJSON('hearty_settings', {}),
+      setup: readJSON('heartyCoreSetup', {}),
+      userProfile: readJSON('heartyUserProfile', {}),
+      heartyProgress: readJSON('heartyProgress', {})
+    };
+  }
+
+  function latestWeightFromLogs(){
+    const logsA = readJSON('hearty_weight_logs', []);
+    const logsB = readJSON('heartyWeightLogs', []);
+    const entries = [];
+    [logsA, logsB].forEach(logs => {
+      if(Array.isArray(logs)) logs.forEach(x => {
+        const val = kg(x && (x.value ?? x.weight ?? x.kg));
+        if(val) entries.push({date: String((x && x.date) || ''), value: val});
+      });
+    });
+    entries.sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    return entries.length ? entries[entries.length - 1].value : null;
+  }
+
+  function firstWeightFromLogs(){
+    const logsA = readJSON('hearty_weight_logs', []);
+    const logsB = readJSON('heartyWeightLogs', []);
+    const entries = [];
+    [logsA, logsB].forEach(logs => {
+      if(Array.isArray(logs)) logs.forEach(x => {
+        const val = kg(x && (x.value ?? x.weight ?? x.kg));
+        if(val) entries.push({date: String((x && x.date) || ''), value: val});
+      });
+    });
+    entries.sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    return entries.length ? entries[0].value : null;
+  }
+
+  function currentKg(){
+    const o = profileObjects();
+    const candidates = [
+      localStorage.getItem('heartyCurrentWeightKg'),
+      localStorage.getItem('heartyTodayWeightKg'),
+      latestWeightFromLogs(),
+      o.profile.currentWeightKg,
+      o.profile.weightKg,
+      o.profile.weight,
+      o.profile.currentWeight,
+      o.profile.progress && o.profile.progress.currentWeightKg,
+      o.profile.progress && o.profile.progress.currentWeight,
+      o.progress.currentWeightKg,
+      o.progress.currentWeight,
+      o.heartyProgress.currentWeight,
+      o.heartyProgress.currentWeightKg
+    ];
+    for(const v of candidates){ const n = kg(v); if(n) return n; }
+    return null;
+  }
+
+  function startKg(){
+    const o = profileObjects();
+    const candidates = [
+      localStorage.getItem('heartyStartingWeightKg'),
+      firstWeightFromLogs(),
+      o.profile.startingWeightKg,
+      o.profile.startingWeight,
+      o.profile.startWeight,
+      o.profile.progress && o.profile.progress.startingWeightKg,
+      o.profile.progress && o.profile.progress.startingWeight,
+      o.progress.startingWeightKg,
+      o.progress.startingWeight,
+      o.progress.startWeight,
+      o.heartyProgress.startWeight,
+      o.heartyProgress.startingWeight
+    ];
+    for(const v of candidates){ const n = kg(v); if(n) return n; }
+    return currentKg();
+  }
+
+  function targetKg(){
+    const o = profileObjects();
+    const candidates = [
+      localStorage.getItem('heartyTargetWeightKg'),
+      o.profile.targetWeightKg,
+      o.profile.targetWeight,
+      o.profile.goalWeightKg,
+      o.profile.progress && o.profile.progress.targetWeightKg,
+      o.profile.progress && o.profile.progress.targetWeight,
+      o.progress.targetWeightKg,
+      o.progress.targetWeight,
+      o.settings.targetWeightKg,
+      o.settings.targetWeight,
+      o.setup.targetWeightKg,
+      o.setup.targetWeight,
+      o.userProfile.targetWeight,
+      o.heartyProgress.targetWeight,
+      o.heartyProgress.targetWeightKg
+    ];
+    for(const v of candidates){ const n = kg(v); if(n) return n; }
+    return null;
+  }
+
+  function waterTargetMl(){
+    const cur = currentKg();
+    const raw = cur ? cur * 35 : 2000;
+    return Math.min(3700, Math.max(1750, Math.round(raw / 250) * 250));
+  }
+  function readWaterMl(){
+    const byDay = readJSON('hearty_water_by_day', {});
+    const item = byDay && byDay[TODAY];
+    if(item && Number.isFinite(Number(item.ml))) return Math.max(0, Number(item.ml));
+    const logs = readJSON('hearty_hydration_logs', []);
+    const todayLog = Array.isArray(logs) ? logs.find(x => x && x.date === TODAY) : null;
+    if(todayLog && Number.isFinite(Number(todayLog.ml))) return Math.max(0, Number(todayLog.ml));
+    return 0;
+  }
+  function saveWaterMl(ml){
+    const safe = Math.max(0, Math.min(waterTargetMl(), Math.round(Number(ml) || 0)));
+    const byDay = readJSON('hearty_water_by_day', {});
+    byDay[TODAY] = {ml:safe, updatedAt:new Date().toISOString()};
+    writeJSON('hearty_water_by_day', byDay);
+
+    let logs = readJSON('hearty_hydration_logs', []);
+    if(!Array.isArray(logs)) logs = [];
+    logs = logs.filter(x => !x || x.date !== TODAY);
+    logs.push({date:TODAY, ml:safe, targetMl:waterTargetMl(), source:'home'});
+    writeJSON('hearty_hydration_logs', logs);
+  }
+
+  function renderHydration(){
+    const ml = readWaterMl();
+    const target = waterTargetMl();
+    const pct = target ? Math.max(0, Math.min(100, (ml / target) * 100)) : 0;
+    const litres = fmtL(ml);
+    const targetLitres = fmtL(target);
+
+    setText('#waterValue', `${litres}L`);
+    const unit = document.querySelector('#waterValue')?.closest('.ring-center')?.querySelector('.ring-unit');
+    if(unit) unit.textContent = `of ${targetLitres} L`;
+    setText('#waterGlassCount', `${litres} L of ${targetLitres} L`);
+
+    const fill = document.getElementById('waterProgressFill');
+    if(fill) fill.style.width = `${Math.round(pct)}%`;
+    const undo = document.getElementById('waterUndo');
+    if(undo) undo.disabled = ml <= 0;
+
+    const waterRing = document.getElementById('waterValue')?.closest('.ring-block')?.querySelector('.ring-progress');
+    setRing(waterRing, pct);
+  }
+
+  function renderProgressStrip(){
+    const band = document.querySelector('.progress-band');
+    if(!band) return;
+    const main = band.querySelector('.progress-main');
+    const metas = band.querySelectorAll('.progress-meta');
+    const micro = band.querySelector('.progress-microcopy');
+    const fill = band.querySelector('.goalbar-fill');
+    const marker = band.querySelector('.goal-marker');
+    const labels = band.querySelectorAll('.goal-labels span');
+
+    const cur = currentKg();
+    const start = startKg();
+    const target = targetKg();
+
+    if(!cur){
+      setText(main, 'No weight logged yet');
+      if(metas[0]) setText(metas[0], 'Add your first weigh-in to begin tracking.');
+      if(metas[1]) setText(metas[1], 'Target weight must be provided by your doctor.');
+      setText(micro, 'Once you add your weight, this strip will show your current progress.');
+      if(fill) fill.style.width = '0%';
+      if(marker) marker.classList.remove('has-goal');
+      if(labels[0]) setText(labels[0], 'Start not set');
+      if(labels[1]) setText(labels[1], 'Current not set');
+      if(labels[2]) setText(labels[2], 'Doctor target optional');
+      return;
+    }
+
+    setText(main, `${fmtKg(cur)} current`);
+    if(target && start && Math.abs(start - target) >= 0.1){
+      const pct = Math.max(0, Math.min(100, start > target ? ((start - cur) / (start - target)) * 100 : ((cur - start) / (target - start)) * 100));
+      const remaining = Math.max(0, Math.abs(cur - target));
+      if(metas[0]) setText(metas[0], `Start ${fmtKg(start)} · Target ${fmtKg(target)}`);
+      if(metas[1]) setText(metas[1], `${Math.round(remaining * 10) / 10} kg to target`);
+      setText(micro, 'This strip shows your path from starting weight to your doctor-provided target.');
+      if(fill) fill.style.width = `${pct}%`;
+      if(marker){ marker.classList.add('has-goal'); marker.style.left = '100%'; }
+      if(labels[0]) setText(labels[0], `Start ${fmtKg(start)}`);
+      if(labels[1]) setText(labels[1], `Current ${fmtKg(cur)}`);
+      if(labels[2]) setText(labels[2], `Target ${fmtKg(target)}`);
+    }else{
+      if(metas[0]) setText(metas[0], start && start !== cur ? `Start ${fmtKg(start)}` : 'Starting point captured');
+      if(metas[1]) setText(metas[1], 'Target weight must be provided by your doctor.');
+      setText(micro, 'Current and starting weight are active. Add a doctor target to unlock the full progress path.');
+      if(fill) fill.style.width = start && start !== cur ? '35%' : '12%';
+      if(marker) marker.classList.remove('has-goal');
+      if(labels[0]) setText(labels[0], start ? `Start ${fmtKg(start)}` : 'Start not set');
+      if(labels[1]) setText(labels[1], `Current ${fmtKg(cur)}`);
+      if(labels[2]) setText(labels[2], 'Doctor target optional');
+    }
+  }
+
+  function renderAdherenceRing(){
+    const total = 4;
+    const done = document.querySelectorAll('#protocolList .protocol-item.completed, #todaysRhythmCard .protocol-item.completed').length;
+    const pct = Math.max(0, Math.min(100, Math.round((done / total) * 100)));
+    const val = document.getElementById('adherenceValue');
+    if(val) val.textContent = `${pct}%`;
+    const ring = val?.closest('.ring-block')?.querySelector('.ring-progress');
+    setRing(ring, pct);
+  }
+
+  function renderAll(){
+    renderHydration();
+    renderProgressStrip();
+    renderAdherenceRing();
+    document.documentElement.classList.add('hearty-home-rendered');
+    document.body.classList.add('home-data-ready');
+  }
+
+  function waterClick(e){
+    const btn = e.target && e.target.closest && e.target.closest('#waterGlass,#waterUndo');
+    if(!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if(btn.id === 'waterGlass') saveWaterMl(readWaterMl() + 250);
+    if(btn.id === 'waterUndo') saveWaterMl(readWaterMl() - 250);
+    renderAll();
+  }
+
+  document.addEventListener('click', waterClick, true);
+  document.addEventListener('change', function(e){
+    if(e.target && /weight|target/i.test(e.target.id || e.target.name || '')) setTimeout(renderAll, 50);
+  }, true);
+  window.addEventListener('storage', renderAll);
+  window.heartyHomeRenderStableState = renderAll;
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ renderAll(); setTimeout(renderAll,250); setTimeout(renderAll,900); });
+  else { renderAll(); setTimeout(renderAll,250); setTimeout(renderAll,900); }
+})();
+</script></body>
 </html>
