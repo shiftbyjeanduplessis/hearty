@@ -204,7 +204,7 @@
           <input id="displayNameInput" maxlength="40" placeholder="Your name" autocomplete="name" />
         </div>
         <div class="profile-actions">
-          <label class="file-pill" for="profilePhotoInput">📷 Choose profile photo<input id="profilePhotoInput" type="file" accept="image/*" /></label>
+          <label class="file-pill" for="profilePhotoInput">📷 Choose profile photo<input id="profilePhotoInput" data-upload-scope="profile" type="file" accept="image/*" /></label>
           <button class="action-btn" id="saveProfileBtn" type="button">Save Profile</button>
         </div>
 
@@ -236,7 +236,7 @@
           </div>
           <div class="composer-actions">
             <div class="composer-left">
-              <label class="file-pill" for="communityImageInput">🖼️ Add photo<input id="communityImageInput" type="file" accept="image/*" /></label>
+              <label class="file-pill" for="communityImageInput">🖼️ Add photo<input id="communityImageInput" data-upload-scope="community-post" type="file" accept="image/*" /></label>
             </div>
             <button class="action-btn" id="communityPostBtn" type="button">Post</button>
           </div>
@@ -868,8 +868,27 @@
     if (peopleSearchInput) peopleSearchInput.addEventListener('input', async function(e){ peopleSearchTerm = e.target.value || ''; await loadPeople(); });
     document.getElementById('saveProfileBtn').onclick = saveProfile;
     document.getElementById('communityPostInput').addEventListener('keydown', function(e){ if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') createPost(); });
-    document.getElementById('communityImageInput').addEventListener('change', e => previewPostImage(e.target.files && e.target.files[0]));
-    document.getElementById('profilePhotoInput').addEventListener('change', e => previewProfileImage(e.target.files && e.target.files[0]));
+    const communityImageInput = document.getElementById('communityImageInput');
+    if (communityImageInput) {
+      communityImageInput.dataset.uploadScope = 'community-post';
+      communityImageInput.addEventListener('click', e => e.stopPropagation());
+      communityImageInput.addEventListener('change', e => {
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        previewPostImage(e.target.files && e.target.files[0]);
+      }, true);
+    }
+
+    const profilePhotoInput = document.getElementById('profilePhotoInput');
+    if (profilePhotoInput) {
+      profilePhotoInput.dataset.uploadScope = 'profile';
+      profilePhotoInput.addEventListener('click', e => e.stopPropagation());
+      profilePhotoInput.addEventListener('change', e => {
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        previewProfileImage(e.target.files && e.target.files[0]);
+      }, true);
+    }
     document.getElementById('clearImageBtn').onclick = clearPostImage;
   });
 })();
