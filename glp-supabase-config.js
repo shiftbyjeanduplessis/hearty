@@ -1,23 +1,19 @@
 (function () {
   const SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
-  const SUPABASE_ANON_KEY = 'PASTE_FRESH_KEY_HERE'; // ← copy again
+  const SUPABASE_ANON_KEY = 'sb_publishable_EDhLKJmOVtX9TQW3cu_eTg_E0QEjRFf';
 
   if (!window.supabase || !window.supabase.createClient) {
     console.error('[Hearty] Supabase library not loaded.');
     return;
   }
 
-  window.supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
+  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
     }
-  );
+  });
 
   window.heartySupabase = window.supabaseClient;
 })();
