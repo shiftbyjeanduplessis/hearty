@@ -11600,5 +11600,254 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   window.heartyCompletePhotosNow = completePhotoFlow;
 })();
 </script>
+
+
+<!-- PHOTO BUTTON RESCUE PATCH v3: must be last script on page -->
+<style id="hearty-photo-rescue-v3-css">
+  #photoSheet.show{
+    opacity:1 !important;
+    pointer-events:auto !important;
+    display:flex !important;
+    z-index:99998 !important;
+  }
+  #photoSheet.show .task-sheet{
+    transform:translateY(0) !important;
+  }
+  #completePhotoCheckInBtn.photo-ready{
+    opacity:1 !important;
+    cursor:pointer !important;
+    background:linear-gradient(180deg,#16a34a,#0f8a5f) !important;
+    color:#fff !important;
+    box-shadow:0 14px 28px rgba(14,165,107,.18) !important;
+  }
+</style>
+<script id="hearty-photo-rescue-v3">
+(function(){
+  'use strict';
+
+  const TODAY = new Date().toISOString().slice(0,10);
+  const DRAFT_KEY = 'heartyPhotoCheckInDraft';
+  const PHOTO_LOG_KEY = 'heartyPhotoLog';
+  const PHOTO_SETS_KEY = 'hearty_progress_photos';
+  const COMPLETE_KEY = 'heartyPhotoCheckInComplete';
+  const KEYS = ['front','side','back'];
+
+  function $(id){ return document.getElementById(id); }
+  function parse(raw, fallback){ try{ return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
+  function inputId(key){ return key === 'front' ? 'photoFrontInput' : key === 'side' ? 'photoSideInput' : 'photoBackInput'; }
+  function previewId(key){ return key + 'PhotoPreview'; }
+  function stateId(key){ return key + 'PhotoState'; }
+
+  function ensureInput(key){
+    let input = $(inputId(key));
+    if(!input){
+      input = document.createElement('input');
+      input.id = inputId(key);
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.setAttribute('capture','environment');
+      input.hidden = true;
+      document.body.appendChild(input);
+    }
+    return input;
+  }
+
+  function blank(){ return { date:TODAY, slots:{front:null,side:null,back:null} }; }
+  function readDraft(){
+    const raw = parse(localStorage.getItem(DRAFT_KEY), null);
+    if(!raw || raw.date !== TODAY) return blank();
+    const out = blank();
+    const slots = raw.slots || raw;
+    KEYS.forEach(k => {
+      const item = slots[k];
+      out.slots[k] = item ? {
+        name:item.name || (k + '-photo.jpg'),
+        capturedAt:item.capturedAt || new Date().toISOString(),
+        image:item.image || item.previewUrl || item.dataUrl || '',
+        previewUrl:item.previewUrl || item.image || item.dataUrl || '',
+        approved:!!item.approved
+      } : null;
+    });
+    return out;
+  }
+  function writeDraft(draft){
+    draft.date = TODAY;
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }
+  function hasPhoto(draft, key){
+    const item = draft.slots[key];
+    const img = $(previewId(key));
+    return !!(item && (item.image || item.previewUrl || item.name)) || !!(img && img.src);
+  }
+  function selected(draft){ return KEYS.filter(k => hasPhoto(draft,k)); }
+
+  function showSheet(){
+    const sheet = $('photoSheet');
+    if(!sheet){ alert('Photo sheet is missing from this HOME file.'); return; }
+    updateUI();
+    sheet.classList.add('show');
+    sheet.classList.remove('open','active');
+    sheet.setAttribute('aria-hidden','false');
+    sheet.style.display = 'flex';
+    sheet.style.opacity = '1';
+    sheet.style.pointerEvents = 'auto';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideSheet(){
+    const sheet = $('photoSheet');
+    if(!sheet) return;
+    sheet.classList.remove('show','open','active');
+    sheet.setAttribute('aria-hidden','true');
+    sheet.style.opacity = '';
+    sheet.style.pointerEvents = '';
+    document.body.style.overflow = '';
+  }
+
+  function updateUI(){
+    const draft = readDraft();
+    KEYS.forEach(key => {
+      const row = document.querySelector('[data-photo-slot="' + key + '"]');
+      const img = $(previewId(key));
+      const state = $(stateId(key));
+      const item = draft.slots[key];
+      const image = item && (item.previewUrl || item.image);
+      const has = hasPhoto(draft,key);
+      if(row){
+        row.classList.toggle('has-file', has);
+        row.classList.toggle('approved', has);
+      }
+      if(img){
+        if(image){ img.src = image; img.style.display = 'block'; }
+        else { img.removeAttribute('src'); img.style.display = 'none'; }
+      }
+      if(state){
+        state.textContent = key === 'front' ? (has ? 'READY' : 'REQUIRED') : (has ? 'READY' : 'OPTIONAL');
+      }
+    });
+    const btn = $('completePhotoCheckInBtn');
+    if(btn){
+      const frontReady = hasPhoto(draft,'front');
+      const count = selected(draft).length;
+      btn.disabled = !frontReady;
+      if(frontReady) btn.removeAttribute('disabled'); else btn.setAttribute('disabled','disabled');
+      btn.classList.toggle('photo-ready', frontReady);
+      btn.textContent = frontReady ? 'Complete photo check-in (' + count + ')' : 'Add front photo to complete';
+    }
+  }
+
+  function readFile(key, file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){
+      const draft = readDraft();
+      draft.slots[key] = {
+        name:file.name || (key + '-photo.jpg'),
+        capturedAt:new Date().toISOString(),
+        image:String(reader.result || ''),
+        previewUrl:String(reader.result || ''),
+        approved:true
+      };
+      writeDraft(draft);
+      updateUI();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function markTaskDone(){
+    const task = $('photoTask');
+    if(task){
+      task.classList.add('completed');
+      const btn = task.querySelector('.task-icon-btn,.task-action-btn');
+      if(btn){
+        btn.classList.add('done');
+        const img = btn.querySelector('.icon-main-img,.icon-main,.icon-default');
+        const check = btn.querySelector('.icon-check');
+        if(img) img.style.display='none';
+        if(check) check.style.display='block';
+      }
+    }
+  }
+
+  function saveComplete(){
+    const draft = readDraft();
+    if(!hasPhoto(draft,'front')){
+      updateUI();
+      alert('Please add a front photo to complete your check-in.');
+      return;
+    }
+    const picked = selected(draft);
+    localStorage.setItem('heartyLastPhotoCheckInAt', new Date().toISOString());
+    localStorage.setItem('heartyLastPhotoCheckInCount', String(picked.length));
+    localStorage.setItem(COMPLETE_KEY, JSON.stringify({date:TODAY,done:true}));
+    localStorage.setItem(COMPLETE_KEY + '_' + TODAY, 'true');
+    localStorage.setItem('heartyPhotoCheckInComplete_' + TODAY, 'true');
+
+    const log = parse(localStorage.getItem(PHOTO_LOG_KEY), []).filter(x => x && x.date !== TODAY);
+    picked.forEach(k => {
+      const item = draft.slots[k] || {};
+      const image = item.image || item.previewUrl || '';
+      if(image) log.push({date:TODAY,type:k,image});
+    });
+    localStorage.setItem(PHOTO_LOG_KEY, JSON.stringify(log));
+
+    const sets = parse(localStorage.getItem(PHOTO_SETS_KEY), []).filter(x => x && x.date !== TODAY);
+    sets.push({date:TODAY,createdAt:new Date().toISOString(),views:picked,slots:draft.slots,tag:sets.length?'Latest set':'Start set'});
+    localStorage.setItem(PHOTO_SETS_KEY, JSON.stringify(sets));
+
+    markTaskDone();
+    hideSheet();
+    alert('Photo check-in complete.');
+  }
+
+  window.addEventListener('click', function(e){
+    const photoMain = e.target.closest && e.target.closest('[data-action="photos"]');
+    if(photoMain){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); showSheet(); return; }
+
+    const trigger = e.target.closest && e.target.closest('[data-photo-trigger]');
+    if(trigger){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      const key = trigger.getAttribute('data-photo-trigger');
+      const input = ensureInput(key);
+      input.value = '';
+      input.click();
+      return;
+    }
+
+    const retake = e.target.closest && e.target.closest('[data-photo-retake]');
+    if(retake){
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      const key = retake.getAttribute('data-photo-retake');
+      const draft = readDraft(); draft.slots[key] = null; writeDraft(draft); updateUI();
+      const input = ensureInput(key); input.value=''; input.click();
+      return;
+    }
+
+    const approve = e.target.closest && e.target.closest('[data-photo-approve]');
+    if(approve){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); updateUI(); return; }
+
+    const complete = e.target.closest && e.target.closest('#completePhotoCheckInBtn');
+    if(complete){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); saveComplete(); return; }
+
+    const close = e.target.closest && e.target.closest('[data-close-sheet="photoSheet"]');
+    if(close){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); hideSheet(); }
+  }, true);
+
+  window.addEventListener('change', function(e){
+    const map = { photoFrontInput:'front', photoSideInput:'side', photoBackInput:'back' };
+    const key = e.target && map[e.target.id];
+    if(!key) return;
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    readFile(key, e.target.files && e.target.files[0]);
+  }, true);
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateUI);
+  else updateUI();
+  window.heartyPhotoOpen = showSheet;
+  window.heartyPhotoComplete = saveComplete;
+})();
+</script>
+
 </body>
 </html>
