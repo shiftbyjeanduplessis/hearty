@@ -45,22 +45,26 @@
       const supabase = window.supabaseClient || window.heartySupabase;
       let redirecting = false;
 
-      function setMessage(text){ message.textContent = text || ''; }
-      function setBusy(isBusy){ sendBtn.disabled = isBusy; googleBtn.disabled = isBusy; }
+      function setMessage(text){ if (message) message.textContent = text || ''; }
+      function setBusy(isBusy){
+        if (sendBtn) sendBtn.disabled = !!isBusy;
+        if (googleBtn) googleBtn.disabled = !!isBusy;
+      }
 
       if (!supabase || !supabase.auth) {
         setMessage('Login connection failed. Check glp-supabase-config.js.');
-        sendBtn.disabled = true;
-        googleBtn.disabled = true;
+        setBusy(true);
         console.error('[Hearty Login] Missing Supabase client on window.');
         return;
       }
 
       async function ensureProfile(){
         try {
-          const { data } = await supabase.auth.getUser();
+          const { data, error } = await supabase.auth.getUser();
+          if (error) console.warn('[Hearty Login] getUser warning:', error);
           const user = data && data.user;
           if (!user) return;
+
           const provider = user.app_metadata?.provider || 'email';
           await supabase.from('profiles').upsert({
             user_id: user.id,
@@ -70,7 +74,9 @@
             auth_provider: provider,
             updated_at: new Date().toISOString()
           }, { onConflict: 'user_id' });
-        } catch (err) { console.warn('[Hearty Login] Profile save skipped:', err); }
+        } catch (err) {
+          console.warn('[Hearty Login] Profile save skipped:', err);
+        }
       }
 
       async function sendToHome(){
@@ -82,17 +88,49 @@
         window.location.replace('/home.html');
       }
 
+      function getHashParams(){
+        const hash = window.location.hash || '';
+        if (!hash || hash.length < 2) return new URLSearchParams();
+        return new URLSearchParams(hash.slice(1));
+      }
+
       async function handleRedirectSession(){
         try {
+          setMessage('Checking sign in...');
+
+          // Google OAuth / PKCE callback: /login.html?code=...
           if (window.location.search.includes('code=')) {
-            await supabase.auth.exchangeCodeForSession(window.location.href);
+            const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+            if (error) console.warn('[Hearty Login] Code exchange failed:', error);
           }
-          for (let i = 0; i < 12; i++) {
+
+          // Email magic-link implicit callback: /login.html#access_token=...&refresh_token=...
+          const hashParams = getHashParams();
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            if (error) console.warn('[Hearty Login] Hash session set failed:', error);
+            // Remove tokens from the visible URL after storing the session.
+            history.replaceState(null, document.title, window.location.pathname);
+          }
+
+          for (let i = 0; i < 20; i++) {
             const { data } = await supabase.auth.getSession();
             if (data && data.session) return sendToHome();
-            await new Promise(r => setTimeout(r, 250));
+            await new Promise(r => setTimeout(r, 200));
           }
-        } catch (err) { console.warn('[Hearty Login] Redirect/session check failed:', err); }
+
+          setMessage('');
+          setBusy(false);
+        } catch (err) {
+          console.warn('[Hearty Login] Redirect/session check failed:', err);
+          setMessage('Could not finish sign in. Please try again.');
+          setBusy(false);
+        }
       }
 
       sendBtn.addEventListener('click', async function(){
@@ -110,7 +148,9 @@
         } catch (err) {
           console.error('[Hearty Login] Email login failed:', err);
           setMessage(err.message || 'Could not send login link.');
-        } finally { setBusy(false); }
+        } finally {
+          setBusy(false);
+        }
       });
 
       googleBtn.addEventListener('click', async function(){
