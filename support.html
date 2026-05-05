@@ -1,330 +1,203 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="clean_blue">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Hearty — Support</title>
-<script src="/js/hearty-data-layer.v1.js"></script>
-<link rel="stylesheet" href="/css/hearty-theme.css">
-<script src="/js/hearty-theme.js"></script>
-<style>
-:root{
-  --bg-1:#eef4fb;--bg-2:#f8fbff;--ink:#102033;--muted:#6d7b8c;--line:rgba(143,163,184,.24);--card:rgba(255,255,255,.92);--shadow:0 18px 44px rgba(14,31,53,.10);--shadow-soft:0 8px 22px rgba(14,31,53,.06);--blue:#2f6df6;--blue-soft:#eaf1ff;--amber:#f59e0b;--amber-soft:#fff7e8;--rose:#ef5da8;--success:#16a34a;--success-soft:#e9fbf0;--radius-xl:28px;--radius-lg:22px;
-}
-*{box-sizing:border-box} html,body{margin:0;padding:0}
-body{min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(1200px 500px at 0% -10%, rgba(47,109,246,.10), transparent 50%),radial-gradient(1000px 450px at 100% 0%, rgba(245,158,11,.10), transparent 45%),linear-gradient(180deg,var(--bg-2),var(--bg-1));overflow-x:hidden}
-button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding:0 18px;min-height:88px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.62));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:22px;box-shadow:var(--shadow-soft)}.brand{display:flex;align-items:center;gap:8px;min-width:0;padding-left:8px}.brand-logo{display:block;height:48px;width:auto;object-fit:contain;object-position:left center;max-width:min(72vw,300px);flex:0 0 auto}.icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.9);color:#5d6c7d;width:44px;height:44px;border-radius:16px;display:grid;place-items:center;box-shadow:var(--shadow-soft);cursor:pointer;margin-right:2px;padding:0;flex:0 0 auto}.icon-btn svg,.nav-item svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0 0 18px;padding:8px 4px 2px}.page-greeting{margin:0;font-size:clamp(2.2rem,4vw,3rem);line-height:1.08;letter-spacing:-.04em;font-weight:560;color:#162334}.page-header-subcopy{margin:8px 0 0;color:#6f7d8e;font-size:1rem;line-height:1.5;font-weight:500;max-width:760px}.status-pill{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid var(--line);box-shadow:var(--shadow-soft);font-size:.92rem;color:#58677a;font-weight:800;white-space:nowrap}.pill-dot{width:8px;height:8px;border-radius:50%;background:#94a3b8}.status-pill.on .pill-dot{background:var(--amber);box-shadow:0 0 0 4px rgba(245,158,11,.14)}.main-stack{display:grid;gap:18px}.card{background:var(--card);border:1px solid rgba(150,166,186,.18);border-radius:var(--radius-xl);box-shadow:var(--shadow);padding:22px;backdrop-filter:blur(10px)}.support-hero{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.94))}.support-hero.is-support-on{border-color:rgba(245,158,11,.24);background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96))}.section-kicker{font-size:.78rem;letter-spacing:.18em;color:#7d8998;font-weight:800;text-transform:uppercase;margin-bottom:14px}.support-title{margin:0;font-size:1.38rem;font-weight:560;letter-spacing:-.04em;color:#172435}.support-copy{margin:10px 0 0;color:#6c7888;line-height:1.58;font-weight:500}.reason-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.reason-btn{min-height:92px;border-radius:22px;border:1px solid rgba(154,173,197,.18);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.94));box-shadow:var(--shadow-soft);padding:14px;text-align:left;cursor:pointer;color:#1a2838;transition:.18s ease}.reason-btn:hover{transform:translateY(-1px)}.reason-btn.active{border-color:rgba(245,158,11,.32);background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96));box-shadow:0 18px 34px rgba(245,158,11,.12)}.reason-btn strong{display:block;font-size:1rem;letter-spacing:-.02em}.reason-btn span{display:block;margin-top:6px;color:#667486;font-size:.88rem;line-height:1.35;font-weight:600}.off-row{display:flex;justify-content:center;margin-top:18px}.off-btn{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(143,163,184,.22);background:rgba(255,255,255,.98);color:#405166;font-size:.86rem;font-weight:800;box-shadow:var(--shadow-soft);cursor:pointer}.off-btn.active{background:rgba(220,252,231,.95);color:#15803d;border-color:rgba(22,163,74,.18)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.advice-list{display:grid;gap:10px;margin-top:14px}.advice-item{padding:14px;border-radius:18px;border:1px solid rgba(154,173,197,.16);background:rgba(255,255,255,.88);box-shadow:var(--shadow-soft)}.advice-item b{display:block;font-size:.92rem;letter-spacing:-.02em;margin-bottom:6px}.advice-item span{display:block;color:#667486;font-size:.9rem;line-height:1.5}.knowledge-card,.tool-item{padding:16px;border-radius:20px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.94));box-shadow:var(--shadow-soft)}.knowledge-topic{display:inline-flex;padding:8px 12px;border-radius:999px;background:#eef4ff;color:#2f6df6;font-size:.78rem;font-weight:800;margin-bottom:12px}.knowledge-card h3{margin:0 0 8px;font-size:1.06rem;letter-spacing:-.03em}.knowledge-card p,.tool-item p{margin:0;color:#667486;line-height:1.55;font-size:.9rem}.tools-shell{margin-top:12px}.tools-shell summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:1rem;font-weight:800;letter-spacing:-.02em;color:#1a2838}.tools-shell summary::-webkit-details-marker{display:none}.tools-list{display:grid;gap:12px;margin-top:14px}.tool-name{font-size:.96rem;font-weight:800;letter-spacing:-.02em;color:#1b293a;margin-bottom:5px}
-.trend-card{padding:22px}
-.trend-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.trend-head h3{margin:0;font-size:1.12rem;letter-spacing:-.02em;color:#172435}
-.trend-head p{margin:6px 0 0;color:var(--muted);font-size:.92rem;line-height:1.45}
-.range-tabs{display:flex;gap:8px;flex-wrap:wrap}
-.range-tab{min-height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#536478;font-size:.82rem;font-weight:720;box-shadow:var(--shadow-soft);cursor:pointer}
-.range-tab.active{background:linear-gradient(180deg,#161d2a,#202b3d);color:#fff;border:none;box-shadow:none}
-.graph-wrap{padding:12px 12px 8px;border-radius:20px;background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid rgba(154,173,197,.16);box-shadow:var(--shadow-soft);margin-bottom:14px}
-.graph-svg{width:100%;height:auto;display:block}
-.graph-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;color:#6b7b8f;font-size:.8rem;font-weight:700}
-.legend-item{display:flex;align-items:center;gap:8px}
-.legend-swatch{width:12px;height:12px;border-radius:999px;display:inline-block}
-.doctor-note{margin-top:12px;color:#6f7d8e;font-size:.86rem;font-weight:600}
-.trend-empty-state{display:none;min-height:220px;border-radius:18px;border:1px dashed rgba(154,173,197,.28);background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(248,250,255,.72));align-items:center;justify-content:center;text-align:center;padding:28px 20px}
-.trend-empty-inner{max-width:360px;margin:0 auto}.trend-empty-icon{width:54px;height:54px;border-radius:18px;margin:0 auto 12px;display:grid;place-items:center;background:rgba(255,255,255,.9);border:1px solid var(--line);color:#2f6df6;box-shadow:var(--shadow-soft)}.trend-empty-icon svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}.trend-empty-title{font-size:1.02rem;font-weight:800;letter-spacing:-.02em;color:var(--ink)}.trend-empty-copy{margin-top:6px;font-size:.92rem;line-height:1.5;color:var(--muted);font-weight:600}.graph-wrap.no-data .trend-empty-state{display:flex}.graph-wrap.no-data .graph-svg,.graph-wrap.no-data .graph-legend,.graph-wrap.no-data .doctor-note{display:none!important}
-.history-list{display:grid;gap:10px}.history-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 16px;border-radius:18px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.94));box-shadow:var(--shadow-soft)}.history-row strong{display:block;font-size:.95rem}.history-row span{display:block;margin-top:4px;color:#667486;font-size:.86rem}.history-empty{padding:28px 20px;text-align:center;color:#667486;border:1px dashed rgba(154,173,197,.28);border-radius:18px;background:rgba(255,255,255,.72)}.bottom-nav{margin-top:18px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;background:rgba(255,255,255,.74);border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;bottom:12px;z-index:40}.bottom-nav .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;color:#627286;text-align:center;font-size:.78rem;font-weight:600;appearance:none;border:none;background:transparent;cursor:pointer;font:inherit;text-decoration:none;box-shadow:none;outline:none}.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:#1f4ec0;background:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 18px rgba(47,109,246,.10)}.bottom-nav .nav-item svg{width:22px;height:22px}@media(max-width:760px){.shell{padding:14px 14px 24px}.topbar{min-height:78px;padding:0 14px;border-radius:20px}.brand-logo{height:40px}.page-header{margin:0 0 16px;padding:2px 2px 0;gap:12px;flex-direction:column;align-items:flex-start}.page-header-subcopy{font-size:.95rem}.card{padding:18px;border-radius:22px}.reason-grid,.two-col{grid-template-columns:1fr}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.bottom-nav .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.bottom-nav .nav-item svg{width:18px;height:18px}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hearty Login</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0057ff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Hearty">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/glp-supabase-config.js"></script>
+  <style>
+    :root{--login-ink:#102033;--login-muted:#5d6f7e;--login-line:rgba(180,200,220,.5);--login-card:rgba(255,255,255,.9);--login-blue:#1167d8;--login-blue-deep:#0756c8;--login-shadow:0 24px 70px rgba(50,80,110,.18)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.10),transparent 55%),radial-gradient(900px 460px at 100% 100%,rgba(20,184,166,.09),transparent 55%),linear-gradient(180deg,#f7fbff,#eef5fb);display:flex;align-items:center;justify-content:center;padding:24px;color:var(--login-ink)}
+    .auth-card{width:100%;max-width:430px;background:var(--login-card);border:1px solid var(--login-line);border-radius:30px;box-shadow:var(--login-shadow);padding:34px 26px 30px;text-align:center;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+    .auth-logo{height:64px;width:auto;max-width:300px;object-fit:contain;display:block;margin:0 auto 10px}.auth-tagline{font-size:.98rem;font-weight:650;color:var(--login-muted)}
+    .auth-title{margin:14px 0 8px;font-size:1.9rem;line-height:1.05;font-weight:800;letter-spacing:-.04em}.subtitle{color:var(--login-muted);font-size:15px;margin-bottom:22px;line-height:1.5}
+    input{width:100%;border-radius:16px;border:1px solid #d7e2ec;padding:15px 16px;font-size:16px;margin-bottom:14px;outline:none;background:rgba(255,255,255,.96);color:var(--login-ink)}
+    input:focus{border-color:rgba(17,103,216,.45);box-shadow:0 0 0 4px rgba(17,103,216,.10)}
+    button{width:100%;border:0;border-radius:16px;padding:15px 16px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;transition:.18s ease}
+    button:active{transform:scale(.985)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}.primary{background:linear-gradient(180deg,var(--login-blue),var(--login-blue-deep));color:white;box-shadow:0 12px 24px rgba(17,103,216,.25)}.ghost{background:white;color:#123;border:1px solid #d7e2ec}.message{margin-top:18px;font-size:14px;color:var(--login-muted);min-height:22px;line-height:1.4}
+    @media(max-width:560px){body{padding:18px}.auth-card{padding:30px 20px 26px;border-radius:28px}.auth-logo{height:56px}.auth-title{font-size:1.75rem}}
+  </style>
 </head>
-<body data-page="support">
-  <div class="shell">
-    <header class="topbar">
-      <div class="brand"><img data-default-logo="/hearty-logo.png" data-rose-aurora-logo="/hearty-logo-gold.png" class="brand-logo" alt="Hearty" src="/hearty-logo.png"></div>
-      <button class="icon-btn" type="button" aria-label="Settings" onclick="location.href='./Settings.html'">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg>
-      </button>
-    </header>
+<body>
+  <main class="auth-card">
+    <img src="/hearty-logo.png" alt="Hearty" class="auth-logo" />
+    <div class="auth-tagline">Your GLP-1 Companion</div>
+    <h1 class="auth-title">Welcome back</h1>
+    <div class="subtitle">Sign in to continue your journey with Hearty.</div>
+    <input id="email" type="email" placeholder="Email address" autocomplete="email" />
+    <button class="primary" id="sendBtn" type="button">Continue with email</button>
+    <button class="ghost" id="googleBtn" type="button">Continue with Google</button>
+    <div class="message" id="message"></div>
+  </main>
 
-    <main>
-      <section class="page-header">
-        <div>
-          <h1 class="page-greeting">Support</h1>
-          <p class="page-header-subcopy">Tell Hearty what kind of support you need today. Your choice stays local and helps meals and exercise soften around you.</p>
-        </div>
-        <div class="status-pill" id="statusPill"><span class="pill-dot"></span><span id="statusText">Support Off</span></div>
-      </section>
+  <script>
+    (function(){
+      const emailInput = document.getElementById('email');
+      const sendBtn = document.getElementById('sendBtn');
+      const googleBtn = document.getElementById('googleBtn');
+      const message = document.getElementById('message');
+      const supabase = window.supabaseClient || window.heartySupabase;
+      let redirecting = false;
+      let userIsActing = false;
 
-      <section class="main-stack">
-        <section class="card support-hero" id="supportHero">
-          <div class="section-kicker">Today’s support mode</div>
-          <h2 class="support-title" id="supportTitle">What do you need support with?</h2>
-          <p class="support-copy" id="supportCopy">Pick one reason. Hearty will treat this as the active support reason until you switch it off or choose another reason.</p>
+      function setMessage(text){ if (message) message.textContent = text || ''; }
+      function setBusy(isBusy){ sendBtn.disabled = isBusy; googleBtn.disabled = isBusy; }
 
-          <div class="reason-grid" id="reasonGrid">
-            <button class="reason-btn" data-reason="nausea"><strong>Nausea</strong><span>Softer meals, simpler foods, less pressure.</span></button>
-            <button class="reason-btn" data-reason="bloating"><strong>Bloating</strong><span>Gentler meal suggestions and reduced intensity.</span></button>
-            <button class="reason-btn" data-reason="fatigue"><strong>Fatigue</strong><span>Lower workout demand and easier daily rhythm.</span></button>
-            <button class="reason-btn" data-reason="low_appetite"><strong>Low appetite</strong><span>Protein-first, smaller portions, snack-style support.</span></button>
-            <button class="reason-btn" data-reason="constipation"><strong>Constipation</strong><span>Hydration, fibre-aware nudges, and gentle movement.</span></button>
-          </div>
-
-          <div class="off-row"><button class="off-btn" id="supportOffBtn" type="button">Support Off</button></div>
-        </section>
-
-        <section class="two-col">
-          <section class="card">
-            <div class="section-kicker">Plan adjustment</div>
-            <h2 class="support-title">What changes today</h2>
-            <p class="support-copy">Support Mode does not punish or reset progress. It helps the rest of the app adapt to the day you are actually having.</p>
-            <div class="advice-list" id="adviceList"></div>
-          </section>
-
-          <section class="card">
-            <div class="section-kicker">Knowledge and tools</div>
-            <div class="knowledge-card" id="knowledgeCard"></div>
-            <details class="tools-shell">
-              <summary><span>Helpful tools</span><span>＋</span></summary>
-              <div class="tools-list" id="toolsList"></div>
-            </details>
-          </section>
-        </section>
-
-        <section class="card trend-card">
-          <div class="trend-head">
-            <div>
-              <h3>Side effect trend</h3>
-              <p>Something you can actually show your doctor. Stored locally on this device.</p>
-            </div>
-            <div class="range-tabs">
-              <button class="range-tab active" type="button" data-range="1m">1 month</button>
-              <button class="range-tab" type="button" data-range="3m">3 months</button>
-              <button class="range-tab" type="button" data-range="6m">6 months</button>
-            </div>
-          </div>
-          <div class="graph-wrap no-data" id="trendGraphWrap">
-            <div class="trend-empty-state" id="trendEmptyState" role="status" aria-live="polite"><div class="trend-empty-inner"><div class="trend-empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15h2"/><path d="M11 12h2"/><path d="M15 9h2"/></svg></div><div class="trend-empty-title">No symptom data yet</div><div class="trend-empty-copy">Turn Support Mode on when you need it to see side-effect trends over time.</div></div></div>
-            <svg class="graph-svg" id="trendSvg" viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Side effect trend graph"></svg>
-            <div class="graph-legend">
-              <span class="legend-item"><span class="legend-swatch" style="background:#f59e0b"></span>Support days</span>
-              <span class="legend-item"><span class="legend-swatch" style="background:#2f6df6"></span>Most recent reason</span>
-            </div>
-            <div class="doctor-note">This graph is a local guide only. Medication decisions should stay with your clinician.</div>
-          </div>
-          <div class="trend-head" style="margin-top:16px">
-            <div><h3>Recent support history</h3><p>The latest support changes are listed below.</p></div>
-          </div>
-          <div class="history-list" id="historyList"></div>
-        </section>
-      </section>
-    </main>
-
-    <nav class="bottom-nav" aria-label="Page selector"></nav>
-  </div>
-
-<script>
-(function(){
-  const STATE_KEY = 'heartySupportState';
-  const HISTORY_KEY = 'heartySupportHistory';
-  const DAY_KEY = 'heartySupportLastSeenDate';
-
-  const reasons = {
-    nausea: {
-      label: 'Nausea',
-      title: 'Nausea support is on',
-      copy: 'Hearty will favour simpler, smaller meals and reduce training pressure today.',
-      advice: [
-        ['Meals', 'Small, plain meals are preferred. Protein still matters, but the app should not push large portions.'],
-        ['Exercise', 'Use a lighter support session. Keep movement gentle and stop if symptoms worsen.'],
-        ['Hydration', 'Small sips count. Do not force large volumes at once.']
-      ],
-      knowledge: ['Nausea days are not failed days.', 'The goal is to keep the routine alive while lowering friction. A small protein-focused meal is still a win.'],
-      tools: [['Ginger tea', 'May help settle nausea for some people.'], ['Plain crackers or toast', 'Useful when richer foods feel difficult.'], ['Smaller portions', 'Try half portions more often rather than one large meal.']]
-    },
-    bloating: {
-      label: 'Bloating', title: 'Bloating support is on', copy: 'Hearty will keep meals simpler and reduce pressure while your body settles.',
-      advice: [['Meals','Keep meals uncomplicated and avoid stacking too many heavy ingredients.'],['Exercise','Gentle walking is often a better fit than hard training.'],['Rhythm','Stay consistent without trying to “make up” for the day.']],
-      knowledge: ['Bloating can make normal portions feel harder.', 'Support Mode lowers complexity so the plan remains doable.'],
-      tools: [['Warm fluids','Can feel easier than cold drinks.'],['Gentle walk','A short easy walk may help comfort.'],['Simple meals','Protein plus one gentle vegetable can be enough.']]
-    },
-    fatigue: {
-      label: 'Fatigue', title: 'Fatigue support is on', copy: 'Hearty will lower exercise intensity and keep the daily plan manageable.',
-      advice: [['Exercise','Default to a reduced support session. This counts as showing up, not a regression.'],['Meals','Aim for protein and hydration first.'],['Recovery','Prioritise sleep and a calmer evening routine.']],
-      knowledge: ['Fatigue days need a smaller target.', 'The win is preserving consistency without forcing performance.'],
-      tools: [['Short walk','Ten minutes is enough if that is the honest capacity today.'],['Earlier night','Recovery is part of the plan.'],['Simple protein','Yoghurt, eggs, tuna, chicken, or cottage cheese can keep it easy.']]
-    },
-    low_appetite: {
-      label: 'Low appetite', title: 'Low appetite support is on', copy: 'Hearty will favour smaller protein-first options rather than large meals.',
-      advice: [['Meals','Protein-first snack-style meals are okay today.'],['Hydration','Keep fluids steady.'],['Progress','The aim is not perfect eating — it is preventing a protein crash.']],
-      knowledge: ['Low appetite is common for GLP-1 users.', 'Smaller protein anchors can protect muscle while keeping the day realistic.'],
-      tools: [['Low-fat yoghurt','A simple protein anchor.'],['Cottage cheese','Easy snack-style protein.'],['Small tuna portion','Useful when a full meal is too much.']]
-    },
-    constipation: {
-      label: 'Constipation', title: 'Constipation support is on', copy: 'Hearty will nudge hydration, fibre-aware choices, and gentle movement.',
-      advice: [['Meals','Fibre-aware choices help, but do not suddenly overcorrect.'],['Hydration','Steady water intake matters.'],['Movement','Gentle walking can support routine and digestion.']],
-      knowledge: ['Constipation support should be steady, not extreme.', 'The app should encourage water, fibre-aware foods, and movement without turning it into a medical protocol.'],
-      tools: [['Water rhythm','Small regular glasses across the day.'],['Fruit choice','Prunes, kiwi, or berries may help some people.'],['Easy walk','Gentle movement can support digestion.']]
-    }
-  };
-
-  function todayKey(){ return new Date().toISOString().slice(0,10); }
-  function readJSON(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } }
-  function writeJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-  function getState(){ return readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }); }
-  function setState(state){ writeJSON(STATE_KEY, state); window.dispatchEvent(new CustomEvent('hearty:support-change', { detail: state })); }
-  function getHistory(){ return readJSON(HISTORY_KEY, []); }
-  function addHistory(reason, action){
-    const list = getHistory();
-    list.unshift({ reason, action, at: Date.now(), day: todayKey() });
-    writeJSON(HISTORY_KEY, list.slice(0,60));
-  }
-  function autoResetDaily(){
-    const last = localStorage.getItem(DAY_KEY);
-    const today = todayKey();
-    if (last && last !== today) setState({ active:false, reason:null, updatedAt:Date.now() });
-    localStorage.setItem(DAY_KEY, today);
-  }
-  function activate(reason){ setState({ active:true, reason, updatedAt:Date.now() }); addHistory(reason, 'on'); render(); }
-  function deactivate(){ const current=getState(); if(current.active) addHistory(current.reason, 'off'); setState({ active:false, reason:null, updatedAt:Date.now() }); render(); }
-  function fmtTime(ts){ try { return new Date(ts).toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); } catch { return ''; } }
-
-  function renderAdvice(state){
-    const wrap = document.getElementById('adviceList');
-    const data = state.active && reasons[state.reason] ? reasons[state.reason].advice : [
-      ['Meals','Normal meal guidance applies. Support Mode is ready when you need it.'],
-      ['Exercise','Normal exercise progression applies unless support is turned on.'],
-      ['Privacy','Support history stays local on this device.']
-    ];
-    wrap.innerHTML = data.map(item => `<div class="advice-item"><b>${item[0]}</b><span>${item[1]}</span></div>`).join('');
-  }
-
-  function renderKnowledge(state){
-    const wrap = document.getElementById('knowledgeCard');
-    const tools = document.getElementById('toolsList');
-    const data = state.active && reasons[state.reason] ? reasons[state.reason] : null;
-    wrap.innerHTML = data ? `<span class="knowledge-topic">${data.label}</span><h3>${data.knowledge[0]}</h3><p>${data.knowledge[1]}</p>` : `<span class="knowledge-topic">Daily support</span><h3>Use Support Mode before the day falls apart.</h3><p>Pick the closest reason and let the app reduce pressure. Turning support on is a smart adjustment, not a failure.</p>`;
-    const toolRows = data ? data.tools : [['Support Mode','Use it early when symptoms or low capacity show up.'],['Off button','Turn support off when you are ready to return to the normal plan.'],['Doctor guidance','Target weight and medication decisions should stay with the clinician.']];
-    tools.innerHTML = toolRows.map(t => `<div class="tool-item"><div class="tool-name">${t[0]}</div><p>${t[1]}</p></div>`).join('');
-  }
-
-  function activeRangeDays(){
-    const active = document.querySelector('.range-tab.active');
-    const range = active ? active.dataset.range : '1m';
-    if(range === '6m') return 180;
-    if(range === '3m') return 90;
-    return 30;
-  }
-
-  function renderTrend(){
-    const wrap = document.getElementById('trendGraphWrap');
-    const svg = document.getElementById('trendSvg');
-    if(!wrap || !svg) return;
-    const history = getHistory().filter(h => h.action === 'on');
-    const rangeDays = activeRangeDays();
-    const now = new Date();
-    const start = new Date(now);
-    start.setDate(now.getDate() - (rangeDays - 1));
-    const filtered = history.filter(h => {
-      const d = new Date(h.at || h.day);
-      return !isNaN(d) && d >= start && d <= now;
-    });
-    wrap.classList.toggle('no-data', filtered.length === 0);
-    if(!filtered.length){ svg.innerHTML = ''; return; }
-
-    const bucketCount = rangeDays <= 30 ? 10 : rangeDays <= 90 ? 12 : 18;
-    const bucketSize = Math.ceil(rangeDays / bucketCount);
-    const buckets = Array.from({length: bucketCount}, (_, i) => {
-      const bStart = new Date(start);
-      bStart.setDate(start.getDate() + i * bucketSize);
-      const bEnd = new Date(bStart);
-      bEnd.setDate(bStart.getDate() + bucketSize - 1);
-      return { start: bStart, end: bEnd, count: 0, reasons: {} };
-    });
-    filtered.forEach(h => {
-      const d = new Date(h.at || h.day);
-      const idx = Math.min(bucketCount - 1, Math.max(0, Math.floor((d - start) / (bucketSize * 86400000))));
-      buckets[idx].count += 1;
-      buckets[idx].reasons[h.reason || 'support'] = (buckets[idx].reasons[h.reason || 'support'] || 0) + 1;
-    });
-
-    const reasonColors = {
-      nausea:'#ef5da8', bloating:'#22b8a7', fatigue:'#8b5cf6', low_appetite:'#f59e0b', constipation:'#2f6df6', support:'#64748b'
-    };
-    const chartX=52, chartY=24, chartW=536, chartH=156, baseY=chartY+chartH;
-    const max = Math.max(1, ...buckets.map(b => b.count));
-    const gap = bucketCount > 12 ? 8 : 12;
-    const barW = (chartW - gap * (bucketCount - 1)) / bucketCount;
-    let html = '';
-    html += `<defs><linearGradient id="barAmber" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#f5b13a"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs>`;
-    [0, .25, .5, .75, 1].forEach(fr => {
-      const y = baseY - chartH * fr;
-      html += `<line x1="${chartX}" y1="${y}" x2="${chartX+chartW}" y2="${y}" stroke="rgba(143,163,184,${fr===0?'.34':'.16'})" stroke-width="${fr===0?2:1}"/>`;
-    });
-    buckets.forEach((b,i)=>{
-      const x = chartX + i*(barW+gap);
-      const h = b.count ? Math.max(12, (b.count/max)*chartH) : 3;
-      const y = baseY - h;
-      const topReason = Object.entries(b.reasons).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'support';
-      const color = reasonColors[topReason] || '#f59e0b';
-      html += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="10" fill="url(#barAmber)" opacity="${b.count ? .92 : .24}"/>`;
-      if(b.count){
-        html += `<circle cx="${x+barW/2}" cy="${y-9}" r="5" fill="${color}"/>`;
-        html += `<text x="${x+barW/2}" y="${y-18}" text-anchor="middle" font-size="12" font-weight="800" fill="#9a6708">${b.count}</text>`;
+      function hashParams(){
+        const hash = (window.location.hash || '').replace(/^#/, '');
+        return new URLSearchParams(hash);
       }
-      const labelDate = b.start;
-      const showLabel = rangeDays <= 30 ? i % 2 === 0 : i % 3 === 0;
-      if(showLabel){ html += `<text x="${x+barW/2}" y="${baseY+28}" text-anchor="middle" font-size="12" font-weight="700" fill="#6b7b8f">${labelDate.toLocaleDateString([], {month:'short', day:'numeric'})}</text>`; }
-    });
-    html += `<text x="${chartX}" y="${baseY+56}" font-size="12" font-weight="700" fill="#8a97a7">${filtered.length} support activation${filtered.length===1?'':'s'} in selected range</text>`;
-    svg.innerHTML = html;
-  }
 
-  function renderHistory(){
-    const wrap = document.getElementById('historyList');
-    const list = getHistory().slice(0,8);
-    if(!list.length){ wrap.innerHTML = '<div class="history-empty">No support history yet. When you turn Support Mode on or off, it will appear here.</div>'; return; }
-    wrap.innerHTML = list.map(h => {
-      const label = h.reason && reasons[h.reason] ? reasons[h.reason].label : 'Support';
-      const action = h.action === 'off' ? 'turned off' : 'turned on';
-      return `<div class="history-row"><div><strong>${label} ${action}</strong><span>${fmtTime(h.at)}</span></div><span>${h.action === 'off' ? 'Off' : 'On'}</span></div>`;
-    }).join('');
-  }
+      async function ensureProfile(){
+        try {
+          const { data } = await supabase.auth.getUser();
+          const user = data && data.user;
+          if (!user) return;
+          const provider = user.app_metadata?.provider || 'email';
+          await supabase.from('profiles').upsert({
+            user_id: user.id,
+            account_email: user.email,
+            user_name: user.user_metadata?.full_name || user.email || null,
+            first_name: user.user_metadata?.full_name?.split(' ')?.[0] || null,
+            auth_provider: provider,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'user_id' });
+        } catch (err) {
+          console.warn('[Hearty Login] Profile save skipped:', err);
+        }
+      }
 
-  function render(){
-    const state = getState();
-    const data = state.active && reasons[state.reason] ? reasons[state.reason] : null;
-    document.getElementById('statusPill').classList.toggle('on', !!data);
-    document.getElementById('statusText').textContent = data ? `${data.label} Support On` : 'Support Off';
-    document.getElementById('supportHero').classList.toggle('is-support-on', !!data);
-    document.getElementById('supportTitle').textContent = data ? data.title : 'What do you need support with?';
-    document.getElementById('supportCopy').textContent = data ? data.copy : 'Pick one reason. Hearty will treat this as the active support reason until you switch it off or choose another reason.';
-    document.querySelectorAll('.reason-btn').forEach(btn => btn.classList.toggle('active', data && btn.dataset.reason === state.reason));
-    document.getElementById('supportOffBtn').classList.toggle('active', !data);
-    renderAdvice(state); renderKnowledge(state); renderTrend(); renderHistory();
-  }
+      async function sendToHome(){
+        if (redirecting) return;
+        redirecting = true;
+        setBusy(true);
+        setMessage('Signing you in...');
+        await ensureProfile();
+        window.location.replace('/home.html');
+      }
 
-  function buildNav(){
-    const pages=[
-      ['home.html','Home','<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'],
-      ['meals.html','Meals','<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8h-4.5"></path>'],
-      ['exercise.html','Exercise','<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>'],
-      ['progress.html','Progress','<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>'],
-      ['support.html','Support','<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>'],
-      ['community.html','Community','<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'],
-      ['Settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']
-    ];
-    const cur='support.html';
-    document.querySelector('.bottom-nav').innerHTML=pages.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('');
-  }
+      async function finishMagicLinkFromHash(){
+        const params = hashParams();
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        if (!accessToken || !refreshToken) return false;
 
-  document.addEventListener('DOMContentLoaded', function(){
-    autoResetDaily();
-    buildNav();
-    document.querySelectorAll('.reason-btn').forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.reason)));
-    document.getElementById('supportOffBtn').addEventListener('click', deactivate);
-    document.querySelectorAll('.range-tab').forEach(btn => btn.addEventListener('click', function(){
-      document.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      renderTrend();
-    }));
-    render();
-  });
-})();
-</script>
+        setBusy(true);
+        setMessage('Completing sign in...');
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
+        });
+        if (error) throw error;
+        if (data && data.session) {
+          history.replaceState(null, document.title, window.location.pathname);
+          await sendToHome();
+          return true;
+        }
+        return false;
+      }
+
+      async function finishOAuthCode(){
+        if (!window.location.search.includes('code=')) return false;
+        setBusy(true);
+        setMessage('Completing sign in...');
+        const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (error) throw error;
+        if (data && data.session) {
+          history.replaceState(null, document.title, window.location.pathname);
+          await sendToHome();
+          return true;
+        }
+        return false;
+      }
+
+      async function checkExistingSession(){
+        const { data } = await supabase.auth.getSession();
+        if (data && data.session) {
+          await sendToHome();
+          return true;
+        }
+        return false;
+      }
+
+      async function boot(){
+        if (!supabase || !supabase.auth) {
+          setMessage('Login connection failed. Check glp-supabase-config.js.');
+          setBusy(true);
+          console.error('[Hearty Login] Missing Supabase client on window.');
+          return;
+        }
+
+        try {
+          if (await finishMagicLinkFromHash()) return;
+          if (await finishOAuthCode()) return;
+          if (await checkExistingSession()) return;
+          setMessage('');
+          setBusy(false);
+        } catch (err) {
+          console.error('[Hearty Login] Sign-in completion failed:', err);
+          setMessage(err.message || 'Could not complete sign in. Please try again.');
+          setBusy(false);
+        }
+      }
+
+      sendBtn.addEventListener('click', async function(){
+        const email = emailInput.value.trim();
+        if (!email) { setMessage('Please enter your email address.'); return; }
+        try {
+          userIsActing = true;
+          setBusy(true);
+          setMessage('Sending login link...');
+          const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: { emailRedirectTo: window.location.origin + '/login.html' }
+          });
+          if (error) throw error;
+          setMessage('Check your email and click the login link.');
+        } catch (err) {
+          console.error('[Hearty Login] Email login failed:', err);
+          setMessage(err.message || 'Could not send login link.');
+        } finally {
+          userIsActing = false;
+          setBusy(false);
+        }
+      });
+
+      googleBtn.addEventListener('click', async function(){
+        try {
+          userIsActing = true;
+          setBusy(true);
+          setMessage('Opening Google sign in...');
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin + '/login.html' }
+          });
+          if (error) throw error;
+        } catch (err) {
+          console.error('[Hearty Login] Google login failed:', err);
+          setMessage(err.message || 'Could not open Google sign in.');
+          userIsActing = false;
+          setBusy(false);
+        }
+      });
+
+      emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendBtn.click(); });
+
+      supabase?.auth?.onAuthStateChange(function(_event, session){
+        if (session && !redirecting && !userIsActing) sendToHome();
+      });
+
+      boot();
+    })();
+  </script>
 </body>
 </html>
