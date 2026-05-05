@@ -535,7 +535,7 @@
     const nowIso = new Date().toISOString();
     const { data, error } = await sb
       .from(POSTS_TABLE)
-      .select('id,user_id,post_type,event_type,body,image_url,image_path,created_at,expires_at,profiles:profiles(user_name,first_name,avatar_url)')
+      .select('id,user_id,post_type,event_type,body,image_url,image_path,created_at,expires_at')
       .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
       .order('created_at', { ascending:false })
       .limit(50);
@@ -601,9 +601,8 @@
   }
 
   function renderPost(post){
-    const prof = post.profiles || {};
-    const name = (prof.user_name || prof.first_name) || (post.user_id === currentUser?.id ? (profile?.display_name || 'You') : 'Hearty member');
-    const avatar = prof.avatar_url || '';
+    const name = post.user_id === currentUser?.id ? (profile?.display_name || 'You') : 'Hearty member';
+    const avatar = '';
     const text = escapeHTML(post.body || '');
     const imageUrl = post.image_url || '';
     const expiresText = imageUrl ? ' • Photo expires after 24h' : '';
