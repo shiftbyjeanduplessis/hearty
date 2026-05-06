@@ -2,335 +2,7 @@
 <!DOCTYPE html>
 
 <html data-theme="clean_blue" lang="en">
-<head><style id="hearty-home-stability-authority-style">
-/* HOME STABILITY AUTHORITY: prevents raw ring/progress flash and layout jump */
-html:not(.hearty-home-rendered) .rings,
-html:not(.hearty-home-rendered) .progress-band{
-  opacity:0 !important;
-  visibility:hidden !important;
-}
-html.hearty-home-rendered .rings,
-html.hearty-home-rendered .progress-band{
-  opacity:1 !important;
-  visibility:visible !important;
-  transition:opacity .14s ease !important;
-}
-.ring-block,
-.ring-wrap,
-.ring-progress,
-.hydration-card,
-.hydration-compact,
-.hydration-new,
-.hydration-add-btn,
-#waterGlass,
-#waterUndo,
-.water-undo-new{
-  transform:none !important;
-  animation:none !important;
-}
-.ring-block:hover,
-.card:hover,
-.hydration-add-btn:hover,
-.hydration-add-btn:active,
-.hydration-add-btn.pressed,
-#waterGlass:hover,
-#waterGlass:active,
-#waterUndo:hover,
-#waterUndo:active{
-  transform:none !important;
-  animation:none !important;
-}
-.ring-progress{
-  transition:none !important;
-}
-html.hearty-home-rendered .ring-progress{
-  transition:stroke-dashoffset .25s ease !important;
-}
-.progress-band{
-  display:block !important;
-  min-height:0 !important;
-}
-.progress-band .progress-main{
-  color:var(--ink,#132235) !important;
-  font-weight:900 !important;
-}
-.progress-band .progress-meta,
-.progress-band .progress-microcopy,
-.progress-band .goal-labels span{
-  color:var(--muted,#6f7c8d) !important;
-}
-.progress-band .goalbar{
-  position:relative !important;
-  display:block !important;
-  height:12px !important;
-  min-height:12px !important;
-  border-radius:999px !important;
-  overflow:visible !important;
-  background:rgba(143,163,184,.22) !important;
-  margin-top:14px !important;
-}
-.progress-band .goalbar-fill{
-  display:block !important;
-  height:100% !important;
-  min-width:0 !important;
-  border-radius:999px !important;
-  background:linear-gradient(90deg,#22b8a7,#2f6df6) !important;
-}
-.progress-band .goal-marker{
-  top:50% !important;
-  transform:translate(-50%,-50%) !important;
-}
-.progress-band .goal-labels{
-  display:flex !important;
-  justify-content:space-between !important;
-  gap:10px !important;
-}
-@media(max-width:640px){
-  .progress-band .goal-labels{display:grid !important;grid-template-columns:1fr !important;}
-  .progress-band .goal-labels span{text-align:left !important;}
-}
-</style>
-<script id="hearty-photo-emergency-fix">
-(function(){
-  'use strict';
-  var TODAY = new Date().toISOString().slice(0,10);
-  var DRAFT_KEY = 'heartyPhotoCheckInDraft';
-  var COMPLETE_KEY = 'heartyPhotoCheckInComplete';
-  var PHOTO_LOG_KEY = 'heartyPhotoLog';
-  var PHOTO_SETS_KEY = 'hearty_progress_photos';
-  var keys = ['front','side','back'];
-
-  function parse(raw, fallback){ try { return raw ? JSON.parse(raw) : fallback; } catch(e){ return fallback; } }
-  function save(key,val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
-  function load(key,fallback){ return parse(localStorage.getItem(key), fallback); }
-  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
-  function inputId(k){ return 'heartyEmergencyPhoto' + cap(k) + 'Input'; }
-
-  function blank(){ return { date:TODAY, slots:{ front:null, side:null, back:null } }; }
-  function readDraft(){
-    var raw = load(DRAFT_KEY, null);
-    if(!raw || raw.date !== TODAY) return blank();
-    var out = blank();
-    var slots = raw.slots || raw;
-    keys.forEach(function(k){
-      var item = slots && slots[k];
-      out.slots[k] = item ? {
-        name:item.name || (k + '-photo.jpg'),
-        capturedAt:item.capturedAt || new Date().toISOString(),
-        image:item.image || item.previewUrl || item.dataUrl || '',
-        previewUrl:item.previewUrl || item.image || item.dataUrl || '',
-        approved:true
-      } : null;
-    });
-    return out;
-  }
-  function writeDraft(d){ d.date = TODAY; save(DRAFT_KEY, d); }
-
-  function ensureStyle(){
-    if(document.getElementById('heartyEmergencyPhotoStyle')) return;
-    var css = document.createElement('style');
-    css.id = 'heartyEmergencyPhotoStyle';
-    css.textContent = `
-      #heartyEmergencyPhotoSheet{position:fixed;inset:0;z-index:999999;display:none;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.36);backdrop-filter:blur(6px);padding:18px 14px calc(24px + env(safe-area-inset-bottom));box-sizing:border-box;}
-      #heartyEmergencyPhotoSheet.show{display:flex!important;}
-      #heartyEmergencyPhotoPanel{width:min(100%,520px);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#fff,#f7faff);border:1px solid rgba(143,163,184,.24);border-radius:28px;box-shadow:0 24px 70px rgba(15,23,42,.22);padding:18px;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#132235;box-sizing:border-box;}
-      .hearty-emergency-handle{width:46px;height:5px;border-radius:99px;background:#cbd5e1;margin:0 auto 14px;}
-      .hearty-emergency-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
-      .hearty-emergency-title{font-size:1.18rem;font-weight:900;letter-spacing:-.04em;}
-      .hearty-emergency-copy{margin-top:4px;color:#6f7c8d;font-size:.92rem;line-height:1.4;}
-      .hearty-emergency-close{width:42px;height:42px;border-radius:14px;border:1px solid rgba(143,163,184,.24);background:#f6f9fe;color:#52657a;font-size:24px;line-height:1;cursor:pointer;}
-      .hearty-photo-slots{display:grid;gap:10px;}
-      .hearty-photo-slot{width:100%;border:1px solid rgba(143,163,184,.24);border-radius:18px;background:linear-gradient(180deg,#fff,#f6f9fe);padding:12px;text-align:left;display:grid;gap:7px;cursor:pointer;box-sizing:border-box;}
-      .hearty-photo-slot.has-photo{border-color:rgba(14,165,107,.34);background:linear-gradient(180deg,#effbf5,#fff);}
-      .hearty-photo-slot strong{font-size:.98rem;color:#132235;}
-      .hearty-photo-slot span{font-size:.74rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6f7c8d;}
-      .hearty-photo-slot img{display:none;width:100%;max-height:155px;object-fit:cover;border-radius:14px;border:1px solid rgba(143,163,184,.2);}
-      .hearty-photo-slot.has-photo img{display:block;}
-      .hearty-photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
-      .hearty-photo-actions button{min-height:52px;border-radius:18px;font:inherit;font-weight:900;cursor:pointer;border:none;}
-      #heartyEmergencyPhotoCancel{background:linear-gradient(180deg,#fff,#f5f8fd);border:1px solid rgba(143,163,184,.24);color:#4e6177;}
-      #heartyEmergencyPhotoComplete{background:linear-gradient(180deg,#ff6b00,#e25d00);color:#fff;box-shadow:0 12px 24px rgba(255,107,0,.18);}
-      #heartyEmergencyPhotoComplete[disabled]{opacity:.45;box-shadow:none;cursor:not-allowed;}
-      @media(max-width:640px){.hearty-photo-actions{grid-template-columns:1fr;}#heartyEmergencyPhotoPanel{border-radius:24px;padding:16px;}}
-    `;
-    document.head.appendChild(css);
-  }
-
-  function ensureInputs(){
-    keys.forEach(function(k){
-      if(document.getElementById(inputId(k))) return;
-      var input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.setAttribute('capture','environment');
-      input.hidden = true;
-      input.id = inputId(k);
-      input.dataset.uploadScope = 'progress-photo';
-      input.dataset.progressPhotoInput = k;
-      document.body.appendChild(input);
-      input.addEventListener('change', function(e){
-        if(!e || !e.target || e.target.dataset.uploadScope !== 'progress-photo' || e.target.dataset.progressPhotoInput !== k) return;
-        e.stopPropagation();
-        var file = input.files && input.files[0];
-        if(!file) return;
-        var reader = new FileReader();
-        reader.onload = function(){
-          var draft = readDraft();
-          draft.slots[k] = {
-            name:file.name || (k + '-photo.jpg'),
-            capturedAt:new Date().toISOString(),
-            image:String(reader.result || ''),
-            previewUrl:String(reader.result || ''),
-            approved:true
-          };
-          writeDraft(draft);
-          input.value = '';
-          render();
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-  }
-
-  function ensureSheet(){
-    ensureStyle();
-    ensureInputs();
-    var sheet = document.getElementById('heartyEmergencyPhotoSheet');
-    if(sheet) return sheet;
-    sheet = document.createElement('div');
-    sheet.id = 'heartyEmergencyPhotoSheet';
-    sheet.innerHTML = `
-      <div id="heartyEmergencyPhotoPanel" role="dialog" aria-modal="true" aria-labelledby="heartyEmergencyPhotoTitle">
-        <div class="hearty-emergency-handle"></div>
-        <div class="hearty-emergency-head">
-          <div>
-            <div class="hearty-emergency-title" id="heartyEmergencyPhotoTitle">Progress photos</div>
-            <div class="hearty-emergency-copy">Front photo is required. Side and back are optional.</div>
-          </div>
-          <button class="hearty-emergency-close" id="heartyEmergencyPhotoClose" type="button" aria-label="Close">×</button>
-        </div>
-        <div class="hearty-photo-slots">
-          <button class="hearty-photo-slot" type="button" data-emergency-photo="front"><strong>Front</strong><span id="heartyEmergencyFrontState">Required</span><img id="heartyEmergencyFrontPreview" alt=""></button>
-          <button class="hearty-photo-slot" type="button" data-emergency-photo="side"><strong>Side</strong><span id="heartyEmergencySideState">Optional</span><img id="heartyEmergencySidePreview" alt=""></button>
-          <button class="hearty-photo-slot" type="button" data-emergency-photo="back"><strong>Back</strong><span id="heartyEmergencyBackState">Optional</span><img id="heartyEmergencyBackPreview" alt=""></button>
-        </div>
-        <div class="hearty-photo-actions">
-          <button id="heartyEmergencyPhotoCancel" type="button">Cancel</button>
-          <button id="heartyEmergencyPhotoComplete" type="button" disabled>Add front photo to complete</button>
-        </div>
-      </div>`;
-    document.body.appendChild(sheet);
-
-    sheet.addEventListener('click', function(e){
-      if(e.target === sheet || e.target.id === 'heartyEmergencyPhotoClose' || e.target.id === 'heartyEmergencyPhotoCancel'){
-        e.preventDefault(); hide(); return;
-      }
-      var pick = e.target.closest && e.target.closest('[data-emergency-photo]');
-      if(pick){
-        e.preventDefault();
-        var key = pick.getAttribute('data-emergency-photo');
-        var input = document.getElementById(inputId(key));
-        if(input){ input.value = ''; input.click(); }
-        return;
-      }
-      if(e.target.id === 'heartyEmergencyPhotoComplete'){
-        e.preventDefault(); complete();
-      }
-    });
-    return sheet;
-  }
-
-  function render(){
-    var draft = readDraft();
-    keys.forEach(function(k){
-      var item = draft.slots[k];
-      var slot = document.querySelector('[data-emergency-photo="' + k + '"]');
-      var state = document.getElementById('heartyEmergency' + cap(k) + 'State');
-      var img = document.getElementById('heartyEmergency' + cap(k) + 'Preview');
-      if(slot) slot.classList.toggle('has-photo', !!(item && (item.image || item.previewUrl)));
-      if(state) state.textContent = item ? 'Added' : (k === 'front' ? 'Required' : 'Optional');
-      if(img){
-        if(item && (item.image || item.previewUrl)){ img.src = item.image || item.previewUrl; }
-        else { img.removeAttribute('src'); }
-      }
-    });
-    var completeBtn = document.getElementById('heartyEmergencyPhotoComplete');
-    var ready = !!(draft.slots.front && (draft.slots.front.image || draft.slots.front.previewUrl));
-    var count = keys.filter(function(k){ return draft.slots[k] && (draft.slots[k].image || draft.slots[k].previewUrl); }).length;
-    if(completeBtn){
-      completeBtn.disabled = !ready;
-      completeBtn.textContent = ready ? ('Complete photo check-in (' + count + ')') : 'Add front photo to complete';
-    }
-  }
-
-  function markTaskDone(){
-    var task = document.getElementById('photoTask');
-    if(task) task.classList.add('completed');
-    document.querySelectorAll('[data-action="photos"], [data-task-id="photoTask"]').forEach(function(btn){ btn.classList.add('done'); });
-    var done = document.getElementById('photoTaskDone');
-    if(done) done.classList.add('active');
-  }
-
-  function writeProgressPhotos(draft){
-    var used = keys.filter(function(k){ return draft.slots[k] && (draft.slots[k].image || draft.slots[k].previewUrl); });
-    var logs = load(PHOTO_LOG_KEY, []); if(!Array.isArray(logs)) logs = [];
-    logs = logs.filter(function(x){ return !x || x.date !== TODAY; });
-    used.forEach(function(k){ logs.push({ date:TODAY, type:k, image:draft.slots[k].image || draft.slots[k].previewUrl }); });
-    save(PHOTO_LOG_KEY, logs);
-
-    var sets = load(PHOTO_SETS_KEY, []); if(!Array.isArray(sets)) sets = [];
-    sets = sets.filter(function(x){ return !x || x.date !== TODAY; });
-    sets.push({
-      date:TODAY,
-      createdAt:new Date().toISOString(),
-      dateLabel:new Date(TODAY + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}),
-      tag: sets.length ? 'Latest set' : 'Start set',
-      note: used.map(cap).join(', ') + ' progress photo' + (used.length === 1 ? '' : 's'),
-      views: used,
-      slots: draft.slots
-    });
-    save(PHOTO_SETS_KEY, sets);
-  }
-
-  function complete(){
-    var draft = readDraft();
-    if(!(draft.slots.front && (draft.slots.front.image || draft.slots.front.previewUrl))){
-      alert('Please add a front photo first.');
-      return;
-    }
-    writeProgressPhotos(draft);
-    localStorage.setItem(COMPLETE_KEY, '1');
-    localStorage.setItem('heartyLastPhotoCheckInAt', new Date().toISOString());
-    localStorage.setItem('heartyLastPhotoCheckInCount', String(keys.filter(function(k){ return draft.slots[k] && (draft.slots[k].image || draft.slots[k].previewUrl); }).length));
-    markTaskDone();
-    hide();
-  }
-
-  function show(event){
-    if(event){ event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation(); }
-    ensureSheet().classList.add('show');
-    document.body.style.overflow = 'hidden';
-    render();
-  }
-  function hide(){
-    var sheet = document.getElementById('heartyEmergencyPhotoSheet');
-    if(sheet) sheet.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-
-  window.heartyEmergencyOpenPhotos = show;
-  window.heartyEmergencyCompletePhotos = complete;
-
-  document.addEventListener('click', function(e){
-    var hit = e.target && e.target.closest && e.target.closest('[data-action="photos"], [data-task-id="photoTask"], #photoTask');
-    if(!hit) return;
-    show(e);
-  }, true);
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ ensureSheet(); render(); });
-  else { ensureSheet(); render(); }
-})();
-</script>
+<head>
 <script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
@@ -5898,7 +5570,6 @@ html[data-theme="rose_aurora"] .hydration-add-text{
 </style>
 <!-- Shared Hearty theme system -->
 <link href="/css/hearty-theme.css" rel="stylesheet"/>
-<script src="/js/hearty-theme.js"></script>
 <style>
 /* HOME onboarding modal input fix only */
 #onboardingModal input,
@@ -5967,7 +5638,498 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
   color:#86efac !important;
 }
 </style>
-</head>
+<style id="hearty-home-hybrid-clean-controller-styles">
+/* HYBRID CLEAN CONTROLLER: original visual page preserved, late conflicting controllers removed */
+.task-sheet-overlay{opacity:0;pointer-events:none;}
+.task-sheet-overlay.show{opacity:1!important;pointer-events:auto!important;}
+.protocol-item.completed .task-icon-btn,
+.task-icon-btn.done{
+  background:linear-gradient(180deg, rgba(14,165,107,.16), rgba(14,165,107,.10)) !important;
+  border-color:rgba(14,165,107,.28) !important;
+  color:#0b7a51 !important;
+}
+#completePhotoCheckInBtn[disabled],
+#saveWeightBtn[disabled]{opacity:.45!important;box-shadow:none!important;cursor:not-allowed!important;}
+.photo-action-row.has-file .photo-review{display:grid!important;}
+</style>
+<style id="hearty-home-ui-polish-v1">
+/* HOME UI POLISH V1 — spacing, lesson richness, progress text */
+#topMiniRow,
+.mini-pair,
+.status-med-layout{
+  margin-top:22px !important;
+}
+
+#supportCard,
+.hydration-compact,
+.hydration-card{
+  transform:translateY(6px);
+}
+
+/* Progress copy cleanup */
+.progress-band .progress-top{
+  align-items:flex-start !important;
+}
+
+.progress-band .progress-main{
+  font-size:1.22rem !important;
+  line-height:1.15 !important;
+  font-weight:900 !important;
+  letter-spacing:-.04em !important;
+  color:var(--ink) !important;
+  margin-bottom:4px !important;
+}
+
+.progress-band .progress-meta{
+  max-width:470px !important;
+  color:#6f7c8d !important;
+  font-size:.94rem !important;
+  line-height:1.42 !important;
+}
+
+.progress-band .progress-top > div:first-child{
+  display:grid !important;
+  gap:2px !important;
+}
+
+.progress-band .progress-top > div:last-child .progress-meta,
+.progress-band .progress-top .progress-meta:last-child{
+  text-align:right !important;
+  font-weight:700 !important;
+  font-size:.9rem !important;
+  color:#6a788a !important;
+}
+
+/* Lesson restore: make it feel like guided coaching, not stripped text */
+.lesson-card{
+  display:block !important;
+}
+
+.lesson-body{
+  display:block !important;
+  margin-top:14px !important;
+  padding-top:14px !important;
+  border-top:1px solid rgba(143,163,184,.16) !important;
+}
+
+.lesson-rich{
+  display:grid;
+  gap:12px;
+}
+
+.lesson-rich-intro{
+  padding:13px 14px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(247,250,255,.72));
+  border:1px solid rgba(143,163,184,.16);
+  color:#43566b;
+  line-height:1.5;
+  font-size:.94rem;
+}
+
+.lesson-block{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+  padding:13px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,.88), rgba(248,250,255,.78));
+  border:1px solid rgba(143,163,184,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.lesson-icon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  background:linear-gradient(180deg,#f1edff,#fff);
+  border:1px solid rgba(126,108,242,.16);
+  box-shadow:0 8px 18px rgba(103,87,216,.08);
+}
+
+.lesson-block strong{
+  display:block;
+  color:#182436;
+  font-size:.98rem;
+  font-weight:900;
+  letter-spacing:-.02em;
+  margin-bottom:4px;
+}
+
+.lesson-block p{
+  margin:0;
+  color:#647487;
+  font-size:.9rem;
+  line-height:1.45;
+}
+
+.lesson-callout{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px 14px;
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,248,238,.96), rgba(255,255,255,.88));
+  border:1px solid rgba(255,107,0,.18);
+  color:#5b4632;
+  line-height:1.45;
+  font-size:.9rem;
+  font-weight:700;
+}
+
+.lesson-callout span{
+  font-size:18px;
+  line-height:1;
+  margin-top:1px;
+}
+
+@media(max-width:640px){
+  #topMiniRow,
+  .mini-pair,
+  .status-med-layout{
+    margin-top:18px !important;
+  }
+
+  #supportCard,
+  .hydration-compact,
+  .hydration-card{
+    transform:none;
+  }
+
+  .progress-band .progress-top > div:last-child .progress-meta,
+  .progress-band .progress-top .progress-meta:last-child{
+    text-align:left !important;
+  }
+
+  .lesson-block{
+    grid-template-columns:38px minmax(0,1fr);
+    gap:10px;
+    padding:12px;
+  }
+
+  .lesson-icon{
+    width:38px;
+    height:38px;
+    border-radius:13px;
+  }
+}
+</style><style id="hearty-home-task-tick-bar-stability-v6-css">
+/* V6 — task completion tick + stable protocol bar size */
+
+/* Keep task button contents visible after completion */
+.task-icon-btn.done .icon-main,
+.task-icon-btn.done .icon-main-img,
+.protocol-item.completed .task-icon-btn .icon-main,
+.protocol-item.completed .task-icon-btn .icon-main-img{
+  display:none !important;
+}
+
+/* Inject a real tick into the button instead of leaving it blank */
+.task-icon-btn.done::after,
+.protocol-item.completed .task-icon-btn::after{
+  content:"✓";
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  color:#0b7a51;
+  background:rgba(14,165,107,.12);
+  font-size:1.35rem;
+  line-height:1;
+  font-weight:950;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+/* Never let the protocol/progress bar resize when status colour changes */
+.progress-band .goalbar,
+.protocol-progress,
+.protocol-bar,
+#protocolProgress,
+#dailyProtocolBar{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+  border:1px solid rgba(160,178,201,.24) !important;
+  background:linear-gradient(90deg,#edf2f9,#e7eef7) !important;
+}
+
+/* Same physical size; only colour changes */
+.progress-band .goalbar-fill,
+.protocol-progress-fill,
+.protocol-bar-fill,
+#protocolProgressFill,
+#dailyProtocolBarFill{
+  height:100% !important;
+  min-height:100% !important;
+  max-height:100% !important;
+  border-radius:999px !important;
+  box-sizing:border-box !important;
+  transition:width .45s ease, background .25s ease, box-shadow .25s ease !important;
+}
+
+/* Pending = green, complete = blue; dimensions identical */
+.protocol-pending .goalbar-fill,
+.protocol-pending .protocol-progress-fill,
+.protocol-pending .protocol-bar-fill,
+.protocol-pending #protocolProgressFill,
+.protocol-pending #dailyProtocolBarFill{
+  background:linear-gradient(90deg,#0ea56b 0%, #14b8a6 100%) !important;
+  box-shadow:0 0 18px rgba(14,165,107,.18) !important;
+}
+
+.protocol-complete .goalbar-fill,
+.protocol-complete .protocol-progress-fill,
+.protocol-complete .protocol-bar-fill,
+.protocol-complete #protocolProgressFill,
+.protocol-complete #dailyProtocolBarFill{
+  background:linear-gradient(90deg,#1550b3 0%, #0ea5e9 100%) !important;
+  box-shadow:0 0 18px rgba(14,80,179,.16) !important;
+}
+
+/* If the bar lives outside the card, use body state too */
+body.protocol-pending-state .progress-band .goalbar-fill{
+  background:linear-gradient(90deg,#0ea56b 0%, #14b8a6 100%) !important;
+}
+body.protocol-complete-state .progress-band .goalbar-fill{
+  background:linear-gradient(90deg,#1550b3 0%, #0ea5e9 100%) !important;
+}
+</style><style id="hearty-final-instructions-v11-css">
+/* V11 EXACT INSTRUCTIONS — Support, Medication, Lessons */
+
+/* SUPPORT EXACT */
+#supportCard.support-home-clean{
+  background:var(--card) !important;
+  border:1px solid rgba(150,166,186,.18) !important;
+  box-shadow:var(--shadow) !important;
+  transform:none !important;
+}
+#supportCard.support-home-clean::before,
+#supportCard.support-home-clean::after{
+  display:none !important;
+}
+#supportCard.support-home-clean.support-active{
+  background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96)) !important;
+  border-color:rgba(245,158,11,.32) !important;
+  box-shadow:0 18px 42px rgba(14,31,53,.09),0 0 0 1px rgba(245,158,11,.10),0 0 24px rgba(245,158,11,.18) !important;
+}
+.support-home-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-top:8px;
+}
+.support-home-title{
+  font-size:1.02rem;
+  font-weight:950;
+  letter-spacing:-.03em;
+  color:#132235;
+}
+.support-home-copy{
+  margin-top:5px;
+  color:#6f7c8d;
+  font-size:.92rem;
+  line-height:1.45;
+}
+.support-home-led{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#c8d4e2;
+  box-shadow:0 0 0 4px rgba(200,212,226,.24);
+  flex:0 0 auto;
+  margin-top:2px;
+}
+#supportCard.support-active .support-home-led{
+  background:#f59e0b;
+  box-shadow:0 0 0 5px rgba(245,158,11,.14),0 0 18px rgba(245,158,11,.42);
+}
+.support-home-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:18px;
+}
+.support-home-primary,
+.support-home-secondary{
+  min-height:48px;
+  border-radius:16px;
+  font-weight:950;
+  letter-spacing:-.01em;
+  cursor:pointer;
+}
+.support-home-primary{
+  border:none;
+  color:#fff;
+  background:linear-gradient(180deg,#1550b3,#0f43a0);
+  box-shadow:0 12px 24px rgba(21,80,179,.18);
+}
+.support-home-secondary{
+  color:#647487;
+  background:linear-gradient(180deg,#fff,#f5f8fd);
+  border:1px solid rgba(143,163,184,.22);
+  box-shadow:var(--shadow-soft);
+}
+#supportCard.support-active .support-home-primary{
+  background:linear-gradient(180deg,#f59e0b,#e88905);
+  box-shadow:0 12px 24px rgba(245,158,11,.18);
+}
+#supportCard:not(.support-active) .support-home-secondary{
+  opacity:.72;
+}
+
+/* MEDICATION EXACT */
+#injectionCard.medication-home-clean{
+  background:var(--card) !important;
+  border:1px solid rgba(150,166,186,.18) !important;
+  box-shadow:var(--shadow) !important;
+  text-align:left !important;
+  transform:none !important;
+}
+#injectionCard.medication-home-clean::before,
+#injectionCard.medication-home-clean::after{
+  display:none !important;
+}
+#injectionCard.medication-due{
+  background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96)) !important;
+  border-color:rgba(245,158,11,.30) !important;
+  box-shadow:0 18px 42px rgba(14,31,53,.09),0 0 0 1px rgba(245,158,11,.10),0 0 24px rgba(245,158,11,.18) !important;
+}
+#injectionCard.medication-complete{
+  background:linear-gradient(180deg,rgba(237,251,245,.98),rgba(255,255,255,.96)) !important;
+  border-color:rgba(14,165,107,.30) !important;
+  box-shadow:0 18px 42px rgba(14,31,53,.09),0 0 0 1px rgba(14,165,107,.10),0 0 24px rgba(14,165,107,.16) !important;
+}
+.med-home-title{
+  margin-top:10px;
+  font-size:1.08rem;
+  font-weight:950;
+  letter-spacing:-.035em;
+  color:#132235;
+}
+.med-home-date{
+  margin-top:6px;
+  font-size:1.22rem;
+  font-weight:950;
+  letter-spacing:-.045em;
+  color:#132235;
+}
+.med-home-check{
+  margin-top:14px;
+  width:100%;
+  min-height:50px;
+  border-radius:17px;
+  border:1px solid rgba(160,178,201,.24);
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.92));
+  color:#132235;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(15,23,42,.07),inset 0 1px 0 rgba(255,255,255,.92);
+}
+.med-home-check[disabled]{
+  cursor:not-allowed;
+  opacity:.72;
+}
+.med-home-box{
+  width:22px;
+  height:22px;
+  border-radius:8px;
+  border:2px solid rgba(111,124,141,.45);
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:15px;
+  font-weight:950;
+  flex:0 0 auto;
+}
+.med-home-check.done{
+  color:#0b7a51;
+  border-color:rgba(14,165,107,.25);
+  background:linear-gradient(180deg,rgba(236,253,245,.96),rgba(255,255,255,.90));
+  box-shadow:0 12px 28px rgba(14,165,107,.11),0 0 0 4px rgba(14,165,107,.07),inset 0 1px 0 rgba(255,255,255,.95);
+}
+.med-home-check.done .med-home-box{
+  background:#0ea56b;
+  border-color:#0ea56b;
+}
+.med-home-check.done .med-home-box::after{
+  content:"✓";
+}
+
+/* LESSON ICONS EXACT */
+.lesson-rich.hard-icons{
+  display:grid !important;
+  gap:12px !important;
+}
+.lesson-rich-intro{
+  display:grid !important;
+  grid-template-columns:38px 1fr !important;
+  gap:10px !important;
+  align-items:start !important;
+}
+.lesson-inline-icon,
+.lesson-icon,
+.lesson-callout span{
+  display:grid !important;
+  place-items:center !important;
+  flex:0 0 auto !important;
+}
+.lesson-inline-icon{
+  width:38px;
+  height:38px;
+  border-radius:14px;
+  color:#6757d8;
+  background:linear-gradient(180deg,#f1edff,#fff);
+  border:1px solid rgba(126,108,242,.16);
+}
+.lesson-icon{
+  width:42px !important;
+  height:42px !important;
+  border-radius:15px !important;
+  color:#6757d8 !important;
+  background:linear-gradient(180deg,#f1edff,#fff) !important;
+  border:1px solid rgba(126,108,242,.16) !important;
+}
+.lesson-inline-icon svg,
+.lesson-icon svg,
+.lesson-callout svg{
+  display:block !important;
+  width:21px !important;
+  height:21px !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.lesson-callout span{
+  width:34px !important;
+  height:34px !important;
+  border-radius:13px !important;
+  color:#ff6b00 !important;
+  background:rgba(255,107,0,.10) !important;
+  border:1px solid rgba(255,107,0,.16) !important;
+}
+.lesson-card .lesson-body{
+  display:none !important;
+}
+.lesson-card.open .lesson-body{
+  display:block !important;
+}
+</style></head>
 <style id="home-empty-medication-visibility-fix">
 /* Hide empty Home header/injection placeholders completely.
    Existing page CSS uses display:flex !important on #injectionCard,
@@ -6180,7 +6342,20 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
     }
   }
 </style>
-
+<style id="hearty-home-hybrid-clean-controller-styles">
+/* HYBRID CLEAN CONTROLLER: original visual page preserved, late conflicting controllers removed */
+.task-sheet-overlay{opacity:0;pointer-events:none;}
+.task-sheet-overlay.show{opacity:1!important;pointer-events:auto!important;}
+.protocol-item.completed .task-icon-btn,
+.task-icon-btn.done{
+  background:linear-gradient(180deg, rgba(14,165,107,.16), rgba(14,165,107,.10)) !important;
+  border-color:rgba(14,165,107,.28) !important;
+  color:#0b7a51 !important;
+}
+#completePhotoCheckInBtn[disabled],
+#saveWeightBtn[disabled]{opacity:.45!important;box-shadow:none!important;cursor:not-allowed!important;}
+.photo-action-row.has-file .photo-review{display:grid!important;}
+</style>
 <body data-page="home">
 <div class="shell" id="pageRoot">
 <header class="topbar">
@@ -6253,9 +6428,9 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 <div class="progress-top">
 <div>
 <div class="progress-main">No weight progress logged yet</div>
-<div class="progress-meta">Add your first weigh-in to begin tracking.</div>
+<div class="progress-meta">Add your first weigh-in to begin tracking. Your rings give the quick view; the strip below shows your weight path.</div>
 </div>
-<div class="progress-meta">Target weight must be provided by your doctor.</div>
+<div class="progress-meta"></div>
 </div>
 <div class="progress-microcopy">Your rings give the quick view. Below is the weight path and next milestone so you can see where things are heading.</div>
 <div aria-label="Weight goal progress" class="goalbar">
@@ -6270,18 +6445,20 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </section>
 <div id="injectionTopAnchor"></div>
 <section class="home-grid" id="statusMedLayout">
-<section class="card compact-card support-card support-compact" id="supportCard">
-<span aria-hidden="true" class="led" id="supportLed"></span>
-<div class="compact-head support-home-head">
-<div class="support-home-copy">
-<div class="section-label" style="margin-bottom:0">SUPPORT MODE</div>
-<div class="compact-title" id="supportStateText">Do you need some support today?</div>
-<div class="compact-copy" id="supportSubtext">Log your side effects on Support. Meals and movement will adapt automatically.</div>
+<section class="support-card support-home-clean" id="supportCard">
+<div class="section-label">SUPPORT MODE</div>
+<div class="support-home-head">
+<div>
+<div class="support-home-title" id="supportHomeTitle">Do you need some support today?</div>
+<div class="support-home-copy" id="supportHomeCopy">
+      Support Mode is off. Tap Get Support if side effects are affecting your day.
+    </div>
 </div>
+<span aria-hidden="true" class="support-home-led" id="supportHomeLed"></span>
 </div>
-<div class="support-actions-row" id="supportActions">
-<button class="soft-btn support-main-btn" id="supportPrimary" type="button">Get support</button>
-<button class="ghost-btn support-off-btn" disabled="" id="supportOff" type="button">Turn off</button>
+<div class="support-home-actions">
+<button class="support-home-primary" id="supportGetBtn" type="button">Get Support</button>
+<button class="support-home-secondary" id="supportOffBtn" type="button">Off</button>
 </div>
 </section>
 <section class="card compact-card hydration-compact hydration-card">
@@ -6314,13 +6491,14 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </button>
 </div>
 </section>
-<section class="card compact-card injection-card medication-compact medication-card" hidden="" id="injectionCard">
+<section class="medication-home-clean" hidden="" id="injectionCard">
 <div class="section-label">MEDICATION</div>
-<div class="medication-topline">
-<div class="compact-title injection-title">No medication schedule set</div>
-<div class="injection-actions" id="injectionActions"></div>
-</div>
-<div class="compact-copy injection-copy">Add your medication schedule in onboarding or Settings.</div>
+<div class="med-home-title" id="medHomeTitle">Medication date</div>
+<div class="med-home-date" id="medHomeDate">Set during onboarding</div>
+<button class="med-home-check" disabled="" id="medHomeCheck" type="button">
+<span aria-hidden="true" class="tick med-home-tick"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></span>
+<span id="medHomeCheckText">Not due today</span>
+</button>
 </section>
 <section class="card compact-card milestones-card badges-card" id="markerMiniRow">
 <div class="section-label" style="margin-bottom:8px">BADGES</div>
@@ -6332,7 +6510,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 <div class="section-label">TODAY'S PROTOCOL</div>
 <div class="protocol-state">Keep today moving</div>
 </div>
-<div class="protocol-state" id="protocolSummary">3 of 5 complete</div>
+<div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
 </div>
 <div class="protocol-list" id="protocolList">
 <div class="protocol-item" data-task="Weigh-in" id="weighInTask">
@@ -6408,82 +6586,30 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </div>
 <div aria-hidden="true" class="task-sheet-overlay" id="photoSheet">
 <div aria-labelledby="photoSheetTitle" aria-modal="true" class="task-sheet photo-sheet" role="dialog">
-<div aria-hidden="true" class="sheet-handle"></div>
+<div class="sheet-handle"></div>
 <div class="sheet-head">
 <div>
-<div class="sheet-title" id="photoSheetTitle">Capture your starting point</div>
+<div class="sheet-title">Progress photos</div>
 <div class="sheet-copy">Front photo is required. Side and back are optional.</div>
 </div>
-<button aria-label="Close photo check-in" class="sheet-close" data-close-sheet="photoSheet" type="button">
-<svg viewbox="0 0 24 24"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+<button aria-label="Close" class="sheet-close" data-close-sheet="photoSheet" type="button">
+<svg viewbox="0 0 24 24"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
 </button>
 </div>
-<div class="photo-checkin-grid">
-<section class="photo-checkin-card">
-<div class="photo-checkin-head">
-<div>
-<div class="photo-checkin-title">Progress photos</div>
-<div class="photo-checkin-copy">Front photo is required. Side and back are optional.</div>
-</div>
-</div>
-<div class="photo-action-list">
-<div class="photo-action-row" data-photo-slot="front">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Front</div>
-<div class="photo-action-meta">Stand straight. Full body in frame.</div>
-</div>
-<div class="photo-action-status" id="frontPhotoState">PENDING</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="front" type="button">Take front photo</button>
-<div class="photo-review" id="frontPhotoReview">
-<img alt="Front photo preview" class="photo-preview-thumb" id="frontPhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="front" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="front" type="button">Retake</button>
-</div>
-</div>
-</div>
-<div class="photo-action-row" data-photo-slot="side">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Side</div>
-<div class="photo-action-meta">Turn sideways. Full body in frame.</div>
-</div>
-<div class="photo-action-status" id="sidePhotoState">PENDING</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="side" type="button">Take side photo</button>
-<div class="photo-review" id="sidePhotoReview">
-<img alt="Side photo preview" class="photo-preview-thumb" id="sidePhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="side" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="side" type="button">Retake</button>
-</div>
-</div>
-</div>
-<div class="photo-action-row" data-photo-slot="back">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Back <span style="font-weight:700;color:var(--muted);font-size:.78rem;">optional</span></div>
-<div class="photo-action-meta">Optional. Use a mirror or helper if you want this angle.</div>
-</div>
-<div class="photo-action-status" id="backPhotoState">OPTIONAL</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="back" type="button">Take back photo</button>
-<div class="photo-review" id="backPhotoReview">
-<img alt="Back photo preview" class="photo-preview-thumb" id="backPhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="back" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="back" type="button">Retake</button>
-</div>
-</div>
-</div>
-</div>
-</section>
+<div class="hearty-photo-v9-grid">
+<button class="hearty-photo-v9-slot" data-v9-photo="front" type="button">
+<strong>Front</strong><span id="v9FrontPhotoState">Required</span><img alt="" id="v9FrontPhotoPreview"/>
+</button>
+<button class="hearty-photo-v9-slot" data-v9-photo="side" type="button">
+<strong>Side</strong><span id="v9SidePhotoState">Optional</span><img alt="" id="v9SidePhotoPreview"/>
+</button>
+<button class="hearty-photo-v9-slot" data-v9-photo="back" type="button">
+<strong>Back</strong><span id="v9BackPhotoState">Optional</span><img alt="" id="v9BackPhotoPreview"/>
+</button>
 </div>
 <div class="sheet-actions">
-<button class="sheet-btn sheet-btn-secondary" data-close-sheet="photoSheet" type="button">Close</button>
-<button class="sheet-btn sheet-btn-primary" disabled="" id="completePhotoCheckInBtn" type="button">Add front photo to complete</button>
+<button class="sheet-btn sheet-btn-secondary ghost-btn" data-close-sheet="photoSheet" type="button">Cancel</button>
+<button class="sheet-btn sheet-btn-primary soft-btn" disabled="" id="completePhotoCheckInBtn" type="button">Add front photo to complete</button>
 </div>
 </div>
 </div>
@@ -6503,15 +6629,63 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 </div>
 </div>
 <div class="lesson-actions" style="display:flex; gap:10px; flex-wrap:wrap;">
-<button class="ghost-btn" id="toggleLesson">Open lesson</button>
+<button class="ghost-btn" data-lesson-toggle="true" id="toggleLesson" type="button"><span class="lesson-open-label"></span></button>
 <button class="soft-btn" id="completeLesson">Mark lesson complete</button>
 </div>
 </div>
 <div class="lesson-body" id="lessonBody">
-              Focus on protein at the first meal you can tolerate. Small frequent meals are acceptable on harder days. A short walk and hydration can improve tolerance, but do not force volume if nausea is elevated.
-            </div>
+<div class="lesson-rich hard-icons">
+<div class="lesson-rich-intro">
+<span class="lesson-inline-icon">
+<svg viewbox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><circle cx="12" cy="12" r="3"></circle></svg>
+</span>
+<div><strong>Today’s focus:</strong> build a rhythm you can repeat. The goal is not a perfect day — it is a doable day.</div>
 </div>
-
+<div class="lesson-block">
+<div class="lesson-icon">
+<svg viewbox="0 0 24 24"><path d="M12 20v-6"></path><path d="M8 20h8"></path><path d="M7 10a5 5 0 0 1 10 0c0 2.4-1.5 3.8-3 4.6V16h-4v-1.4c-1.5-.8-3-2.2-3-4.6Z"></path></svg>
+</div>
+<div>
+<strong>Start simple.</strong>
+<p>Your first win is one clear action. Log the weigh-in, take the walk, or complete the photo check-in. Momentum comes from small completed steps.</p>
+</div>
+</div>
+<div class="lesson-block">
+<div class="lesson-icon">
+<svg viewbox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path><path d="M5 9l2-2 2 2"></path><path d="M10 5l2-2 2 2"></path></svg>
+</div>
+<div>
+<strong>Consistency beats intensity.</strong>
+<p>You do not need to force a hard day. A steady routine protects your progress better than bursts of effort followed by stopping.</p>
+</div>
+</div>
+<div class="lesson-block">
+<div class="lesson-icon">
+<svg viewbox="0 0 24 24"><path d="M5 12c0-3 2.5-5 5.5-5 1.8 0 3.1.7 4 1.8.9-.7 2-.9 3.1-.4 2 .9 2.5 3.7.8 5.7-1.5 1.8-4.3 2.9-7.4 2.9S5 15.4 5 12Z"></path><path d="M8 18h8"></path></svg>
+</div>
+<div>
+<strong>Protein is your anchor.</strong>
+<p>On GLP-1 days appetite can be low, so protein matters. It helps protect muscle while weight comes down.</p>
+</div>
+</div>
+<div class="lesson-block">
+<div class="lesson-icon">
+<svg viewbox="0 0 24 24"><path d="M12 21s-7-4.4-7-11a7 7 0 0 1 14 0c0 6.6-7 11-7 11Z"></path><path d="M9 10h6"></path><path d="M12 7v6"></path></svg>
+</div>
+<div>
+<strong>Use Support Mode early.</strong>
+<p>If nausea, fatigue, appetite, digestion, or discomfort is affecting the day, press Get Support. The plan should soften before the day falls apart.</p>
+</div>
+</div>
+<div class="lesson-callout">
+<span>
+<svg viewbox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v4a5 5 0 0 1-10 0V4Z"></path><path d="M7 7H4a3 3 0 0 0 3 3"></path><path d="M17 7h3a3 3 0 0 1-3 3"></path></svg>
+</span>
+<div><strong>Win condition:</strong> finish the next small action. That is the rhythm Hearty is built around.</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="stack">
 </div>
@@ -6533,10 +6707,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.first-use-mode .section-label{
 <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.2-3.2 2.4 2.4 4.8-6"></path><path d="M17.9 8.7h-3.2"></path><path d="M17.9 8.7v3.2"></path></svg>
 <span>Progress</span>
 </a>
-<a class="nav-item" href="support.html">
-<svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 20.6c-.2 0-.4-.07-.56-.22C6.2 15.65 3 12.75 3 8.95 3 6.05 5.2 4 7.8 4c1.55 0 3.05.72 4.2 1.96C13.15 4.72 14.65 4 16.2 4 18.8 4 21 6.05 21 8.95c0 3.8-3.2 6.7-8.44 11.43-.16.15-.36.22-.56.22Z"></path></svg>
-<span>Support</span>
-</a>
+<a class="nav-item" href="support.html">I need support</a>
 <a class="nav-item" href="social.html">
 <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M8.5 11a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path><path d="M15.8 10.2a2.7 2.7 0 1 0 0-5.4"></path><path d="M3.8 20c.6-3.2 2.3-5 4.7-5s4.1 1.8 4.7 5"></path><path d="M13.8 15.4c2.3.2 3.8 1.8 4.4 4.6"></path></svg>
 <span>Social</span>
@@ -7114,13 +7285,7 @@ function completeWalkTask(){
 
 Object.entries(photoInputs).forEach(([key, input]) => {
   if(!input) return;
-  input.dataset.uploadScope = 'progress-photo';
-  input.dataset.progressPhotoInput = key;
-  input.addEventListener('change', (event) => {
-    if(!event || !event.target || event.target.dataset.uploadScope !== 'progress-photo' || event.target.dataset.progressPhotoInput !== key) return;
-    event.stopPropagation();
-    if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-    if(!['front','side','back'].includes(key)) return;
+  input.addEventListener('change', () => {
     const file = input.files && input.files[0];
     if(!file) return;
     const reader = new FileReader();
@@ -7135,7 +7300,7 @@ Object.entries(photoInputs).forEach(([key, input]) => {
       updatePhotoSheetUI();
     };
     reader.readAsDataURL(file);
-  }, true);
+  });
 });
 
 document.querySelectorAll('[data-photo-approve]').forEach(btn => {
@@ -7358,7 +7523,7 @@ loadStoredPhotoState();
       if(active){
         supportStateText.textContent = 'Support active';
         supportSubtext.textContent = 'Meals and movement have been adjusted for today.';
-        supportPrimaryBtn.textContent = 'Update';
+        supportPrimaryBtn.textContent = 'I need support';
         if(protocolComplete.classList.contains('show')){
           dailyStatusLine.textContent = 'Daily status: Support mode active';
         } else {
@@ -7483,19 +7648,6 @@ if(headlineEl && nm && nm.trim()){
     if(active) btn.setAttribute("aria-current","page");
     else btn.removeAttribute("aria-current");
   });
-})();
-</script>
-<script id="hearty-theme-sync">
-(function(){
-  try {
-    var firstUse = localStorage.getItem('heartyCoreSetupDone') !== 'true';
-    var t = firstUse ? 'clean_blue' : (localStorage.getItem('heartyTheme') || localStorage.getItem('hearty-theme') || 'clean_blue');
-    document.documentElement.setAttribute('data-theme', t);
-    if(firstUse){
-      localStorage.setItem('heartyTheme','clean_blue');
-      localStorage.setItem('hearty-theme','clean_blue');
-    }
-  } catch(e) {}
 })();
 </script>
 <style id="home-rhythm-left-stack-fix">
@@ -8709,7 +8861,7 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   const copyByTask = {
     weighInTask: 'We’ll start with one simple number',
     walkTask: 'Gentle movement counts',
-    photoTask: 'Monthly check-in • Skip is okay',
+    photoTask: 'Monthly check-in',
     lessonTaskItem: 'Short practical read • About 2 min'
   };
   function isComplete(item){ return item && item.classList.contains('completed'); }
@@ -8815,7 +8967,21 @@ html[data-theme="sunlit"] .task-icon-btn.done{
 <div class="field full" id="coreSetupDaysField"><span class="label">Which day or days?</span><div class="core-day-grid"><label><input data-core-med-day="" type="checkbox" value="Monday"/> Monday</label><label><input data-core-med-day="" type="checkbox" value="Tuesday"/> Tuesday</label><label><input data-core-med-day="" type="checkbox" value="Wednesday"/> Wednesday</label><label><input data-core-med-day="" type="checkbox" value="Thursday"/> Thursday</label><label><input data-core-med-day="" type="checkbox" value="Friday"/> Friday</label><label><input data-core-med-day="" type="checkbox" value="Saturday"/> Saturday</label><label><input data-core-med-day="" type="checkbox" value="Sunday"/> Sunday</label></div></div>
 </section>
 </div>
-<div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
+<div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button>
+<div class="unit-choice-block" id="unitChoiceBlock">
+<div class="unit-choice-label">Measurement system</div>
+<div class="unit-choice-grid">
+<label class="unit-choice-option">
+<input checked="" id="unitPreferenceMetric" name="heartyUnitPreference" type="radio" value="metric"/>
+<span><strong>Metric</strong><small>kg, cm</small></span>
+</label>
+<label class="unit-choice-option">
+<input id="unitPreferenceImperial" name="heartyUnitPreference" type="radio" value="imperial"/>
+<span><strong>Imperial</strong><small>lb, ft/in</small></span>
+</label>
+</div>
+</div>
+<button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
 </div>
 </div>
 <style id="hearty-core-setup-wizard-patch">
@@ -9128,7 +9294,7 @@ html[data-theme="sunlit"] .task-icon-btn.done{
   }
 
   function removeFakeProtocol(){
-    setText('#protocolSummary', '0 of 4 complete');
+    setText('#protocolSummary', '0 of 3 complete');
 
     const adherence = document.getElementById('adherenceValue');
     if(adherence) adherence.textContent = '0%';
@@ -9335,7 +9501,7 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
 
-  window.heartyUpdateGoalMarker = updateGoalMarker;
+  window.heartyupdateGoalMarker = updateGoalMarker;
   document.addEventListener('click', function(event){
     if(event.target && event.target.closest && event.target.closest('#saveCoreSetupBtn')){
       setTimeout(updateGoalMarker, 120);
@@ -9839,112 +10005,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
 .core-day-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:2px}.core-day-grid label{display:flex;gap:8px;align-items:center;border:1px solid rgba(156,177,200,.18);background:linear-gradient(180deg,#fff,#f5f8fd);border-radius:14px;padding:10px;font-size:.86rem;font-weight:750;color:#405064}.core-day-grid input{width:auto;margin:0}.hidden-by-med-choice{display:none !important;}
 .goal-marker{display:none !important;background:#b85cff !important;border:2px solid #b85cff !important;}.goal-marker.has-goal{display:block !important;}
 </style>
-<script id="hearty-recovery-final-patch-js">
-(function(){
-  const TODAY_KEY = new Date().toISOString().slice(0,10);
-  const CIRC = 339.292;
-  function jsonGet(k, fallback){try{return JSON.parse(localStorage.getItem(k)||'')||fallback}catch(e){return fallback}}
-  function jsonSet(k, v){try{localStorage.setItem(k, JSON.stringify(v))}catch(e){}}
-  function setText(sel, text){const el=document.querySelector(sel); if(el) el.textContent=text;}
-  function kgFromState(){
-    const profile=jsonGet('hearty_profile',{}), progress=jsonGet('hearty_progress',{});
-    const candidates=[localStorage.getItem('heartyCurrentWeightKg'),localStorage.getItem('heartyTodayWeightKg'),profile.currentWeightKg,profile.weightKg,profile.weight,profile.currentWeight,profile.progress&&profile.progress.currentWeight,profile.progress&&profile.progress.currentWeightKg,progress.currentWeight,progress.currentWeightKg,progress.startingWeight];
-    for(const v of candidates){const n=parseFloat(String(v||'').replace(',','.')); if(Number.isFinite(n)&&n>20&&n<350){try{localStorage.setItem('heartyCurrentWeightKg',String(n));}catch(e){} return n;}}
-    return 70;
-  }
-  function glpWaterTargetMl(){
-    const kg=kgFromState(); if(!kg) return 0;
-    const raw=kg*35; // GLP-1 app target: 35ml/kg, rounded to nearest 250ml, capped.
-    return Math.min(3700, Math.max(1750, Math.round(raw/250)*250));
-  }
-  function waterState(){const all=jsonGet('hearty_water_by_day',{}); return all[TODAY_KEY]||{ml:0};}
-  function saveWaterMl(ml){const all=jsonGet('hearty_water_by_day',{}); all[TODAY_KEY]={ml:Math.max(0,ml|0),updatedAt:new Date().toISOString()}; jsonSet('hearty_water_by_day',all);}
-  function updateHydration(){
-    const target=glpWaterTargetMl(); const ml=waterState().ml||0; const pct=target?Math.min(100,Math.round((ml/target)*100)):0;
-    const l=(ml/1000).toFixed(ml%1000===0?0:1); const targetL=target?(target/1000).toFixed(target%1000===0?0:1):'—';
-    setText('#waterGlassCount', target?`${l} L of ${targetL} L`:`${l} L`);
-    setText('#waterValue', `${l}L`);
-    const unit=document.querySelector('#waterValue')?.closest('.ring-center')?.querySelector('.ring-unit'); if(unit) unit.textContent=target?`of ${targetL} L`:'target pending';
-    const fill=document.getElementById('waterProgressFill'); if(fill) fill.style.width=pct+'%';
-    const waterRing=[...document.querySelectorAll('.ring-block')].find(b=>(b.textContent||'').toLowerCase().includes('hydration'));
-    if(waterRing){ const wrap=waterRing.querySelector('.ring-wrap'); if(wrap) wrap.dataset.progress=String(pct); const c=waterRing.querySelector('.ring-progress'); if(c) c.style.strokeDashoffset=String(CIRC-(CIRC*pct/100)); }
-    document.querySelectorAll('.hydration-sub').forEach(el=>el.textContent=target?'Steady sips help, especially on lower appetite days':'Add your first weigh-in to set your water target');
-  }
-  function bindHydration(){
-    const btn=document.getElementById('waterGlass'); const undo=document.getElementById('waterUndo');
-    if(btn&&!btn.dataset.recoveryBound){btn.dataset.recoveryBound='1';btn.addEventListener('click',function(e){e.preventDefault(); const s=waterState(); saveWaterMl((s.ml||0)+250); updateHydration();},{capture:true});}
-    if(undo&&!undo.dataset.recoveryBound){undo.dataset.recoveryBound='1';undo.addEventListener('click',function(e){e.preventDefault(); const s=waterState(); saveWaterMl(Math.max(0,(s.ml||0)-250)); updateHydration();},{capture:true});}
-  }
-  function cleanStatsBeforeReady(){
-    /* No-op: never reset real rings, water, or goal progress after user data loads. */
-  }
-  function medicationFromState(){
-    const profile=jsonGet('hearty_profile',{}); const med=profile.medication||{};
-    const name=localStorage.getItem('heartyMedicationName')||med.name||profile.medicationName||'';
-    const status=localStorage.getItem('heartyMedicationStatus')||med.status||'';
-    const frequency=localStorage.getItem('heartyMedicationFrequency')||med.frequency||'';
-    let days=jsonGet('heartyInjectionDays',null)||med.injectionDays||[];
-    const legacy=localStorage.getItem('heartyInjectionDay')||profile.injectionDay||med.injectionDay||'';
-    if(!Array.isArray(days)) days=[]; if(!days.length&&legacy) days=[legacy];
-    return {name,status,frequency,days};
-  }
-  function renderMedication(){
-    const card=document.getElementById('injectionCard'); const pill=document.getElementById('homeDayPill'); const m=medicationFromState();
-    const active=m.status==='active'||(m.name && m.name!=='not_using' && m.name!=='prefer_not');
-    if(!active){ if(card){card.hidden=true;card.style.setProperty('display','none','important');} if(pill){pill.hidden=true;pill.dataset.empty='true';pill.textContent='';} return; }
-    const today=new Date().toLocaleDateString('en-US',{weekday:'long'}); const isToday=m.days.some(d=>String(d).toLowerCase()===today.toLowerCase());
-    if(card){card.hidden=false;card.style.display=''; setText('#injectionCard .injection-title', isToday?'Injection today':(m.days.length?`Next injection: ${m.days.join(', ')}`:'Medication schedule')); setText('#injectionCard .injection-copy', m.name&&m.name!=='Other'?m.name:(m.frequency?`Frequency: ${m.frequency.replace(/_/g,' ')}`:'Medication schedule saved'));}
-    if(pill){pill.hidden=false;pill.dataset.empty='false';pill.style.display='inline-flex';pill.textContent=isToday?'Injection today':(m.days.length?`Injection: ${m.days.join(', ')}`:'Medication saved');}
-  }
-  function setupMedicationOnboarding(){
-    const med=document.getElementById('coreSetupMedication'), freq=document.getElementById('coreSetupFrequency'), freqField=document.getElementById('coreSetupFrequencyField'), daysField=document.getElementById('coreSetupDaysField'), legacy=document.getElementById('coreSetupInjectionDay');
-    if(!med) return;
-    function sync(){
-      const using=med.value && med.value!=='not_using' && med.value!=='prefer_not';
-      if(freqField) freqField.classList.toggle('hidden-by-med-choice',!using);
-      const needsDays=using && freq && ['weekly','twice_weekly','custom'].includes(freq.value);
-      if(daysField) daysField.classList.toggle('hidden-by-med-choice',!needsDays);
-    }
-    med.addEventListener('change',sync); if(freq) freq.addEventListener('change',sync); sync();
-    const saved=medicationFromState(); if(saved.name && !med.value) med.value=saved.name; if(freq && saved.frequency) freq.value=saved.frequency; document.querySelectorAll('[data-core-med-day]').forEach(cb=>{cb.checked=saved.days.includes(cb.value);}); sync();
-    const save=document.getElementById('saveCoreSetupBtn');
-    if(save&&!save.dataset.medPatchBound){save.dataset.medPatchBound='1';save.addEventListener('click',function(){
-      const name=med.value||''; const using=name && name!=='not_using' && name!=='prefer_not'; const frequency=freq?freq.value:''; const days=[...document.querySelectorAll('[data-core-med-day]:checked')].map(x=>x.value);
-      if(legacy) legacy.value=days[0]||'';
-      if(!using){localStorage.removeItem('heartyMedicationName');localStorage.removeItem('heartyInjectionDay');localStorage.removeItem('heartyInjectionDays');localStorage.setItem('heartyMedicationStatus', name==='prefer_not'?'prefer_not':'not_using');}
-      else{localStorage.setItem('heartyMedicationStatus','active');localStorage.setItem('heartyMedicationName',name); if(frequency) localStorage.setItem('heartyMedicationFrequency',frequency); jsonSet('heartyInjectionDays',days); if(days[0]) localStorage.setItem('heartyInjectionDay',days[0]);}
-      const profile=jsonGet('hearty_profile',{}); profile.medication={status:using?'active':(name==='prefer_not'?'prefer_not':'not_using'),name:using?name:null,frequency:using?frequency:null,injectionDays:using?days:[]}; jsonSet('hearty_profile',profile); setTimeout(renderMedication,120);
-    },true);}
-  }
-  function forceFirstUseGlow(){
-    const card=document.getElementById('todaysRhythmCard'); if(!card) return;
-    const photo=document.getElementById('photoTask');
-    const done=!!(photo && (photo.classList.contains('completed') || photo.querySelector('.task-icon-btn.done') || photo.querySelector('.task-done.active')));
-    card.classList.toggle('first-use-mode', !done);
-    const label=card.querySelector('.protocol-head .section-label'); if(label && !done) label.textContent='WELCOME TO HEARTY';
-  }
-  function bindLesson(){
-    const card=document.getElementById('lessonCard'), btn=document.getElementById('toggleLesson'), body=document.getElementById('lessonBody'), done=document.getElementById('completeLesson'); if(!card) return;
-    const completed=jsonGet('heartyLessonProgress',{completed:[],lastCompletedDate:null});
-    const total=10; if((completed.completed||[]).length>=total){card.classList.add('lesson-complete-all');return;} else card.classList.remove('lesson-complete-all');
-    const num=Math.min(total,(completed.completed||[]).length+1); const title=card.querySelector('.lesson-meta div:last-child div[style*="font-weight"]'); if(title) title.textContent=`Lesson ${num}/10 • ${['Welcome — Start Here','Protein comes first','Hydration and side effects','Small meals still count','Walking is medicine','Strength protects muscle','When appetite is low','Protecting muscle while appetite is low','Support days are still progress','Your rhythm from here'][num-1]}`;
-    if(btn&&!btn.dataset.recoveryBound){btn.dataset.recoveryBound='1';btn.addEventListener('click',function(e){e.preventDefault(); card.classList.toggle('open'); btn.textContent=card.classList.contains('open')?'Close lesson':'Open lesson';},true);}
-    if(done&&!done.dataset.recoveryBound){done.dataset.recoveryBound='1';done.addEventListener('click',function(e){e.preventDefault(); const p=jsonGet('heartyLessonProgress',{completed:[]}); const arr=Array.isArray(p.completed)?p.completed:[]; if(!arr.includes(num)) arr.push(num); p.completed=arr; p.lastCompletedDate=TODAY_KEY; jsonSet('heartyLessonProgress',p); if(arr.length>=total) card.classList.add('lesson-complete-all'); else bindLesson();},true);}
-  }
-  function setupCoreOpen(){
-    const profile=jsonGet('hearty_profile',{}); const hasName=!!(localStorage.getItem('heartyUserName')||profile.name||profile.firstName);
-    if(!hasName){localStorage.removeItem('heartyCoreSetupDone'); const sheet=document.getElementById('coreSetupSheet'); if(sheet) setTimeout(()=>{sheet.classList.add('show');sheet.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';},650);}
-  }
-  function updateGoalMarker(){
-    const profile=jsonGet('hearty_profile',{}), progress=jsonGet('hearty_progress',{}); const cur=kgFromState(); const target=parseFloat(String(profile.targetWeightKg||(profile.progress&&profile.progress.targetWeight)||progress.targetWeight||'').replace(',','.')); const marker=document.querySelector('.goal-marker');
-    if(marker){ if(Number.isFinite(target)&&target>0&&target!==cur) marker.classList.add('has-goal'); else marker.classList.remove('has-goal'); }
-  }
-  function boot(){cleanStatsBeforeReady(); setupMedicationOnboarding(); bindHydration(); updateHydration(); renderMedication(); forceFirstUseGlow(); bindLesson(); setupCoreOpen(); updateGoalMarker(); requestAnimationFrame(()=>document.body.classList.add('home-ready'));}
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
-  window.addEventListener('load',()=>{boot();setTimeout(boot,250);});
-  document.addEventListener('click',()=>setTimeout(()=>{forceFirstUseGlow();updateHydration();renderMedication();},80),true);
-})();
-</script>
 <!-- PATCH: onboarding day limits, header polish, medication compact card, hydration 250ml/progress hard-fix -->
 <style id="hearty-home-current-pass-fixes">
   /* 1) Header/status strip polish: remove the accidental square white band and keep the pill clean. */
@@ -10030,202 +10090,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
     #injectionCard:not([hidden]){padding:16px !important; border-radius:22px !important;}
   }
 </style>
-<script id="hearty-home-current-pass-fixes-js">
-(function(){
-  const CIRC = 339.292;
-  const DAY_LIMITS = { weekly:1, once_weekly:1, twice_weekly:2 };
-  const TODAY_KEY = new Date().toISOString().slice(0,10);
-
-  function jsonGet(key, fallback){
-    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
-  }
-  function jsonSet(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
-  function setText(sel, value){ const el=document.querySelector(sel); if(el) el.textContent=value; }
-  function kgFromState(){
-  const profile=jsonGet('hearty_profile',{}), progress=jsonGet('hearty_progress',{});
-  const candidates=[
-    localStorage.getItem('heartyTodayWeightKg'),
-    localStorage.getItem('heartyCurrentWeightKg'),
-    profile.currentWeightKg,
-    profile.weightKg,
-    profile.weight,
-    profile.progress?.currentWeight,
-    profile.progress?.currentWeightKg,
-    progress.currentWeight,
-    progress.currentWeightKg
-  ];
-  for(const v of candidates){
-    const n=parseFloat(String(v||'').replace(',','.'));
-    if(Number.isFinite(n) && n>20 && n<350) return n;
-  }
-  return 0;
-}
-  function waterTargetMl(){
-    const kg=kgFromState();
-    if(!kg) return 0;
-    return Math.min(3700, Math.max(1750, Math.round((kg*35)/250)*250));
-  }
-  function waterState(){
-    const all=jsonGet('hearty_water_by_day',{});
-    return all[TODAY_KEY] || {ml:0};
-  }
-  function saveWaterMl(ml){
-    const all=jsonGet('hearty_water_by_day',{});
-    all[TODAY_KEY]={ml:Math.max(0, Math.round(Number(ml)||0)), updatedAt:new Date().toISOString()};
-    jsonSet('hearty_water_by_day', all);
-  }
-  function formatL(ml){
-    const l=ml/1000;
-    return l.toFixed(ml%1000===0?0:2).replace(/\.00$/,'').replace(/0$/,'');
-  }
-  function renderHydration(){
-    const ml=waterState().ml || 0;
-    const target=waterTargetMl();
-    const pct=target ? Math.max(0, Math.min(100, (ml/target)*100)) : 0;
-    const l=formatL(ml);
-    const targetL=target ? formatL(target) : null;
-
-    setText('#waterGlassCount', target ? `${l} L of ${targetL} L` : `${l} L`);
-    setText('#waterValue', `${l}L`);
-    const unit=document.querySelector('#waterValue')?.closest('.ring-center')?.querySelector('.ring-unit');
-    if(unit) unit.textContent = target ? `of ${targetL} L` : 'target pending';
-
-    const fill=document.getElementById('waterProgressFill');
-    if(fill) fill.style.width = pct + '%';
-
-    const hydrationRing=[...document.querySelectorAll('.ring-block')].find(block => (block.textContent||'').toLowerCase().includes('hydration'));
-    if(hydrationRing){
-      const wrap=hydrationRing.querySelector('.ring-wrap');
-      const circle=hydrationRing.querySelector('.ring-progress');
-      if(wrap) wrap.dataset.progress = String(Math.round(pct));
-      if(circle){
-        circle.style.strokeDasharray = String(CIRC);
-        circle.style.strokeDashoffset = String(CIRC - (CIRC*pct/100));
-      }
-    }
-
-    document.querySelectorAll('.hydration-sub').forEach(el=>{
-      el.textContent = target ? 'Steady sips help, especially on lower appetite days' : 'Add your first weigh-in to set your water target';
-    });
-  }
-  function hardBindHydration(){
-    const btn=document.getElementById('waterGlass');
-    if(btn && btn.dataset.hardHydrationBound !== 'final250'){
-      const clone=btn.cloneNode(true);
-      clone.dataset.hardHydrationBound='final250';
-      btn.replaceWith(clone);
-      clone.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const s=waterState();
-        saveWaterMl((s.ml||0)+250);
-        clone.classList.add('pressed');
-        setTimeout(()=>clone.classList.remove('pressed'),220);
-        renderHydration();
-      }, true);
-    }
-    const undo=document.getElementById('waterUndo');
-    if(undo && undo.dataset.hardHydrationBound !== 'final250'){
-      const clone=undo.cloneNode(true);
-      clone.dataset.hardHydrationBound='final250';
-      undo.replaceWith(clone);
-      clone.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const s=waterState();
-        saveWaterMl(Math.max(0,(s.ml||0)-250));
-        renderHydration();
-      }, true);
-    }
-    renderHydration();
-  }
-
-  function frequencyValue(){
-    const freq=document.getElementById('coreSetupFrequency');
-    return freq ? freq.value : '';
-  }
-  function selectedDayBoxes(){ return [...document.querySelectorAll('[data-core-med-day]:checked')]; }
-  function enforceDayLimit(changedBox){
-    const freq=frequencyValue();
-    const limit=DAY_LIMITS[freq] || null;
-    const boxes=selectedDayBoxes();
-    if(limit && boxes.length > limit){
-      if(changedBox) changedBox.checked=false;
-      else boxes.slice(limit).forEach(box=>box.checked=false);
-      const note=document.getElementById('coreSetupDayLimitNote');
-      if(note){
-        note.textContent = limit === 1 ? 'Choose one injection day.' : 'Choose two injection days.';
-        note.hidden=false;
-      }
-      return false;
-    }
-    const note=document.getElementById('coreSetupDayLimitNote');
-    if(note){
-      note.textContent = limit ? (limit === 1 ? 'Choose one injection day.' : 'Choose two injection days.') : 'Choose the days that match your schedule.';
-      note.hidden=false;
-    }
-    return true;
-  }
-  function setupOnboardingDayRules(){
-    const freq=document.getElementById('coreSetupFrequency');
-    const daysField=document.getElementById('coreSetupDaysField');
-    if(daysField && !document.getElementById('coreSetupDayLimitNote')){
-      const note=document.createElement('div');
-      note.id='coreSetupDayLimitNote';
-      note.style.cssText='margin-top:8px;color:#6d7b8c;font-size:.82rem;font-weight:700;text-align:center;';
-      daysField.appendChild(note);
-    }
-    document.querySelectorAll('[data-core-med-day]').forEach(box=>{
-      if(box.dataset.dayLimitBound==='1') return;
-      box.dataset.dayLimitBound='1';
-      box.addEventListener('change', function(){ enforceDayLimit(box); }, true);
-    });
-    if(freq && freq.dataset.dayLimitBound!=='1'){
-      freq.dataset.dayLimitBound='1';
-      freq.addEventListener('change', function(){
-        const limit=DAY_LIMITS[freq.value] || null;
-        const boxes=selectedDayBoxes();
-        if(limit) boxes.slice(limit).forEach(box=>box.checked=false);
-        enforceDayLimit(null);
-      }, true);
-    }
-    enforceDayLimit(null);
-
-    const save=document.getElementById('saveCoreSetupBtn');
-    if(save && save.dataset.dayLimitSaveBound !== '1'){
-      save.dataset.dayLimitSaveBound='1';
-      save.addEventListener('click', function(e){
-        const freqVal=frequencyValue();
-        const limit=DAY_LIMITS[freqVal] || null;
-        const checked=selectedDayBoxes();
-        if(limit && checked.length !== limit){
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          const note=document.getElementById('coreSetupDayLimitNote');
-          if(note){
-            note.textContent = limit === 1 ? 'Please choose exactly one injection day.' : 'Please choose exactly two injection days.';
-            note.hidden=false;
-          }
-        }
-      }, true);
-    }
-  }
-
-  function compactMedicationCard(){
-    const card=document.getElementById('injectionCard');
-    if(card && !card.hidden){ card.classList.add('medication-card-compact-final'); }
-  }
-
-  function run(){
-    setupOnboardingDayRules();
-    hardBindHydration();
-    compactMedicationCard();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', run); else run();
-  window.addEventListener('load', function(){ run(); setTimeout(run,150); setTimeout(run,600); });
-  document.addEventListener('click', function(){ setTimeout(function(){ renderHydration(); compactMedicationCard(); },60); }, true);
-})();
-</script>
 <!-- PATCH: final first-use glow + photo check-in hard guard -->
 <style id="hearty-home-final-override-v3">
 /* Final Home stabiliser: do not show empty medication cards; keep badges hidden for v1. */
@@ -10332,328 +10196,6 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
 .ring-progress.teal{stroke:var(--ring-b, #06c2a8) !important;}
 .ring-progress.violet{stroke:var(--ring-c, #b85cff) !important;}
 </style>
-<script id="hearty-home-final-state-stabiliser-v3">
-(function(){
-  const CIRC = 339.292;
-  const TODAY = new Date().toISOString().slice(0,10);
-  const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-  function readJSON(key, fallback){
-    try{
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    }catch(e){ return fallback; }
-  }
-
-  function writeJSON(key, value){
-    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
-  }
-
-  function validKg(value){
-    const n = parseFloat(String(value || '').replace(',','.'));
-    return Number.isFinite(n) && n > 20 && n < 350 ? n : 0;
-  }
-
-  function kgFromState(){
-    const profile = readJSON('hearty_profile', {});
-    const progress = readJSON('hearty_progress', {});
-    const settings = readJSON('hearty_settings', {});
-    const candidates = [
-      localStorage.getItem('heartyCurrentWeightKg'),
-      localStorage.getItem('heartyTodayWeightKg'),
-      localStorage.getItem('heartyStartingWeightKg'),
-      profile.currentWeightKg,
-      profile.weightKg,
-      profile.weight,
-      profile.currentWeight,
-      profile.startingWeight,
-      profile.startingWeightKg,
-      profile.progress && profile.progress.currentWeight,
-      profile.progress && profile.progress.currentWeightKg,
-      profile.progress && profile.progress.startingWeight,
-      progress.currentWeight,
-      progress.currentWeightKg,
-      progress.startingWeight,
-      settings.currentWeightKg,
-      settings.weightKg,
-      settings.weight
-    ];
-
-    for(const value of candidates){
-      const kg = validKg(value);
-      if(kg){
-        try{ localStorage.setItem('heartyCurrentWeightKg', String(kg)); }catch(e){}
-        return kg;
-      }
-    }
-    return 0;
-  }
-
-  function waterTargetMl(){
-    const kg = kgFromState();
-    if(!kg) return 2000;
-    return Math.min(3700, Math.max(1750, Math.round((kg * 35) / 250) * 250));
-  }
-
-  function readWaterMl(){
-    const byDay = readJSON('hearty_water_by_day', {});
-    if(byDay && byDay[TODAY] && Number.isFinite(Number(byDay[TODAY].ml))){
-      return Math.max(0, Number(byDay[TODAY].ml));
-    }
-
-    const logs = readJSON('hearty_hydration_logs', []);
-    const todayLog = Array.isArray(logs) ? logs.find(x => x && x.date === TODAY) : null;
-    if(todayLog && Number.isFinite(Number(todayLog.ml))){
-      return Math.max(0, Number(todayLog.ml));
-    }
-
-    return 0;
-  }
-
-  function saveWaterMl(ml){
-    const target = waterTargetMl();
-    const safe = Math.max(0, Math.min(target, Math.round(Number(ml) || 0)));
-
-    const byDay = readJSON('hearty_water_by_day', {});
-    byDay[TODAY] = { ml:safe, updatedAt:new Date().toISOString() };
-    writeJSON('hearty_water_by_day', byDay);
-
-    const logs = readJSON('hearty_hydration_logs', []);
-    const nextLogs = (Array.isArray(logs) ? logs : []).filter(x => !(x && x.date === TODAY));
-    nextLogs.push({
-      date:TODAY,
-      ml:safe,
-      liters:Math.round((safe / 1000) * 100) / 100,
-      targetMl:target,
-      targetLiters:Math.round((target / 1000) * 100) / 100
-    });
-    writeJSON('hearty_hydration_logs', nextLogs);
-  }
-
-  function setRing(circle, pct){
-    if(!circle) return;
-    const p = Math.max(0, Math.min(100, Number(pct) || 0));
-    circle.style.strokeDasharray = String(CIRC);
-    circle.style.strokeDashoffset = String(CIRC - (CIRC * p / 100));
-  }
-
-  function hydrationCircle(){
-    const value = document.getElementById('waterValue');
-    const wrap = value ? value.closest('.ring-wrap') : null;
-    if(wrap){
-      const circle = wrap.querySelector('.ring-progress');
-      if(circle) return circle;
-    }
-    const hydrationBlock = [...document.querySelectorAll('.ring-block')].find(block => (block.textContent || '').toLowerCase().includes('hydration'));
-    return hydrationBlock ? hydrationBlock.querySelector('.ring-progress') : null;
-  }
-
-  function formatLitres(ml){
-    const litres = ml / 1000;
-    return litres.toFixed(ml % 1000 === 0 ? 0 : 1);
-  }
-
-  function renderHydration(){
-    const ml = readWaterMl();
-    const target = waterTargetMl();
-    const pct = target ? Math.max(0, Math.min(100, (ml / target) * 100)) : 0;
-    const litres = formatLitres(ml);
-    const targetLitres = formatLitres(target);
-
-    const value = document.getElementById('waterValue');
-    if(value) value.textContent = litres + 'L';
-
-    const unit = value && value.closest('.ring-center') ? value.closest('.ring-center').querySelector('.ring-unit') : null;
-    if(unit) unit.textContent = 'of ' + targetLitres + ' L';
-
-    const count = document.getElementById('waterGlassCount');
-    if(count) count.textContent = litres + ' L of ' + targetLitres + ' L';
-
-    const stat = document.getElementById('waterStatline');
-    if(stat) stat.textContent = litres + ' L logged today';
-
-    const undo = document.getElementById('waterUndo');
-    if(undo) undo.disabled = ml <= 0;
-
-    const fill = document.getElementById('waterProgressFill');
-    if(fill) fill.style.width = Math.round(pct) + '%';
-
-    const circle = hydrationCircle();
-    setRing(circle, pct);
-    const wrap = circle ? circle.closest('.ring-wrap') : null;
-    if(wrap) wrap.dataset.progress = String(Math.round(pct));
-  }
-
-  function addWater(delta){
-    saveWaterMl(readWaterMl() + delta);
-    renderHydration();
-    updateAllRings();
-  }
-
-  function updateAllRings(){
-    document.querySelectorAll('.ring-block').forEach(block => {
-      const circle = block.querySelector('.ring-progress');
-      const wrap = block.querySelector('.ring-wrap');
-      const value = block.querySelector('.ring-value');
-      if(!circle) return;
-
-      if(value && value.id === 'waterValue'){
-        const target = waterTargetMl();
-        setRing(circle, target ? (readWaterMl() / target) * 100 : 0);
-        return;
-      }
-
-      let pct = Number(wrap && wrap.dataset.progress);
-      if(!Number.isFinite(pct) && value){
-        const txt = (value.textContent || '').trim();
-        if(txt.includes('%')) pct = parseFloat(txt);
-        else if(txt.includes('/')){
-          const parts = txt.split('/').map(x => parseFloat(x));
-          pct = parts[1] ? (parts[0] / parts[1]) * 100 : 0;
-        }else pct = parseFloat(txt);
-      }
-      setRing(circle, pct || 0);
-    });
-  }
-
-  function medicationState(){
-    const profile = readJSON('hearty_profile', {});
-    const med = profile.medication || {};
-    const name = localStorage.getItem('heartyMedicationName') || med.name || profile.medicationName || '';
-    const status = localStorage.getItem('heartyMedicationStatus') || med.status || '';
-    const frequency = localStorage.getItem('heartyMedicationFrequency') || med.frequency || '';
-    let days = readJSON('heartyInjectionDays', null) || med.injectionDays || [];
-    const legacy = localStorage.getItem('heartyInjectionDay') || profile.injectionDay || med.injectionDay || '';
-    if(!Array.isArray(days)) days = [];
-    if(!days.length && legacy) days = [legacy];
-    return {name,status,frequency,days};
-  }
-
-  function nextInjectionDay(days){
-    if(!Array.isArray(days) || !days.length) return null;
-    const normal = days.map(d => String(d || '').trim()).filter(Boolean);
-    const todayIndex = new Date().getDay();
-    for(let offset = 0; offset <= 7; offset++){
-      const idx = (todayIndex + offset) % 7;
-      const day = WEEKDAYS[idx];
-      if(normal.some(d => d.toLowerCase() === day.toLowerCase())){
-        return {day, offset};
-      }
-    }
-    return null;
-  }
-
-  function renderMedication(){
-    const card = document.getElementById('injectionCard');
-    const pill = document.getElementById('homeDayPill');
-    if(!card) return;
-
-    const m = medicationState();
-    const active = m.status === 'active' || (m.name && m.name !== 'not_using' && m.name !== 'prefer_not');
-    const next = nextInjectionDay(m.days);
-    const doneKey = 'heartyInjectionLogged_' + TODAY;
-    const logged = localStorage.getItem(doneKey) === 'true';
-    const isToday = !!(next && next.offset === 0);
-    const medName = active && m.name && m.name !== 'Other' ? m.name : 'Medication';
-
-    card.hidden = false;
-    card.classList.add('injection-visible');
-    card.classList.toggle('injection-logged', logged && isToday);
-    card.classList.toggle('due', isToday && !logged);
-    card.style.setProperty('display','flex','important');
-
-    const title = card.querySelector('.injection-title');
-    const copy = card.querySelector('.injection-copy');
-
-    if(!active || !next){
-      if(title) title.textContent = 'Injection schedule';
-      if(copy) copy.textContent = 'Add your medication and injection day in Settings.';
-    }else if(isToday){
-      if(title) title.textContent = logged ? 'Injection done today' : 'Injection due today';
-      if(copy) copy.textContent = logged ? medName + ' marked as complete.' : medName + ' is due today.';
-    }else{
-      const nextDate = new Date();
-      nextDate.setDate(nextDate.getDate() + next.offset);
-      if(title) title.textContent = 'Next injection';
-      if(copy) copy.textContent = medName + ' · ' + nextDate.toLocaleDateString('en-ZA', { weekday:'long', day:'numeric', month:'short' });
-    }
-
-    let actions = card.querySelector('.injection-actions');
-    if(!actions){
-      actions = document.createElement('div');
-      actions.className = 'injection-actions';
-      card.appendChild(actions);
-    }
-
-    if(active && isToday){
-      actions.style.display = 'flex';
-      actions.innerHTML = '<button type="button" class="home-injection-check' + (logged ? ' done' : '') + '" id="homeInjectionDoneBtn"><span class="home-injection-box">✓</span><span>' + (logged ? 'Injection done today' : 'Mark injection done') + '</span></button>';
-      const btn = actions.querySelector('#homeInjectionDoneBtn');
-      if(btn){
-        btn.onclick = function(){
-          localStorage.setItem(doneKey, 'true');
-          renderMedication();
-        };
-      }
-    }else{
-      actions.innerHTML = '';
-      actions.style.display = 'none';
-    }
-
-    if(pill){
-      pill.hidden = false;
-      pill.dataset.empty = 'false';
-      pill.style.display = 'inline-flex';
-      if(active && next) pill.textContent = isToday ? (logged ? 'Injection done' : 'Injection today') : 'Injection: ' + next.day;
-      else pill.textContent = 'Medication setup';
-    }
-  }
-
-  function bindFinalHomeFixes(){
-    const add = document.getElementById('waterGlass');
-    if(add && add.dataset.finalStateBound !== '1'){
-      add.dataset.finalStateBound = '1';
-      add.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        addWater(250);
-      }, true);
-    }
-
-    const undo = document.getElementById('waterUndo');
-    if(undo && undo.dataset.finalStateBound !== '1'){
-      undo.dataset.finalStateBound = '1';
-      undo.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        addWater(-250);
-      }, true);
-    }
-
-    document.addEventListener('click', function(e){
-      const supportBtn = e.target.closest('#supportModeBtn,#supportButton,#supportMainBtn,.support-main-btn,[data-open-support]');
-      if(supportBtn){
-        e.preventDefault();
-        e.stopPropagation();
-        window.location.href = 'support.html';
-      }
-    }, true);
-
-    renderHydration();
-    renderMedication();
-    updateAllRings();
-    setTimeout(function(){ renderHydration(); renderMedication(); updateAllRings(); }, 250);
-    setTimeout(function(){ renderHydration(); renderMedication(); updateAllRings(); }, 900);
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindFinalHomeFixes);
-  else bindFinalHomeFixes();
-
-  window.heartyRenderHydration = renderHydration;
-  window.heartyRenderMedication = renderMedication;
-  window.heartyUpdateRings = updateAllRings;
-})();
-</script>
 <style id="hearty-injection-card-useful-final-css">
 #injectionCard{
   display:flex !important;
@@ -11011,7 +10553,7 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
       if(copy) copy.textContent=`${medName} is next scheduled for ${fmt(next.date)}. You will be able to tick it off here on the day.`;
     }else{
       if(title) title.textContent='Medication schedule';
-      if(copy) copy.textContent='Add your medication name and injection day in Settings so Hearty can show your next dose here.';
+      if(copy) copy.textContent='Complete onboarding to set your medication name and injection day so Hearty can show your next dose here.';
     }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
@@ -11083,172 +10625,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   .goal-labels span,.goal-labels span:nth-child(2),.goal-labels span:nth-child(3){text-align:left !important;}
 }
 </style>
-<script id="hearty-day1-glow-progress-strip-final-fix">
-(function(){
-  const TODAY = new Date().toISOString().slice(0,10);
-
-  function json(key, fallback){
-    try{
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    }catch(e){ return fallback; }
-  }
-
-  function num(v){
-    if(v == null || v === '') return null;
-    const n = parseFloat(String(v).replace(',','.'));
-    return Number.isFinite(n) && n > 20 && n < 350 ? n : null;
-  }
-
-  function fmtKg(v){
-    const n = num(v);
-    if(n == null) return 'Not set';
-    return (Math.round(n * 10) / 10).toFixed(1).replace('.0','') + ' kg';
-  }
-
-  function getLatestWeightLog(){
-    const logs = json('hearty_weight_logs', []);
-    if(!Array.isArray(logs) || !logs.length) return null;
-    const clean = logs
-      .map(x => ({ date: x && x.date, value: num(x && (x.value ?? x.weight ?? x.kg)) }))
-      .filter(x => x.date && x.value != null)
-      .sort((a,b) => String(a.date).localeCompare(String(b.date)));
-    return clean.length ? clean[clean.length - 1] : null;
-  }
-
-  function readWeights(){
-    const profile = json('hearty_profile', {}) || {};
-    const progress = json('hearty_progress', {}) || {};
-    const latest = getLatestWeightLog();
-
-    const current =
-      num(localStorage.getItem('heartyTodayWeightKg')) ??
-      num(localStorage.getItem('heartyCurrentWeightKg')) ??
-      (latest ? latest.value : null) ??
-      num(progress.currentWeightKg) ??
-      num(progress.currentWeight) ??
-      num(profile.currentWeightKg) ??
-      num(profile.weightKg) ??
-      num(profile.weight) ??
-      num(profile.progress && (profile.progress.currentWeightKg ?? profile.progress.currentWeight));
-
-    const start =
-      num(localStorage.getItem('heartyStartingWeightKg')) ??
-      num(progress.startingWeightKg) ??
-      num(progress.startingWeight) ??
-      num(profile.startingWeightKg) ??
-      num(profile.startingWeight) ??
-      num(profile.progress && (profile.progress.startingWeightKg ?? profile.progress.startingWeight)) ??
-      current;
-
-    const target =
-      num(localStorage.getItem('heartyTargetWeightKg')) ??
-      num(progress.targetWeightKg) ??
-      num(progress.targetWeight) ??
-      num(profile.targetWeightKg) ??
-      num(profile.targetWeight) ??
-      num(profile.goalWeightKg) ??
-      num(profile.progress && (profile.progress.targetWeightKg ?? profile.progress.targetWeight));
-
-    return { current, start, target, latestDate: latest && latest.date };
-  }
-
-  function renderProgressStrip(){
-    const band = document.querySelector('.progress-band');
-    if(!band) return;
-
-    const main = band.querySelector('.progress-main');
-    const metas = band.querySelectorAll('.progress-meta');
-    const micro = band.querySelector('.progress-microcopy');
-    const fill = band.querySelector('.goalbar-fill');
-    const marker = band.querySelector('.goal-marker');
-    const labels = band.querySelector('.goal-labels');
-
-    const w = readWeights();
-
-    if(w.current == null){
-      if(main) main.textContent = 'No weight progress logged yet';
-      if(metas[0]) metas[0].textContent = 'Add your first weigh-in to begin tracking.';
-      if(metas[1]) metas[1].textContent = 'Target weight must be provided by your doctor.';
-      if(micro) micro.textContent = 'Your rings give the quick view. Below is the weight path and next milestone so you can see where things are heading.';
-      if(fill) fill.style.width = '0%';
-      if(marker) marker.classList.remove('has-goal');
-      if(labels) labels.innerHTML = '<span>Start not set</span><span>Next milestone not set</span><span>Goal set by your doctor</span>';
-      return;
-    }
-
-    const start = w.start ?? w.current;
-    const target = w.target;
-    const lost = Math.max(0, start - w.current);
-
-    if(main) main.textContent = lost > 0.05 ? `${fmtKg(lost)} down so far` : 'Weight tracking started';
-    if(metas[0]) metas[0].textContent = `Current: ${fmtKg(w.current)}`;
-    if(metas[1]) metas[1].textContent = target ? `Doctor target: ${fmtKg(target)}` : 'Target weight must be provided by your doctor.';
-    if(micro) micro.textContent = target
-      ? 'This strip shows your path from starting weight to your doctor-provided target.'
-      : 'Your current weight is logged. Add a doctor-provided target in Settings to unlock the full progress path.';
-
-    let pct = 0;
-    if(target && start && Math.abs(start - target) > 0.1){
-      pct = ((start - w.current) / (start - target)) * 100;
-    }else if(lost > 0.05){
-      pct = Math.min(100, Math.max(8, lost * 10));
-    }
-    pct = Math.max(0, Math.min(100, pct));
-    if(fill) fill.style.width = pct + '%';
-    if(marker) marker.classList.toggle('has-goal', !!target);
-
-    let middle = 'Next milestone not set';
-    if(target && start && Math.abs(start - target) > 0.1){
-      const totalToLose = Math.max(0, start - target);
-      const milestones = [0.25,0.5,0.75,1].map(x => start - (totalToLose * x));
-      const next = milestones.find(m => w.current > m + 0.05);
-      middle = next ? `Next: ${fmtKg(next)}` : 'Target milestone reached';
-    }else if(lost > 0.05){
-      middle = `Progress: ${fmtKg(lost)} down`;
-    }
-
-    if(labels){
-      labels.innerHTML = `<span>Start: ${fmtKg(start)}</span><span>${middle}</span><span>${target ? 'Goal: ' + fmtKg(target) : 'Goal set by your doctor'}</span>`;
-    }
-  }
-
-  function taskDone(id){
-    const item = document.getElementById(id);
-    if(!item) return false;
-    return item.classList.contains('completed') || !!item.querySelector('.task-icon-btn.done,.task-done.active,.icon-check:not([style*="display:none"])');
-  }
-
-  function lockWelcomeGlowWhileTasksRemain(){
-    const card = document.getElementById('todaysRhythmCard');
-    if(!card) return;
-    const ids = ['weighInTask','photoTask','walkTask','lessonTaskItem'].filter(id => document.getElementById(id));
-    if(!ids.length) return;
-    const complete = ids.filter(taskDone).length;
-    const shouldGlow = complete < ids.length;
-    card.classList.toggle('hearty-welcome-glow-locked', shouldGlow);
-    card.classList.toggle('first-use-mode', shouldGlow);
-  }
-
-  function run(){
-    renderProgressStrip();
-    lockWelcomeGlowWhileTasksRemain();
-  }
-
-  document.addEventListener('click', function(e){
-    if(e.target.closest('#walkTask,.task-action-btn,[data-action="walk"],[data-action="weigh-in"],[data-action="photos"],#completeLesson,#completePhotoCheckInBtn')){
-      setTimeout(run, 80);
-      setTimeout(run, 350);
-    }
-  }, true);
-
-  window.addEventListener('storage', run);
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
-  else run();
-  setTimeout(run, 250);
-  setTimeout(run, 900);
-})();
-</script>
 <style id="hearty-progress-strip-final-fix-v1">
 .progress-band{
   display:block !important;
@@ -11291,179 +10667,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   gap:10px !important;
 }
 </style>
-<script id="hearty-progress-strip-final-fix-v1">
-(function(){
-  const TODAY = new Date().toISOString().slice(0,10);
-
-  function readJSON(key, fallback){
-    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
-    catch(e){ return fallback; }
-  }
-
-  function kg(v){
-    const n = parseFloat(String(v ?? '').replace(',','.'));
-    return Number.isFinite(n) && n > 20 && n < 350 ? Math.round(n * 10) / 10 : null;
-  }
-
-  function latestLogKg(){
-    const logs = readJSON('hearty_weight_logs', []);
-    if(!Array.isArray(logs) || !logs.length) return null;
-    const rows = logs.filter(x => x && (x.value || x.weight || x.kg)).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')));
-    const last = rows[rows.length - 1];
-    return last ? kg(last.value ?? last.weight ?? last.kg) : null;
-  }
-
-  function firstKg(){
-    const profile = readJSON('hearty_profile', {});
-    const progress = readJSON('hearty_progress', {});
-    const settings = readJSON('hearty_settings', {});
-    const setup = readJSON('heartyCoreSetup', {});
-    const candidates = [
-      localStorage.getItem('heartyStartingWeightKg'),
-      progress.startingWeightKg,
-      progress.startingWeight,
-      profile.startingWeightKg,
-      profile.startingWeight,
-      profile.progress && profile.progress.startingWeight,
-      profile.progress && profile.progress.startingWeightKg,
-      settings.startingWeightKg,
-      setup.startingWeightKg
-    ];
-    for(const v of candidates){ const n = kg(v); if(n) return n; }
-    return currentKg();
-  }
-
-  function currentKg(){
-    const profile = readJSON('hearty_profile', {});
-    const progress = readJSON('hearty_progress', {});
-    const settings = readJSON('hearty_settings', {});
-    const setup = readJSON('heartyCoreSetup', {});
-    const candidates = [
-      localStorage.getItem('heartyCurrentWeightKg'),
-      localStorage.getItem('heartyTodayWeightKg'),
-      latestLogKg(),
-      progress.currentWeightKg,
-      progress.currentWeight,
-      profile.currentWeightKg,
-      profile.currentWeight,
-      profile.weightKg,
-      profile.weight,
-      profile.progress && profile.progress.currentWeight,
-      profile.progress && profile.progress.currentWeightKg,
-      settings.currentWeightKg,
-      settings.weightKg,
-      settings.weight,
-      setup.currentWeightKg,
-      setup.weightKg
-    ];
-    for(const v of candidates){ const n = kg(v); if(n){ try{localStorage.setItem('heartyCurrentWeightKg', String(n));}catch(e){} return n; } }
-    return null;
-  }
-
-  function targetKg(){
-    const profile = readJSON('hearty_profile', {});
-    const progress = readJSON('hearty_progress', {});
-    const settings = readJSON('hearty_settings', {});
-    const setup = readJSON('heartyCoreSetup', {});
-    const candidates = [
-      profile.targetWeightKg,
-      profile.targetWeight,
-      profile.goalWeightKg,
-      profile.progress && profile.progress.targetWeight,
-      profile.progress && profile.progress.targetWeightKg,
-      progress.targetWeightKg,
-      progress.targetWeight,
-      settings.targetWeightKg,
-      settings.targetWeight,
-      setup.targetWeightKg,
-      localStorage.getItem('heartyTargetWeightKg')
-    ];
-    for(const v of candidates){ const n = kg(v); if(n) return n; }
-    return null;
-  }
-
-  function setText(el, text){ if(el) el.textContent = text; }
-  function fmt(n){ return n == null ? '—' : (Math.round(n * 10) / 10) + ' kg'; }
-
-  function renderProgressStrip(){
-    const band = document.querySelector('.progress-band');
-    if(!band) return;
-
-    const main = band.querySelector('.progress-main');
-    const metas = band.querySelectorAll('.progress-meta');
-    const micro = band.querySelector('.progress-microcopy');
-    const fill = band.querySelector('.goalbar-fill');
-    const marker = band.querySelector('.goal-marker');
-    const labels = band.querySelectorAll('.goal-labels span');
-
-    const cur = currentKg();
-    const start = firstKg();
-    const target = targetKg();
-
-    if(!cur){
-      setText(main, 'No weight logged yet');
-      if(metas[0]) setText(metas[0], 'Add your first weigh-in to begin tracking.');
-      if(metas[1]) setText(metas[1], 'Target weight must be provided by your doctor.');
-      setText(micro, 'Once you add your weight, this strip will show your current progress.');
-      if(fill) fill.style.width = '0%';
-      if(marker) marker.classList.remove('has-goal');
-      if(labels[0]) setText(labels[0], 'Start not set');
-      if(labels[1]) setText(labels[1], 'Current not set');
-      if(labels[2]) setText(labels[2], 'Doctor target optional');
-      return;
-    }
-
-    if(target && start && Math.abs(start - target) >= 0.1){
-      const raw = start > target ? ((start - cur) / (start - target)) * 100 : ((cur - start) / (target - start)) * 100;
-      const pct = Math.max(0, Math.min(100, raw));
-      const remaining = Math.max(0, Math.abs(cur - target));
-      setText(main, fmt(cur) + ' current');
-      if(metas[0]) setText(metas[0], 'Start ' + fmt(start) + ' · Goal ' + fmt(target));
-      if(metas[1]) setText(metas[1], remaining.toFixed(remaining % 1 === 0 ? 0 : 1) + ' kg to doctor target');
-      setText(micro, 'Progress is based on your start weight, current weight and doctor-provided target.');
-      if(fill) fill.style.width = Math.round(pct) + '%';
-      if(marker){ marker.classList.add('has-goal'); marker.style.left = '100%'; }
-      if(labels[0]) setText(labels[0], 'Start ' + fmt(start));
-      if(labels[1]) setText(labels[1], Math.round(pct) + '% complete');
-      if(labels[2]) setText(labels[2], 'Goal ' + fmt(target));
-      return;
-    }
-
-    const changed = start && Math.abs(start - cur) >= 0.1;
-    const diff = start ? Math.round((start - cur) * 10) / 10 : 0;
-    setText(main, fmt(cur) + ' current');
-    if(metas[0]) setText(metas[0], start && changed ? ('Started at ' + fmt(start) + ' · Change ' + (diff > 0 ? '-' : '+') + Math.abs(diff) + ' kg') : 'Current weight saved.');
-    if(metas[1]) setText(metas[1], 'Doctor target not set');
-    setText(micro, 'Add a doctor-provided target later if you have one. For now, this shows your current weight without leaving the strip blank.');
-    if(fill) fill.style.width = changed ? '35%' : '12%';
-    if(marker) marker.classList.remove('has-goal');
-    if(labels[0]) setText(labels[0], start ? 'Start ' + fmt(start) : 'Start not set');
-    if(labels[1]) setText(labels[1], 'Current ' + fmt(cur));
-    if(labels[2]) setText(labels[2], 'Goal set by doctor');
-  }
-
-  function fixSupportLinks(){
-    document.querySelectorAll('a[href="support.html"],a[href="./SUPPORT.html"]').forEach(a => a.setAttribute('href','support.html'));
-  }
-
-  function boot(){
-    renderProgressStrip();
-    fixSupportLinks();
-    setTimeout(renderProgressStrip, 250);
-    setTimeout(renderProgressStrip, 900);
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-  window.addEventListener('storage', renderProgressStrip);
-  document.addEventListener('click', function(e){
-    if(e.target && e.target.closest && e.target.closest('#saveCoreSetupBtn,#saveWeightBtn,#saveSettingsBtn,#supportPrimary,.support-main-btn')){
-      setTimeout(renderProgressStrip, 120);
-      setTimeout(fixSupportLinks, 120);
-    }
-  }, true);
-})();
-</script>
 <style id="hearty-photo-flow-single-source-final-v2">
   /* HOME photo flow: single source of truth. Front is required; side/back optional. */
   #completePhotoCheckInBtn[disabled]{
@@ -11487,351 +10690,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     border-color:rgba(14,165,107,.34) !important;
   }
 </style>
-<script id="hearty-photo-flow-single-source-final-v2">
-(function(){
-  'use strict';
-
-  const TODAY = new Date().toISOString().slice(0,10);
-  const DRAFT_KEY = 'heartyPhotoCheckInDraft';
-  const PHOTO_LOG_KEY = 'heartyPhotoLog';
-  const PHOTO_SETS_KEY = 'hearty_progress_photos';
-  const COMPLETE_KEY = 'heartyPhotoCheckInComplete';
-  const KEYS = ['front','side','back'];
-
-  function parseJSON(raw, fallback){
-    try{ return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
-  }
-
-  function readArray(key){
-    const value = parseJSON(localStorage.getItem(key), []);
-    return Array.isArray(value) ? value : [];
-  }
-
-  function writeArray(key, value){
-    localStorage.setItem(key, JSON.stringify(Array.isArray(value) ? value : []));
-  }
-
-  function inputId(key){
-    return key === 'front' ? 'photoFrontInput' : key === 'side' ? 'photoSideInput' : 'photoBackInput';
-  }
-
-  function previewId(key){ return key + 'PhotoPreview'; }
-  function stateId(key){ return key + 'PhotoState'; }
-
-  function blankDraft(){
-    return { date:TODAY, slots:{ front:null, side:null, back:null } };
-  }
-
-  function normalizeDraft(raw){
-    const draft = blankDraft();
-    if(raw && typeof raw === 'object'){
-      const slots = raw.slots && typeof raw.slots === 'object' ? raw.slots : raw;
-      KEYS.forEach(function(key){
-        const item = slots[key];
-        draft.slots[key] = item && typeof item === 'object' ? {
-          name:item.name || (key + '-photo.jpg'),
-          capturedAt:item.capturedAt || null,
-          previewUrl:item.previewUrl || item.image || item.dataUrl || '',
-          image:item.image || item.previewUrl || item.dataUrl || '',
-          approved:!!item.approved
-        } : null;
-      });
-    }
-    return draft;
-  }
-
-  function readDraft(){
-    const raw = parseJSON(localStorage.getItem(DRAFT_KEY), null);
-    if(raw && raw.date && raw.date !== TODAY) return blankDraft();
-    return normalizeDraft(raw);
-  }
-
-  function writeDraft(draft){
-    const clean = normalizeDraft(draft);
-    clean.date = TODAY;
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(clean));
-    return clean;
-  }
-
-  function getDomImage(key){
-    const img = document.getElementById(previewId(key));
-    return img ? (img.getAttribute('src') || '') : '';
-  }
-
-  function hasSlot(draft, key){
-    const item = draft.slots[key];
-    return !!(item && (item.previewUrl || item.image || item.name)) || !!getDomImage(key);
-  }
-
-  function selectedKeys(){
-    const draft = readDraft();
-    return KEYS.filter(function(key){ return hasSlot(draft, key); });
-  }
-
-  function setPhotoTaskComplete(done){
-    const task = document.getElementById('photoTask');
-    if(!task) return;
-    task.classList.toggle('completed', !!done);
-
-    const actionBtn = task.querySelector('.task-icon-btn,.task-action-btn');
-    if(actionBtn){
-      actionBtn.classList.toggle('done', !!done);
-      actionBtn.setAttribute('aria-label', done ? 'Progress photos complete' : 'Open photo check-in dialog');
-      const defaultIcon = actionBtn.querySelector('.icon-default,.icon-main,.icon-main-img');
-      const checkIcon = actionBtn.querySelector('.icon-check');
-      if(defaultIcon) defaultIcon.style.display = done ? 'none' : 'block';
-      if(checkIcon) checkIcon.style.display = done ? 'block' : 'none';
-    }
-
-    const doneLine = document.getElementById('photoTaskDone');
-    if(doneLine){
-      doneLine.classList.toggle('active', !!done);
-      doneLine.style.visibility = done ? 'visible' : 'hidden';
-    }
-
-    if(typeof window.refreshProtocol === 'function'){
-      try{ window.refreshProtocol(); }catch(e){}
-    }
-  }
-
-  function updateUI(){
-    const draft = readDraft();
-
-    KEYS.forEach(function(key){
-      const row = document.querySelector('[data-photo-slot="' + key + '"]');
-      const state = document.getElementById(stateId(key));
-      const img = document.getElementById(previewId(key));
-      const item = draft.slots[key];
-      const image = (item && (item.previewUrl || item.image)) || getDomImage(key);
-      const has = hasSlot(draft, key);
-
-      if(row){
-        row.classList.toggle('has-file', has);
-        row.classList.toggle('approved', has);
-      }
-
-      if(state){
-        if(key === 'front') state.textContent = has ? 'READY' : 'REQUIRED';
-        else state.textContent = has ? 'READY' : 'OPTIONAL';
-      }
-
-      if(img){
-        if(image){
-          img.src = image;
-          img.style.display = 'block';
-        }else{
-          img.removeAttribute('src');
-          img.style.display = 'none';
-        }
-      }
-    });
-
-    const completeBtn = document.getElementById('completePhotoCheckInBtn');
-    if(completeBtn){
-      const frontReady = hasSlot(draft, 'front');
-      const count = selectedKeys().length;
-      completeBtn.disabled = !frontReady;
-      if(frontReady) completeBtn.removeAttribute('disabled');
-      else completeBtn.setAttribute('disabled','disabled');
-      completeBtn.classList.toggle('photo-ready', frontReady);
-      completeBtn.textContent = frontReady
-        ? 'Complete photo check-in (' + count + ')'
-        : 'Add front photo to complete';
-    }
-  }
-
-  function openPhotoSheet(){
-    const sheet = document.getElementById('photoSheet');
-    if(!sheet) return;
-    updateUI();
-    sheet.classList.add('show');
-    sheet.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closePhotoSheet(){
-    const sheet = document.getElementById('photoSheet');
-    if(!sheet) return;
-    sheet.classList.remove('show','open','active');
-    sheet.setAttribute('aria-hidden','true');
-    if(!document.querySelector('.task-sheet-overlay.show')) document.body.style.overflow = '';
-  }
-
-  function readFileToSlot(key, file){
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(){
-      const draft = readDraft();
-      draft.slots[key] = {
-        name:file.name || (key + '-photo.jpg'),
-        capturedAt:new Date().toISOString(),
-        previewUrl: typeof reader.result === 'string' ? reader.result : '',
-        approved:true
-      };
-      writeDraft(draft);
-      updateUI();
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function saveToProgress(draft, selected){
-    const rows = readArray(PHOTO_LOG_KEY).filter(function(item){ return item && item.date !== TODAY; });
-
-    selected.forEach(function(type){
-      const item = draft.slots[type] || {};
-      const image = item.previewUrl || item.image || getDomImage(type);
-      if(image) rows.push({ date:TODAY, type:type, image:image });
-    });
-    writeArray(PHOTO_LOG_KEY, rows);
-
-    const sets = readArray(PHOTO_SETS_KEY).filter(function(item){ return item && item.date !== TODAY; });
-    sets.push({
-      date:TODAY,
-      createdAt:new Date().toISOString(),
-      dateLabel:new Date(TODAY + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}),
-      tag:sets.length ? 'Latest set' : 'Start set',
-      note:selected.map(function(k){ return k.charAt(0).toUpperCase() + k.slice(1); }).join(', ') + ' progress photo' + (selected.length === 1 ? '' : 's'),
-      views:selected,
-      slots:draft.slots
-    });
-    writeArray(PHOTO_SETS_KEY, sets);
-  }
-
-  function showDonePopup(){
-    if(document.getElementById('photoCompletePopup')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'photoCompletePopup';
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.38);backdrop-filter:blur(6px);display:grid;place-items:center;padding:18px;';
-    overlay.innerHTML = '<div style="width:min(100%,420px);border-radius:28px;background:linear-gradient(180deg,#ffffff,#f7faff);box-shadow:0 24px 70px rgba(15,23,42,.22);border:1px solid rgba(156,177,200,.24);padding:22px;text-align:center;color:#102033;">' +
-      '<div style="font-size:2rem;margin-bottom:8px;">✓</div>' +
-      '<div style="font-weight:900;font-size:1.2rem;letter-spacing:-.03em;margin-bottom:8px;">Photo check-in complete</div>' +
-      '<div style="color:#66778b;line-height:1.45;font-size:.95rem;margin-bottom:16px;">Your progress photos are saved for today.</div>' +
-      '<button id="photoPopupClose" type="button" style="width:100%;min-height:48px;border:0;border-radius:16px;background:linear-gradient(180deg,#16a34a,#0f8a5f);color:white;font-weight:900;">Done</button>' +
-    '</div>';
-    document.body.appendChild(overlay);
-    overlay.querySelector('#photoPopupClose').onclick = function(){ overlay.remove(); };
-  }
-
-  function completePhotoFlow(){
-    const draft = readDraft();
-    if(!hasSlot(draft, 'front')){
-      updateUI();
-      alert('Please add a front photo to complete your check-in.');
-      return;
-    }
-
-    const selected = selectedKeys();
-    selected.forEach(function(key){
-      const current = draft.slots[key] || {};
-      draft.slots[key] = {
-        name: current.name || (key + '-photo.jpg'),
-        capturedAt: current.capturedAt || new Date().toISOString(),
-        previewUrl: current.previewUrl || current.image || getDomImage(key),
-        approved:true
-      };
-    });
-
-    const saved = writeDraft(draft);
-    saveToProgress(saved, selected);
-
-    localStorage.setItem('heartyLastPhotoCheckInAt', new Date().toISOString());
-    localStorage.setItem('heartyLastPhotoCheckInCount', String(selected.length));
-    localStorage.setItem(COMPLETE_KEY, JSON.stringify({ date:TODAY, done:true }));
-    localStorage.setItem(COMPLETE_KEY + '_' + TODAY, 'true');
-    localStorage.setItem('heartyPhotoCheckInComplete_' + TODAY, 'true');
-
-    setPhotoTaskComplete(true);
-    updateUI();
-    closePhotoSheet();
-    showDonePopup();
-  }
-
-  document.addEventListener('click', function(e){
-    const photoAction = e.target && e.target.closest ? e.target.closest('[data-action="photos"]') : null;
-    if(photoAction){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openPhotoSheet();
-      return;
-    }
-
-    const trigger = e.target && e.target.closest ? e.target.closest('[data-photo-trigger]') : null;
-    if(trigger){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const key = trigger.getAttribute('data-photo-trigger');
-      const input = document.getElementById(inputId(key));
-      if(input){
-        input.value = '';
-        input.click();
-      }
-      return;
-    }
-
-    const approve = e.target && e.target.closest ? e.target.closest('[data-photo-approve]') : null;
-    if(approve){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const key = approve.getAttribute('data-photo-approve');
-      const draft = readDraft();
-      if(draft.slots[key]) draft.slots[key].approved = true;
-      writeDraft(draft);
-      updateUI();
-      return;
-    }
-
-    const retake = e.target && e.target.closest ? e.target.closest('[data-photo-retake]') : null;
-    if(retake){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const key = retake.getAttribute('data-photo-retake');
-      const draft = readDraft();
-      draft.slots[key] = null;
-      writeDraft(draft);
-      updateUI();
-      const input = document.getElementById(inputId(key));
-      if(input){
-        input.value = '';
-        input.click();
-      }
-      return;
-    }
-
-    const complete = e.target && e.target.closest ? e.target.closest('#completePhotoCheckInBtn') : null;
-    if(complete){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      completePhotoFlow();
-      return;
-    }
-
-    const closeBtn = e.target && e.target.closest ? e.target.closest('[data-close-sheet="photoSheet"]') : null;
-    if(closeBtn){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      closePhotoSheet();
-    }
-  }, true);
-
-  document.addEventListener('change', function(e){
-    const input = e.target;
-    if(!input || !input.id) return;
-    const map = { photoFrontInput:'front', photoSideInput:'side', photoBackInput:'back' };
-    const key = map[input.id];
-    if(!key) return;
-    e.stopImmediatePropagation();
-    readFileToSlot(key, input.files && input.files[0]);
-  }, true);
-
-  document.addEventListener('DOMContentLoaded', updateUI);
-  setTimeout(updateUI, 100);
-  setTimeout(updateUI, 500);
-  setTimeout(updateUI, 1200);
-  window.heartyRefreshPhotoBtn = updateUI;
-  window.heartyOpenPhotoSheet = openPhotoSheet;
-  window.heartyCompletePhotosNow = completePhotoFlow;
-})();
-</script>
 <!-- PHOTO BUTTON RESCUE PATCH v3: must be last script on page -->
 <style id="hearty-photo-rescue-v3-css">
   #photoSheet.show{
@@ -11851,508 +10709,1472 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     box-shadow:0 14px 28px rgba(14,165,107,.18) !important;
   }
 </style>
-<script id="hearty-photo-rescue-v3">
-(function(){
-  'use strict';
+<script id="hearty-home-hybrid-clean-controller">(function(){
+  "use strict";
 
   const TODAY = new Date().toISOString().slice(0,10);
-  const DRAFT_KEY = 'heartyPhotoCheckInDraft';
-  const PHOTO_LOG_KEY = 'heartyPhotoLog';
-  const PHOTO_SETS_KEY = 'hearty_progress_photos';
-  const COMPLETE_KEY = 'heartyPhotoCheckInComplete';
-  const KEYS = ['front','side','back'];
+  const CIRC = 339.292;
+  const PHOTO_SLOTS = ["front","side","back"];
+  const KEYS = {
+    profile:"heartyUserProfile",
+    daily:"heartyDailyState",
+    progress:"heartyProgress",
+    support:"heartySupportState",
+    photoDraft:"heartyPhotoCheckInDraft",
+    photoSets:"hearty_progress_photos",
+    photoLog:"heartyPhotoLog"
+  };
 
-  function $(id){ return document.getElementById(id); }
-  function parse(raw, fallback){ try{ return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
-  function inputId(key){ return key === 'front' ? 'photoFrontInput' : key === 'side' ? 'photoSideInput' : 'photoBackInput'; }
-  function previewId(key){ return key + 'PhotoPreview'; }
-  function stateId(key){ return key + 'PhotoState'; }
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
 
-  function ensureInput(key){
-    let input = $(inputId(key));
-    if(!input){
-      input = document.createElement('input');
-      input.id = inputId(key);
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.setAttribute('capture','environment');
-      input.hidden = true;
-      document.body.appendChild(input);
+  function parse(raw,fallback){ try{return raw?JSON.parse(raw):fallback;}catch(e){return fallback;} }
+  function read(key,fallback){ try{return parse(localStorage.getItem(key), fallback);}catch(e){return fallback;} }
+  function save(key,val){ try{localStorage.setItem(key, JSON.stringify(val));}catch(e){} }
+  function readFirst(keys,fallback){
+    for(const k of keys){ const v = read(k,null); if(v && typeof v === "object") return v; }
+    return fallback;
+  }
+  function num(v){ const n = Number(v); return Number.isFinite(n) && n > 0 ? n : null; }
+  function weightText(v){ const n=num(v); return n ? n.toFixed(1)+" kg" : "—"; }
+
+  function defaultDaily(){
+    return {date:TODAY,water:0,medicationLogged:false,tasks:{weight:false,photos:false,movement:false,lesson:false}};
+  }
+  function getDaily(){
+    let d = read(KEYS.daily, defaultDaily());
+    if(!d || d.date !== TODAY) d = defaultDaily();
+    d.tasks = Object.assign(defaultDaily().tasks, d.tasks || {});
+    d.water = Math.max(0, Number(d.water || 0));
+    return d;
+  }
+  function saveDaily(d){ d.date = TODAY; save(KEYS.daily,d); }
+  function getProfile(){ return readFirst([KEYS.profile,"heartyProfile","heartySettings","hearty_user_profile"], {}); }
+  function getProgress(){
+    const p = readFirst([KEYS.progress,"hearty_progress","heartyProgressState"], {});
+    return Object.assign({startWeight:null,currentWeight:null,targetWeight:null,entries:[]}, p || {});
+  }
+  function saveProgress(p){ p.entries = Array.isArray(p.entries) ? p.entries : []; save(KEYS.progress,p); }
+  function getSupport(){ return readFirst([KEYS.support,"heartySupport","heartySupportMode"], {active:false,type:null}); }
+
+  function openSheet(id){ const el=document.getElementById(id); if(el){el.classList.add("show");document.body.style.overflow="hidden";} }
+  function closeSheet(id){ const el=document.getElementById(id); if(el){el.classList.remove("show");document.body.style.overflow="";} }
+
+  function setText(sel,text){ const el=$(sel); if(el) el.textContent=text; }
+  function setRing(el,pct){
+    if(!el) return;
+    const p=Math.max(0,Math.min(100,Number(pct||0)));
+    el.style.strokeDasharray=String(CIRC);
+    el.style.strokeDashoffset=String(CIRC-(CIRC*p/100));
+  }
+  function markTask(id, done){
+    const row=document.getElementById(id);
+    if(!row) return;
+    row.classList.toggle("completed",!!done);
+    row.classList.toggle("done",!!done);
+    const btn=row.querySelector(".task-icon-btn");
+    if(btn) btn.classList.toggle("done",!!done);
+    const doneEl=document.getElementById(id+"Done");
+    if(doneEl) doneEl.classList.toggle("active",!!done);
+  }
+  function dailyPercent(d){
+    const t=d.tasks||{};
+    return Math.round((["weight","photos","movement","lesson"].filter(k=>!!t[k]).length/4)*100);
+  }
+
+  function hydrateProgress(progress, profile){
+    const start=[progress.startWeight,progress.start,progress.initialWeight,profile.startWeight,profile.startingWeight,profile.weightStart];
+    const current=[progress.currentWeight,progress.current,progress.weight,profile.currentWeight,profile.weight];
+    const target=[progress.targetWeight,progress.target,progress.goalWeight,profile.targetWeight,profile.goalWeight,profile.doctorTargetWeight];
+    if(!num(progress.startWeight)){ for(const v of start){ if(num(v)){progress.startWeight=num(v);break;} } }
+    if(!num(progress.currentWeight)){ for(const v of current){ if(num(v)){progress.currentWeight=num(v);break;} } }
+    if(!num(progress.targetWeight)){ for(const v of target){ if(num(v)){progress.targetWeight=num(v);break;} } }
+    return progress;
+  }
+
+  function renderProgress(progress){
+    const start=num(progress.startWeight), current=num(progress.currentWeight), target=num(progress.targetWeight);
+    const main=$(".progress-band .progress-main");
+    const metas=$$(".progress-band .progress-meta");
+    const fill=$(".progress-band .goalbar-fill");
+    const labels=$$(".progress-band .goal-labels span");
+
+    if(main) main.textContent = current ? "Current: "+weightText(current) : "No weight progress logged yet";
+    if(metas[0]){
+      metas[0].textContent = current
+        ? (start ? "Down "+Math.max(0,start-current).toFixed(1)+" kg from start." : "Current weight logged.")
+        : "Add your first weigh-in to begin tracking.";
     }
-    return input;
+    if(metas[1]) metas[1].textContent = target ? "Target: "+weightText(target) : "";
+
+    let pct=0;
+    if(start && current && target && start!==target) pct=Math.max(0,Math.min(100,((start-current)/(start-target))*100));
+    if(fill) fill.style.width=pct+"%";
+
+    if(labels[0]) labels[0].textContent="Start: "+weightText(start);
+    if(labels[1]) labels[1].textContent="Current: "+weightText(current);
+    if(labels[2]) labels[2].textContent=target ? "Target: "+weightText(target) : "Goal set by your doctor";
   }
 
-  function blank(){ return { date:TODAY, slots:{front:null,side:null,back:null} }; }
-  function readDraft(){
-    const raw = parse(localStorage.getItem(DRAFT_KEY), null);
-    if(!raw || raw.date !== TODAY) return blank();
-    const out = blank();
-    const slots = raw.slots || raw;
-    KEYS.forEach(k => {
-      const item = slots[k];
-      out.slots[k] = item ? {
-        name:item.name || (k + '-photo.jpg'),
-        capturedAt:item.capturedAt || new Date().toISOString(),
-        image:item.image || item.previewUrl || item.dataUrl || '',
-        previewUrl:item.previewUrl || item.image || item.dataUrl || '',
-        approved:!!item.approved
-      } : null;
+  function render(){
+    const profile=getProfile();
+    const daily=getDaily();
+    const progress=hydrateProgress(getProgress(), profile);
+    const support=getSupport();
+    saveProgress(progress);
+
+    const headline=$(".headline");
+    const name=profile.name||profile.firstName||profile.displayName||"";
+    if(headline) headline.textContent = name ? "Welcome back, "+name : "Welcome back";
+
+    const water=daily.water;
+    const litres=water*0.25;
+    setText("#waterValue", litres ? (litres.toFixed(litres%1?2:0)+"L") : "0L");
+    setText("#waterGlassCount", String(water));
+
+    const waterFill=$("#waterProgressFill");
+    if(waterFill) waterFill.style.width=Math.min(100,(water/8)*100)+"%";
+    setRing($(".ring-progress.teal"), Math.min(100,(water/8)*100));
+
+    const adherence=dailyPercent(daily);
+    setText("#adherenceValue", adherence+"%");
+    setRing($(".ring-progress.blue"), adherence);
+
+    const undo=$("#waterUndo");
+    if(undo) undo.disabled = water <= 0;
+
+    markTask("weighInTask",!!daily.tasks.weight);
+    markTask("photoTask",!!daily.tasks.photos);
+    markTask("walkTask",!!daily.tasks.movement);
+    markTask("lessonTaskItem",!!daily.tasks.lesson);
+
+    const supportCard=$("#supportCard");
+    if(supportCard) supportCard.classList.toggle("is-active",!!support.active);
+    const led=$(".led");
+    if(led) led.classList.toggle("active",!!support.active);
+
+    renderProgress(progress);
+  }
+
+  function saveWeight(){
+    const input=$("#weightValueInput");
+    if(!input) return;
+    const w=num(input.value);
+    if(!w) return;
+    const p=getProgress();
+    if(!num(p.startWeight)) p.startWeight=w;
+    p.currentWeight=w;
+    p.entries=Array.isArray(p.entries)?p.entries.filter(e=>e&&e.date!==TODAY):[];
+    p.entries.push({date:TODAY,weight:w,createdAt:new Date().toISOString()});
+    saveProgress(p);
+    const d=getDaily();
+    d.tasks.weight=true;
+    saveDaily(d);
+    closeSheet("weightSheet");
+    render();
+  }
+
+  function getPhotoDraft(){
+    const blank={date:TODAY,slots:{front:null,side:null,back:null}};
+    const d=read(KEYS.photoDraft,blank);
+    if(!d||d.date!==TODAY) return blank;
+    d.slots=Object.assign(blank.slots,d.slots||{});
+    return d;
+  }
+  function savePhotoDraft(d){ d.date=TODAY; save(KEYS.photoDraft,d); }
+  function photoSrc(item){ return item && (item.image||item.previewUrl||item.dataUrl||""); }
+
+  function renderPhotoSheet(){
+    const draft=getPhotoDraft();
+    PHOTO_SLOTS.forEach(key=>{
+      const item=draft.slots[key], src=photoSrc(item);
+      const row=$('[data-photo-slot="'+key+'"]');
+      const state=$("#"+key+"PhotoState");
+      const review=$("#"+key+"PhotoReview");
+      const img=$("#"+key+"PhotoPreview");
+      if(row){ row.classList.toggle("has-file",!!src); row.classList.toggle("approved",!!(src&&item.approved)); }
+      if(state) state.textContent = src && item.approved ? "APPROVED" : (src ? "REVIEW" : (key==="front"?"REQUIRED":"OPTIONAL"));
+      if(review) review.style.display = src ? "grid" : "none";
+      if(img){ if(src) img.src=src; else img.removeAttribute("src"); }
     });
-    return out;
-  }
-  function writeDraft(draft){
-    draft.date = TODAY;
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }
-  function hasPhoto(draft, key){
-    const item = draft.slots[key];
-    const img = $(previewId(key));
-    return !!(item && (item.image || item.previewUrl || item.name)) || !!(img && img.src);
-  }
-  function selected(draft){ return KEYS.filter(k => hasPhoto(draft,k)); }
-
-  function showSheet(){
-    const sheet = $('photoSheet');
-    if(!sheet){ alert('Photo sheet is missing from this HOME file.'); return; }
-    updateUI();
-    sheet.classList.add('show');
-    sheet.classList.remove('open','active');
-    sheet.setAttribute('aria-hidden','false');
-    sheet.style.display = 'flex';
-    sheet.style.opacity = '1';
-    sheet.style.pointerEvents = 'auto';
-    document.body.style.overflow = 'hidden';
+    const ready=!!(draft.slots.front && photoSrc(draft.slots.front) && draft.slots.front.approved);
+    const count=PHOTO_SLOTS.filter(k=>!!photoSrc(draft.slots[k])).length;
+    const btn=$("#completePhotoCheckInBtn");
+    if(btn){ btn.disabled=!ready; btn.textContent=ready ? "Complete photo check-in ("+count+")" : "Approve front photo first"; }
   }
 
-  function hideSheet(){
-    const sheet = $('photoSheet');
-    if(!sheet) return;
-    sheet.classList.remove('show','open','active');
-    sheet.setAttribute('aria-hidden','true');
-    sheet.style.opacity = '';
-    sheet.style.pointerEvents = '';
-    document.body.style.overflow = '';
-  }
-
-  function updateUI(){
-    const draft = readDraft();
-    KEYS.forEach(key => {
-      const row = document.querySelector('[data-photo-slot="' + key + '"]');
-      const img = $(previewId(key));
-      const state = $(stateId(key));
-      const item = draft.slots[key];
-      const image = item && (item.previewUrl || item.image);
-      const has = hasPhoto(draft,key);
-      if(row){
-        row.classList.toggle('has-file', has);
-        row.classList.toggle('approved', has);
-      }
-      if(img){
-        if(image){ img.src = image; img.style.display = 'block'; }
-        else { img.removeAttribute('src'); img.style.display = 'none'; }
-      }
-      if(state){
-        state.textContent = key === 'front' ? (has ? 'READY' : 'REQUIRED') : (has ? 'READY' : 'OPTIONAL');
-      }
-    });
-    const btn = $('completePhotoCheckInBtn');
-    if(btn){
-      const frontReady = hasPhoto(draft,'front');
-      const count = selected(draft).length;
-      btn.disabled = !frontReady;
-      if(frontReady) btn.removeAttribute('disabled'); else btn.setAttribute('disabled','disabled');
-      btn.classList.toggle('photo-ready', frontReady);
-      btn.textContent = frontReady ? 'Complete photo check-in (' + count + ')' : 'Add front photo to complete';
-    }
-  }
-
-  function readFile(key, file){
+  function photoInputId(key){ return "photo"+key.charAt(0).toUpperCase()+key.slice(1)+"Input"; }
+  function pickPhoto(key){ const input=document.getElementById(photoInputId(key)); if(input){input.value="";input.click();} }
+  function handlePhotoFile(key,file){
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(){
-      const draft = readDraft();
-      draft.slots[key] = {
-        name:file.name || (key + '-photo.jpg'),
-        capturedAt:new Date().toISOString(),
-        image:String(reader.result || ''),
-        previewUrl:String(reader.result || ''),
-        approved:true
-      };
-      writeDraft(draft);
-      updateUI();
+    const reader=new FileReader();
+    reader.onload=function(){
+      const d=getPhotoDraft();
+      d.slots[key]={name:file.name||key+"-photo.jpg",capturedAt:new Date().toISOString(),image:String(reader.result||""),previewUrl:String(reader.result||""),approved:false};
+      savePhotoDraft(d);
+      renderPhotoSheet();
     };
     reader.readAsDataURL(file);
   }
+  function approvePhoto(key){
+    const d=getPhotoDraft();
+    if(!d.slots[key]||!photoSrc(d.slots[key])) return;
+    d.slots[key].approved=true;
+    savePhotoDraft(d);
+    renderPhotoSheet();
+  }
+  function completePhotos(){
+    const d=getPhotoDraft();
+    if(!(d.slots.front&&photoSrc(d.slots.front)&&d.slots.front.approved)){ alert("Please add and approve a front photo first."); return; }
+    const used=PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k]));
+    let sets=read(KEYS.photoSets,[]);
+    sets=Array.isArray(sets)?sets.filter(x=>x&&x.date!==TODAY):[];
+    sets.push({date:TODAY,createdAt:new Date().toISOString(),dateLabel:new Date(TODAY+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.join(", ")+" progress photos",views:used,slots:d.slots});
+    save(KEYS.photoSets,sets);
+    const daily=getDaily();
+    daily.tasks.photos=true;
+    saveDaily(daily);
+    closeSheet("photoSheet");
+    render();
+  }
 
-  function markTaskDone(){
-    const task = $('photoTask');
-    if(task){
-      task.classList.add('completed');
-      const btn = task.querySelector('.task-icon-btn,.task-action-btn');
-      if(btn){
-        btn.classList.add('done');
-        const img = btn.querySelector('.icon-main-img,.icon-main,.icon-default');
-        const check = btn.querySelector('.icon-check');
-        if(img) img.style.display='none';
-        if(check) check.style.display='block';
+  function bind(){
+    document.addEventListener("click",function(e){
+      const close=e.target.closest("[data-close-sheet]");
+      if(close){ e.preventDefault(); closeSheet(close.getAttribute("data-close-sheet")); return; }
+
+      const action=e.target.closest("[data-action]");
+      if(action){
+        const a=action.getAttribute("data-action");
+        if(a==="weigh-in"){ e.preventDefault(); openSheet("weightSheet"); return; }
+        if(a==="photos"){ e.preventDefault(); renderPhotoSheet(); openSheet("photoSheet"); return; }
+        if(a==="walk"){ e.preventDefault(); const d=getDaily(); d.tasks.movement=!d.tasks.movement; saveDaily(d); render(); return; }
       }
-    }
-  }
 
-  function saveComplete(){
-    const draft = readDraft();
-    if(!hasPhoto(draft,'front')){
-      updateUI();
-      alert('Please add a front photo to complete your check-in.');
-      return;
-    }
-    const picked = selected(draft);
-    localStorage.setItem('heartyLastPhotoCheckInAt', new Date().toISOString());
-    localStorage.setItem('heartyLastPhotoCheckInCount', String(picked.length));
-    localStorage.setItem(COMPLETE_KEY, JSON.stringify({date:TODAY,done:true}));
-    localStorage.setItem(COMPLETE_KEY + '_' + TODAY, 'true');
-    localStorage.setItem('heartyPhotoCheckInComplete_' + TODAY, 'true');
+      const pick=e.target.closest("[data-photo-trigger]");
+      if(pick){ e.preventDefault(); pickPhoto(pick.getAttribute("data-photo-trigger")); return; }
+      const approve=e.target.closest("[data-photo-approve]");
+      if(approve){ e.preventDefault(); approvePhoto(approve.getAttribute("data-photo-approve")); return; }
+      const retake=e.target.closest("[data-photo-retake]");
+      if(retake){ e.preventDefault(); pickPhoto(retake.getAttribute("data-photo-retake")); return; }
+    }, true);
 
-    const log = parse(localStorage.getItem(PHOTO_LOG_KEY), []).filter(x => x && x.date !== TODAY);
-    picked.forEach(k => {
-      const item = draft.slots[k] || {};
-      const image = item.image || item.previewUrl || '';
-      if(image) log.push({date:TODAY,type:k,image});
+    const saveWeightBtn=$("#saveWeightBtn");
+    if(saveWeightBtn) saveWeightBtn.addEventListener("click", saveWeight);
+
+    const water=$("#waterGlass");
+    if(water){
+      water.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const d=getDaily();
+        d.water+=1;
+        saveDaily(d);
+        render();
+      }, true);
+    }
+
+    const undo=$("#waterUndo");
+    if(undo){
+      undo.addEventListener("click",function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const d=getDaily();
+        d.water=Math.max(0,d.water-1);
+        saveDaily(d);
+        render();
+      }, true);
+    }
+
+    const complete=$("#completePhotoCheckInBtn");
+    if(complete) complete.addEventListener("click",completePhotos);
+
+    PHOTO_SLOTS.forEach(key=>{
+      const input=document.getElementById(photoInputId(key));
+      if(input) input.addEventListener("change",function(){ handlePhotoFile(key,input.files&&input.files[0]); input.value=""; });
     });
-    localStorage.setItem(PHOTO_LOG_KEY, JSON.stringify(log));
-
-    const sets = parse(localStorage.getItem(PHOTO_SETS_KEY), []).filter(x => x && x.date !== TODAY);
-    sets.push({date:TODAY,createdAt:new Date().toISOString(),views:picked,slots:draft.slots,tag:sets.length?'Latest set':'Start set'});
-    localStorage.setItem(PHOTO_SETS_KEY, JSON.stringify(sets));
-
-    markTaskDone();
-    hideSheet();
-    alert('Photo check-in complete.');
   }
 
-  window.addEventListener('click', function(e){
-    const photoMain = e.target.closest && e.target.closest('[data-action="photos"]');
-    if(photoMain){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); showSheet(); return; }
+  function boot(){ bind(); render(); }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot);
+  else boot();
 
-    const trigger = e.target.closest && e.target.closest('[data-photo-trigger]');
-    if(trigger){
-      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-      const key = trigger.getAttribute('data-photo-trigger');
-      const input = ensureInput(key);
-      input.value = '';
-      input.click();
-      return;
+  window.heartyHomeHybridRender=render;
+})();</script>
+
+
+<script id="hearty-home-task-tick-bar-stability-v6-js">
+(function(){
+  "use strict";
+
+  const TODAY = new Date().toISOString().slice(0,10);
+  const TASKS = [
+    ["weight", "weighInTask"],
+    ["photos", "photoTask"],
+    ["movement", "walkTask"]
+  ];
+
+  function readJSON(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(e){
+      return fallback;
+    }
+  }
+
+  function getDaily(){
+    let d = readJSON("heartyDailyState", {date:TODAY,tasks:{}});
+    if(!d || d.date !== TODAY) d = {date:TODAY,tasks:{}};
+    d.tasks = Object.assign({weight:false,photos:false,movement:false,lesson:false}, d.tasks || {});
+    return d;
+  }
+
+  function findProtocolCard(){
+    return document.getElementById("protocolCard")
+      || document.querySelector(".protocol-card")
+      || (document.getElementById("protocolList") && document.getElementById("protocolList").closest(".card"))
+      || (document.getElementById("weighInTask") && document.getElementById("weighInTask").closest(".card"));
+  }
+
+  function applyTaskTicks(){
+    const daily = getDaily();
+
+    TASKS.forEach(([key,id]) => {
+      const row = document.getElementById(id);
+      if(!row) return;
+
+      const done = !!daily.tasks[key];
+      row.classList.toggle("completed", done);
+      row.classList.toggle("done", done);
+
+      const btn = row.querySelector(".task-icon-btn, .task-btn");
+      if(btn){
+        btn.classList.toggle("done", done);
+        btn.setAttribute("aria-pressed", done ? "true" : "false");
+      }
+    });
+
+    const doneCount = TASKS.filter(([key]) => !!daily.tasks[key]).length;
+    const complete = doneCount === TASKS.length;
+
+    const card = findProtocolCard();
+    if(card){
+      card.classList.toggle("protocol-pending", !complete);
+      card.classList.toggle("protocol-complete", complete);
     }
 
-    const retake = e.target.closest && e.target.closest('[data-photo-retake]');
-    if(retake){
-      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-      const key = retake.getAttribute('data-photo-retake');
-      const draft = readDraft(); draft.slots[key] = null; writeDraft(draft); updateUI();
-      const input = ensureInput(key); input.value=''; input.click();
-      return;
-    }
+    document.body.classList.toggle("protocol-pending-state", !complete);
+    document.body.classList.toggle("protocol-complete-state", complete);
+  }
 
-    const approve = e.target.closest && e.target.closest('[data-photo-approve]');
-    if(approve){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); updateUI(); return; }
+  function run(){
+    applyTaskTicks();
+  }
 
-    const complete = e.target.closest && e.target.closest('#completePhotoCheckInBtn');
-    if(complete){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); saveComplete(); return; }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
 
-    const close = e.target.closest && e.target.closest('[data-close-sheet="photoSheet"]');
-    if(close){ e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); hideSheet(); }
+  document.addEventListener("click", function(){
+    setTimeout(run, 60);
+    setTimeout(run, 250);
   }, true);
 
-  window.addEventListener('change', function(e){
-    const map = { photoFrontInput:'front', photoSideInput:'side', photoBackInput:'back' };
-    const key = e.target && map[e.target.id];
-    if(!key) return;
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    readFile(key, e.target.files && e.target.files[0]);
-  }, true);
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateUI);
-  else updateUI();
-  window.heartyPhotoOpen = showSheet;
-  window.heartyPhotoComplete = saveComplete;
+  window.addEventListener("storage", run);
+  setInterval(run, 1500);
 })();
 </script>
-<script id="hearty-home-stability-authority-js">
-(function(){
-  'use strict';
-  const TODAY = new Date().toISOString().slice(0,10);
-  const CIRC = 339.292;
 
+
+<script id="hearty-final-instructions-v11-js">
+(function(){
+  "use strict";
+
+  const TODAY = new Date().toISOString().slice(0,10);
+
+  function $(s){ return document.querySelector(s); }
+  function readJSON(key, fallback){
+    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
+  }
+  function saveJSON(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+  }
+
+  function getDaily(){
+    let d = readJSON("heartyDailyState", {date:TODAY,tasks:{},water:0,medicationLogged:false});
+    if(!d || d.date !== TODAY) d = {date:TODAY,tasks:{},water:0,medicationLogged:false};
+    d.tasks = Object.assign({weight:false,photos:false,movement:false,lesson:false}, d.tasks || {});
+    return d;
+  }
+  function saveDaily(d){ d.date = TODAY; saveJSON("heartyDailyState", d); }
+
+  function getSupport(){
+    const s = readJSON("heartySupportState", null);
+    return s && typeof s === "object" ? Object.assign({active:false,type:null}, s) : {active:false,type:null};
+  }
+  function saveSupport(s){ saveJSON("heartySupportState", Object.assign({active:false,type:null}, s || {})); }
+
+  function getProfile(){ return readJSON("heartyUserProfile", {}) || {}; }
+
+  function getMedication(){
+    const med = readJSON("heartyMedicationState", null) || readJSON("heartyInjectionState", null) || readJSON("heartyMedication", null) || {};
+    const profile = getProfile();
+    return Object.assign({}, med, {
+      nextInjectionDate: med.nextInjectionDate || med.nextDate || med.injectionDate || med.nextDoseDate || profile.nextInjectionDate || profile.injectionDate || profile.nextDoseDate || null,
+      injectionWeekday: med.injectionWeekday || profile.injectionWeekday || profile.medicationDay || null
+    });
+  }
+  function parseDate(v){ if(!v) return null; const d = new Date(String(v)); return Number.isNaN(d.getTime()) ? null : d; }
+  function dateKey(d){ return d ? d.toISOString().slice(0,10) : ""; }
+  function isInjectionDay(){
+    const med = getMedication();
+    const d = parseDate(med.nextInjectionDate);
+    if(d) return dateKey(d) === TODAY;
+    if(med.injectionWeekday){
+      const today = new Date().toLocaleDateString("en-GB",{weekday:"long"}).toLowerCase();
+      return String(med.injectionWeekday).toLowerCase() === today;
+    }
+    return false;
+  }
+  function medDateLabel(){
+    const med = getMedication();
+    const d = parseDate(med.nextInjectionDate);
+    if(d) return d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"short"});
+    if(med.injectionWeekday) return String(med.injectionWeekday);
+    return "Set during onboarding";
+  }
+
+  function renderSupport(){
+    const card = $("#supportCard");
+    if(!card) return;
+
+    const active = getSupport().active === true;
+    card.classList.toggle("support-active", active);
+    card.classList.toggle("is-active", active);
+
+    const led = $("#supportHomeLed");
+    if(led){
+      led.classList.toggle("active", active);
+      led.setAttribute("aria-label", active ? "Support on" : "Support off");
+    }
+
+    const root = $("#pageRoot") || document.body;
+    if(root) root.classList.toggle("support-active-theme", active);
+
+    const title = $("#supportHomeTitle");
+    if(title) title.textContent = active ? "Support Mode is on" : "Do you need some support today?";
+
+    const copy = $("#supportHomeCopy");
+    if(copy){
+      copy.textContent = active
+        ? "Support Mode is active. Meals and movement will soften today."
+        : "Support Mode is off. Tap Get Support if side effects are affecting your day.";
+    }
+
+    const getBtn = $("#supportGetBtn");
+    if(getBtn){
+      getBtn.textContent = "Get Support";
+      getBtn.disabled = active;
+      getBtn.setAttribute("aria-disabled", active ? "true" : "false");
+    }
+
+    const offBtn = $("#supportOffBtn");
+    if(offBtn){
+      offBtn.textContent = "Support Off";
+      offBtn.disabled = !active;
+      offBtn.setAttribute("aria-disabled", active ? "false" : "true");
+    }
+  }
+
+  function getSupportAction(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    if(getSupport().active === true){ renderSupport(); return false; }
+    window.location.href = "./support.html";
+    return false;
+  }
+
+  function offSupportAction(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    saveSupport({active:false,type:null,deactivatedAt:new Date().toISOString()});
+    try{ localStorage.removeItem("heartySupport"); localStorage.removeItem("heartySupportMode"); }catch(err){}
+    renderSupport();
+    return false;
+  }
+
+  function renderMedication(){
+    const card = $("#injectionCard");
+    if(!card) return;
+
+    const due = isInjectionDay();
+    const daily = getDaily();
+    const done = daily.medicationLogged === true;
+
+    card.classList.toggle("medication-due", due && !done);
+    card.classList.toggle("medication-complete", due && done);
+    card.classList.toggle("medication-resting", !due);
+
+    const title = $("#medHomeTitle");
+    const date = $("#medHomeDate");
+    const check = $("#medHomeCheck");
+    const checkText = $("#medHomeCheckText");
+
+    if(due){
+      if(title) title.textContent = done ? "Medication complete today" : "Medication due today";
+      if(date) date.textContent = "";
+      if(check){
+        check.disabled = false;
+        check.classList.toggle("done", done);
+      }
+      if(checkText) checkText.textContent = done ? "Completed" : "Mark as done";
+    }else{
+      if(title) title.textContent = "Medication date";
+      if(date) date.textContent = "Next injection: " + medDateLabel();
+      if(check){
+        check.disabled = true;
+        check.classList.remove("done");
+      }
+      if(checkText) checkText.textContent = "Not due today";
+    }
+  }
+
+  function toggleMedication(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    if(!isInjectionDay()) return false;
+
+    const daily = getDaily();
+    daily.medicationLogged = !daily.medicationLogged;
+    saveDaily(daily);
+    renderMedication();
+    return false;
+  }
+
+  function bindLesson(){
+    const card = document.querySelector(".lesson-card");
+    const btn = $("#toggleLesson");
+    if(!card || !btn) return;
+
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      card.classList.toggle("open");
+      btn.textContent = card.classList.contains("open") ? "Close" : "Open";
+      return false;
+    };
+  }
+
+  function bind(){
+    const getBtn = $("#supportGetBtn");
+    if(getBtn) getBtn.onclick = getSupportAction;
+
+    const offBtn = $("#supportOffBtn");
+    if(offBtn) offBtn.onclick = offSupportAction;
+
+    const med = $("#medHomeCheck");
+    if(med) med.onclick = toggleMedication;
+
+    bindLesson();
+
+    document.addEventListener("click", function(e){
+      if(e.target.closest("#supportGetBtn")){ getSupportAction(e); return; }
+      if(e.target.closest("#supportOffBtn")){ offSupportAction(e); return; }
+      if(e.target.closest("#medHomeCheck")){ toggleMedication(e); return; }
+    }, true);
+  }
+
+  function boot(){
+    renderSupport();
+    renderMedication();
+    bindLesson();
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ bind(); boot(); });
+  }else{
+    bind();
+    boot();
+  }
+
+  window.addEventListener("storage", boot);
+  setTimeout(boot,250);
+  setTimeout(boot,900);
+})();
+</script>
+
+<style id="home-final-pass-support-water-lessons-v12">
+/* FINAL PASS — support defaults, button states, water strip colours, visible lesson icons */
+#supportCard.support-home-clean,
+#supportCard{
+  background:var(--card) !important;
+  border:1px solid rgba(150,166,186,.18) !important;
+  box-shadow:var(--shadow) !important;
+}
+#supportCard.support-active,
+#supportCard.is-active{
+  background:linear-gradient(180deg,rgba(255,248,238,.99),rgba(255,255,255,.96)) !important;
+  border-color:rgba(245,158,11,.36) !important;
+  box-shadow:0 20px 46px rgba(14,31,53,.12),0 0 0 1px rgba(245,158,11,.12),0 0 30px rgba(245,158,11,.26) !important;
+}
+.support-home-led,
+#supportHomeLed{
+  width:16px !important;
+  height:16px !important;
+  border-radius:50% !important;
+  background:#c8d4e2 !important;
+  box-shadow:0 0 0 4px rgba(200,212,226,.22) !important;
+}
+#supportCard.support-active .support-home-led,
+#supportCard.is-active .support-home-led,
+#supportHomeLed.active{
+  background:#f59e0b !important;
+  box-shadow:0 0 0 5px rgba(245,158,11,.16),0 0 20px rgba(245,158,11,.50) !important;
+}
+.support-home-actions{display:grid !important;grid-template-columns:1fr 1fr !important;gap:10px !important;margin-top:18px !important;}
+#supportGetBtn,
+.support-home-primary{
+  min-height:48px !important;
+  border:none !important;
+  border-radius:16px !important;
+  background:linear-gradient(180deg,#1550b3,#0f43a0) !important;
+  color:#fff !important;
+  font-weight:950 !important;
+  box-shadow:0 12px 24px rgba(21,80,179,.20) !important;
+  cursor:pointer !important;
+}
+#supportCard.support-active #supportGetBtn,
+#supportGetBtn[disabled]{
+  background:linear-gradient(180deg,#d8dee7,#c8d1dc) !important;
+  color:#718096 !important;
+  box-shadow:none !important;
+  cursor:not-allowed !important;
+  opacity:1 !important;
+}
+#supportOffBtn,
+.support-home-secondary{
+  min-height:48px !important;
+  border-radius:16px !important;
+  font-weight:950 !important;
+  border:1px solid rgba(143,163,184,.24) !important;
+  background:linear-gradient(180deg,#fff,#f5f8fd) !important;
+  color:#647487 !important;
+  box-shadow:var(--shadow-soft) !important;
+  cursor:pointer !important;
+}
+#supportOffBtn[disabled]{opacity:.52 !important;cursor:not-allowed !important;box-shadow:none !important;}
+#supportCard.support-active #supportOffBtn{color:#8b5e00 !important;border-color:rgba(245,158,11,.26) !important;background:linear-gradient(180deg,#fff9ef,#fff) !important;}
+
+/* Restore the stronger previous water strip colours */
+.hydration-progress-fill,
+#waterProgressFill{
+  background:linear-gradient(90deg,#2f6df6 0%,#06c2a8 52%,#b85cff 100%) !important;
+  box-shadow:0 0 16px rgba(47,109,246,.22),0 0 18px rgba(6,194,168,.16) !important;
+}
+
+/* Make lesson icons unmistakable */
+.lesson-rich.hard-icons{display:grid !important;gap:12px !important;}
+.lesson-rich-intro{display:grid !important;grid-template-columns:42px 1fr !important;gap:12px !important;align-items:start !important;}
+.lesson-inline-icon,.lesson-icon,.lesson-callout span{
+  display:grid !important;place-items:center !important;flex:0 0 auto !important;
+  background:linear-gradient(180deg,#f1edff,#fff) !important;
+  border:1px solid rgba(126,108,242,.18) !important;
+  color:#6757d8 !important;
+  box-shadow:0 10px 20px rgba(103,87,216,.10),inset 0 1px 0 rgba(255,255,255,.96) !important;
+}
+.lesson-inline-icon{width:42px !important;height:42px !important;border-radius:15px !important;}
+.lesson-icon{width:44px !important;height:44px !important;border-radius:16px !important;}
+.lesson-callout span{width:36px !important;height:36px !important;border-radius:14px !important;color:#ff6b00 !important;background:rgba(255,107,0,.10) !important;}
+.lesson-inline-icon svg,.lesson-icon svg,.lesson-callout svg{display:block !important;width:22px !important;height:22px !important;stroke:currentColor !important;stroke-width:2.1 !important;fill:none !important;stroke-linecap:round !important;stroke-linejoin:round !important;}
+@media(max-width:640px){.support-home-actions{grid-template-columns:1fr !important}.lesson-rich-intro{grid-template-columns:40px 1fr !important}.lesson-inline-icon{width:40px !important;height:40px !important}}
+</style>
+<script id="home-final-pass-support-state-v12">
+(function(){
+  const SUPPORT_KEY = 'heartySupportState';
+  const SUPPORT_KEYS = [SUPPORT_KEY, 'heartySupport', 'heartySupportMode'];
+  const $ = (s) => document.querySelector(s);
   function readJSON(key, fallback){
     try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
   }
   function writeJSON(key, value){
     try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
   }
-  function kg(value){
-    const n = parseFloat(String(value ?? '').replace(',','.'));
-    return Number.isFinite(n) && n > 20 && n < 350 ? n : null;
+  function clearOldSupportKeys(){
+    try{ localStorage.removeItem('heartySupport'); localStorage.removeItem('heartySupportMode'); }catch(e){}
   }
-  function fmtKg(n){ return n == null ? '—' : `${Math.round(n * 10) / 10} kg`; }
-  function fmtL(ml){
-    const n = Number(ml) || 0;
-    const l = n / 1000;
-    return l.toFixed(n % 1000 === 0 ? 0 : 2).replace(/\.00$/,'').replace(/0$/,'');
+  function getSupport(){
+    for(const key of SUPPORT_KEYS){
+      const value = readJSON(key, null);
+      if(value && typeof value === 'object') return Object.assign({active:false,type:null}, value);
+      if(value === true || value === 'true' || value === 'active') return {active:true,type:'general'};
+    }
+    return {active:false,type:null};
   }
-  function setText(selOrEl, text){
-    const el = typeof selOrEl === 'string' ? document.querySelector(selOrEl) : selOrEl;
-    if(el) el.textContent = text;
+  function saveSupport(active){
+    clearOldSupportKeys();
+    writeJSON(SUPPORT_KEY, active ? {active:true,type:'general',activatedAt:new Date().toISOString()} : {active:false,type:null,deactivatedAt:new Date().toISOString()});
   }
-  function setRing(circle, pct){
-    if(!circle) return;
-    const safe = Math.max(0, Math.min(100, Number(pct) || 0));
-    circle.style.strokeDasharray = String(CIRC);
-    circle.style.strokeDashoffset = String(CIRC - (CIRC * safe / 100));
-    const wrap = circle.closest('.ring-wrap');
-    if(wrap) wrap.dataset.progress = String(Math.round(safe));
+  function applySupportHome(){
+    const state = getSupport();
+    const active = state.active === true;
+    const card = $('#supportCard');
+    const led = $('#supportHomeLed');
+    const title = $('#supportHomeTitle');
+    const copy = $('#supportHomeCopy');
+    const getBtn = $('#supportGetBtn');
+    const offBtn = $('#supportOffBtn');
+    const root = $('#pageRoot') || document.body;
+    if(card){ card.classList.toggle('support-active', active); card.classList.toggle('is-active', active); }
+    if(led){ led.classList.toggle('active', active); led.setAttribute('aria-label', active ? 'Support on' : 'Support off'); }
+    if(root) root.classList.toggle('support-active-theme', active);
+    if(title) title.textContent = active ? 'Support Mode is on' : 'Do you need some support today?';
+    if(copy) copy.textContent = active ? 'Support Mode is active. Meals and movement will soften today.' : 'Support Mode is off. Tap Get Support if side effects are affecting your day.';
+    if(getBtn){ getBtn.textContent = 'Get Support'; getBtn.disabled = active; getBtn.setAttribute('aria-disabled', active ? 'true' : 'false'); }
+    if(offBtn){ offBtn.textContent = 'Support Off'; offBtn.disabled = !active; offBtn.setAttribute('aria-disabled', active ? 'false' : 'true'); }
   }
-
-  function profileObjects(){
-    return {
-      profile: readJSON('hearty_profile', {}),
-      progress: readJSON('hearty_progress', {}),
-      settings: readJSON('hearty_settings', {}),
-      setup: readJSON('heartyCoreSetup', {}),
-      userProfile: readJSON('heartyUserProfile', {}),
-      heartyProgress: readJSON('heartyProgress', {})
-    };
+  function goSupport(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    if(getSupport().active === true){ applySupportHome(); return false; }
+    window.location.href = './support.html';
+    return false;
   }
-
-  function latestWeightFromLogs(){
-    const logsA = readJSON('hearty_weight_logs', []);
-    const logsB = readJSON('heartyWeightLogs', []);
-    const entries = [];
-    [logsA, logsB].forEach(logs => {
-      if(Array.isArray(logs)) logs.forEach(x => {
-        const val = kg(x && (x.value ?? x.weight ?? x.kg));
-        if(val) entries.push({date: String((x && x.date) || ''), value: val});
-      });
-    });
-    entries.sort((a,b) => String(a.date).localeCompare(String(b.date)));
-    return entries.length ? entries[entries.length - 1].value : null;
+  function turnSupportOff(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    saveSupport(false);
+    applySupportHome();
+    return false;
   }
-
-  function firstWeightFromLogs(){
-    const logsA = readJSON('hearty_weight_logs', []);
-    const logsB = readJSON('heartyWeightLogs', []);
-    const entries = [];
-    [logsA, logsB].forEach(logs => {
-      if(Array.isArray(logs)) logs.forEach(x => {
-        const val = kg(x && (x.value ?? x.weight ?? x.kg));
-        if(val) entries.push({date: String((x && x.date) || ''), value: val});
-      });
-    });
-    entries.sort((a,b) => String(a.date).localeCompare(String(b.date)));
-    return entries.length ? entries[0].value : null;
+  function bind(){
+    const getBtn = $('#supportGetBtn');
+    const offBtn = $('#supportOffBtn');
+    if(getBtn) getBtn.onclick = goSupport;
+    if(offBtn) offBtn.onclick = turnSupportOff;
+    document.addEventListener('click', function(e){
+      if(e.target.closest('#supportGetBtn')){ goSupport(e); return; }
+      if(e.target.closest('#supportOffBtn')){ turnSupportOff(e); return; }
+    }, true);
   }
+  function boot(){ bind(); applySupportHome(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  window.addEventListener('storage', applySupportHome);
+  setTimeout(applySupportHome, 50);
+  setTimeout(applySupportHome, 400);
+  window.heartyRenderSupportHome = applySupportHome;
+})();
+</script>
 
-  function currentKg(){
-    const o = profileObjects();
-    const candidates = [
-      localStorage.getItem('heartyCurrentWeightKg'),
-      localStorage.getItem('heartyTodayWeightKg'),
-      latestWeightFromLogs(),
-      o.profile.currentWeightKg,
-      o.profile.weightKg,
-      o.profile.weight,
-      o.profile.currentWeight,
-      o.profile.progress && o.profile.progress.currentWeightKg,
-      o.profile.progress && o.profile.progress.currentWeight,
-      o.progress.currentWeightKg,
-      o.progress.currentWeight,
-      o.heartyProgress.currentWeight,
-      o.heartyProgress.currentWeightKg
-    ];
-    for(const v of candidates){ const n = kg(v); if(n) return n; }
-    return null;
+
+
+<!-- HOME FINAL PASS V13 — support off + medication exact patch -->
+<style id="home-final-pass-v13-support-medication-fix">
+  #supportCard .section-label{
+    text-transform:uppercase !important;
+    letter-spacing:.17em !important;
+    font-size:.74rem !important;
+    font-weight:800 !important;
+    color:var(--muted) !important;
+    margin:0 0 8px 0 !important;
   }
-
-  function startKg(){
-    const o = profileObjects();
-    const candidates = [
-      localStorage.getItem('heartyStartingWeightKg'),
-      firstWeightFromLogs(),
-      o.profile.startingWeightKg,
-      o.profile.startingWeight,
-      o.profile.startWeight,
-      o.profile.progress && o.profile.progress.startingWeightKg,
-      o.profile.progress && o.profile.progress.startingWeight,
-      o.progress.startingWeightKg,
-      o.progress.startingWeight,
-      o.progress.startWeight,
-      o.heartyProgress.startWeight,
-      o.heartyProgress.startingWeight
-    ];
-    for(const v of candidates){ const n = kg(v); if(n) return n; }
-    return currentKg();
+  #supportCard.support-home-clean{
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:space-between !important;
   }
-
-  function targetKg(){
-    const o = profileObjects();
-    const candidates = [
-      localStorage.getItem('heartyTargetWeightKg'),
-      o.profile.targetWeightKg,
-      o.profile.targetWeight,
-      o.profile.goalWeightKg,
-      o.profile.progress && o.profile.progress.targetWeightKg,
-      o.profile.progress && o.profile.progress.targetWeight,
-      o.progress.targetWeightKg,
-      o.progress.targetWeight,
-      o.settings.targetWeightKg,
-      o.settings.targetWeight,
-      o.setup.targetWeightKg,
-      o.setup.targetWeight,
-      o.userProfile.targetWeight,
-      o.heartyProgress.targetWeight,
-      o.heartyProgress.targetWeightKg
-    ];
-    for(const v of candidates){ const n = kg(v); if(n) return n; }
-    return null;
+  #supportGetBtn{
+    background:linear-gradient(180deg,#1550b3,#0f43a0) !important;
+    color:#fff !important;
   }
-
-  function waterTargetMl(){
-    const cur = currentKg();
-    const raw = cur ? cur * 35 : 2000;
-    return Math.min(3700, Math.max(1750, Math.round(raw / 250) * 250));
+  #supportGetBtn:disabled,
+  #supportCard.support-active #supportGetBtn,
+  #supportCard.is-active #supportGetBtn{
+    background:linear-gradient(180deg,#d8dee7,#c8d1dc) !important;
+    color:#718096 !important;
+    box-shadow:none !important;
+    cursor:not-allowed !important;
+    opacity:1 !important;
   }
-  function readWaterMl(){
-    const byDay = readJSON('hearty_water_by_day', {});
-    const item = byDay && byDay[TODAY];
-    if(item && Number.isFinite(Number(item.ml))) return Math.max(0, Number(item.ml));
-    const logs = readJSON('hearty_hydration_logs', []);
-    const todayLog = Array.isArray(logs) ? logs.find(x => x && x.date === TODAY) : null;
-    if(todayLog && Number.isFinite(Number(todayLog.ml))) return Math.max(0, Number(todayLog.ml));
-    return 0;
+  #supportOffBtn{
+    background:linear-gradient(180deg,#ffffff,#f5f8fd) !important;
+    color:#647487 !important;
   }
-  function saveWaterMl(ml){
-    const safe = Math.max(0, Math.min(waterTargetMl(), Math.round(Number(ml) || 0)));
-    const byDay = readJSON('hearty_water_by_day', {});
-    byDay[TODAY] = {ml:safe, updatedAt:new Date().toISOString()};
-    writeJSON('hearty_water_by_day', byDay);
-
-    let logs = readJSON('hearty_hydration_logs', []);
-    if(!Array.isArray(logs)) logs = [];
-    logs = logs.filter(x => !x || x.date !== TODAY);
-    logs.push({date:TODAY, ml:safe, targetMl:waterTargetMl(), source:'home'});
-    writeJSON('hearty_hydration_logs', logs);
+  #supportOffBtn:disabled{
+    opacity:.45 !important;
+    cursor:not-allowed !important;
+    box-shadow:none !important;
   }
-
-  function renderHydration(){
-    const ml = readWaterMl();
-    const target = waterTargetMl();
-    const pct = target ? Math.max(0, Math.min(100, (ml / target) * 100)) : 0;
-    const litres = fmtL(ml);
-    const targetLitres = fmtL(target);
-
-    setText('#waterValue', `${litres}L`);
-    const unit = document.querySelector('#waterValue')?.closest('.ring-center')?.querySelector('.ring-unit');
-    if(unit) unit.textContent = `of ${targetLitres} L`;
-    setText('#waterGlassCount', `${litres} L of ${targetLitres} L`);
-
-    const fill = document.getElementById('waterProgressFill');
-    if(fill) fill.style.width = `${Math.round(pct)}%`;
-    const undo = document.getElementById('waterUndo');
-    if(undo) undo.disabled = ml <= 0;
-
-    const waterRing = document.getElementById('waterValue')?.closest('.ring-block')?.querySelector('.ring-progress');
-    setRing(waterRing, pct);
+  #supportCard.support-active #supportOffBtn,
+  #supportCard.is-active #supportOffBtn{
+    opacity:1 !important;
+    cursor:pointer !important;
+    color:#8b5e00 !important;
+    border-color:rgba(245,158,11,.30) !important;
+    background:linear-gradient(180deg,#fff9ef,#fff) !important;
   }
+  #supportHomeLed{
+    background:#c8d4e2 !important;
+    box-shadow:0 0 0 4px rgba(200,212,226,.22) !important;
+  }
+  #supportHomeLed.active,
+  #supportCard.support-active #supportHomeLed,
+  #supportCard.is-active #supportHomeLed{
+    background:#f59e0b !important;
+    box-shadow:0 0 0 5px rgba(245,158,11,.16),0 0 20px rgba(245,158,11,.50) !important;
+  }
+  #injectionCard .section-label{
+    text-transform:uppercase !important;
+    letter-spacing:.17em !important;
+    font-size:.74rem !important;
+    font-weight:800 !important;
+  }
+  #medHomeDate{
+    margin-top:6px !important;
+    font-weight:750 !important;
+    color:var(--muted) !important;
+  }
+  #medHomeCheck:disabled{
+    opacity:.55 !important;
+    cursor:not-allowed !important;
+    filter:grayscale(.25) !important;
+  }
+  #medHomeCheck:disabled .med-home-box{
+    background:linear-gradient(180deg,#eef2f7,#e5ebf2) !important;
+    border-color:#c4cfdb !important;
+    box-shadow:none !important;
+  }
+</style>
+<script id="home-final-pass-v13-state-lock">
+(function(){
+  const SUPPORT_KEY = 'heartySupportState';
+  const $ = (id) => document.getElementById(id);
+  function readJSON(key, fallback){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
+  function writeJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
+  function supportActive(){
+    const s = readJSON(SUPPORT_KEY, null);
+    return !!(s && typeof s === 'object' && s.active === true);
+  }
+  function renderSupportV13(){
+    const active = supportActive();
+    const card = $('supportCard');
+    const led = $('supportHomeLed');
+    const title = $('supportHomeTitle');
+    const copy = $('supportHomeCopy');
+    const getBtn = $('supportGetBtn');
+    const offBtn = $('supportOffBtn');
+    const root = $('pageRoot') || document.body;
+    if(card){ card.classList.toggle('support-active', active); card.classList.toggle('is-active', active); }
+    if(led){ led.classList.toggle('active', active); led.setAttribute('aria-label', active ? 'Support on' : 'Support off'); }
+    if(root) root.classList.toggle('support-active-theme', active);
+    if(title) title.textContent = active ? 'Support Mode is on' : 'Do you need some support today?';
+    if(copy) copy.textContent = active ? 'Support Mode is active. Meals and movement will soften today.' : 'Support Mode is off. Tap Get Support if side effects are affecting your day.';
+    if(getBtn){ getBtn.textContent = 'Get Support'; getBtn.disabled = active; getBtn.setAttribute('aria-disabled', active ? 'true' : 'false'); }
+    if(offBtn){ offBtn.textContent = 'Support Off'; offBtn.disabled = !active; offBtn.setAttribute('aria-disabled', active ? 'false' : 'true'); }
+  }
+  function goSupport(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    renderSupportV13();
+    if(!supportActive()) window.location.href = './support.html';
+    return false;
+  }
+  function supportOff(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    writeJSON(SUPPORT_KEY, {active:false,type:null,deactivatedAt:new Date().toISOString()});
+    try{ localStorage.removeItem('heartySupport'); localStorage.removeItem('heartySupportMode'); }catch(err){}
+    renderSupportV13();
+    return false;
+  }
+  function medNextLabel(){
+    const raw = readJSON('heartyMedicationState', null) || readJSON('heartyInjectionState', null) || readJSON('heartyMedication', null) || {};
+    const profile = readJSON('heartyUserProfile', {}) || {};
+    const next = raw.nextInjectionDate || raw.nextDate || raw.injectionDate || raw.nextDoseDate || profile.nextInjectionDate || profile.injectionDate || profile.nextDoseDate || null;
+    if(next){ const d = new Date(String(next)); if(!Number.isNaN(d.getTime())) return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}); }
+    return raw.injectionWeekday || profile.injectionWeekday || profile.medicationDay || 'Set during onboarding';
+  }
+  function patchMedicationText(){
+    const card = $('injectionCard');
+    if(!card) return;
+    const date = $('medHomeDate');
+    const check = $('medHomeCheck');
+    const checkText = $('medHomeCheckText');
+    if(card.classList.contains('medication-resting')){
+      if(date) date.textContent = 'Next injection: ' + medNextLabel();
+      if(check){ check.disabled = true; check.classList.remove('done'); }
+      if(checkText) checkText.textContent = 'Not due today';
+    }else if(card.classList.contains('medication-due')){
+      if(checkText) checkText.textContent = 'Mark as done';
+    }
+  }
+  function boot(){
+    const getBtn = $('supportGetBtn');
+    const offBtn = $('supportOffBtn');
+    if(getBtn) getBtn.onclick = goSupport;
+    if(offBtn) offBtn.onclick = supportOff;
+    renderSupportV13();
+    patchMedicationText();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  window.addEventListener('storage', boot);
+  setTimeout(boot,100);
+  setTimeout(boot,500);
+  setTimeout(boot,1200);
+})();
+</script>
 
-  function renderProgressStrip(){
-    const band = document.querySelector('.progress-band');
-    if(!band) return;
-    const main = band.querySelector('.progress-main');
-    const metas = band.querySelectorAll('.progress-meta');
-    const micro = band.querySelector('.progress-microcopy');
-    const fill = band.querySelector('.goalbar-fill');
-    const marker = band.querySelector('.goal-marker');
-    const labels = band.querySelectorAll('.goal-labels span');
 
-    const cur = currentKg();
-    const start = startKg();
-    const target = targetKg();
+<style id="home-final-pass-v14-rules">
+/* V14: final support/med/day-one behaviour locks */
+#todaysRhythmCard.hearty-welcome-glow-locked{
+  background:linear-gradient(180deg,rgba(220,252,231,.99),rgba(255,255,255,.97)) !important;
+  border-color:rgba(14,165,107,.46) !important;
+  box-shadow:0 20px 46px rgba(14,31,53,.12),0 0 0 2px rgba(14,165,107,.14),0 0 42px rgba(14,165,107,.34),0 0 72px rgba(14,165,107,.16) !important;
+}
+#todaysRhythmCard.hearty-welcome-glow-locked .section-label{color:#0b7a51 !important;}
+html[data-theme="midnight"] #todaysRhythmCard.hearty-welcome-glow-locked,
+html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
+  background:linear-gradient(180deg,rgba(8,58,38,.95),rgba(16,35,27,.92)) !important;
+  border-color:rgba(34,197,94,.46) !important;
+  box-shadow:0 20px 46px rgba(0,0,0,.32),0 0 0 2px rgba(34,197,94,.16),0 0 44px rgba(34,197,94,.28),0 0 76px rgba(34,197,94,.13) !important;
+}
+#injectionCard .med-home-check[disabled],
+#injectionCard .dose-check[aria-disabled="true"],
+#injectionCard .dose-check.disabled{
+  opacity:.52 !important;
+  cursor:not-allowed !important;
+  pointer-events:none !important;
+  filter:grayscale(.18) !important;
+}
+#injectionCard .med-home-check[disabled] .med-home-box,
+#injectionCard .dose-check[aria-disabled="true"] .dose-box,
+#injectionCard .dose-check.disabled .dose-box{
+  background:linear-gradient(180deg,#eef2f6,#e5ebf2) !important;
+  border-color:#cbd5e1 !important;
+  box-shadow:none !important;
+}
+</style>
+<script id="home-final-pass-v14-rules">
+(function(){
+  'use strict';
+  const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function $(id){return document.getElementById(id)}
+  function readJSON(key, fallback){try{const v=localStorage.getItem(key); return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
+  function normalDay(v){
+    if(!v) return '';
+    const s=String(v).trim();
+    const found=DAYS.find(d=>d.toLowerCase()===s.toLowerCase());
+    return found || s;
+  }
+  function storedInjectionDays(){
+    const p1=readJSON('hearty_profile',{})||{};
+    const p2=readJSON('heartyUserProfile',{})||{};
+    const med=(p1.medication||p2.medication||{});
+    let days=readJSON('heartyInjectionDays',null) || p1.injectionDays || p2.injectionDays || med.injectionDays || [];
+    if(!Array.isArray(days)) days=[];
+    const legacy=localStorage.getItem('heartyInjectionDay') || p1.injectionDay || p2.injectionDay || med.injectionDay || p1.injectionWeekday || p2.injectionWeekday || p1.medicationDay || p2.medicationDay || '';
+    if(!days.length && legacy) days=[legacy];
+    return days.map(normalDay).filter(Boolean);
+  }
+  function nextDateFor(day){
+    const idx=DAYS.findIndex(d=>d.toLowerCase()===String(day||'').toLowerCase());
+    if(idx<0) return null;
+    const now=new Date();
+    const d=new Date(now); d.setHours(0,0,0,0);
+    d.setDate(d.getDate()+((idx-now.getDay()+7)%7));
+    return d;
+  }
+  function fmtDate(d){return d.toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'short'});}
+  function medName(){
+    const p1=readJSON('hearty_profile',{})||{};
+    const p2=readJSON('heartyUserProfile',{})||{};
+    const med=(p1.medication||p2.medication||{});
+    return localStorage.getItem('heartyMedicationName') || med.name || p1.medicationName || p2.medicationName || 'Medication';
+  }
+  function patchMedication(){
+    const card=$('injectionCard'); if(!card) return;
+    card.hidden=false;
+    const title=card.querySelector('.injection-title') || $('medHomeTitle');
+    const copy=card.querySelector('.injection-copy');
+    const date=$('medHomeDate');
+    const check=$('medHomeCheck') || card.querySelector('.dose-check');
+    const checkText=$('medHomeCheckText') || (check && check.querySelector('span:last-child'));
+    const actions=$('injectionActions') || card.querySelector('.injection-actions');
+    const days=storedInjectionDays();
+    const todayName=DAYS[new Date().getDay()];
+    const todayKey=new Date().toISOString().slice(0,10);
+    const doneKey='heartyInjectionLogged_'+todayKey;
+    const dueToday=days.some(d=>String(d).toLowerCase()===todayName.toLowerCase());
+    const done=localStorage.getItem(doneKey)==='true';
+    const next=days.map(d=>({day:d,date:nextDateFor(d)})).filter(x=>x.date).sort((a,b)=>a.date-b.date)[0];
 
-    if(!cur){
-      setText(main, 'No weight logged yet');
-      if(metas[0]) setText(metas[0], 'Add your first weigh-in to begin tracking.');
-      if(metas[1]) setText(metas[1], 'Target weight must be provided by your doctor.');
-      setText(micro, 'Once you add your weight, this strip will show your current progress.');
-      if(fill) fill.style.width = '0%';
-      if(marker) marker.classList.remove('has-goal');
-      if(labels[0]) setText(labels[0], 'Start not set');
-      if(labels[1]) setText(labels[1], 'Current not set');
-      if(labels[2]) setText(labels[2], 'Doctor target optional');
+    card.classList.toggle('due',dueToday && !done);
+    card.classList.toggle('logged',dueToday && done);
+    card.classList.toggle('medication-due',dueToday && !done);
+    card.classList.toggle('medication-resting',!dueToday);
+
+    if(dueToday){
+      if(title) title.textContent=done?'Medication done today':'Medication due today';
+      if(copy) copy.textContent=done?`${medName()} has been marked complete for today.`:`${medName()} is due today.`;
+      if(date) date.textContent='Today: '+todayName;
+      if(check){
+        check.disabled=!!done ? true : false;
+        check.setAttribute('aria-disabled', done ? 'true' : 'false');
+        check.classList.toggle('done',done);
+        check.classList.toggle('active',done);
+        check.classList.toggle('disabled',done);
+        check.onclick=done?null:function(){localStorage.setItem(doneKey,'true'); patchMedication();};
+      }
+      if(checkText) checkText.textContent=done?'Done':'Tick off';
+      if(actions && !check){
+        actions.innerHTML='<button type="button" id="homeDoseDoneBtn" class="home-dose-btn">Tick off</button>';
+        const b=$('homeDoseDoneBtn'); if(b) b.onclick=function(){localStorage.setItem(doneKey,'true'); patchMedication();};
+      }
       return;
     }
 
-    setText(main, `${fmtKg(cur)} current`);
-    if(target && start && Math.abs(start - target) >= 0.1){
-      const pct = Math.max(0, Math.min(100, start > target ? ((start - cur) / (start - target)) * 100 : ((cur - start) / (target - start)) * 100));
-      const remaining = Math.max(0, Math.abs(cur - target));
-      if(metas[0]) setText(metas[0], `Start ${fmtKg(start)} · Target ${fmtKg(target)}`);
-      if(metas[1]) setText(metas[1], `${Math.round(remaining * 10) / 10} kg to target`);
-      setText(micro, 'This strip shows your path from starting weight to your doctor-provided target.');
-      if(fill) fill.style.width = `${pct}%`;
-      if(marker){ marker.classList.add('has-goal'); marker.style.left = '100%'; }
-      if(labels[0]) setText(labels[0], `Start ${fmtKg(start)}`);
-      if(labels[1]) setText(labels[1], `Current ${fmtKg(cur)}`);
-      if(labels[2]) setText(labels[2], `Target ${fmtKg(target)}`);
-    }else{
-      if(metas[0]) setText(metas[0], start && start !== cur ? `Start ${fmtKg(start)}` : 'Starting point captured');
-      if(metas[1]) setText(metas[1], 'Target weight must be provided by your doctor.');
-      setText(micro, 'Current and starting weight are active. Add a doctor target to unlock the full progress path.');
-      if(fill) fill.style.width = start && start !== cur ? '35%' : '12%';
-      if(marker) marker.classList.remove('has-goal');
-      if(labels[0]) setText(labels[0], start ? `Start ${fmtKg(start)}` : 'Start not set');
-      if(labels[1]) setText(labels[1], `Current ${fmtKg(cur)}`);
-      if(labels[2]) setText(labels[2], 'Doctor target optional');
+    if(title) title.textContent='Medication date';
+    if(copy) copy.textContent='';
+    if(date) date.textContent=next ? 'Next injection: '+fmtDate(next.date) : 'Injection day set during onboarding';
+    if(check){
+      check.disabled=true;
+      check.setAttribute('aria-disabled','true');
+      check.classList.remove('done','active');
+      check.classList.add('disabled');
+      check.onclick=null;
+    }
+    if(checkText) checkText.textContent='Not due today';
+    if(actions && !check){actions.innerHTML='';}
+  }
+
+  function lockWelcomeGlow(){
+    const card=$('todaysRhythmCard'); if(!card) return;
+    const tasks=Array.from(document.querySelectorAll('#protocolList .protocol-item'));
+    if(!tasks.length) return;
+    const complete=tasks.filter(t=>t.classList.contains('completed')).length;
+    const allDone=complete>=tasks.length;
+    const hasStarted=complete>0;
+    const onboardingDone=localStorage.getItem('heartyCoreSetupDone')==='true' || localStorage.getItem('heartyOnboardingComplete')==='true';
+    /* Rule: do not drop the green welcome glow just because movement was ticked. Keep it during the first-use protocol until the whole daily welcome set is complete. */
+    const shouldGlow=onboardingDone && hasStarted && !allDone;
+    card.classList.toggle('hearty-welcome-glow-locked', shouldGlow);
+    if(shouldGlow){
+      const label=card.querySelector('.protocol-head .section-label');
+      if(label) label.textContent='WELCOME TO HEARTY';
     }
   }
 
-  function renderAdherenceRing(){
-    const total = 4;
-    const done = document.querySelectorAll('#protocolList .protocol-item.completed, #todaysRhythmCard .protocol-item.completed').length;
-    const pct = Math.max(0, Math.min(100, Math.round((done / total) * 100)));
-    const val = document.getElementById('adherenceValue');
-    if(val) val.textContent = `${pct}%`;
-    const ring = val?.closest('.ring-block')?.querySelector('.ring-progress');
-    setRing(ring, pct);
+  function disableAutoScrollDown(){
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    window.scrollToWelcomeBlockAfterOnboarding=function(){return false;};
   }
-
-  function renderAll(){
-    renderHydration();
-    renderProgressStrip();
-    renderAdherenceRing();
-    document.documentElement.classList.add('hearty-home-rendered');
-    document.body.classList.add('home-data-ready');
+  function boot(){
+    disableAutoScrollDown();
+    patchMedication();
+    lockWelcomeGlow();
   }
-
-  function waterClick(e){
-    const btn = e.target && e.target.closest && e.target.closest('#waterGlass,#waterUndo');
-    if(!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-    if(btn.id === 'waterGlass') saveWaterMl(readWaterMl() + 250);
-    if(btn.id === 'waterUndo') saveWaterMl(readWaterMl() - 250);
-    renderAll();
-  }
-
-  document.addEventListener('click', waterClick, true);
-  document.addEventListener('change', function(e){
-    if(e.target && /weight|target/i.test(e.target.id || e.target.name || '')) setTimeout(renderAll, 50);
-  }, true);
-  window.addEventListener('storage', renderAll);
-  window.heartyHomeRenderStableState = renderAll;
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ renderAll(); setTimeout(renderAll,250); setTimeout(renderAll,900); });
-  else { renderAll(); setTimeout(renderAll,250); setTimeout(renderAll,900); }
+  disableAutoScrollDown();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){window.scrollTo(0,0); boot();});
+  else { window.scrollTo(0,0); boot(); }
+  ['click','change','input'].forEach(evt=>document.addEventListener(evt,function(){setTimeout(boot,60);},true));
+  window.addEventListener('storage',boot);
+  setTimeout(boot,250); setTimeout(boot,800); setTimeout(boot,1500);
 })();
-</script></body>
+</script>
+
+
+
+<!-- PATCH V15: progress photo v9 repair + lesson open button hard lock -->
+<style id="home-v15-photo-lesson-repair-css">
+  #photoSheet.show{display:flex!important;opacity:1!important;pointer-events:auto!important;}
+  #photoSheet.show .task-sheet{transform:translateY(0)!important;}
+  .hearty-photo-v9-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px;}
+  .hearty-photo-v9-slot{min-height:112px;border-radius:18px;border:1px solid rgba(156,177,200,.20);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.96);padding:10px;display:grid;gap:6px;place-items:center;text-align:center;color:#40556d;font:inherit;font-weight:800;cursor:pointer;overflow:hidden;}
+  .hearty-photo-v9-slot span{font-size:.68rem;letter-spacing:.08em;color:#728196;text-transform:uppercase;font-weight:900;}
+  .hearty-photo-v9-slot img{display:none;width:100%;height:62px;object-fit:cover;border-radius:12px;border:1px solid rgba(156,177,200,.20);background:#eef3fa;}
+  .hearty-photo-v9-slot.has-photo{border-color:rgba(47,109,246,.26);box-shadow:0 0 0 3px rgba(47,109,246,.07),inset 0 1px 0 rgba(255,255,255,.96);}
+  .hearty-photo-v9-slot.has-photo img{display:block;}
+  .hearty-photo-v9-slot.has-photo span{color:#335b9b;}
+  #completePhotoCheckInBtn.photo-ready{opacity:1!important;cursor:pointer!important;box-shadow:0 14px 28px rgba(99,102,241,.24)!important;}
+  #toggleLesson{min-width:118px;display:inline-flex!important;align-items:center;justify-content:center;}
+  #toggleLesson .lesson-open-label{display:inline!important;}
+  #lessonCard.open #lessonBody{display:block!important;}
+  @media(max-width:640px){.hearty-photo-v9-grid{grid-template-columns:1fr}.hearty-photo-v9-slot{min-height:96px}.hearty-photo-v9-slot img{height:74px}}
+</style>
+<script id="home-v15-photo-lesson-repair-js">
+(function(){
+  'use strict';
+  const TODAY = new Date().toISOString().slice(0,10);
+  const PHOTO_KEY = 'heartyPhotoCheckInDraft';
+  const SETS_KEY = 'hearty_progress_photos';
+  const LOG_KEY = 'heartyHomeDailyV1';
+  const slots = ['front','side','back'];
+  const $ = (sel,root=document)=>root.querySelector(sel);
+  const $$ = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
+  function safeRead(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
+  function safeWrite(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+  function inputId(key){return 'photo'+key.charAt(0).toUpperCase()+key.slice(1)+'Input';}
+  function blankDraft(){return {date:TODAY,slots:{front:null,side:null,back:null}};}
+  function getDraft(){const d=safeRead(PHOTO_KEY,blankDraft());if(!d||d.date!==TODAY)return blankDraft();d.slots=Object.assign({front:null,side:null,back:null},d.slots||{});return d;}
+  function saveDraft(d){d.date=TODAY;safeWrite(PHOTO_KEY,d);}
+  function srcOf(item){return item&&(item.image||item.previewUrl||item.dataUrl||'');}
+  function openSheet(id){const el=document.getElementById(id);if(!el)return;el.classList.add('show');el.setAttribute('aria-hidden','false');}
+  function closeSheet(id){const el=document.getElementById(id);if(!el)return;el.classList.remove('show');el.setAttribute('aria-hidden','true');}
+  function setDailyPhotoDone(){
+    let d=safeRead(LOG_KEY,null);
+    if(!d||d.date!==TODAY)d={date:TODAY,water:0,medicationLogged:false,tasks:{weight:false,photos:false,movement:false,lesson:false}};
+    d.tasks=Object.assign({weight:false,photos:false,movement:false,lesson:false},d.tasks||{});
+    d.tasks.photos=true;
+    safeWrite(LOG_KEY,d);
+    try{localStorage.setItem('heartyPhotoCheckInComplete:'+TODAY,'true');localStorage.setItem('heartyPhotoCheckInComplete','true');}catch(e){}
+    const task=document.getElementById('photoTask');
+    if(task){task.classList.add('completed');const btn=task.querySelector('.task-icon-btn');if(btn)btn.classList.add('done');}
+    if(window.heartyHomeHybridRender)try{window.heartyHomeHybridRender();}catch(e){}
+  }
+  function renderPhotos(){
+    const draft=getDraft();
+    slots.forEach(key=>{
+      const item=draft.slots[key], src=srcOf(item);
+      const slot=$('[data-v9-photo="'+key+'"]');
+      const state=$('#v9'+key.charAt(0).toUpperCase()+key.slice(1)+'PhotoState');
+      const img=$('#v9'+key.charAt(0).toUpperCase()+key.slice(1)+'PhotoPreview');
+      if(slot)slot.classList.toggle('has-photo',!!src);
+      if(state)state.textContent=src?'Added':(key==='front'?'Required':'Optional');
+      if(img){if(src){img.src=src;img.alt=key+' progress photo preview';}else{img.removeAttribute('src');img.alt='';}}
+    });
+    const ready=!!srcOf(draft.slots.front);
+    const count=slots.filter(k=>!!srcOf(draft.slots[k])).length;
+    const btn=$('#completePhotoCheckInBtn');
+    if(btn){btn.disabled=!ready;btn.classList.toggle('photo-ready',ready);btn.textContent=ready?'Complete photo check-in ('+count+')':'Add front photo to complete';}
+  }
+  function pickPhoto(key){const input=document.getElementById(inputId(key));if(input){input.value='';input.click();}}
+  function handleFile(key,file){
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(){const d=getDraft();d.slots[key]={name:file.name||key+'-photo.jpg',capturedAt:new Date().toISOString(),image:String(reader.result||''),previewUrl:String(reader.result||'')};saveDraft(d);renderPhotos();};
+    reader.readAsDataURL(file);
+  }
+  function completePhotos(e){
+    if(e){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();}
+    const d=getDraft();
+    if(!srcOf(d.slots.front)){alert('Please add a front photo first.');return false;}
+    let sets=safeRead(SETS_KEY,[]); if(!Array.isArray(sets))sets=[];
+    sets=sets.filter(x=>x&&x.date!==TODAY);
+    const used=slots.filter(k=>!!srcOf(d.slots[k]));
+    sets.push({date:TODAY,createdAt:new Date().toISOString(),dateLabel:new Date(TODAY+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}),tag:sets.length?'Latest set':'Start set',note:used.join(', ')+' progress photos',views:used,slots:d.slots});
+    safeWrite(SETS_KEY,sets);
+    setDailyPhotoDone();
+    closeSheet('photoSheet');
+    return false;
+  }
+  function bindPhotos(){
+    slots.forEach(key=>{const input=document.getElementById(inputId(key));if(input&&!input.dataset.v15Bound){input.dataset.v15Bound='1';input.addEventListener('change',function(e){handleFile(key,input.files&&input.files[0]);input.value='';},true);}});
+    const complete=$('#completePhotoCheckInBtn');
+    if(complete){complete.onclick=completePhotos;}
+  }
+  function bindLesson(){
+    const card=$('#lessonCard'), body=$('#lessonBody'), btn=$('#toggleLesson'), complete=$('#completeLesson');
+    if(!card||!body||!btn)return;
+    function label(){btn.innerHTML='<span class="lesson-open-label">'+(card.classList.contains('open')?'Close lesson':'Open lesson')+'</span>';}
+    label();
+    document.addEventListener('click',function(e){
+      if(e.target.closest('#toggleLesson')){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();card.classList.toggle('open');label();return false;}
+      if(e.target.closest('#completeLesson')&&complete&&!complete.disabled){setTimeout(function(){card.classList.add('open');label();},0);}
+    },true);
+  }
+  function bindGlobalPhotoClicks(){
+    document.addEventListener('click',function(e){
+      const action=e.target.closest('[data-action="photos"]');
+      if(action){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();renderPhotos();openSheet('photoSheet');return false;}
+      const v9=e.target.closest('[data-v9-photo]');
+      if(v9){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();pickPhoto(v9.getAttribute('data-v9-photo'));return false;}
+      const close=e.target.closest('[data-close-sheet="photoSheet"]');
+      if(close){e.preventDefault();closeSheet('photoSheet');return false;}
+    },true);
+  }
+  function boot(){bindPhotos();bindLesson();bindGlobalPhotoClicks();renderPhotos();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+
+
+
+<!-- PATCH V16: requested final fixes - photo count 3, medication tick style, protocol summary -->
+<style id="home-v16-final-request-fixes-css">
+  /* Remove the old custom medication checkbox visual and use the Daily Rhythm tick style */
+  #medHomeCheck .med-home-box{display:none!important;}
+  #medHomeCheck .med-home-tick,
+  #medHomeCheck .tick{
+    width:24px!important;
+    height:24px!important;
+    border-radius:8px!important;
+    border:1.8px solid #c2d0df!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.92))!important;
+    display:grid!important;
+    place-items:center!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9)!important;
+    flex:0 0 auto!important;
+  }
+  #medHomeCheck .med-home-tick svg,
+  #medHomeCheck .tick svg{
+    width:14px!important;
+    height:14px!important;
+    stroke:currentColor!important;
+    stroke-width:2!important;
+    fill:none!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+    opacity:0!important;
+    transform:scale(.7)!important;
+    transition:all .2s ease!important;
+  }
+  #medHomeCheck.done .med-home-tick,
+  #medHomeCheck.done .tick,
+  #medHomeCheck.active .med-home-tick,
+  #medHomeCheck.active .tick{
+    border-color:rgba(14,165,107,.72)!important;
+    background:linear-gradient(180deg,rgba(14,165,107,.14),rgba(14,165,107,.09))!important;
+    box-shadow:0 0 0 4px rgba(14,165,107,.08),0 0 16px rgba(14,165,107,.18)!important;
+    color:#0b7a51!important;
+  }
+  #medHomeCheck.done .med-home-tick svg,
+  #medHomeCheck.done .tick svg,
+  #medHomeCheck.active .med-home-tick svg,
+  #medHomeCheck.active .tick svg{
+    opacity:1!important;
+    transform:scale(1)!important;
+  }
+  #medHomeCheck[disabled] .med-home-tick,
+  #medHomeCheck[disabled] .tick{
+    background:linear-gradient(180deg,#eef2f6,#e5ebf2)!important;
+    border-color:#cbd5e1!important;
+    box-shadow:none!important;
+  }
+  #medHomeCheck[disabled] .med-home-tick svg,
+  #medHomeCheck[disabled] .tick svg{opacity:0!important;}
+</style>
+<script id="home-v16-final-request-fixes-js">
+(function(){
+  'use strict';
+  const TODAY=new Date().toISOString().slice(0,10);
+  const PHOTO_KEY='heartyPhotoCheckInDraft';
+  const DAILY_KEYS=['heartyHomeDailyV1','heartyDailyState'];
+  const slots=['front','side','back'];
+  const $=(sel,root=document)=>root.querySelector(sel);
+  function readJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
+  function writeJSON(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+  function srcOf(item){return item&&(item.image||item.previewUrl||item.dataUrl||'');}
+  function ensureMedicationTick(){
+    const check=document.getElementById('medHomeCheck');
+    if(!check) return;
+    const old=check.querySelector('.med-home-box');
+    if(old) old.remove();
+    if(!check.querySelector('.med-home-tick')){
+      const tick=document.createElement('span');
+      tick.className='tick med-home-tick';
+      tick.setAttribute('aria-hidden','true');
+      tick.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg>';
+      check.insertBefore(tick,check.firstChild);
+    }
+  }
+  function getPhotoCount(){
+    const d=readJSON(PHOTO_KEY,{date:TODAY,slots:{}});
+    if(!d||d.date!==TODAY||!d.slots) return 0;
+    return slots.filter(k=>!!srcOf(d.slots[k])).length;
+  }
+  function patchPhotoText(){
+    const task=document.getElementById('photoTask');
+    if(task){
+      const sub=task.querySelector('.task-sub');
+      if(sub) sub.textContent='Monthly check-in';
+    }
+    const draft=readJSON(PHOTO_KEY,{date:TODAY,slots:{}});
+    const ready=!!(draft&&draft.date===TODAY&&draft.slots&&srcOf(draft.slots.front));
+    const count=getPhotoCount();
+    const btn=document.getElementById('completePhotoCheckInBtn');
+    if(btn){
+      btn.disabled=!ready;
+      btn.classList.toggle('photo-ready',ready);
+      btn.textContent=ready?'Complete photo check-in ('+count+' of 3)':'Add front photo to complete';
+    }
+  }
+  function dailyState(){
+    for(const key of DAILY_KEYS){
+      const d=readJSON(key,null);
+      if(d&&d.date===TODAY) return d;
+    }
+    return {date:TODAY,tasks:{weight:false,photos:false,movement:false}};
+  }
+  function isDone(id,taskName){
+    const el=document.getElementById(id);
+    if(el&&el.classList.contains('completed')) return true;
+    const d=dailyState();
+    const t=d.tasks||{};
+    if(taskName==='weight') return !!(t.weight||t.weighIn||t['weigh-in']);
+    if(taskName==='photos') return !!(t.photos||t.photoTask||localStorage.getItem('heartyPhotoCheckInComplete:'+TODAY)==='true');
+    if(taskName==='movement') return !!(t.movement||t.walk||t.dailyWalk);
+    return false;
+  }
+  function patchProtocolSummary(){
+    const complete=[
+      isDone('weighInTask','weight'),
+      isDone('photoTask','photos'),
+      isDone('movementTask','movement')
+    ].filter(Boolean).length;
+    const summary=document.getElementById('protocolSummary');
+    if(summary) summary.textContent=complete+' of 3 complete';
+  }
+  function boot(){
+    ensureMedicationTick();
+    patchPhotoText();
+    patchProtocolSummary();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  ['click','change','input'].forEach(evt=>document.addEventListener(evt,function(){setTimeout(boot,40);setTimeout(boot,240);},true));
+  window.addEventListener('storage',boot);
+  setTimeout(boot,300);setTimeout(boot,900);setTimeout(boot,1600);
+})();
+</script>
+
+
+<!-- PATCH V17: onboarding unit selector cleanup + lesson button size lock -->
+<style id="home-v17-unit-lesson-fixes-css">
+  /* Onboarding: the metric/imperial picker must not sit as a huge ugly block beside Back/Continue */
+  #coreSetupSheet .core-setup-actions{
+    grid-template-columns:1fr 1fr !important;
+    align-items:stretch !important;
+  }
+  #unitChoiceBlock.unit-choice-picked,
+  #unitChoiceBlock[hidden]{
+    display:none !important;
+  }
+  #unitChoiceBlock{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    margin:0 0 2px !important;
+    padding:12px !important;
+    border-radius:18px !important;
+    border:1px solid rgba(156,177,200,.18) !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(247,250,255,.94)) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.96) !important;
+  }
+  #unitChoiceBlock .unit-choice-label{
+    font-size:.74rem !important;
+    font-weight:900 !important;
+    letter-spacing:.14em !important;
+    text-transform:uppercase !important;
+    color:#6d7b8c !important;
+    margin-bottom:8px !important;
+  }
+  #unitChoiceBlock .unit-choice-grid{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px !important;
+  }
+  #unitChoiceBlock .unit-choice-option{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    min-height:52px !important;
+    padding:10px 12px !important;
+    border-radius:16px !important;
+    border:1px solid rgba(156,177,200,.18) !important;
+    background:linear-gradient(180deg,#fff,#f7faff) !important;
+    cursor:pointer !important;
+  }
+  #unitChoiceBlock .unit-choice-option input{
+    width:20px !important;
+    height:20px !important;
+    flex:0 0 auto !important;
+  }
+  #unitChoiceBlock .unit-choice-option span{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:1px !important;
+    line-height:1.05 !important;
+  }
+  #unitChoiceBlock .unit-choice-option small{
+    color:#6d7b8c !important;
+    font-size:.75rem !important;
+    font-weight:650 !important;
+  }
+
+  /* Daily guidance: keep Open Lesson a proper button, not a tiny text nub */
+  #lessonCard .lesson-actions{
+    display:flex !important;
+    gap:10px !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+  }
+  #toggleLesson,
+  #lessonCard #toggleLesson,
+  button#toggleLesson.ghost-btn{
+    min-width:154px !important;
+    min-height:48px !important;
+    padding:0 18px !important;
+    border-radius:16px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:.92rem !important;
+    font-weight:900 !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    flex:0 0 auto !important;
+  }
+  #toggleLesson .lesson-open-label{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-width:96px !important;
+    white-space:nowrap !important;
+  }
+  @media(max-width:640px){
+    #lessonCard .lesson-actions{width:100% !important;display:grid !important;grid-template-columns:1fr 1fr !important;}
+    #toggleLesson,#completeLesson{width:100% !important;min-width:0 !important;}
+    #unitChoiceBlock .unit-choice-grid{grid-template-columns:1fr !important;}
+  }
+</style>
+<script id="home-v17-unit-lesson-fixes-js">
+(function(){
+  'use strict';
+  function readUnit(){try{return localStorage.getItem('heartyUnitPreference')||localStorage.getItem('heartyUnits')||'';}catch(e){return '';}}
+  function writeUnit(v){try{localStorage.setItem('heartyUnitPreference',v);localStorage.setItem('heartyUnits',v);}catch(e){}}
+  function cleanUnitPicker(){
+    var block=document.getElementById('unitChoiceBlock');
+    if(!block) return;
+    var radios=Array.prototype.slice.call(block.querySelectorAll('input[name="heartyUnitPreference"]'));
+    var stored=readUnit();
+    if(stored){
+      radios.forEach(function(r){r.checked=(r.value===stored);});
+      block.classList.add('unit-choice-picked');
+      block.setAttribute('hidden','');
+      return;
+    }
+    // If the file has Metric pre-checked by default, save it and hide the selector immediately.
+    var checked=radios.find(function(r){return r.checked;});
+    if(checked){writeUnit(checked.value);block.classList.add('unit-choice-picked');block.setAttribute('hidden','');}
+    radios.forEach(function(r){
+      if(r.dataset.v17UnitBound) return;
+      r.dataset.v17UnitBound='1';
+      r.addEventListener('change',function(){
+        if(r.checked){writeUnit(r.value);block.classList.add('unit-choice-picked');block.setAttribute('hidden','');}
+      },true);
+    });
+  }
+  function lockLessonButton(){
+    var card=document.getElementById('lessonCard');
+    var btn=document.getElementById('toggleLesson');
+    if(!card||!btn) return;
+    var text=card.classList.contains('open')?'Close lesson':'Open lesson';
+    if(!btn.querySelector('.lesson-open-label')) btn.innerHTML='<span class="lesson-open-label"></span>';
+    btn.querySelector('.lesson-open-label').textContent=text;
+    btn.setAttribute('aria-expanded',card.classList.contains('open')?'true':'false');
+  }
+  function boot(){cleanUnitPicker();lockLessonButton();}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  document.addEventListener('click',function(e){
+    if(e.target.closest('#toggleLesson')) setTimeout(lockLessonButton,0);
+    setTimeout(function(){cleanUnitPicker();lockLessonButton();},80);
+  },true);
+  ['change','input'].forEach(function(evt){document.addEventListener(evt,function(){setTimeout(boot,40);},true);});
+  setTimeout(boot,250);setTimeout(boot,900);
+})();
+</script>
+
+</body>
 </html>
