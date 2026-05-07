@@ -12375,6 +12375,340 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
 })();
 </script>
 
+<style id="hearty-daily-protocol-rules-lock-v1">
+  /* Final Home protocol rules: keep the block visible; photo row is only active when due. */
+  #todaysRhythmCard{
+    display:block !important;
+    visibility:visible !important;
+  }
+  #protocolList{
+    display:grid !important;
+    visibility:visible !important;
+  }
+  #todaysRhythmCard.hearty-protocol-complete{
+    background:linear-gradient(180deg, rgba(239,251,245,.98), rgba(255,255,255,.96)) !important;
+    border-color:rgba(14,165,107,.28) !important;
+    box-shadow:0 18px 38px rgba(14,31,53,.08), 0 0 0 1px rgba(14,165,107,.08) !important;
+  }
+  #photoTask.hearty-photo-not-due{
+    display:none !important;
+  }
+  #protocolComplete.show{
+    display:flex !important;
+  }
+</style>
+<script id="hearty-daily-protocol-rules-lock-v1">
+(function(){
+  "use strict";
+
+  var DAILY_KEY = "heartyDailyState";
+  var PHOTO_INTERVAL_DAYS = 21;
+  var CIRC = 339.292;
+
+  function localDateKey(date){
+    date = date || new Date();
+    var y = date.getFullYear();
+    var m = String(date.getMonth() + 1).padStart(2, "0");
+    var d = String(date.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + d;
+  }
+
+  function todayKey(){ return localDateKey(new Date()); }
+
+  function readJSON(key, fallback){
+    try{
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(error){
+      return fallback;
+    }
+  }
+
+  function saveJSON(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(error){}
+  }
+
+  function parseDateOnly(value){
+    if(!value) return null;
+    if(value instanceof Date && !isNaN(value)) return localDateKey(value);
+    var text = String(value);
+    var match = text.match(/\d{4}-\d{2}-\d{2}/);
+    if(match) return match[0];
+    var d = new Date(text);
+    return isNaN(d) ? null : localDateKey(d);
+  }
+
+  function dateFromKey(key){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(String(key || ""))) return null;
+    var parts = key.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function daysBetween(fromKey, toKey){
+    var from = dateFromKey(fromKey);
+    var to = dateFromKey(toKey);
+    if(!from || !to) return Infinity;
+    return Math.floor((to.getTime() - from.getTime()) / 86400000);
+  }
+
+  function getDaily(){
+    var today = todayKey();
+    var daily = readJSON(DAILY_KEY, null);
+    if(!daily || daily.date !== today){
+      daily = { date:today, tasks:{} };
+    }
+    daily.tasks = Object.assign({ weight:false, movement:false, photos:false, lesson:false }, daily.tasks || {});
+    return daily;
+  }
+
+  function saveDaily(daily){
+    daily.date = todayKey();
+    daily.tasks = daily.tasks || {};
+    saveJSON(DAILY_KEY, daily);
+  }
+
+  function readDailyDoneFlag(key){
+    var today = todayKey();
+    try{
+      var raw = localStorage.getItem(key);
+      if(!raw) return false;
+      if(raw === today || raw === "1" || raw === "true") return true;
+      var parsed = JSON.parse(raw);
+      return !!(parsed && parsed.date === today && (parsed.done === true || parsed.value != null));
+    }catch(error){
+      return false;
+    }
+  }
+
+  function readDailyNumberDone(key){
+    var today = todayKey();
+    try{
+      var raw = localStorage.getItem(key);
+      if(!raw) return false;
+      var parsed = JSON.parse(raw);
+      if(parsed && typeof parsed === "object"){
+        return parsed.date === today && parsed.value !== "" && parsed.value != null;
+      }
+      return Number.isFinite(Number(raw)) && Number(raw) > 0;
+    }catch(error){
+      return Number.isFinite(Number(localStorage.getItem(key))) && Number(localStorage.getItem(key)) > 0;
+    }
+  }
+
+  function getLastPhotoDate(){
+    var candidates = [];
+    try{ candidates.push(localStorage.getItem("heartyLastPhotoCheckInAt")); }catch(error){}
+
+    var sets = readJSON("hearty_progress_photos", []);
+    if(Array.isArray(sets)){
+      sets.forEach(function(item){ if(item) candidates.push(item.date || item.createdAt || item.fullLabel); });
+    }
+
+    var log = readJSON("heartyPhotoLog", []);
+    if(Array.isArray(log)){
+      log.forEach(function(item){ if(item) candidates.push(item.date || item.createdAt); });
+    }
+
+    var dates = candidates.map(parseDateOnly).filter(Boolean).sort();
+    return dates.length ? dates[dates.length - 1] : null;
+  }
+
+  function photoCompletedToday(daily){
+    var today = todayKey();
+    var completeRaw = null;
+    try{ completeRaw = localStorage.getItem("heartyPhotoCheckInComplete"); }catch(error){}
+    var completeDate = parseDateOnly(completeRaw);
+    return completeDate === today || !!(daily && daily.date === today && daily.tasks && daily.tasks.photos === true);
+  }
+
+  function getPhotoRule(daily){
+    var today = todayKey();
+    var last = getLastPhotoDate();
+    var completedToday = photoCompletedToday(daily);
+    var age = last ? daysBetween(last, today) : Infinity;
+    var due = !last || age >= PHOTO_INTERVAL_DAYS || completedToday;
+    var nextDueDate = null;
+
+    if(last){
+      var d = dateFromKey(last);
+      if(d){
+        d.setDate(d.getDate() + PHOTO_INTERVAL_DAYS);
+        nextDueDate = localDateKey(d);
+      }
+    }
+
+    return {
+      due: due,
+      completedToday: completedToday,
+      last: last,
+      age: age,
+      nextDueDate: nextDueDate
+    };
+  }
+
+  function setRowDone(id, done){
+    var row = document.getElementById(id);
+    if(!row) return;
+    row.classList.toggle("completed", !!done);
+    row.classList.toggle("done", !!done);
+    var btn = row.querySelector(".task-icon-btn, .task-btn");
+    if(btn){
+      btn.classList.toggle("done", !!done);
+      btn.setAttribute("aria-pressed", done ? "true" : "false");
+      var defaultIcon = btn.querySelector(".icon-default, .icon-main, .icon-main-img");
+      var checkIcon = btn.querySelector(".icon-check");
+      if(defaultIcon && checkIcon){
+        defaultIcon.style.display = done ? "none" : "block";
+        checkIcon.style.display = done ? "block" : "none";
+      }
+    }
+  }
+
+  function setText(selector, text){
+    var el = document.querySelector(selector);
+    if(el) el.textContent = text;
+  }
+
+  function setRingPercent(percent){
+    var ring = document.querySelector(".ring-progress.blue");
+    if(!ring) return;
+    var pct = Math.max(0, Math.min(100, Number(percent || 0)));
+    ring.style.strokeDasharray = String(CIRC);
+    ring.style.strokeDashoffset = String(CIRC - (CIRC * pct / 100));
+  }
+
+  function formatShortDate(key){
+    var d = dateFromKey(key);
+    if(!d) return "";
+    return d.toLocaleDateString("en-ZA", { day:"numeric", month:"short" });
+  }
+
+  function applyRules(){
+    var card = document.getElementById("todaysRhythmCard");
+    var list = document.getElementById("protocolList");
+    if(!card || !list) return;
+
+    card.hidden = false;
+    card.removeAttribute("hidden");
+    card.style.display = "block";
+    card.style.visibility = "visible";
+    list.hidden = false;
+    list.removeAttribute("hidden");
+    list.style.display = "grid";
+    list.style.visibility = "visible";
+
+    var daily = getDaily();
+
+    // Weight is always daily. It resets automatically when the date changes.
+    daily.tasks.weight = !!(daily.tasks.weight || readDailyNumberDone("heartyTodayWeightKg"));
+    daily.tasks.movement = !!(daily.tasks.movement || readDailyDoneFlag("heartyWalkComplete"));
+
+    var photoRule = getPhotoRule(daily);
+    var photoTask = document.getElementById("photoTask");
+    if(photoTask){
+      photoTask.classList.toggle("hearty-photo-not-due", !photoRule.due);
+      photoTask.hidden = false;
+      photoTask.removeAttribute("hidden");
+      if(photoRule.due){
+        photoTask.style.display = "";
+        var photoSub = photoTask.querySelector(".task-sub");
+        if(photoSub){
+          photoSub.textContent = photoRule.completedToday
+            ? "Photo check-in complete for today"
+            : "Due today • every 3 weeks";
+        }
+      }else{
+        photoTask.style.display = "none";
+      }
+    }
+
+    daily.tasks.photos = photoRule.completedToday;
+    saveDaily(daily);
+
+    setRowDone("weighInTask", daily.tasks.weight);
+    setRowDone("walkTask", daily.tasks.movement);
+    if(photoTask) setRowDone("photoTask", photoRule.completedToday);
+
+    var active = [
+      { key:"weight", id:"weighInTask", done:!!daily.tasks.weight },
+      { key:"movement", id:"walkTask", done:!!daily.tasks.movement }
+    ];
+    if(photoRule.due){
+      active.push({ key:"photos", id:"photoTask", done:!!photoRule.completedToday });
+    }
+
+    var doneCount = active.filter(function(item){ return item.done; }).length;
+    var total = active.length || 1;
+    var percent = Math.round((doneCount / total) * 100);
+    var complete = doneCount >= total;
+
+    setText("#protocolSummary", doneCount + " of " + total + " complete");
+    setText("#adherenceValue", percent + "%");
+    setRingPercent(percent);
+
+    var completeBox = document.getElementById("protocolComplete");
+    if(completeBox){
+      completeBox.classList.toggle("show", complete);
+      completeBox.style.display = complete ? "flex" : "none";
+    }
+
+    card.classList.toggle("hearty-protocol-complete", complete);
+    card.classList.toggle("protocol-complete", complete);
+    card.classList.toggle("protocol-pending", !complete);
+    document.body.classList.toggle("protocol-complete-state", complete);
+    document.body.classList.toggle("protocol-pending-state", !complete);
+
+    var state = card.querySelector(".protocol-head .protocol-state:not(#protocolSummary)");
+    if(state){
+      if(complete){
+        state.textContent = "Complete for today";
+      }else if(photoRule.due && !photoRule.completedToday){
+        state.textContent = "Photo check-in due";
+      }else{
+        state.textContent = "Keep today moving";
+      }
+    }
+
+    var status = document.getElementById("dailyStatusLine");
+    if(status){
+      if(complete){
+        status.textContent = "Daily status: Protocol complete";
+      }else if(!photoRule.due && photoRule.nextDueDate){
+        status.textContent = "Daily status: Next photo check-in " + formatShortDate(photoRule.nextDueDate);
+      }else{
+        status.textContent = "Today looks steady — keep the basics moving";
+      }
+    }
+  }
+
+  function boot(){
+    applyRules();
+    setTimeout(applyRules, 80);
+    setTimeout(applyRules, 300);
+    setTimeout(applyRules, 900);
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", boot);
+  }else{
+    boot();
+  }
+
+  document.addEventListener("click", function(){
+    setTimeout(applyRules, 40);
+    setTimeout(applyRules, 220);
+  }, true);
+  window.addEventListener("storage", applyRules);
+  setInterval(applyRules, 1200);
+
+  window.heartyHomeProtocolRules = {
+    apply: applyRules,
+    photoIntervalDays: PHOTO_INTERVAL_DAYS,
+    getPhotoRule: function(){ return getPhotoRule(getDaily()); }
+  };
+})();
+</script>
+
 <script id="hearty-home-pwa-service-worker">
 (function(){
   if (!('serviceWorker' in navigator)) return;
