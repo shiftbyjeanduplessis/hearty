@@ -153,12 +153,19 @@ html[data-theme="rose_aurora"] body::after{opacity:.055;background-image:url("da
     </section>
 
     <section class="settings-card">
-      <div class="settings-head"><div><h2 class="settings-title">Injection Setup</h2><p class="settings-copy">Keep your medication details and weekly rhythm in one place.</p></div></div>
-      <div class="field-grid">
-        <div class="field"><label class="label" for="injection-name">Medication Name</label><input id="injection-name" class="input" type="text"/></div>
-        <div class="field"><label class="label" for="injection-dose">Dose</label><input id="injection-dose" class="input" type="text"/></div>
-        <div class="field"><label class="label" for="injection-day">Injection Day</label><select id="injection-day" class="select"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
-        <div class="field"><label class="label" for="injection-reminder-enabled">Injection Reminder</label><label class="switch"><input id="injection-reminder-enabled" type="checkbox"/><span class="slider"></span></label></div>
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Medication</h2>
+          <p class="settings-copy">Medication setup is shared with Home and Progress. Manage dosage and injection history from Progress.</p>
+        </div>
+      </div>
+      <div class="kv-list medication-summary-list">
+        <div class="kv-row"><div class="kv-key">Medication</div><div id="settings-medication-summary" class="kv-val">Not set</div></div>
+        <div class="kv-row"><div class="kv-key">Injection day</div><div id="settings-injection-day-summary" class="kv-val">Not set</div></div>
+        <div class="kv-row"><div class="kv-key">Dose</div><div id="settings-dose-summary" class="kv-val">Set in Progress</div></div>
+      </div>
+      <div class="inline-actions" style="margin-top:16px">
+        <a class="btn secondary" href="progress.html#injections">Manage in Progress</a>
       </div>
     </section>
 
@@ -319,6 +326,83 @@ const computeWaterLitres = ()=> {
 };
 function applyTheme(theme){ document.documentElement.setAttribute('data-theme', theme || 'clean_blue'); localStorage.setItem('heartyTheme', theme || 'clean_blue'); localStorage.setItem('hearty-theme', theme || 'clean_blue'); }
 function updateLicenseUI(){ const status=localStorage.getItem(STORAGE.licenseStatus)||'active'; const pill=$('license-status-pill'); pill.textContent=status.charAt(0).toUpperCase()+status.slice(1); pill.className='status-pill'+(status==='grace'?' grace':status==='expired'?' expired':''); $('license-expiry').textContent=localStorage.getItem(STORAGE.licenseExpiry)||'—'; }
+
+function readCanonicalData(){
+  try{
+    if(window.HeartyData && typeof window.HeartyData.export === 'function') return window.HeartyData.export();
+  }catch(e){}
+  try{
+    return JSON.parse(localStorage.getItem('hearty:data:v1') || '{}') || {};
+  }catch(e){
+    return {};
+  }
+}
+function readHomeMedication(){
+  try{
+    return JSON.parse(localStorage.getItem('heartyMedication') || '{}') || {};
+  }catch(e){
+    return {};
+  }
+}
+function dayNameFromAny(value){
+  const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  if(value === undefined || value === null || value === '') return '';
+  if(/^\d+$/.test(String(value))){
+    const n = Number(value);
+    return names[n >= 0 && n <= 6 ? n : 1];
+  }
+  const raw = String(value).trim();
+  return names.find(d => d.toLowerCase() === raw.toLowerCase()) || raw;
+}
+function readMedicationBridge(){
+  const canonical = readCanonicalData();
+  const profile = canonical.profile || {};
+  const homeMed = readHomeMedication();
+  let schedule = {};
+  try{ schedule = JSON.parse(localStorage.getItem('heartyInjectionSchedule') || '{}') || {}; }catch(e){}
+
+  const medication =
+    localStorage.getItem('heartyMedicationType') ||
+    localStorage.getItem('heartyInjectionName') ||
+    localStorage.getItem(STORAGE.injectionName) ||
+    profile.medication_name ||
+    profile.injection_name ||
+    homeMed.type ||
+    '';
+
+  const day = dayNameFromAny(
+    schedule.day ||
+    localStorage.getItem('heartyInjectionDayName') ||
+    localStorage.getItem('heartyInjectionDay') ||
+    profile.injection_day_name ||
+    profile.injection_day ||
+    homeMed.day ||
+    ''
+  );
+
+  const dose =
+    localStorage.getItem('heartyCurrentDosage') ||
+    localStorage.getItem('heartyInjectionDose') ||
+    localStorage.getItem(STORAGE.injectionDose) ||
+    profile.injection_dose ||
+    '';
+
+  return {
+    medication: medication || 'Not set',
+    day: day || 'Not set',
+    dose: dose && dose !== 'Not set' ? dose : 'Set in Progress'
+  };
+}
+function renderMedicationSummary(){
+  const med = readMedicationBridge();
+  const m = $('settings-medication-summary');
+  const d = $('settings-injection-day-summary');
+  const dose = $('settings-dose-summary');
+  if(m) m.textContent = med.medication;
+  if(d) d.textContent = med.day;
+  if(dose) dose.textContent = med.dose;
+}
+
 function render(){
   const theme=localStorage.getItem(STORAGE.theme)||defaults.heartyTheme; applyTheme(theme); updateLicenseUI();
   $('account-email').textContent = localStorage.getItem(STORAGE.accountEmail) || defaults.heartyAccountEmail;
@@ -326,10 +410,7 @@ function render(){
   $('current-weight').value = localStorage.getItem(STORAGE.currentWeight) || defaults.heartyCurrentWeightKg;
   $('target-weight').value = localStorage.getItem(STORAGE.targetWeight) || defaults.heartyTargetWeightKg;
   $('height-cm').value = localStorage.getItem(STORAGE.heightCm) || defaults.heartyHeightCm;
-  $('injection-name').value = localStorage.getItem(STORAGE.injectionName) || '';
-  $('injection-dose').value = localStorage.getItem(STORAGE.injectionDose) || '';
-  $('injection-day').value = localStorage.getItem(STORAGE.injectionDay) || 'Monday';
-  $('injection-reminder-enabled').checked = localStorage.getItem(STORAGE.injectionReminderEnabled)==='true';
+  renderMedicationSummary();
   $('water-auto').checked = localStorage.getItem(STORAGE.waterAuto)==='true';
   $('water-target').value = Number(localStorage.getItem(STORAGE.waterTargetLitres)||defaults.heartyWaterTargetLitres).toFixed(1);
   $('water-target').disabled = $('water-auto').checked;
@@ -484,10 +565,6 @@ $('height-cm').addEventListener('change', e => {
   save(STORAGE.heightCm, v, 'Saved');
   syncBodyMetricsToAppState();
 });
-$('injection-name').addEventListener('change', e => save(STORAGE.injectionName, e.target.value));
-$('injection-dose').addEventListener('change', e => save(STORAGE.injectionDose, e.target.value));
-$('injection-day').addEventListener('change', e => save(STORAGE.injectionDay, e.target.value));
-$('injection-reminder-enabled').addEventListener('change', e => save(STORAGE.injectionReminderEnabled, e.target.checked));
 [['water-auto',STORAGE.waterAuto]].forEach(([id,key])=>$(id).addEventListener('change', e => save(key,e.target.checked)));
 $('water-target').addEventListener('change', e => { const v=clamp(e.target.value,0.5,10).toFixed(1); e.target.value=v; save(STORAGE.waterTargetLitres,v); });
 $('units-system').addEventListener('change', e => save(STORAGE.unitsSystem,e.target.value));
