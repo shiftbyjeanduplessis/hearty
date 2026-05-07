@@ -281,7 +281,27 @@ Object.keys(defaults).forEach(k => localStorage.getItem(k) === null && localStor
 })();
 const $ = id => document.getElementById(id);
 const showToast = (msg) => { const t=$('settings-toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>t.classList.remove('show'),1800); };
-const save = (key,val,msg='Saved') => { localStorage.setItem(key,String(val)); render(); if(msg) showToast(msg); };
+const save = (key,val,msg='Saved') => {
+  localStorage.setItem(key,String(val));
+  try{
+    if(key === STORAGE.injectionName){
+      localStorage.setItem('heartyMedicationType', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.medication_name', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_name', String(val));
+    }
+    if(key === STORAGE.injectionDose){
+      localStorage.setItem('heartyCurrentDosage', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_dose', String(val));
+    }
+    if(key === STORAGE.injectionDay){
+      localStorage.setItem('heartyInjectionDay', String(val));
+      localStorage.setItem('heartyInjectionDayName', String(val));
+      localStorage.setItem('heartyInjectionSchedule', JSON.stringify({day:String(val),frequency:7,source:'settings',updatedAt:new Date().toISOString()}));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_day_name', String(val));
+    }
+  }catch(e){}
+  render(); if(msg) showToast(msg);
+};
 const clamp = (v,min,max)=>Math.min(max,Math.max(min,Number(v)||0));
 const weightKg = ()=> {
   const raw = Number(localStorage.getItem(STORAGE.currentWeight) || '');

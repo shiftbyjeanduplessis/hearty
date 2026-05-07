@@ -666,6 +666,8 @@ html[data-theme="rose_aurora"]{--bg-1:#1a0f1a;--bg-2:#2a1428;--bg-base:#0d0a10;-
 body{background:var(--bg-base)!important;color:var(--ink)!important}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:var(--bg-layer-1),var(--bg-layer-2),var(--bg-layer-3),var(--bg-base)!important}.topbar{background:var(--topbar-bg)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.icon-btn{background:var(--icon-bg)!important;border-color:var(--line)!important;color:var(--muted)!important}.bottom-nav{background:color-mix(in srgb,var(--surface-chip) 78%,transparent)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:var(--theme-accent)!important}html[data-theme="midnight"] .card,html[data-theme="midnight"] .settings-card,html[data-theme="midnight"] .settings-panel,html[data-theme="midnight"] .tile,html[data-theme="midnight"] .placeholder-card,html[data-theme="rose_aurora"] .card,html[data-theme="rose_aurora"] .settings-card,html[data-theme="rose_aurora"] .settings-panel,html[data-theme="rose_aurora"] .tile,html[data-theme="rose_aurora"] .placeholder-card{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}html[data-theme="midnight"] input,html[data-theme="midnight"] select,html[data-theme="midnight"] textarea,html[data-theme="rose_aurora"] input,html[data-theme="rose_aurora"] select,html[data-theme="rose_aurora"] textarea{background:rgba(255,255,255,.04)!important;color:var(--ink)!important;border-color:var(--line)!important}
 </style>
 </head>
+<script src="js/hearty-data-layer.v1.js"></script>
+</head>
 <body data-current-weight="" data-injection-day="" data-last-injection="" data-next-injection="" data-start-weight="" data-target-weight="" data-user-name="" data-current-dosage="" data-injection-day-name="Friday" data-medication="">
 <div class="shell">
 <header class="topbar">
@@ -1055,15 +1057,81 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
   const weekdayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const dosageOptions = ['0.25 mg','0.5 mg','1.0 mg','1.7 mg','2.4 mg'];
   const fallbackInjectionLog = [];
-  let injectionSchedule = readJSON(STORAGE_KEYS.injectionSchedule, { day: body.dataset.injectionDayName || 'Friday', frequency: 7 });
-  let currentDosage = localStorage.getItem(STORAGE_KEYS.dosage) || body.dataset.currentDosage || 'Not set';
-  let currentMedication = localStorage.getItem(STORAGE_KEYS.medication) || body.dataset.medication || 'Medication';
-  let injectionLog = readJSON(STORAGE_KEYS.injectionLog, fallbackInjectionLog)
-    .map(item => ({ date: item.date, dose: item.dose || currentDosage }))
+
+  function canonicalData(){
+    try {
+      if(window.HeartyData && typeof window.HeartyData.export === 'function') return window.HeartyData.export();
+    } catch(e) {}
+    return readJSON('hearty:data:v1', null) || {};
+  }
+
+  function dayNameFromAny(value, fallback){
+    if(value == null || value === '') return fallback || 'Monday';
+    if(typeof value === 'number' || /^\d+$/.test(String(value))){
+      const n = Number(value);
+      return weekdayNames[n >= 0 && n <= 6 ? n : 1];
+    }
+    const raw = String(value).trim();
+    const found = weekdayNames.find(d => d.toLowerCase() === raw.toLowerCase());
+    return found || fallback || 'Monday';
+  }
+
+  function frequencyFromAny(value){
+    if(value === 'daily' || Number(value) === 1) return 1;
+    return 7;
+  }
+
+  const canonical = canonicalData();
+  const canonicalProfile = canonical.profile || {};
+  const canonicalProgress = canonical.progress || {};
+  const homeMedication = readJSON('heartyMedication', {}) || {};
+  const savedSchedule = readJSON(STORAGE_KEYS.injectionSchedule, null) || {};
+
+  let injectionSchedule = {
+    day: dayNameFromAny(
+      savedSchedule.day ||
+      localStorage.getItem('heartyInjectionDay') ||
+      localStorage.getItem('heartyInjectionDayName') ||
+      canonicalProfile.injection_day_name ||
+      canonicalProfile.injection_day ||
+      homeMedication.day ||
+      body.dataset.injectionDayName,
+      'Monday'
+    ),
+    frequency: Number(savedSchedule.frequency || frequencyFromAny(canonicalProfile.injection_frequency || homeMedication.frequency || localStorage.getItem('heartyInjectionFrequency') || 7))
+  };
+
+  let currentDosage = localStorage.getItem(STORAGE_KEYS.dosage) || localStorage.getItem('heartyInjectionDose') || body.dataset.currentDosage || 'Not set';
+  let currentMedication =
+    localStorage.getItem(STORAGE_KEYS.medication) ||
+    localStorage.getItem('heartyInjectionName') ||
+    canonicalProfile.medication_name ||
+    canonicalProfile.injection_name ||
+    homeMedication.type ||
+    body.dataset.medication ||
+    'Medication';
+
+  const canonicalInjectionLogs = canonicalProgress.injection_logs && typeof canonicalProgress.injection_logs === 'object'
+    ? Object.values(canonicalProgress.injection_logs)
+    : [];
+
+  let injectionLog = []
+    .concat(readJSON(STORAGE_KEYS.injectionLog, fallbackInjectionLog) || [])
+    .concat(canonicalInjectionLogs || [])
+    .map(item => ({ date: item.date, dose: item.dose || item.dosage || currentDosage, medication:item.medication || currentMedication }))
     .filter(item => item.date)
     .sort((a,b) => parseDate(b.date) - parseDate(a.date));
+
+  const uniqueInjectionLog = new Map();
+  injectionLog.forEach(item => uniqueInjectionLog.set(item.date, item));
+  injectionLog = Array.from(uniqueInjectionLog.values()).sort((a,b) => parseDate(b.date) - parseDate(a.date));
+
   writeJSON(STORAGE_KEYS.injectionSchedule, injectionSchedule);
   localStorage.setItem(STORAGE_KEYS.dosage, currentDosage);
+  localStorage.setItem(STORAGE_KEYS.medication, currentMedication);
+  localStorage.setItem('heartyInjectionDay', injectionSchedule.day);
+  localStorage.setItem('heartyInjectionFrequency', injectionSchedule.frequency === 1 ? 'daily' : 'weekly');
+  if(currentMedication && currentMedication !== 'Medication') localStorage.setItem('heartyInjectionName', currentMedication);
 
   function weekdayIndex(dayName){
     return weekdayNames.indexOf(dayName);
@@ -1150,18 +1218,28 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
   document.getElementById('scheduleSelect').addEventListener('change', function(){
     injectionSchedule.day = this.value;
     writeJSON(STORAGE_KEYS.injectionSchedule, injectionSchedule);
+    localStorage.setItem('heartyInjectionDay', injectionSchedule.day);
+    localStorage.setItem('heartyInjectionDayName', injectionSchedule.day);
+    try { window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_day_name', injectionSchedule.day); } catch(e){}
     renderInjectionSummary();
   });
 
   document.getElementById('dosageSelect').addEventListener('change', function(){
     currentDosage = this.value;
     localStorage.setItem(STORAGE_KEYS.dosage, currentDosage);
+    localStorage.setItem('heartyInjectionDose', currentDosage);
+    try { window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_dose', currentDosage); } catch(e){}
     renderInjectionSummary();
   });
 
   document.getElementById('medicationSelect').addEventListener('change', function(){
     currentMedication = this.value;
     localStorage.setItem(STORAGE_KEYS.medication, currentMedication);
+    localStorage.setItem('heartyInjectionName', currentMedication);
+    try {
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.medication_name', currentMedication);
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_name', currentMedication);
+    } catch(e){}
     renderInjectionSummary();
   });
   function makeEmptyFrame(angle, meta='Add photos from Home'){
