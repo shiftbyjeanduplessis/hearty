@@ -140,6 +140,15 @@
     if (isInstalledMode() || document.getElementById('heartyInstallPrompt')) return;
 
     try{
+      const firstSeenKey = 'heartyInstallFirstSeenAt';
+      let firstSeen = Number(localStorage.getItem(firstSeenKey) || 0);
+      if(!firstSeen){
+        firstSeen = Date.now();
+        localStorage.setItem(firstSeenKey, String(firstSeen));
+      }
+      const visibleWindowMs = 24*60*60*1000;
+      if(!force && Date.now() - firstSeen > visibleWindowMs) return;
+
       const dismissedUntil = Number(localStorage.getItem('heartyInstallDismissedUntil') || 0);
       if(!force && dismissedUntil && Date.now() < dismissedUntil) return;
     }catch(e){}
@@ -149,17 +158,18 @@
     bar.id = 'heartyInstallPrompt';
     bar.className = 'install-prompt';
     bar.innerHTML = `
-      <div class="install-prompt-copy">
-        <strong>${info.title}</strong>
-        <span>${info.copy}</span>
-      </div>
-      <div class="install-prompt-actions">
-        <button type="button" class="install-prompt-primary">${info.action}</button>
-        <button type="button" class="install-prompt-close" aria-label="Dismiss install prompt">×</button>
-      </div>
+      <button type="button" class="install-top-button" aria-label="${info.title}">
+        <span class="install-top-icon">⌂</span>
+        <span class="install-top-copy">
+          <strong>${info.title}</strong>
+          <small>${info.copy}</small>
+        </span>
+        <span class="install-top-action">${info.action}</span>
+      </button>
+      <button type="button" class="install-prompt-close" aria-label="Dismiss install prompt">×</button>
     `;
 
-    bar.querySelector('.install-prompt-primary').addEventListener('click', async () => {
+    bar.querySelector('.install-top-button').addEventListener('click', async () => {
       if(info.mode === 'prompt' && deferredInstallPrompt){
         const promptEvent = deferredInstallPrompt;
         deferredInstallPrompt = null;
@@ -349,13 +359,25 @@
     }
   }
 
+  function waterTargetGlasses(){
+    try{
+      const litres = Number(localStorage.getItem('heartyWaterTargetLitres') || 0);
+      if(Number.isFinite(litres) && litres > 0){
+        return Math.max(1, Math.round(litres / 0.25));
+      }
+    }catch(e){}
+    return 8;
+  }
+
   function renderWater(){
-    const today = localDate(); const count = clamp(Number(state.water[today] || 0), 0, 20); const target = 8;
+    const today = localDate();
+    const target = waterTargetGlasses();
+    const count = clamp(Number(state.water[today] || 0), 0, Math.max(20, target + 4));
     const pct = clamp((count/target)*100, 0, 100);
     $('waterValue').textContent = `${count}/${target}`;
     if ($('waterGlassCount')) $('waterGlassCount').textContent = `${count} / ${target}`;
     if ($('waterCountValue')) $('waterCountValue').textContent = String(count);
-    if ($('waterCountHint')) $('waterCountHint').textContent = 'Tap once for each glass';
+    if ($('waterCountHint')) $('waterCountHint').textContent = `Target: ${target} glasses • 250 ml each`;
     if ($('waterCountChip')) $('waterCountChip').dataset.state = count ? 'active' : 'idle';
     if ($('waterProgressBar')) $('waterProgressBar').style.width = `${pct}%`;
     $('waterUndo').disabled = count <= 0; ring('waterRing', pct);

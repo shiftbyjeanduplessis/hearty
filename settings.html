@@ -169,21 +169,30 @@ html[data-theme="rose_aurora"] body::after{opacity:.055;background-image:url("da
       </div>
     </section>
 
-    <section class="settings-card">
-      <div class="settings-head"><div><h2 class="settings-title">Hydration</h2><p class="settings-copy">Choose a daily water target for the app to use.</p></div></div>
-      <div class="stack">
-        <div class="hydration-grid">
-          <div class="readout-card">
-            <div class="readout-label">Daily Water Target</div>
-            <div class="readout-value" id="water-target-readout">Set your weight to calculate your daily target</div>
-          </div>
-          <div class="inline-switch">
-            <span class="inline-switch-label">Use Recommended Target</span>
+    <section class="settings-card hydration-settings-card">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Hydration</h2>
+          <p class="settings-copy">Choose the daily water target that Home will use.</p>
+        </div>
+      </div>
+      <div class="hydration-settings-layout">
+        <div class="water-target-panel">
+          <div class="readout-label">Daily Water Target</div>
+          <div class="readout-value water-target-big" id="water-target-readout">Set your weight to calculate your daily target</div>
+          <p class="formula-note" id="water-target-note">Based on your body weight.</p>
+        </div>
+        <div class="water-target-controls">
+          <div class="inline-switch water-auto-switch">
+            <span class="inline-switch-label">Use recommended target</span>
             <label class="switch"><input id="water-auto" type="checkbox"/><span class="slider"></span></label>
           </div>
+          <div class="field">
+            <label class="label" for="water-target">Manual Daily Water Target (L)</label>
+            <input id="water-target" class="input" type="number" step="0.1" min="0.5" max="10"/>
+          </div>
+          <p class="helper">Home converts this to glasses using 250 ml per glass.</p>
         </div>
-        <p class="formula-note" id="water-target-note">Based on your body weight.</p>
-        <div class="field"><label class="label" for="water-target">Manual Daily Water Target (L)</label><input id="water-target" class="input" type="number" step="0.1" min="0.5" max="10"/></div>
       </div>
     </section>
 
@@ -218,6 +227,22 @@ html[data-theme="rose_aurora"] body::after{opacity:.055;background-image:url("da
     </section>
   </main>
   
+    <section class="settings-card install-settings-card">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Install Hearty</h2>
+          <p class="settings-copy">Add Hearty to your home screen for the best app-like experience.</p>
+        </div>
+      </div>
+      <button class="settings-install-btn" id="settingsInstallBtn" type="button">
+        <span class="settings-install-icon">⌂</span>
+        <span>
+          <strong>Install / Add to Home Screen</strong>
+          <small id="settingsInstallHint">Opens the correct install steps for your device.</small>
+        </span>
+      </button>
+    </section>
+
     <section class="settings-card" id="appVersionCard">
       <div class="settings-head">
         <div>
@@ -586,6 +611,59 @@ $('logoutBtn')?.addEventListener('click', async () => {
   location.href = './login.html';
 });
 
+
+
+(function initSettingsInstallButton(){
+  const btn = document.getElementById('settingsInstallBtn');
+  const hint = document.getElementById('settingsInstallHint');
+  if(!btn) return;
+
+  let deferredInstallPrompt = null;
+  const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  function updateHint(){
+    if(isStandalone()){
+      if(hint) hint.textContent = 'Hearty is already installed.';
+      btn.disabled = true;
+      return;
+    }
+    if(hint) hint.textContent = isIOS()
+      ? 'iPhone: Safari → Share → Add to Home Screen.'
+      : 'Android: tap here, or use Chrome menu → Install app.';
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    updateHint();
+  });
+
+  btn.addEventListener('click', async () => {
+    if(isStandalone()){
+      showToast('Hearty is already installed');
+      return;
+    }
+    if(deferredInstallPrompt){
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      try{
+        promptEvent.prompt();
+        await promptEvent.userChoice;
+      }catch(e){
+        showToast('Use your browser menu to install Hearty');
+      }
+      return;
+    }
+    if(isIOS()){
+      showToast('In Safari: tap Share, then Add to Home Screen');
+    }else{
+      showToast('In Chrome: tap menu, then Install app or Add to Home screen');
+    }
+  });
+
+  updateHint();
+})();
 
 (function initAppVersionBlock(){
   const version = 'Hearty v2026.05.08';

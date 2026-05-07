@@ -7,8 +7,8 @@
   "display": "fullscreen",
   "display_override": [
     "fullscreen",
-    "window-controls-overlay",
-    "standalone"
+    "standalone",
+    "minimal-ui"
   ],
   "background_color": "#f6f9fe",
   "theme_color": "#1550b3",
