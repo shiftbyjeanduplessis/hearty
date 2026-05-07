@@ -7009,7 +7009,7 @@ body.protocol-complete-state .progress-band .goalbar-fill{
 <span>Progress</span>
 </a>
 <a class="nav-item" href="support.html">
-<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg>
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg>
 <span>Support</span>
 </a>
 <a class="nav-item" href="social.html">
@@ -13157,5 +13157,55 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   else boot();
 })();
 </script>
+
+<script id="hearty-support-nav-icon-hardlock">
+(function(){
+  var HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg>';
+
+  function isSupportLink(el){
+    if (!el) return false;
+    var href = (el.getAttribute('href') || '').toLowerCase();
+    var text = (el.textContent || '').toLowerCase();
+    return href.indexOf('support.html') !== -1 || href.indexOf('/support') !== -1 || text.indexOf('support') !== -1;
+  }
+
+  function fixSupportIcon(){
+    var navs = Array.prototype.slice.call(document.querySelectorAll('.bottom-nav, #bottomNav'));
+    navs.forEach(function(nav){
+      var links = Array.prototype.slice.call(nav.querySelectorAll('a.nav-item, button.nav-item, .nav-item'));
+      links.forEach(function(item){
+        if (!isSupportLink(item)) return;
+        var spanText = 'Support';
+        var span = item.querySelector('span');
+        if (span && span.textContent && span.textContent.trim()) spanText = span.textContent.trim();
+        item.innerHTML = HEART_ICON + '<span>' + spanText + '</span>';
+        item.setAttribute('aria-label', spanText);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fixSupportIcon);
+  } else {
+    fixSupportIcon();
+  }
+
+  window.addEventListener('load', function(){
+    fixSupportIcon();
+    setTimeout(fixSupportIcon, 50);
+    setTimeout(fixSupportIcon, 250);
+    setTimeout(fixSupportIcon, 800);
+  });
+
+  var mo = new MutationObserver(function(){ fixSupportIcon(); });
+  function startObserver(){
+    var nav = document.querySelector('.bottom-nav, #bottomNav');
+    if (nav) mo.observe(nav, { childList:true, subtree:true, attributes:true, attributeFilter:['href','class'] });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startObserver);
+  else startObserver();
+})();
+</script>
+
 </body>
 </html>
