@@ -207,6 +207,7 @@
           <label class="file-pill" for="profilePhotoInput">📷 Choose profile photo<input id="profilePhotoInput" data-upload-scope="profile" type="file" accept="image/*" /></label>
           <button class="action-btn" id="saveProfileBtn" type="button">Save Profile</button>
         </div>
+        </div>
 
         <div class="people-card card" aria-label="People on Community">
           <h2 class="people-title">People on Community <span id="peopleCount">0</span></h2>
@@ -570,56 +571,78 @@
     const list = document.getElementById('peopleList');
     const count = document.getElementById('peopleCount');
     if (!list || !count) return;
+
     if (!usingSupabase || !currentUser || !sb || !communityEnabledCache) {
       count.textContent = '0';
-      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Turn Community on to see people.</p></div>';
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Turn Community on to see members.</p></div>';
       return;
     }
-    const { data: settings, error } = await sb
-      .from(SETTINGS_TABLE)
-      .select('user_id,community_enabled')
-      .eq('community_enabled', true);
+
+    /*
+      Members are now loaded directly from profiles so their profile photos show.
+      The visible image is profiles.avatar_url. Current user is excluded.
+    */
+    const { data: members, error } = await sb
+      .from(PROFILES_TABLE)
+      .select('id,display_name,avatar_url,updated_at')
+      .neq('id', currentUser.id)
+      .order('updated_at', { ascending: false })
+      .limit(80);
+
     if (error) {
-      console.warn('[Community] loadPeople settings failed:', error);
-      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Could not load people yet.</p></div>';
+      console.warn('[Community] loadPeople profiles failed:', error);
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Could not load members yet. Check profiles table select policy.</p></div>';
       return;
     }
-    const userIds = (settings || []).map(row => row.user_id).filter(id => id && id !== currentUser.id);
-    if (!userIds.length) {
-      count.textContent = '0';
-      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>No other community profiles yet.</p></div>';
-      return;
-    }
-    await fetchProfilesForUserIds(userIds);
+
+    const people = (members || []).filter(person => person && person.id);
+
+    people.forEach(person => {
+      profilesById[person.id] = person;
+    });
 
     const term = peopleSearchTerm.trim().toLowerCase();
-    const visibleIds = userIds.filter(id => {
+    const visiblePeople = people.filter(person => {
       if (!term) return true;
-      const person = profilesById[id] || {};
       const name = String(person.display_name || 'Hearty member').toLowerCase();
       return name.includes(term);
     });
 
-    count.textContent = term ? `${visibleIds.length}/${userIds.length}` : String(userIds.length);
+    count.textContent = term ? `${visiblePeople.length}/${people.length}` : String(people.length);
 
-    if (!visibleIds.length) {
-      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>No matching people found.</p></div>';
+    if (!visiblePeople.length) {
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>No matching members found.</p></div>';
       return;
     }
 
-    list.innerHTML = visibleIds.map(id => {
-      const person = profilesById[id] || {};
+    list.innerHTML = visiblePeople.map(person => {
+      const id = person.id;
       const name = person.display_name || 'Hearty member';
       const avatar = person.avatar_url || '';
       const isFollowing = followingCache.has(id);
+
       return `
         <div class="person-row">
-          <div class="avatar">${avatar ? `<img src="${escapeHTML(avatar)}" alt="${escapeHTML(name)}" />` : escapeHTML(initials(name))}</div>
-          <div><strong>${escapeHTML(name)}</strong><small>${isFollowing ? 'Following' : 'Community on'}</small></div>
-          <button class="follow-btn ${isFollowing ? 'following' : ''}" data-follow-id="${escapeHTML(id)}" type="button">${isFollowing ? 'Following' : 'Follow'}</button>
+          <div class="avatar">
+            ${
+              avatar
+                ? `<img src="${escapeHTML(avatar)}" alt="${escapeHTML(name)}" loading="lazy" />`
+                : escapeHTML(initials(name))
+            }
+          </div>
+          <div>
+            <strong>${escapeHTML(name)}</strong>
+            <small>${isFollowing ? 'Following' : 'Hearty member'}</small>
+          </div>
+          <button class="follow-btn ${isFollowing ? 'following' : ''}" data-follow-id="${escapeHTML(id)}" type="button">
+            ${isFollowing ? 'Following' : 'Follow'}
+          </button>
         </div>`;
     }).join('');
-    list.querySelectorAll('[data-follow-id]').forEach(btn => btn.onclick = () => toggleFollow(btn.dataset.followId));
+
+    list.querySelectorAll('[data-follow-id]').forEach(btn => {
+      btn.onclick = () => toggleFollow(btn.dataset.followId);
+    });
   }
 
   async function toggleFollow(userId){
