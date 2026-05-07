@@ -12566,6 +12566,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   var PHOTO_INTERVAL_DAYS = 21;
   var MAX_PHOTO_EDGE = 760;
   var PHOTO_QUALITY = 0.68;
+  var PHOTO_MEMORY = null;
 
   function $(sel, root){ return (root || document).querySelector(sel); }
   function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
@@ -12653,20 +12654,27 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   function migrateAndClearOldDrafts(){
     OLD_DRAFT_KEYS.forEach(removeKey);
   }
-  function getDraft(){
+  function normaliseDraft(d){
     var t=todayKey();
-    var d=read(DRAFT_KEY, null);
     if(!d || d.date!==t) d={date:t,slots:{front:null,side:null,back:null}};
     d.slots=Object.assign({front:null,side:null,back:null}, d.slots||{});
     return d;
   }
+  function getDraft(){
+    var t=todayKey();
+    if(PHOTO_MEMORY && PHOTO_MEMORY.date===t) return normaliseDraft(PHOTO_MEMORY);
+    PHOTO_MEMORY = normaliseDraft(read(DRAFT_KEY, null));
+    return PHOTO_MEMORY;
+  }
   function saveDraft(d){
-    d.date=todayKey();
+    d = normaliseDraft(d);
+    PHOTO_MEMORY = d;
     migrateAndClearOldDrafts();
     if(write(DRAFT_KEY,d)) return true;
     /* Last-resort quota recovery: keep only today's compressed draft, not old full-size drafts. */
     migrateAndClearOldDrafts();
-    return write(DRAFT_KEY,d);
+    write(DRAFT_KEY,d);
+    return true; /* keep the in-memory draft even if localStorage refuses the write */
   }
   function srcOf(item){ return item && (item.image || item.previewUrl || item.dataUrl || item.src) || ""; }
 
@@ -12729,6 +12737,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
       d.slots[key]={name:file.name||key+".jpg",type:"image/jpeg",capturedAt:new Date().toISOString(),image:src,previewUrl:src,compressed:true,maxEdge:MAX_PHOTO_EDGE};
       saveDraft(d);
       renderPhoto();
+      setTimeout(renderPhoto, 40);
     });
   }
   function renderPhoto(){
@@ -12749,20 +12758,30 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
       if(state) state.textContent = src ? "Photo added. Tap to retake." : (key==="front" ? "Add a clear front-facing photo" : key==="side" ? "Profile view helps track changes" : "Rear view completes the set");
       if(badge){ badge.textContent = src ? "Added" : (key==="front" ? "Required" : "Optional"); badge.classList.toggle("done", !!src); }
     });
-    var ready=!!srcOf(d.slots.front), btn=$("#completePhotoCheckInBtn");
-    if(btn){ btn.disabled=!ready; btn.classList.toggle("hearty-photo-ready", ready); btn.textContent = ready ? "Complete photo check-in ("+count+")" : "Add front photo to complete"; }
+    var ready=!!srcOf(d.slots.front);
+    var sheet=$("#photoSheet.hearty-photo-clean.show") || $("#photoSheet.hearty-photo-clean") || document;
+    var btn=$("#completePhotoCheckInBtn", sheet);
+    if(btn){
+      btn.disabled=!ready;
+      btn.setAttribute("aria-disabled", ready ? "false" : "true");
+      btn.classList.toggle("hearty-photo-ready", ready);
+      btn.textContent = ready ? "Complete photo check-in ("+count+")" : "Add front photo to complete";
+    }
   }
   function completePhotos(){
     var d=getDraft();
+    renderPhoto();
     if(!srcOf(d.slots.front)){ alert("Please add a front photo first."); renderPhoto(); return; }
     var t=todayKey();
     var used=SLOTS.filter(function(k){return !!srcOf(d.slots[k]);});
     var sets=read(SETS_KEY, []); sets=Array.isArray(sets)?sets.filter(function(x){return x && x.date!==t;}):[];
-    sets.push({version:"clean-photo-v3-compressed",date:t,createdAt:new Date().toISOString(),dateLabel:new Date(t+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"),views:used,slots:d.slots});
+    sets.push({version:"clean-photo-v4-memory-safe",date:t,createdAt:new Date().toISOString(),dateLabel:new Date(t+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"),views:used,slots:d.slots});
     write(SETS_KEY, sets);
     setLS("heartyLastPhotoCheckInAt", new Date().toISOString());
     setLS("heartyPhotoCheckInComplete", t);
     var daily=getDaily(); daily.tasks.photos=true; saveDaily(daily);
+    removeKey(DRAFT_KEY);
+    PHOTO_MEMORY=null;
     closePhotos(); renderProtocolRules();
   }
 
