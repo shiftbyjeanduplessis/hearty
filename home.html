@@ -7078,24 +7078,7 @@ body.protocol-complete-state .progress-band .goalbar-fill{
   }
 </style>
 <script id="photo-home-bind">
-  // Bind clicks on new home-style photo cards
-  document.addEventListener('click', function(e){
-    const card = e.target.closest('.photo-home-card[data-v9-photo]');
-    if(card){
-      const key = card.getAttribute('data-v9-photo');
-      const input = document.getElementById('photo' + key.charAt(0).toUpperCase() + key.slice(1) + 'Input');
-      if(input){ input.value=''; input.click(); }
-    }
-  });
-  // Change button text to "Submit photos"
-  const updatePhotoBtn = () => {
-    const btn = document.getElementById('completePhotoCheckInBtn');
-    if(btn){
-      const ready = !!document.getElementById('v9FrontPhotoPreview')?.src;
-      btn.textContent = ready ? 'Submit photos' : 'Add front photo';
-    }
-  };
-  setInterval(updatePhotoBtn, 500);
+  // Neutralised — click handling and button state are managed by the v9 system below
 </script>
 <div class="protocol-complete" id="protocolComplete">
 <svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2" viewbox="0 0 24 24"><path d="M5 12.5l4.1 4.1L19 6.8"></path></svg>
@@ -7104,9 +7087,7 @@ body.protocol-complete-state .progress-band .goalbar-fill{
 <div class="lesson-card" id="lessonCard">
 <div class="lesson-top">
 <div class="lesson-meta">
-<div aria-hidden="true" class="lesson-accent">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12h4l-1-4h6l-1 4h4"/><path d="M4 12h2M18 12h2"/><path d="M7 8v8M17 8v8"/></svg>
-</div>
+
 <div>
 <div class="section-label" style="margin-bottom:6px">DAILY GUIDANCE</div>
 <div style="font-weight:700; letter-spacing:-.02em;">Lesson 8 • Protecting muscle while appetite is low</div>
@@ -7634,8 +7615,7 @@ function completePhotoCheckInFromSheet(){
   const btn = document.querySelector('[data-action="photos"]');
   if(btn) btn.classList.add('done');
 
-  I need supportPhotoSheetUI();
-  closeSheet(photoSheet);
+  closeSheet("photoSheet");
 
   if(typeof showToast === 'function'){
     showToast('Well done — your progress photos are complete for today.');
@@ -7685,8 +7665,7 @@ function I need supportPhotoSheetUI(){
 
 function openPhotoCheckInDialog(){
   loadStoredPhotoState();
-  I need supportPhotoSheetUI();
-  openSheet(photoSheet);
+  openSheet("photoSheet");
 }
 
 function completeWalkTask(){
@@ -7785,10 +7764,7 @@ document.querySelectorAll('[data-photo-approve]').forEach(btn => {
   });
 });
 
-const completePhotoCheckInBtn = document.getElementById('completePhotoCheckInBtn');
-if(completePhotoCheckInBtn){
-  completePhotoCheckInBtn.addEventListener('click', completePhotoCheckInFromSheet);
-}
+// completePhotoCheckInBtn is handled by the v9 system
 
 document.querySelectorAll('[data-photo-retake]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -9312,6 +9288,31 @@ html[data-theme="sunlit"] .task-icon-btn.done{
     pointer-events:none;
   }
   #todaysRhythmCard .task-action{ overflow:visible !important; }
+  /* When a press-me button is marked done, restore tick appearance and clip the task-action */
+  #todaysRhythmCard .task-icon-btn.press-me.done::after,
+  #todaysRhythmCard .protocol-item.completed .task-icon-btn.press-me::after{
+    content:"✓" !important;
+    position:static !important;
+    bottom:auto !important;
+    left:auto !important;
+    transform:none !important;
+    display:grid !important;
+    place-items:center !important;
+    width:34px !important;
+    height:34px !important;
+    border-radius:999px !important;
+    color:#0b7a51 !important;
+    background:rgba(14,165,107,.12) !important;
+    font-size:1.35rem !important;
+    line-height:1 !important;
+    font-weight:950 !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.85) !important;
+    padding:0 !important;
+    pointer-events:none !important;
+  }
+  #todaysRhythmCard .protocol-item.completed .task-action{
+    overflow:hidden !important;
+  }
   @keyframes heartyPressMePulse{
     0%,100%{transform:translateY(0) scale(1);}
     50%{transform:translateY(-1px) scale(1.045);}
@@ -9663,6 +9664,7 @@ html[data-theme="sunlit"] .task-icon-btn.done{
     }
 
     localStorage.setItem('hearty_profile', JSON.stringify(profile));
+    localStorage.setItem('heartyUserProfile', JSON.stringify(profile));
     localStorage.setItem('heartyCoreSetupDone', 'true');
     closeSheet(document.getElementById('coreSetupSheet'));
     if(window.heartyRenderMedicationCard) setTimeout(window.heartyRenderMedicationCard, 80);
@@ -11293,7 +11295,16 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     return d;
   }
   function saveDaily(d){ d.date = TODAY; save(KEYS.daily,d); }
-  function getProfile(){ return readFirst([KEYS.profile,"heartyProfile","heartySettings","hearty_user_profile"], {}); }
+  function getProfile(){
+    // Merge all profile stores so onboarding (hearty_profile) and legacy keys are all found
+    const sources = [KEYS.profile,"heartyProfile","heartySettings","hearty_user_profile","hearty_profile"];
+    const merged = {};
+    // Read in reverse so highest-priority keys win
+    for(let i=sources.length-1;i>=0;i--){
+      try{ const v=read(sources[i],null); if(v&&typeof v==="object") Object.assign(merged,v); }catch(e){}
+    }
+    return merged;
+  }
   function getProgress(){
     const p = readFirst([KEYS.progress,"hearty_progress","heartyProgressState"], {});
     return Object.assign({startWeight:null,currentWeight:null,targetWeight:null,entries:[]}, p || {});
@@ -11327,9 +11338,9 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }
 
   function hydrateProgress(progress, profile){
-    const start=[progress.startWeight,progress.start,progress.initialWeight,profile.startWeight,profile.startingWeight,profile.weightStart];
-    const current=[progress.currentWeight,progress.current,progress.weight,profile.currentWeight,profile.weight];
-    const target=[progress.targetWeight,progress.target,progress.goalWeight,profile.targetWeight,profile.goalWeight,profile.doctorTargetWeight];
+    const start=[progress.startWeight,progress.start,progress.initialWeight,profile.startWeight,profile.startingWeight,profile.weightStart,profile.startWeightKg,profile.initialWeightKg];
+    const current=[progress.currentWeight,progress.current,progress.weight,profile.currentWeight,profile.weight,profile.currentWeightKg];
+    const target=[progress.targetWeight,progress.target,progress.goalWeight,profile.targetWeight,profile.goalWeight,profile.doctorTargetWeight,profile.targetWeightKg,profile.goalWeightKg];
     if(!num(progress.startWeight)){ for(const v of start){ if(num(v)){progress.startWeight=num(v);break;} } }
     if(!num(progress.currentWeight)){ for(const v of current){ if(num(v)){progress.currentWeight=num(v);break;} } }
     if(!num(progress.targetWeight)){ for(const v of target){ if(num(v)){progress.targetWeight=num(v);break;} } }
@@ -11577,7 +11588,12 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }
 
   function getProfile(){
-    return readJSON("heartyUserProfile", {}) || {};
+    const keys = ["heartyUserProfile","heartyProfile","heartySettings","hearty_user_profile","hearty_profile"];
+    const merged = {};
+    for(let i=keys.length-1;i>=0;i--){
+      try{ const v=readJSON(keys[i],null); if(v&&typeof v==="object") Object.assign(merged,v); }catch(e){}
+    }
+    return merged;
   }
 
   function getProgress(){
@@ -11586,17 +11602,17 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
 
     const startCandidates = [
       p.startWeight, p.start, p.initialWeight,
-      profile.startWeight, profile.startingWeight, profile.weightStart
+      profile.startWeight, profile.startingWeight, profile.weightStart, profile.startWeightKg, profile.initialWeightKg
     ];
 
     const currentCandidates = [
       p.currentWeight, p.current, p.weight,
-      profile.currentWeight, profile.weight
+      profile.currentWeight, profile.weight, profile.currentWeightKg
     ];
 
     const targetCandidates = [
       p.targetWeight, p.target, p.goalWeight,
-      profile.targetWeight, profile.goalWeight, profile.doctorTargetWeight
+      profile.targetWeight, profile.goalWeight, profile.doctorTargetWeight, profile.targetWeightKg, profile.goalWeightKg
     ];
 
     let start = null;
