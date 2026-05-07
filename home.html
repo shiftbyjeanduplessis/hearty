@@ -12986,5 +12986,173 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
 })();
 </script>
 
+
+
+<script id="hearty-photo-complete-button-hardlock">
+(function(){
+  "use strict";
+
+  var FINAL_BTN_ID = "heartyPhotoCompleteFinalBtn";
+  var OLD_BTN_ID = "completePhotoCheckInBtn";
+  var SETS_KEY = "hearty_progress_photos";
+  var DAILY_KEY = "heartyDailyState";
+  var DRAFT_KEYS = ["heartyPhotoCleanDraftV3", "heartyPhotoCleanDraftV2", "heartyPhotoCheckInDraft"];
+  var SLOTS = ["front", "side", "back"];
+
+  function $(selector, root){ return (root || document).querySelector(selector); }
+  function $all(selector, root){ return Array.prototype.slice.call((root || document).querySelectorAll(selector)); }
+  function todayKey(){ return new Date().toISOString().slice(0,10); }
+  function cap(s){ return String(s || "").charAt(0).toUpperCase() + String(s || "").slice(1); }
+  function readJSON(key, fallback){ try{ var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
+  function writeJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); return true; }catch(e){ return false; } }
+  function removeKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
+
+  function getDraftSlots(){
+    var slots = {front:null, side:null, back:null};
+
+    DRAFT_KEYS.forEach(function(key){
+      var draft = readJSON(key, null);
+      if(!draft || !draft.slots) return;
+      SLOTS.forEach(function(slot){
+        var item = draft.slots[slot];
+        var src = item && (item.image || item.previewUrl || item.dataUrl || item.src);
+        if(src && !slots[slot]) slots[slot] = Object.assign({}, item, {image:src, previewUrl:src});
+      });
+    });
+
+    SLOTS.forEach(function(slot){
+      var img = $("[data-hearty-photo-thumb='" + slot + "'] img");
+      if(img && img.src){
+        slots[slot] = Object.assign({}, slots[slot] || {}, {
+          name: slot + ".jpg",
+          type: "image/jpeg",
+          capturedAt: new Date().toISOString(),
+          image: img.src,
+          previewUrl: img.src,
+          recoveredFromDom: true
+        });
+      }
+    });
+
+    return slots;
+  }
+
+  function slotHasPhoto(slots, slot){
+    var item = slots && slots[slot];
+    return !!(item && (item.image || item.previewUrl || item.dataUrl || item.src));
+  }
+
+  function refreshButton(){
+    var btn = $("#" + FINAL_BTN_ID) || $("#" + OLD_BTN_ID);
+    if(!btn) return;
+
+    if(btn.id === OLD_BTN_ID){
+      btn.id = FINAL_BTN_ID;
+      btn.removeAttribute("onclick");
+      btn.type = "button";
+    }
+
+    var slots = getDraftSlots();
+    var count = SLOTS.filter(function(slot){ return slotHasPhoto(slots, slot); }).length;
+    var ready = slotHasPhoto(slots, "front");
+
+    btn.disabled = !ready;
+    btn.setAttribute("aria-disabled", ready ? "false" : "true");
+    btn.classList.toggle("hearty-photo-ready", ready);
+    btn.textContent = ready ? "Complete photo check-in (" + count + ")" : "Add front photo to complete";
+
+    if(!btn.dataset.heartyFinalCompleteBound){
+      btn.dataset.heartyFinalCompleteBound = "true";
+      btn.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        finishFromVisibleState();
+      }, false);
+    }
+  }
+
+  function finishFromVisibleState(){
+    var slots = getDraftSlots();
+    if(!slotHasPhoto(slots, "front")){
+      refreshButton();
+      return;
+    }
+
+    var t = todayKey();
+    var used = SLOTS.filter(function(slot){ return slotHasPhoto(slots, slot); });
+    var sets = readJSON(SETS_KEY, []);
+    if(!Array.isArray(sets)) sets = [];
+    sets = sets.filter(function(set){ return set && set.date !== t; });
+    sets.push({
+      version: "clean-photo-final-dom-safe",
+      date: t,
+      createdAt: new Date().toISOString(),
+      dateLabel: new Date(t + "T00:00:00").toLocaleDateString("en-GB", {day:"numeric", month:"short"}),
+      tag: sets.length ? "Latest set" : "Start set",
+      note: used.map(cap).join(", ") + " progress photo" + (used.length === 1 ? "" : "s"),
+      views: used,
+      slots: slots
+    });
+    writeJSON(SETS_KEY, sets);
+
+    try{ localStorage.setItem("heartyLastPhotoCheckInAt", new Date().toISOString()); }catch(e){}
+    try{ localStorage.setItem("heartyPhotoCheckInComplete", t); }catch(e){}
+
+    var daily = readJSON(DAILY_KEY, null);
+    if(!daily || daily.date !== t) daily = {date:t, tasks:{}};
+    daily.tasks = Object.assign({weight:false, photos:false, movement:false, lesson:false}, daily.tasks || {});
+    daily.tasks.photos = true;
+    writeJSON(DAILY_KEY, daily);
+
+    DRAFT_KEYS.forEach(removeKey);
+
+    var sheet = $("#photoSheet");
+    if(sheet){
+      sheet.classList.remove("show");
+      sheet.setAttribute("aria-hidden", "true");
+    }
+    document.body.classList.remove("sheet-open");
+    document.body.style.overflow = "";
+
+    if(window.heartyHomeProtocolRules && typeof window.heartyHomeProtocolRules.render === "function"){
+      try{ window.heartyHomeProtocolRules.render(); }catch(e){}
+    }
+  }
+
+  function normalizePhotoSheet(){
+    refreshButton();
+    SLOTS.forEach(function(slot){
+      var row = $("[data-hearty-photo-slot='" + slot + "']");
+      if(row && !row.dataset.heartyRefreshBound){
+        row.dataset.heartyRefreshBound = "true";
+        row.addEventListener("click", function(){ setTimeout(refreshButton, 120); setTimeout(refreshButton, 650); }, false);
+      }
+    });
+  }
+
+  var observer = new MutationObserver(function(){ normalizePhotoSheet(); });
+  function boot(){
+    normalizePhotoSheet();
+    observer.observe(document.body, {childList:true, subtree:true});
+    document.addEventListener("change", function(event){
+      var t = event.target;
+      if(t && t.matches && (t.matches("input[type='file']") || /^photo(Front|Side|Back)Input$/.test(t.id || ""))){
+        setTimeout(refreshButton, 80);
+        setTimeout(refreshButton, 500);
+        setTimeout(refreshButton, 1000);
+      }
+    }, true);
+    document.addEventListener("click", function(event){
+      if(event.target && event.target.closest && event.target.closest("#photoSheet")){
+        setTimeout(refreshButton, 120);
+      }
+    }, true);
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+</script>
 </body>
 </html>
