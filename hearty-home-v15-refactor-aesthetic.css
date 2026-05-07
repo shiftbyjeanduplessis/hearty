@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clean_blue">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hearty — Home</title>
+  <meta name="theme-color" content="#f6f9fe">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Hearty">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="css/hearty-home-v15-refactor-aesthetic.css" as="style">
+  <link rel="stylesheet" href="css/hearty-home-v15-refactor-aesthetic.css">
+  <script src="js/hearty-data-layer.v1.js"></script>
+  <script defer src="js/hearty-home-v15-refactor-aesthetic.js"></script>
+</head>
+<body>
+  <div class="shell" id="app">
+    <header class="topbar" aria-label="Hearty header">
+      <a class="brand" href="home.html" aria-label="Hearty Home">
+        <img class="brand-logo" src="hearty-logo.png" data-default-logo="hearty-logo.png" data-rose-aurora-logo="hearty-logo-gold.png" alt="Hearty" onerror="this.closest('.brand').classList.add('logo-fallback'); this.remove();">
+        <span class="brand-fallback-mark" aria-hidden="true">♥</span><strong class="brand-text">Hearty</strong>
+      </a>
+      <a class="icon-btn" href="settings.html" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z" fill="none"></path></svg>
+      </a>
+    </header>
+
+    <section class="status-strip">
+      <div>
+        <div class="eyebrow">Daily rhythm</div>
+        <h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
+        <p class="subline" id="dailyStatusLine">Your plan for today is ready.</p>
+      </div>
+      <div class="day-pill" id="homeDayPill">Today</div>
+    </section>
+
+    <main class="home-grid">
+      <section class="main-stack">
+        <section class="card hero-card" aria-label="Progress summary">
+          <div class="rings">
+            <article class="ring-block">
+              <div class="ring-wrap" data-ring="adherence" aria-hidden="true">
+                <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><circle class="ring-track" cx="66" cy="66" r="54" fill="none"></circle><circle class="ring-progress ring-orange" id="adherenceRing" cx="66" cy="66" r="54" fill="none"></circle></svg>
+                <div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
+              </div>
+              <h2 class="ring-title">Daily protocol</h2>
+              <p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
+            </article>
+            <article class="ring-block">
+              <div class="ring-wrap" data-ring="water" aria-hidden="true">
+                <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><circle class="ring-track" cx="66" cy="66" r="54" fill="none"></circle><circle class="ring-progress ring-teal" id="waterRing" cx="66" cy="66" r="54" fill="none"></circle></svg>
+                <div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">GLASSES</div></div></div>
+              </div>
+              <h2 class="ring-title">Hydration</h2>
+              <p class="ring-caption" id="waterCaption">Tap the water card to log.</p>
+            </article>
+          </div>
+
+          <div class="progress-band" aria-label="Weight progress">
+            <div class="progress-top">
+              <div>
+                <div class="section-label">Weight progress</div>
+                <div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
+              </div>
+              <div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
+            </div>
+            <div class="goalbar" aria-hidden="true"><div class="goalbar-fill" id="goalbarFill"></div><div class="goal-marker" id="goalMarker"></div></div>
+            <div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
+          </div>
+        </section>
+
+        <section class="card rhythm-card" id="todaysRhythmCard" aria-label="Today's protocol">
+          <div class="protocol-head">
+            <div><div class="section-label">Today’s protocol</div><h2 class="card-title">Small actions, repeated.</h2></div>
+            <div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
+          </div>
+          <div class="next-action" id="nextAction"><div><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div></div>
+          <div class="protocol-list" id="protocolList">
+            <article class="protocol-item" id="weighInTask">
+              <div class="task-main"><div class="task-title">Daily weigh-in</div><div class="task-sub">Weigh yourself first thing in the morning, before eating or drinking.</div></div>
+              <button class="task-icon-btn" id="openWeightBtn" type="button" aria-label="Open daily weigh-in"><img class="icon-main-img" src="icons/home-weight.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
+            </article>
+            <article class="protocol-item" id="walkTask">
+              <div class="task-main"><div class="task-title">Movement baseline</div><div class="task-sub">Complete your 20–30 minute movement target.</div></div>
+              <button class="task-icon-btn" id="toggleWalkBtn" type="button" aria-label="Mark movement done"><img class="icon-main-img" src="icons/home-movement.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
+            </article>
+            <article class="protocol-item" id="photoTask">
+              <div class="task-main"><div class="task-title">Progress photos</div><div class="task-sub" id="photoTaskSub">Due every 3 weeks.</div></div>
+              <button class="task-icon-btn" id="openPhotoBtn" type="button" aria-label="Open photo check-in"><img class="icon-main-img" src="icons/home-photo.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
+            </article>
+            <article class="protocol-item lesson-task-item" id="lessonTaskItem">
+              <div class="task-main">
+                <div class="lesson-card-bar" id="lessonCardCounter"><span class="lesson-mini-icon">📘</span> Lesson 1/10</div>
+                <div class="task-title">Today’s lesson</div>
+                <div class="task-sub" id="lessonSub">A 2–3 minute practical read.</div>
+              </div>
+              <button class="task-icon-btn" id="openLessonBtn" type="button" aria-label="Open today's lesson"><img class="icon-main-img" src="icons/home-lesson.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
+            </article>
+          </div>
+          <div class="protocol-complete" id="protocolComplete">✓ Today’s protocol complete</div>
+        </section>
+      </section>
+
+      <aside class="side-stack">
+        <section class="card support-card" id="supportCard" aria-label="Support mode">
+          <span class="led" id="supportLed" aria-hidden="true"></span>
+          <div class="section-label">Support mode</div>
+          <h2 class="card-title">Do you need some support?</h2>
+          <p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
+          <div class="support-actions-row"><a class="soft-btn" id="supportPrimary" href="support.html">I need support</a><button class="ghost-btn" id="supportOff" type="button">Turn off</button></div>
+        </section>
+
+        <section class="card hydration-card" aria-label="Hydration logger">
+          <div class="compact-head hydration-head"><div><div class="section-label">Hydration</div></div></div>
+          <div class="hydration-logger-clean">
+            <button class="hydration-drop-btn" id="waterGlass" type="button" aria-label="Log one glass of water">
+              <span class="hydration-drop-wrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" fill="none"></path></svg></span>
+              <span class="hydration-add-label">+250ml</span>
+            </button>
+            <div class="hydration-main">
+              <div class="hydration-progress" aria-hidden="true"><span id="waterProgressBar"></span></div>
+              <div class="hydration-count-chip" id="waterCountChip">
+                <strong id="waterCountValue">0</strong>
+                <span id="waterCountHint">Tap once for each glass</span>
+              </div>
+            </div>
+            <button class="water-undo-clean" id="waterUndo" type="button" aria-label="Undo water glass"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none"></path><path d="M4 9h10a6 6 0 0 1 0 12h-1" fill="none"></path></svg></button>
+          </div>
+        </section>
+
+        <section class="card medication-card" id="injectionCard" aria-label="Medication reminder">
+          <div class="section-label">Medication</div>
+          <h2 class="card-title" id="medicationTitle">Dose reminder</h2>
+          <p class="card-copy" id="nextInjectionDateText">Set your medication schedule during setup.</p>
+          <div class="injection-actions"><button class="dose-icon-btn" id="logDoseBtn" type="button" aria-label="Mark dose logged">✓</button></div>
+        </section>
+      </aside>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Hearty navigation">
+      <a class="nav-item active" aria-current="page" href="home.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none"></path><path d="M5.5 10.5V20h13v-9.5" fill="none"></path><path d="M9.5 20v-6h5v6" fill="none"></path></svg><span>Home</span></a>
+      <a class="nav-item" href="meals.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v8" fill="none"></path><path d="M8 3v8" fill="none"></path><path d="M6 3v18" fill="none"></path><path d="M15 3v18" fill="none"></path><path d="M15 3c3 2 4.5 5 4.5 8H15" fill="none"></path></svg><span>Meals</span></a>
+      <a class="nav-item" href="exercise.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10" fill="none"></path><path d="M18 7v10" fill="none"></path><path d="M3 10v4" fill="none"></path><path d="M21 10v4" fill="none"></path><path d="M6 12h12" fill="none"></path></svg><span>Exercise</span></a>
+      <a class="nav-item" href="progress.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5" fill="none"></path><path d="M4 19h16" fill="none"></path><path d="M7 15l3-3 3 2 5-7" fill="none"></path></svg><span>Progress</span></a>
+      <a class="nav-item" href="support.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z" fill="none"></path></svg><span>Support</span></a>
+      <a class="nav-item" href="social.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" fill="none"></path><circle cx="10" cy="7" r="4" fill="none"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87" fill="none"></path><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none"></path></svg><span>Social</span></a>
+      <a class="nav-item" href="settings.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z" fill="none"></path></svg><span>Settings</span></a>
+    </nav>
+  </div>
+
+  <section class="sheet-overlay" id="weightSheet" hidden aria-hidden="true">
+    <div class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="weightSheetTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Daily weigh-in</h2><p class="sheet-copy">Weigh yourself first thing in the morning, before eating or drinking.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
+      <div class="weight-readout"><input class="weight-input" id="weightValueInput" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="0.0"><div class="weight-unit" id="weightUnitLabel">KG</div></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
+    </div>
+  </section>
+
+  <section class="sheet-overlay" id="photoSheet" hidden aria-hidden="true">
+    <div class="task-sheet photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photoSheetTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photo check-in</h2><p class="sheet-copy">Front photo required. Side and back are optional.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
+      <div class="photo-action-list" id="photoSlots">
+        <button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img alt="Front preview" hidden></button>
+        <button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img alt="Side preview" hidden></button>
+        <button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img alt="Back preview" hidden></button>
+      </div>
+      <input id="photoInput" type="file" accept="image/*" capture="environment" class="sr-only">
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="completePhotoBtn" type="button" disabled>Add front photo to complete</button></div>
+    </div>
+  </section>
+
+  <section class="sheet-overlay" id="lessonSheet" hidden aria-hidden="true">
+    <div class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><div class="lesson-counter" id="lessonCounter">Lesson 1/10</div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">One short practical lesson each day.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
+      <div class="lesson-copy" id="lessonBody"></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
+    </div>
+  </section>
+
+  <section class="sheet-overlay" id="coreSetupSheet" hidden aria-hidden="true">
+    <div class="task-sheet setup-sheet" role="dialog" aria-modal="true" aria-labelledby="coreSetupTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</h2><p class="sheet-copy" id="coreSetupCopy">A few details help Home show the right daily rhythm.</p></div></div>
+      <div class="setup-step" data-step="0"><label class="field-label" for="coreSetupName">What shall we call you?</label><input class="field-input" id="coreSetupName" autocomplete="given-name" placeholder="First name"><div class="unit-toggle" role="group" aria-label="Unit preference"><button type="button" data-unit="metric">kg</button><button type="button" data-unit="imperial">lb</button></div></div>
+      <div class="setup-step" data-step="1" hidden><label class="field-label" for="coreSetupTargetWeight">Doctor target weight</label><input class="field-input" id="coreSetupTargetWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Optional"></div>
+      <div class="setup-step" data-step="2" hidden><label class="field-label" for="coreSetupMedication">Medication type</label><select class="field-input" id="coreSetupMedication"><option value="">Not set yet</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Saxenda</option><option>Other GLP-1</option></select></div>
+      <div class="setup-step" data-step="3" hidden><label class="field-label" for="coreSetupFrequency">Medication frequency</label><select class="field-input" id="coreSetupFrequency"><option value="weekly">Weekly</option><option value="daily">Daily</option><option value="other">Other / not sure</option></select></div>
+      <div class="setup-step" data-step="4" hidden><label class="field-label" for="coreSetupDaysField">Injection day</label><select class="field-input" id="coreSetupDaysField"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+  if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.update();
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          nw.addEventListener('statechange', () => {
+            if(nw.state === 'installed' && navigator.serviceWorker.controller){
+              const bar = document.createElement('div');
+              bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1550b3;color:white;padding:12px 20px;border-radius:12px;z-index:9999;box-shadow:0 14px 34px rgba(21,80,179,.24);font:700 14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+              bar.textContent = 'Update ready — tap to reload';
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          });
+        });
+      });
+    });
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+  }
+  </script>
+
+</body>
+</html>
