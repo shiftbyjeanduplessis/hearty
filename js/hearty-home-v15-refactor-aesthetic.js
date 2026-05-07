@@ -140,7 +140,7 @@
     if (isInstalledMode() || document.getElementById('heartyInstallPrompt')) return;
 
     try{
-      const firstSeenKey = 'heartyInstallFirstSeenAt';
+      const firstSeenKey = 'heartyInstallFirstSeenAtV2';
       let firstSeen = Number(localStorage.getItem(firstSeenKey) || 0);
       if(!firstSeen){
         firstSeen = Date.now();
@@ -149,7 +149,7 @@
       const visibleWindowMs = 24*60*60*1000;
       if(!force && Date.now() - firstSeen > visibleWindowMs) return;
 
-      const dismissedUntil = Number(localStorage.getItem('heartyInstallDismissedUntil') || 0);
+      const dismissedUntil = Number(localStorage.getItem('heartyInstallDismissedUntilV2') || 0);
       if(!force && dismissedUntil && Date.now() < dismissedUntil) return;
     }catch(e){}
 
@@ -187,7 +187,7 @@
     });
 
     bar.querySelector('.install-prompt-close').addEventListener('click', () => {
-      try{ localStorage.setItem('heartyInstallDismissedUntil', String(Date.now() + 3*24*60*60*1000)); }catch(e){}
+      try{ localStorage.setItem('heartyInstallDismissedUntilV2', String(Date.now() + 3*24*60*60*1000)); }catch(e){}
       bar.remove();
     });
 
