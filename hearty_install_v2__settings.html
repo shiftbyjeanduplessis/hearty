@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clean_blue">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Hearty — Settings</title>
+<script src="/js/hearty-data-layer.v1.js"></script>
+<style>
+:root{
+  --bg-base:#f6f9fe; --bg-layer-1:radial-gradient(circle at 18% 8%, rgba(108,150,235,.05), transparent 30%);
+  --bg-layer-2:radial-gradient(circle at 88% 12%, rgba(132,174,244,.04), transparent 28%);
+  --bg-layer-3:linear-gradient(180deg, #fbfdff 0%, #f2f6fc 100%);
+  --ink:#132235; --muted:#6f7c8d; --line:rgba(143,163,184,.22); --card:rgba(255,255,255,.94);
+  --shadow:0 18px 44px rgba(14,31,53,.08); --shadow-soft:0 8px 22px rgba(14,31,53,.05);
+  --surface-top:rgba(255,255,255,.82); --surface-bottom:rgba(255,255,255,.68); --surface-button:rgba(255,255,255,.94);
+  --surface-chip:rgba(255,255,255,.96); --theme-accent:#2f6df6;
+  --radius-card:28px; --radius-control:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{min-height:100vh;font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;color:var(--ink);background:var(--bg-base);overflow-x:hidden;position:relative}
+body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none}
+body::before{z-index:-2;background:var(--bg-layer-1),var(--bg-layer-2),var(--bg-layer-3),var(--bg-base)}
+body::after{z-index:-1;opacity:.18;background:none}
+.shell{max-width:920px;margin:0 auto;padding:20px 20px 150px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:0 18px;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:22px;box-shadow:var(--shadow-soft)}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;padding-left:8px}
+.brand-logo{display:block;height:42px;width:auto;object-fit:contain;object-position:left center;max-width:min(72vw,300px);flex:0 0 auto}
+.icon-btn{border:1px solid var(--line);background:var(--surface-button);color:#5d6c7d;width:44px;height:44px;border-radius:16px;display:grid;place-items:center;box-shadow:var(--shadow-soft);padding:0;flex:0 0 auto}
+.icon-btn svg,.nav-item svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.page-header,.settings-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow);overflow:hidden}
+.page-header::before,.settings-card::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0))}
+.page-header{padding:24px;margin-bottom:18px}
+.kicker{font-size:.74rem;font-weight:800;letter-spacing:.17em;color:#7b8998;margin-bottom:12px;text-transform:uppercase}
+.page-title{font-size:clamp(1.7rem, 3vw, 2.5rem);line-height:1.02;margin:0 0 10px;letter-spacing:-.04em}
+.page-copy{margin:0;color:var(--muted);font-size:1rem;line-height:1.55;max-width:42rem}
+.settings-layout{display:grid;grid-template-columns:1fr;gap:16px}
+.settings-card{padding:22px}
+.settings-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.settings-title{margin:0;font-size:1.18rem;letter-spacing:-.03em}
+.settings-copy{margin:6px 0 0;color:var(--muted);line-height:1.5;font-size:.96rem}
+.stack{display:grid;gap:14px}
+.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.metrics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+.metrics-grid .field.compact{max-width:160px}
+.hydration-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+.readout-card{min-height:64px;display:grid;align-content:center;gap:4px;border:1px solid rgba(143,163,184,.22);border-radius:20px;padding:14px 16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,255,.94));}
+.readout-label{font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#728195}
+.readout-value{font-size:1.4rem;font-weight:800;letter-spacing:-.03em;color:#173455}
+.inline-switch{display:flex;align-items:center;gap:10px;justify-self:end}
+.inline-switch-label{font-size:.88rem;font-weight:700;color:#415064}
+.formula-note{margin:2px 0 0;color:#708096;font-size:.82rem;line-height:1.4}
+.field{display:grid;gap:8px}
+.field.full{grid-column:1/-1}
+.label{font-size:.82rem;font-weight:700;color:#415064;letter-spacing:-.01em}
+.helper{margin:4px 0 0;color:#708096;font-size:.82rem;line-height:1.45}
+.input,.select{width:100%;border:1px solid rgba(143,163,184,.28);background:rgba(255,255,255,.96);color:var(--ink);border-radius:var(--radius-control);padding:13px 14px;font:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.95)}
+.input:focus,.select:focus{outline:2px solid rgba(47,109,246,.25);outline-offset:2px}
+.readout{min-height:48px;display:flex;align-items:center;border:1px solid rgba(143,163,184,.22);border-radius:var(--radius-control);padding:0 14px;background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(247,250,255,.92));font-weight:700;color:#173455}
+.kv{display:grid;gap:10px}
+.kv-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid rgba(143,163,184,.16)}
+.kv-row:last-child{border-bottom:none;padding-bottom:0}
+.kv-key{color:#6d7b8c;font-size:.9rem}
+.kv-val{font-weight:700;text-align:right}
+.status-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:.8rem;font-weight:800;letter-spacing:.01em;background:rgba(22,163,74,.10);color:#19713b}
+.status-pill.grace{background:rgba(245,158,11,.12);color:#9a6700}
+.status-pill.expired{background:rgba(239,68,68,.12);color:#a12626}
+.inline-actions,.data-actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:none;border-radius:var(--radius-control);padding:12px 15px;font:inherit;font-weight:800;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(180deg,#2f6df6,#2356c4);color:#fff;box-shadow:0 12px 24px rgba(47,109,246,.18)}
+.btn.secondary{background:rgba(255,255,255,.96);color:#24415f;border:1px solid rgba(143,163,184,.22);box-shadow:var(--shadow-soft)}
+.btn.danger{background:rgba(239,68,68,.10);color:#ab2323}
+.toggle-list{display:grid;gap:10px}
+.toggle-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(143,163,184,.16)}
+.toggle-row:last-child{border-bottom:none;padding-bottom:0}
+.toggle-copy strong{display:block;font-size:.94rem}
+.toggle-copy span{display:block;margin-top:3px;color:var(--muted);font-size:.83rem;line-height:1.4}
+.switch{position:relative;width:52px;height:32px;flex:0 0 auto}
+.switch input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.slider{position:absolute;inset:0;background:rgba(148,163,184,.35);border-radius:999px;transition:.2s ease}
+.slider::before{content:"";position:absolute;width:24px;height:24px;left:4px;top:4px;border-radius:50%;background:#fff;box-shadow:0 3px 8px rgba(15,23,42,.18);transition:.2s ease}
+.switch input:checked + .slider{background:linear-gradient(180deg,#2f6df6,#2356c4)}
+.switch input:checked + .slider::before{transform:translateX(20px)}
+.link-list{display:grid;gap:10px}
+.link-item{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-radius:var(--radius-control);text-decoration:none;color:var(--theme-accent);font-weight:800;background:var(--surface-chip);border:1px solid rgba(143,163,184,.18)}
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:80;width:min(880px,calc(100vw - 28px));display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.bottom-nav .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;color:#627286;transition:all .22s ease;text-align:center;font-size:.78rem;font-weight:600;appearance:none;border:none;background:transparent;cursor:pointer;font:inherit;text-decoration:none;box-shadow:none;outline:none}
+.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:var(--theme-accent);background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 10px 18px rgba(47,109,246,.10)}
+.bottom-nav .nav-item:focus-visible{outline:2px solid rgba(47,109,246,.45);outline-offset:2px}
+.bottom-nav .nav-item svg{width:22px;height:22px}
+.toast{position:fixed;right:18px;bottom:92px;z-index:90;background:#173455;color:#fff;padding:12px 14px;border-radius:14px;box-shadow:0 14px 30px rgba(15,23,42,.2);font-size:.86rem;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s ease}
+.toast.show{opacity:1;transform:translateY(0)}
+html[data-theme="clean_blue"]{--bg-base:#f6f9fe;--bg-layer-1:radial-gradient(circle at 18% 8%, rgba(108,150,235,.05), transparent 30%);--bg-layer-2:radial-gradient(circle at 88% 12%, rgba(132,174,244,.04), transparent 28%);--bg-layer-3:linear-gradient(180deg, #fbfdff 0%, #f2f6fc 100%);--ink:#132235;--muted:#6f7c8d;--line:rgba(143,163,184,.22);--card:rgba(255,255,255,.94);--shadow:0 18px 44px rgba(14,31,53,.08);--shadow-soft:0 8px 22px rgba(14,31,53,.05);--surface-top:rgba(255,255,255,.82);--surface-bottom:rgba(255,255,255,.68);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,255,255,.96);--theme-accent:#2f6df6;}
+html[data-theme="sunlit"]{--bg-base:#fbfaf6;--bg-layer-1:radial-gradient(circle at 16% 10%, rgba(231,176,94,.06), transparent 28%);--bg-layer-2:radial-gradient(circle at 86% 16%, rgba(133,164,108,.05), transparent 30%);--bg-layer-3:linear-gradient(180deg, #fffdf9 0%, #f7f4ec 100%);--ink:#1f2a2d;--muted:#707a78;--line:rgba(156,170,146,.22);--card:rgba(255,255,255,.93);--shadow:0 18px 44px rgba(50,48,33,.08);--shadow-soft:0 8px 22px rgba(50,48,33,.05);--surface-top:rgba(255,255,255,.82);--surface-bottom:rgba(255,252,246,.68);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,255,255,.96);--theme-accent:#b7791f;}
+html[data-theme="midnight"]{--bg-base:#0a111b;--bg-layer-1:radial-gradient(circle at 22% 10%, rgba(89,118,170,.09), transparent 26%);--bg-layer-2:radial-gradient(circle at 76% 18%, rgba(90,102,140,.07), transparent 24%);--bg-layer-3:linear-gradient(180deg, #0f1722 0%, #0b121b 58%, #091019 100%);--ink:#edf3fb;--muted:#9faec1;--line:rgba(124,148,180,.16);--card:rgba(16,24,36,.78);--shadow:0 18px 44px rgba(2,8,23,.30);--shadow-soft:0 8px 22px rgba(2,8,23,.20);--surface-top:rgba(18,27,39,.76);--surface-bottom:rgba(14,22,33,.64);--surface-button:rgba(21,30,43,.86);--surface-chip:rgba(21,30,43,.90);--theme-accent:#89a8ff;}
+html[data-theme="midnight"] body::after{opacity:.035;background-image:radial-gradient(rgba(255,255,255,.18) .6px, transparent .7px);background-size:22px 22px;background-position:0 0}
+html[data-theme="rose_aurora"]{--bg-base:#0d0a10;--bg-layer-1:radial-gradient(circle at 22% 10%, rgba(172,108,138,.13), transparent 30%);--bg-layer-2:radial-gradient(circle at 80% 22%, rgba(100,76,130,.10), transparent 28%);--bg-layer-3:linear-gradient(160deg, #130f18 0%, #0e0b13 55%, #09080d 100%);--ink:#f8f0f5;--muted:#b89fac;--line:rgba(195,148,172,.14);--card:rgba(22,16,26,.82);--shadow:0 22px 52px rgba(6,2,10,.44);--shadow-soft:0 10px 26px rgba(6,2,10,.30);--surface-top:rgba(30,21,36,.80);--surface-bottom:rgba(20,15,24,.68);--surface-button:rgba(36,26,42,.88);--surface-chip:rgba(38,27,44,.92);--theme-accent:#c9955c;}
+html[data-theme="rose_aurora"] body::after{opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px;mix-blend-mode:soft-light}
+@media (max-width:760px){.shell{padding:14px 14px 132px}.topbar{min-height:70px;padding:0 14px;border-radius:20px}.brand-logo{height:36px}.page-header,.settings-card{padding:18px;border-radius:22px}.field-grid{grid-template-columns:1fr}.settings-head,.kv-row{flex-direction:column}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.bottom-nav .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.bottom-nav .nav-item svg{width:18px;height:18px}}
+
+/* Install button v2 hardlock: force app-blue style in Settings */
+.install-settings-card .settings-install-btn,
+button#settingsInstallBtn.settings-install-btn,
+#settingsInstallBtn{
+  width:100% !important;
+  min-height:66px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:14px !important;
+  padding:13px 15px !important;
+  border:0 !important;
+  border-radius:24px !important;
+  background:linear-gradient(180deg,#3f82ff 0%,#1f63df 48%,#1550b3 100%) !important;
+  color:#fff !important;
+  box-shadow:0 18px 42px rgba(21,80,179,.28), inset 0 1px 0 rgba(255,255,255,.22) !important;
+  text-align:left !important;
+  font:inherit !important;
+  cursor:pointer !important;
+}
+#settingsInstallBtn .settings-install-icon{
+  width:44px !important;
+  height:44px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:17px !important;
+  background:rgba(255,255,255,.18) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22) !important;
+  color:#fff !important;
+  font-size:1.2rem !important;
+  flex:0 0 auto !important;
+}
+#settingsInstallBtn strong{
+  display:block !important;
+  color:#fff !important;
+  font-size:1rem !important;
+  font-weight:950 !important;
+  letter-spacing:-.02em !important;
+}
+#settingsInstallBtn small{
+  display:block !important;
+  margin-top:3px !important;
+  color:rgba(255,255,255,.88) !important;
+  font-size:.82rem !important;
+  font-weight:750 !important;
+  line-height:1.3 !important;
+}
+#settingsInstallBtn:disabled{
+  opacity:.78 !important;
+  cursor:default !important;
+}
+
+</style>
+<!-- HEARTY THEME BACKGROUND / SURFACE FIX v1 -->
+<!-- Header/nav kept static for shipping: all links lowercase. -->
+
+<!-- =========================================================
+  Layer 4: Authoritative Theme System
+  Purpose: one shared theme reader/writer across all pages.
+  Does not change page content or app logic.
+========================================================= -->
+
+<!-- Shared Hearty theme system -->
+<link rel="stylesheet" href="/css/hearty-theme.css">
+<script src="/js/hearty-theme.js"></script>
+</head>
+<body data-page="settings">
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <img
+        data-default-logo="/hearty-logo.png"
+        data-rose-aurora-logo="/hearty-logo-gold.png"
+        class="brand-logo"
+        alt=""
+        src="/hearty-logo.png"
+        onerror="this.style.display='none'"
+      />
+    </div>
+    <button class="icon-btn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 .99-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 .99 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51.99H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+  </header>
+<main class="settings-layout">
+    <section id="account-card" class="settings-card">
+      <div class="settings-head"><div><h2 class="settings-title">Account &amp; License</h2><p class="settings-copy">Plan and access details for your app.</p></div><span id="license-status-pill" class="status-pill">Active</span></div>
+      <div class="kv">
+        <div class="kv-row"><div class="kv-key">Account</div><div id="account-email" class="kv-val">Not connected</div></div>
+        <div class="kv-row"><div class="kv-key">Plan</div><div class="kv-val">Annual License</div></div>
+        <div class="kv-row"><div class="kv-key">Expiry</div><div id="license-expiry" class="kv-val">—</div></div>
+      </div>
+
+      <div class="inline-actions" style="margin-top:16px">
+        <button class="btn secondary" id="logoutBtn" type="button">Log out</button>
+      </div>
+      <div class="mini-note" style="margin-top:16px">Need help with your account or billing? Email support@hearty.health.</div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-head"><div><h2 class="settings-title">Body Metrics</h2><p class="settings-copy">Used for hydration and display throughout the app.</p></div></div>
+      <div class="metrics-grid">
+        <div class="field"><label class="label" for="starting-weight">Starting Weight</label><input id="starting-weight" class="input" type="number" step="0.1" min="1" max="600"/></div>
+        <div class="field"><label class="label" for="current-weight">Current Weight</label><input id="current-weight" class="input" type="number" step="0.1" min="1" max="600"/></div>
+        <div class="field compact"><label class="label" for="height-cm">Height</label><input id="height-cm" class="input" type="number" step="1" min="1" max="260"/></div>
+        <div class="field full"><label class="label" for="target-weight">Target Weight</label><input id="target-weight" class="input" type="number" step="0.1" min="1" max="600"/><p class="helper">Target weight should be provided by your doctor.</p></div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Medication</h2>
+          <p class="settings-copy">Medication setup is shared with Home and Progress. Manage dosage and injection history from Progress.</p>
+        </div>
+      </div>
+      <div class="kv-list medication-summary-list">
+        <div class="kv-row"><div class="kv-key">Medication</div><div id="settings-medication-summary" class="kv-val">Not set</div></div>
+        <div class="kv-row"><div class="kv-key">Injection day</div><div id="settings-injection-day-summary" class="kv-val">Not set</div></div>
+        <div class="kv-row"><div class="kv-key">Dose</div><div id="settings-dose-summary" class="kv-val">Set in Progress</div></div>
+      </div>
+      <div class="inline-actions" style="margin-top:16px">
+        <a class="btn secondary" href="progress.html#injections">Manage in Progress</a>
+      </div>
+    </section>
+
+    <section class="settings-card hydration-settings-card">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Hydration</h2>
+          <p class="settings-copy">Choose the daily water target that Home will use.</p>
+        </div>
+      </div>
+      <div class="hydration-settings-layout">
+        <div class="water-target-panel">
+          <div class="readout-label">Daily Water Target</div>
+          <div class="readout-value water-target-big" id="water-target-readout">Set your weight to calculate your daily target</div>
+          <p class="formula-note" id="water-target-note">Based on your body weight.</p>
+        </div>
+        <div class="water-target-controls">
+          <div class="inline-switch water-auto-switch">
+            <span class="inline-switch-label">Use recommended target</span>
+            <label class="switch"><input id="water-auto" type="checkbox"/><span class="slider"></span></label>
+          </div>
+          <div class="field">
+            <label class="label" for="water-target">Manual Daily Water Target (L)</label>
+            <input id="water-target" class="input" type="number" step="0.1" min="0.5" max="10"/>
+          </div>
+          <p class="helper">Home converts this to glasses using 250 ml per glass.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-head"><div><h2 class="settings-title">Units</h2><p class="settings-copy">Choose how values are displayed in the app.</p></div></div>
+      <div class="field">
+        <label class="label" for="units-system">Unit System</label>
+        <select id="units-system" class="select"><option value="metric">Metric</option><option value="imperial">Imperial</option></select>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-head"><div><h2 class="settings-title">Privacy &amp; Legal</h2><p class="settings-copy">Your photos stay on your device by default.</p></div></div>
+      <div class="link-list">
+        <a class="link-item" href="#" id="privacy-link">Privacy Policy <span>↗</span></a>
+        <a class="link-item" href="#" id="terms-link">Terms of Service <span>↗</span></a>
+        <a class="link-item" href="#" id="refund-link">Refund Policy <span>↗</span></a>
+      
+            <a class="link-item" href="mailto:support@hearty.health">
+              <span>Support · support@hearty.health</span>
+              <span>Email</span>
+            </a>
+          </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-head"><div><h2 class="settings-title">Data Actions</h2><p class="settings-copy">Export your data or reset the app on this device.</p></div></div>
+      <div class="data-actions">
+        <button id="export-data" class="btn secondary" type="button">Export Data (JSON)</button>
+        <button id="reset-data" class="btn danger" type="button">Reset All Data</button>
+      </div>
+    </section>
+  </main>
+  
+    <section class="settings-card install-settings-card">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">Install Hearty</h2>
+          <p class="settings-copy">Add Hearty to your home screen for the best app-like experience.</p>
+        </div>
+      </div>
+      <button class="settings-install-btn" id="settingsInstallBtn" type="button">
+        <span class="settings-install-icon">⌂</span>
+        <span>
+          <strong>Install / Add to Home Screen</strong>
+          <small id="settingsInstallHint">Opens the correct install steps for your device.</small>
+        </span>
+      </button>
+    </section>
+
+    <section class="settings-card" id="appVersionCard">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">App version</h2>
+          <p class="settings-copy">Use this during testing to confirm the latest build is active.</p>
+        </div>
+      </div>
+      <div class="kv-list">
+        <div class="kv-row"><div class="kv-key">Version</div><div id="appVersionText" class="kv-val">Hearty v2026.05.08</div></div>
+        <div class="kv-row"><div class="kv-key">Cache</div><div id="cacheStatusText" class="kv-val">Checking…</div></div>
+      </div>
+      <div class="inline-actions" style="margin-top:16px">
+        <button class="btn secondary" id="checkUpdateBtn" type="button">Check for update</button>
+      </div>
+    </section>
+
+<nav class="bottom-nav" aria-label="Page selector">
+  <a class="nav-item" href="home.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5h5v5"/></svg>
+    <span>Home</span>
+  </a>
+  <a class="nav-item" href="meals.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8"/><path d="M4.5 3v5.2A2.5 2.5 0 0 0 7 10.7a2.5 2.5 0 0 0 2.5-2.5V3"/><path d="M7 11v10"/><path d="M16.5 3v18"/><path d="M16.5 3c2.2 1.2 3.5 3.2 3.5 5.8 0 2.4-1.2 4.2-3.5 5.1"/></svg>
+    <span>Meals</span>
+  </a>
+  <a class="nav-item" href="exercise.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5v11"/><path d="M17.5 6.5v11"/><path d="M3.5 9v6"/><path d="M20.5 9v6"/><path d="M6.5 12h11"/></svg>
+    <span>Exercise</span>
+  </a>
+  <a class="nav-item" href="progress.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7.5 15.5l3.2-3.2 2.4 2.4 4.8-6"/><path d="M17.9 8.7h-3.2"/><path d="M17.9 8.7v3.2"/></svg>
+    <span>Progress</span>
+  </a>
+  <a class="nav-item" href="support.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.6c-.2 0-.4-.07-.56-.22C6.2 15.65 3 12.75 3 8.95 3 6.05 5.2 4 7.8 4c1.55 0 3.05.72 4.2 1.96C13.15 4.72 14.65 4 16.2 4 18.8 4 21 6.05 21 8.95c0 3.8-3.2 6.7-8.44 11.43-.16.15-.36.22-.56.22Z"/></svg>
+    <span>Support</span>
+  </a>
+  <a class="nav-item" href="social.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.25 11.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z"/><path d="M15.75 11.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z"/><path d="M3.5 20c.45-3.35 2.2-5.2 4.75-5.2S12.55 16.65 13 20"/><path d="M11 20c.45-3.35 2.2-5.2 4.75-5.2S20.05 16.65 20.5 20"/></svg>
+    <span>Social</span>
+  </a>
+  <a class="nav-item active" href="settings.html" aria-current="page">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.66V21.3a2.1 2.1 0 0 1-4.2 0v-.07a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-1.98.36l-.05.05a2.1 2.1 0 0 1-2.97-2.97l.05-.05A1.8 1.8 0 0 0 3.8 15a1.8 1.8 0 0 0-1.66-1.1H2.1a2.1 2.1 0 0 1 0-4.2h.07A1.8 1.8 0 0 0 3.8 8a1.8 1.8 0 0 0-.36-1.98l-.05-.05A2.1 2.1 0 1 1 6.36 3l.05.05A1.8 1.8 0 0 0 8.4 3.4 1.8 1.8 0 0 0 9.5 1.75V1.7a2.1 2.1 0 0 1 4.2 0v.07a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 1.98-.36l.05-.05A2.1 2.1 0 1 1 19.8 6l-.05.05A1.8 1.8 0 0 0 19.4 8c.24.68.86 1.1 1.58 1.1h.12a2.1 2.1 0 0 1 0 4.2h-.12A1.8 1.8 0 0 0 19.4 15Z"/></svg>
+    <span>Settings</span>
+  </a>
+</nav>
+</div>
+<div id="settings-toast" class="toast"></div>
+<script>
+const STORAGE = {
+  accountEmail:'heartyAccountEmail', licenseStatus:'heartyLicenseStatus', licenseExpiry:'heartyLicenseExpiry',
+  startingWeight:'heartyStartingWeightKg', currentWeight:'heartyCurrentWeightKg', targetWeight:'heartyTargetWeightKg', heightCm:'heartyHeightCm',
+  injectionName:'heartyInjectionName', injectionDose:'heartyInjectionDose', injectionDay:'heartyInjectionDay', injectionReminderEnabled:'heartyInjectionReminderEnabled',
+  waterAuto:'heartyWaterAuto', waterTargetLitres:'heartyWaterTargetLitres', theme:'heartyTheme', unitsSystem:'heartyUnitsSystem', appVersion:'heartyAppVersion'
+};
+const defaults = {
+  heartyAccountEmail:'Not connected', heartyLicenseStatus:'active', heartyLicenseExpiry:'31 Dec 2026',
+  heartyStartingWeightKg:'', heartyCurrentWeightKg:'', heartyTargetWeightKg:'', heartyHeightCm:'',
+  heartyInjectionName:'', heartyInjectionDose:'', heartyInjectionDay:'Monday', heartyInjectionReminderEnabled:'true',
+  heartyWaterAuto:'true', heartyWaterTargetLitres:'3.0', heartyTheme:'clean_blue', heartyUnitsSystem:'metric', heartyAppVersion:'Hearty v2026.05.08'
+};
+Object.keys(defaults).forEach(k => localStorage.getItem(k) === null && localStorage.setItem(k, defaults[k]));
+(function clearLegacyWeightPlaceholders(){
+  if(localStorage.getItem('heartySettingsPlaceholdersClearedV1')==='true') return;
+  const legacy = { heartyStartingWeightKg:'98.0', heartyCurrentWeightKg:'94.4', heartyTargetWeightKg:'75.0', heartyHeightCm:'165' };
+  Object.entries(legacy).forEach(([key,val]) => { if(localStorage.getItem(key) === val) localStorage.setItem(key, ''); });
+  localStorage.setItem('heartySettingsPlaceholdersClearedV1','true');
+})();
+const $ = id => document.getElementById(id);
+const showToast = (msg) => { const t=$('settings-toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>t.classList.remove('show'),1800); };
+const save = (key,val,msg='Saved') => {
+  localStorage.setItem(key,String(val));
+  try{
+    if(key === STORAGE.injectionName){
+      localStorage.setItem('heartyMedicationType', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.medication_name', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_name', String(val));
+    }
+    if(key === STORAGE.injectionDose){
+      localStorage.setItem('heartyCurrentDosage', String(val));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_dose', String(val));
+    }
+    if(key === STORAGE.injectionDay){
+      localStorage.setItem('heartyInjectionDay', String(val));
+      localStorage.setItem('heartyInjectionDayName', String(val));
+      localStorage.setItem('heartyInjectionSchedule', JSON.stringify({day:String(val),frequency:7,source:'settings',updatedAt:new Date().toISOString()}));
+      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_day_name', String(val));
+    }
+  }catch(e){}
+  render(); if(msg) showToast(msg);
+};
+const clamp = (v,min,max)=>Math.min(max,Math.max(min,Number(v)||0));
+const weightKg = ()=> {
+  const raw = Number(localStorage.getItem(STORAGE.currentWeight) || '');
+  return Number.isFinite(raw) && raw > 0 ? raw : null;
+};
+const computeWaterLitres = ()=> {
+  const auto = localStorage.getItem(STORAGE.waterAuto)==='true';
+  if (auto) {
+    const kg = weightKg();
+    if (!kg) return null;
+    return Math.max(0.5, +(kg*0.033).toFixed(1));
+  }
+  const manual = Number(localStorage.getItem(STORAGE.waterTargetLitres) || defaults.heartyWaterTargetLitres);
+  return Number.isFinite(manual) && manual > 0 ? +manual.toFixed(1) : +Number(defaults.heartyWaterTargetLitres).toFixed(1);
+};
+function applyTheme(theme){ document.documentElement.setAttribute('data-theme', theme || 'clean_blue'); localStorage.setItem('heartyTheme', theme || 'clean_blue'); localStorage.setItem('hearty-theme', theme || 'clean_blue'); }
+function updateLicenseUI(){ const status=localStorage.getItem(STORAGE.licenseStatus)||'active'; const pill=$('license-status-pill'); pill.textContent=status.charAt(0).toUpperCase()+status.slice(1); pill.className='status-pill'+(status==='grace'?' grace':status==='expired'?' expired':''); $('license-expiry').textContent=localStorage.getItem(STORAGE.licenseExpiry)||'—'; }
+
+function readCanonicalData(){
+  try{
+    if(window.HeartyData && typeof window.HeartyData.export === 'function') return window.HeartyData.export();
+  }catch(e){}
+  try{
+    return JSON.parse(localStorage.getItem('hearty:data:v1') || '{}') || {};
+  }catch(e){
+    return {};
+  }
+}
+function readHomeMedication(){
+  try{
+    return JSON.parse(localStorage.getItem('heartyMedication') || '{}') || {};
+  }catch(e){
+    return {};
+  }
+}
+function dayNameFromAny(value){
+  const names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  if(value === undefined || value === null || value === '') return '';
+  if(/^\d+$/.test(String(value))){
+    const n = Number(value);
+    return names[n >= 0 && n <= 6 ? n : 1];
+  }
+  const raw = String(value).trim();
+  return names.find(d => d.toLowerCase() === raw.toLowerCase()) || raw;
+}
+function readMedicationBridge(){
+  const canonical = readCanonicalData();
+  const profile = canonical.profile || {};
+  const homeMed = readHomeMedication();
+  let schedule = {};
+  try{ schedule = JSON.parse(localStorage.getItem('heartyInjectionSchedule') || '{}') || {}; }catch(e){}
+
+  const medication =
+    localStorage.getItem('heartyMedicationType') ||
+    localStorage.getItem('heartyInjectionName') ||
+    localStorage.getItem(STORAGE.injectionName) ||
+    profile.medication_name ||
+    profile.injection_name ||
+    homeMed.type ||
+    '';
+
+  const day = dayNameFromAny(
+    schedule.day ||
+    localStorage.getItem('heartyInjectionDayName') ||
+    localStorage.getItem('heartyInjectionDay') ||
+    profile.injection_day_name ||
+    profile.injection_day ||
+    homeMed.day ||
+    ''
+  );
+
+  const dose =
+    localStorage.getItem('heartyCurrentDosage') ||
+    localStorage.getItem('heartyInjectionDose') ||
+    localStorage.getItem(STORAGE.injectionDose) ||
+    profile.injection_dose ||
+    '';
+
+  return {
+    medication: medication || 'Not set',
+    day: day || 'Not set',
+    dose: dose && dose !== 'Not set' ? dose : 'Set in Progress'
+  };
+}
+function renderMedicationSummary(){
+  const med = readMedicationBridge();
+  const m = $('settings-medication-summary');
+  const d = $('settings-injection-day-summary');
+  const dose = $('settings-dose-summary');
+  if(m) m.textContent = med.medication;
+  if(d) d.textContent = med.day;
+  if(dose) dose.textContent = med.dose;
+}
+
+function render(){
+  const theme=localStorage.getItem(STORAGE.theme)||defaults.heartyTheme; applyTheme(theme); updateLicenseUI();
+  $('account-email').textContent = localStorage.getItem(STORAGE.accountEmail) || defaults.heartyAccountEmail;
+  $('starting-weight').value = localStorage.getItem(STORAGE.startingWeight) || defaults.heartyStartingWeightKg;
+  $('current-weight').value = localStorage.getItem(STORAGE.currentWeight) || defaults.heartyCurrentWeightKg;
+  $('target-weight').value = localStorage.getItem(STORAGE.targetWeight) || defaults.heartyTargetWeightKg;
+  $('height-cm').value = localStorage.getItem(STORAGE.heightCm) || defaults.heartyHeightCm;
+  renderMedicationSummary();
+  $('water-auto').checked = localStorage.getItem(STORAGE.waterAuto)==='true';
+  $('water-target').value = Number(localStorage.getItem(STORAGE.waterTargetLitres)||defaults.heartyWaterTargetLitres).toFixed(1);
+  $('water-target').disabled = $('water-auto').checked;
+  const waterLitres = computeWaterLitres();
+  const waterNote = $('water-target-note');
+  if ($('water-auto').checked) {
+    if (waterLitres === null) {
+      $('water-target-readout').textContent = 'Set your weight to calculate your daily target';
+      waterNote.textContent = 'Add your current weight in Body Metrics to use the recommended target.';
+    } else {
+      $('water-target-readout').textContent = waterLitres.toFixed(1) + ' L per day';
+      waterNote.textContent = 'Based on your body weight.';
+    }
+  } else {
+    $('water-target-readout').textContent = waterLitres.toFixed(1) + ' L per day';
+    waterNote.textContent = 'This is the daily water target the app will use.';
+  }
+  $('units-system').value = localStorage.getItem(STORAGE.unitsSystem) || defaults.heartyUnitsSystem;
+  setTimeout(syncBodyMetricsToAppState, 0);
+}
+function normalizeMetric(value, decimals){
+  const raw = String(value ?? '').trim();
+  if(raw === '') return '';
+  const n = Number(raw);
+  if(!Number.isFinite(n) || n <= 0) return '';
+  return decimals === 0 ? String(Math.round(n)) : n.toFixed(decimals);
+}
+function readProfileObject(){
+  try {
+    const profile = JSON.parse(localStorage.getItem('heartyProfileV1') || '{}');
+    return profile && typeof profile === 'object' ? profile : {};
+  } catch(err) {
+    return {};
+  }
+}
+function writeJSON(key, value){
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(err) {}
+}
+
+function firstUsefulValue(keys){
+  for (const key of keys) {
+    const val = localStorage.getItem(key);
+    if (val !== null && String(val).trim() !== '' && Number(val) > 0) return String(val).trim();
+  }
+  return '';
+}
+function readLatestLoggedWeight(){
+  const candidateKeys = [
+    'heartyDailyWeightsV1','heartyWeightLogsV1','heartyWeightLogV1','heartyProgressWeightLogsV1',
+    'heartyDailyWeighInsV1','heartyCheckinsV1','heartyHomeWeightLogsV1'
+  ];
+  let best = null;
+  for (const key of candidateKeys) {
+    try {
+      const data = JSON.parse(localStorage.getItem(key) || 'null');
+      const list = Array.isArray(data) ? data : Array.isArray(data?.items) ? data.items : Array.isArray(data?.logs) ? data.logs : [];
+      list.forEach(item => {
+        const weight = Number(item?.weightKg ?? item?.kg ?? item?.weight ?? item?.value ?? item?.currentWeightKg);
+        if (!Number.isFinite(weight) || weight <= 0) return;
+        const stamp = Date.parse(item?.date || item?.createdAt || item?.updatedAt || item?.timestamp || '') || 0;
+        if (!best || stamp >= best.stamp) best = { weight, stamp };
+      });
+    } catch(err) {}
+  }
+  return best ? best.weight.toFixed(1) : '';
+}
+function hydrateBodyMetricsFromHome(){
+  const currentFromHome = firstUsefulValue([
+    'heartyCurrentWeightKg','heartyWeightCurrentKg','heartyProgressCurrentWeightKg',
+    'heartyTodayWeightKg','heartyLastWeightKg','heartyHomeCurrentWeightKg'
+  ]) || readLatestLoggedWeight();
+  const startingFromHome = firstUsefulValue([
+    'heartyStartingWeightKg','heartyWeightStartingKg','heartyProgressStartingWeightKg',
+    'heartyStartWeightKg','heartyHomeStartingWeightKg'
+  ]) || currentFromHome;
+  const targetFromHome = firstUsefulValue([
+    'heartyTargetWeightKg','heartyWeightTargetKg','heartyProgressTargetWeightKg',
+    'heartyDoctorTargetWeightKg','heartyHomeTargetWeightKg'
+  ]);
+
+  if (!localStorage.getItem('heartyCurrentWeightKg') && currentFromHome) localStorage.setItem('heartyCurrentWeightKg', Number(currentFromHome).toFixed(1));
+  if (!localStorage.getItem('heartyStartingWeightKg') && startingFromHome) localStorage.setItem('heartyStartingWeightKg', Number(startingFromHome).toFixed(1));
+  if (!localStorage.getItem('heartyTargetWeightKg') && targetFromHome) localStorage.setItem('heartyTargetWeightKg', Number(targetFromHome).toFixed(1));
+}
+function syncBodyMetricsToAppState(){
+  const starting = normalizeMetric($('starting-weight')?.value, 1);
+  const current = normalizeMetric($('current-weight')?.value, 1);
+  const target = normalizeMetric($('target-weight')?.value, 1);
+  const height = normalizeMetric($('height-cm')?.value, 0);
+  if (!starting && !current && !target && !height) return;
+  const updatedAt = new Date().toISOString();
+
+  const metrics = {
+    startingWeightKg: starting,
+    currentWeightKg: current,
+    targetWeightKg: target,
+    heightCm: height,
+    updatedAt
+  };
+
+  /* Canonical Settings/Profile keys. */
+  localStorage.setItem('heartyStartingWeightKg', starting);
+  localStorage.setItem('heartyCurrentWeightKg', current);
+  localStorage.setItem('heartyTargetWeightKg', target);
+  localStorage.setItem('heartyHeightCm', height);
+
+  /* Home / Progress compatibility aliases. */
+  localStorage.setItem('heartyWeightStartingKg', starting);
+  localStorage.setItem('heartyWeightCurrentKg', current);
+  localStorage.setItem('heartyWeightTargetKg', target);
+  localStorage.setItem('heartyProgressStartingWeightKg', starting);
+  localStorage.setItem('heartyProgressCurrentWeightKg', current);
+  localStorage.setItem('heartyProgressTargetWeightKg', target);
+
+  const profile = readProfileObject();
+  Object.assign(profile, metrics);
+  writeJSON('heartyProfileV1', profile);
+  writeJSON('heartyBodyMetricsV1', metrics);
+  writeJSON('heartySettingsBodyMetricsV1', metrics);
+
+  window.dispatchEvent(new CustomEvent('hearty:bodyMetricsUpdated', { detail: metrics }));
+  window.dispatchEvent(new CustomEvent('hearty:settings:bodyMetricsUpdated', { detail: metrics }));
+}
+
+['starting-weight','current-weight','target-weight'].forEach(id => {
+  $(id).addEventListener('change', e => {
+    const raw = String(e.target.value || '').trim();
+    const key = id === 'starting-weight' ? STORAGE.startingWeight : id === 'current-weight' ? STORAGE.currentWeight : STORAGE.targetWeight;
+    if(raw === ''){
+      e.target.value = '';
+      save(key, '', 'Saved');
+      syncBodyMetricsToAppState();
+      return;
+    }
+    const v = clamp(raw, 1, 600).toFixed(1);
+    e.target.value = v;
+    save(key, v, 'Saved');
+    syncBodyMetricsToAppState();
+  });
+});
+
+$('height-cm').addEventListener('change', e => {
+  const raw = String(e.target.value || '').trim();
+  if(raw === ''){
+    e.target.value = '';
+    save(STORAGE.heightCm, '', 'Saved');
+    syncBodyMetricsToAppState();
+    return;
+  }
+  const v = Math.round(clamp(raw, 1, 260));
+  e.target.value = v;
+  save(STORAGE.heightCm, v, 'Saved');
+  syncBodyMetricsToAppState();
+});
+[['water-auto',STORAGE.waterAuto]].forEach(([id,key])=>$(id).addEventListener('change', e => save(key,e.target.checked)));
+$('water-target').addEventListener('change', e => { const v=clamp(e.target.value,0.5,10).toFixed(1); e.target.value=v; save(STORAGE.waterTargetLitres,v); });
+$('units-system').addEventListener('change', e => save(STORAGE.unitsSystem,e.target.value));
+$('export-data').addEventListener('click', ()=>{ const data={}; Object.values(STORAGE).forEach(k=>data[k]=localStorage.getItem(k)); const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='hearty-settings-export.json'; a.click(); URL.revokeObjectURL(a.href); showToast('Exported data'); });
+$('reset-data').addEventListener('click', ()=>{ if(confirm('Reset all Settings data on this device?')){ Object.keys(defaults).forEach(k=>localStorage.setItem(k, defaults[k])); render(); showToast('Settings reset'); } });
+
+$('logoutBtn')?.addEventListener('click', async () => {
+  try {
+    if (window.supabaseClient?.auth) {
+      await window.supabaseClient.auth.signOut();
+    } else if (window.supabase?.auth) {
+      await window.supabase.auth.signOut();
+    }
+  } catch(e) {}
+
+  // MVP rule: logout ends the auth session only. It must not clear local Hearty data
+  // such as meals, progress, photos, onboarding, settings, or hearty:data:v1.
+  ['heartyUser','heartyAuthUser','heartySession'].forEach(k => localStorage.removeItem(k));
+  location.href = './login.html';
+});
+
+
+
+(function initSettingsInstallButton(){
+  const btn = document.getElementById('settingsInstallBtn');
+  const hint = document.getElementById('settingsInstallHint');
+  if(!btn) return;
+
+  let deferredInstallPrompt = null;
+  const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  function updateHint(){
+    if(isStandalone()){
+      if(hint) hint.textContent = 'Hearty is already installed.';
+      btn.disabled = true;
+      return;
+    }
+    if(hint) hint.textContent = isIOS()
+      ? 'iPhone: Safari → Share → Add to Home Screen.'
+      : 'Android: tap here, or use Chrome menu → Install app.';
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    updateHint();
+  });
+
+  btn.addEventListener('click', async () => {
+    if(isStandalone()){
+      showToast('Hearty is already installed');
+      return;
+    }
+    if(deferredInstallPrompt){
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      try{
+        promptEvent.prompt();
+        await promptEvent.userChoice;
+      }catch(e){
+        showToast('Use your browser menu to install Hearty');
+      }
+      return;
+    }
+    if(isIOS()){
+      showToast('In Safari: tap Share, then Add to Home Screen');
+    }else{
+      showToast('In Chrome: tap menu, then Install app or Add to Home screen');
+    }
+  });
+
+  updateHint();
+})();
+
+(function initAppVersionBlock(){
+  const version = 'Hearty v2026.05.08';
+  try { localStorage.setItem('heartyAppVersion', version); } catch(e){}
+  const v = document.getElementById('appVersionText');
+  const c = document.getElementById('cacheStatusText');
+  if(v) v.textContent = version;
+  if(c) c.textContent = ('serviceWorker' in navigator) ? 'Active / available' : 'Unavailable';
+  document.getElementById('checkUpdateBtn')?.addEventListener('click', async () => {
+    try {
+      const reg = await navigator.serviceWorker?.getRegistration?.();
+      await reg?.update?.();
+      showToast('Checked for updates');
+    } catch(e) { showToast('Could not check for updates'); }
+  });
+})();
+
+['privacy-link','terms-link','refund-link'].forEach(id => $(id).addEventListener('click', e => { e.preventDefault(); showToast('Public legal page link to be added'); }));
+hydrateBodyMetricsFromHome();
+render();
+</script>
+<style id="hearty-phase1-settings-privacy-note-style">.hearty-privacy-note{margin:14px 0;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-weight:650;line-height:1.45}</style>
+<script id="hearty-phase1-settings-privacy-note">
+(function(){
+  function run(){
+    if(document.getElementById('heartyPrivacyNote')) return;
+    var host = document.querySelector('.shell') || document.body;
+    var note = document.createElement('div');
+    note.id = 'heartyPrivacyNote';
+    note.className = 'hearty-privacy-note';
+    note.textContent = 'Privacy note: Hearty does not store medication details or progress photos on our servers. These remain on your device unless you choose to share them.';
+    host.appendChild(note);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+})();
+</script>
+</body></html>
