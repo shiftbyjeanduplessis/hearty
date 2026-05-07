@@ -7,7 +7,6 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Hearty — Home</title>
-<script src="/js/hearty-data-layer.v1.js"></script>
 <style>
     
     /* ===== HEARTY THEME SYSTEM - 4 THEMES ===== */
@@ -995,7 +994,7 @@
 
     .protocol-complete.show{display:flex}
 
-    .lesson-card{display:none !important;
+    .lesson-card{display:none;
       padding:16px;
       border-radius:20px;
       border:1px solid rgba(152,173,198,.17);
@@ -2207,10 +2206,10 @@
     .lesson-accent{
       width:42px; height:42px; border-radius:14px;
       display:grid; place-items:center;
-      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(237,233,255,.96));
-      border:1px solid rgba(147,126,255,.18);
-      color:#6757d8;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 10px 20px rgba(103,87,216,.10);
+      background:linear-gradient(180deg, #eef4ff, #f7faff);
+      border:1px solid rgba(21,80,179,.18);
+      color:#1550b3;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.95), 0 10px 20px rgba(21,80,179,.08);
       flex:0 0 auto;
     }
     .lesson-accent svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
@@ -6017,6 +6016,462 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
   box-shadow:var(--shadow) !important;
   background:var(--card) !important;
 }
+</style><style id="hearty-home-task-tick-bar-stability-v6-css">
+/* V6 — task completion tick + stable protocol bar size */
+
+/* Keep task button contents visible after completion */
+.task-icon-btn.done .icon-main,
+.task-icon-btn.done .icon-main-img,
+.protocol-item.completed .task-icon-btn .icon-main,
+.protocol-item.completed .task-icon-btn .icon-main-img{
+  display:none !important;
+}
+
+/* Inject a real tick into the button instead of leaving it blank */
+.task-icon-btn.done::after,
+.protocol-item.completed .task-icon-btn::after{
+  content:"✓";
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  color:#0b7a51;
+  background:rgba(14,165,107,.12);
+  font-size:1.35rem;
+  line-height:1;
+  font-weight:950;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+
+/* Never let the protocol/progress bar resize when status colour changes */
+.progress-band .goalbar,
+.protocol-progress,
+.protocol-bar,
+#protocolProgress,
+#dailyProtocolBar{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+  border:1px solid rgba(160,178,201,.24) !important;
+  background:linear-gradient(90deg,#edf2f9,#e7eef7) !important;
+}
+
+/* Same physical size; only colour changes */
+.progress-band .goalbar-fill,
+.protocol-progress-fill,
+.protocol-bar-fill,
+#protocolProgressFill,
+#dailyProtocolBarFill{
+  height:100% !important;
+  min-height:100% !important;
+  max-height:100% !important;
+  border-radius:999px !important;
+  box-sizing:border-box !important;
+  transition:width .45s ease, background .25s ease, box-shadow .25s ease !important;
+}
+
+/* Pending = green, complete = blue; dimensions identical */
+.protocol-pending .goalbar-fill,
+.protocol-pending .protocol-progress-fill,
+.protocol-pending .protocol-bar-fill,
+.protocol-pending #protocolProgressFill,
+.protocol-pending #dailyProtocolBarFill{
+  background:linear-gradient(90deg,#0ea56b 0%, #14b8a6 100%) !important;
+  box-shadow:0 0 18px rgba(14,165,107,.18) !important;
+}
+
+.protocol-complete .goalbar-fill,
+.protocol-complete .protocol-progress-fill,
+.protocol-complete .protocol-bar-fill,
+.protocol-complete #protocolProgressFill,
+.protocol-complete #dailyProtocolBarFill{
+  background:linear-gradient(90deg,#1550b3 0%, #0ea5e9 100%) !important;
+  box-shadow:0 0 18px rgba(14,80,179,.16) !important;
+}
+
+/* If the bar lives outside the card, use body state too */
+body.protocol-pending-state .progress-band .goalbar-fill{
+  background:linear-gradient(90deg,#0ea56b 0%, #14b8a6 100%) !important;
+}
+body.protocol-complete-state .progress-band .goalbar-fill{
+  background:linear-gradient(90deg,#1550b3 0%, #0ea5e9 100%) !important;
+}
+</style><style id="hearty-home-task-size-injection-apple-v7-css">
+/* V7 — stop task row/button dimension shift + Apple-like injection button */
+
+/* Task rows must never resize when completed */
+#protocolList .protocol-item,
+.protocol-list .protocol-item,
+#weighInTask,
+#walkTask,
+#photoTask{
+  min-height:78px !important;
+  grid-template-columns:minmax(0,1fr) 64px !important;
+  align-items:center !important;
+}
+
+/* Lock every task action area */
+#protocolList .task-action,
+.protocol-list .task-action,
+#weighInTask .task-action,
+#walkTask .task-action,
+#photoTask .task-action{
+  width:64px !important;
+  min-width:64px !important;
+  height:64px !important;
+  min-height:64px !important;
+  display:grid !important;
+  place-items:center !important;
+}
+
+/* Normal and completed task buttons must be identical size */
+.task-icon-btn,
+.task-btn,
+#protocolList .task-icon-btn,
+.protocol-list .task-icon-btn,
+#weighInTask .task-icon-btn,
+#walkTask .task-icon-btn,
+#photoTask .task-icon-btn{
+  width:54px !important;
+  height:54px !important;
+  min-width:54px !important;
+  max-width:54px !important;
+  min-height:54px !important;
+  max-height:54px !important;
+  padding:0 !important;
+  border-radius:18px !important;
+  display:grid !important;
+  place-items:center !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+
+/* Tick uses same physical footprint as icon, no layout change */
+.task-icon-btn.done::after,
+.task-btn.done::after,
+.protocol-item.completed .task-icon-btn::after,
+.protocol-item.completed .task-btn::after{
+  content:"✓" !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  max-width:34px !important;
+  min-height:34px !important;
+  max-height:34px !important;
+  border-radius:999px !important;
+  display:grid !important;
+  place-items:center !important;
+  color:#0b7a51 !important;
+  background:rgba(14,165,107,.12) !important;
+  font-size:1.35rem !important;
+  line-height:1 !important;
+  font-weight:950 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85) !important;
+}
+
+/* Hide old icon without removing button footprint */
+.task-icon-btn.done .icon-main,
+.task-icon-btn.done .icon-main-img,
+.task-btn.done .icon-main,
+.task-btn.done .icon-main-img,
+.protocol-item.completed .task-icon-btn .icon-main,
+.protocol-item.completed .task-icon-btn .icon-main-img,
+.protocol-item.completed .task-btn .icon-main,
+.protocol-item.completed .task-btn .icon-main-img{
+  display:none !important;
+}
+
+/* Stable row states: colour may change, dimensions must not */
+.protocol-item.completed,
+.protocol-item.done{
+  min-height:78px !important;
+  padding-top:12px !important;
+  padding-bottom:12px !important;
+  transform:none !important;
+}
+
+/* Apple-like injection completion button */
+#injectionCard .dose-check,
+#injectionCard .dose-icon-btn,
+#injectionCard button,
+.medication-compact .dose-check,
+.medication-compact .dose-icon-btn{
+  min-height:46px !important;
+  border-radius:16px !important;
+  border:1px solid rgba(15,23,42,.10) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.92)) !important;
+  color:#132235 !important;
+  font-weight:850 !important;
+  letter-spacing:-.01em !important;
+  box-shadow:
+    0 10px 24px rgba(15,23,42,.07),
+    inset 0 1px 0 rgba(255,255,255,.92) !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+  transition:transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease !important;
+}
+
+#injectionCard .dose-check:hover,
+#injectionCard .dose-icon-btn:hover,
+#injectionCard button:hover{
+  transform:translateY(-1px) !important;
+  box-shadow:
+    0 14px 30px rgba(15,23,42,.10),
+    inset 0 1px 0 rgba(255,255,255,.96) !important;
+}
+
+#injectionCard .dose-check.active,
+#injectionCard .dose-icon-btn.active,
+#injectionCard.logged .dose-check,
+#injectionCard.logged .dose-icon-btn,
+#injectionCard.logged button{
+  border-color:rgba(14,165,107,.22) !important;
+  background:linear-gradient(180deg,rgba(236,253,245,.96),rgba(255,255,255,.90)) !important;
+  color:#0b7a51 !important;
+  box-shadow:
+    0 12px 28px rgba(14,165,107,.11),
+    0 0 0 4px rgba(14,165,107,.07),
+    inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+
+/* A refined tick badge inside injection button */
+#injectionCard .dose-check::before,
+#injectionCard.logged button::before{
+  content:"✓";
+  display:inline-grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  min-width:22px;
+  border-radius:999px;
+  margin-right:8px;
+  color:#0b7a51;
+  background:rgba(14,165,107,.12);
+  font-weight:950;
+  line-height:1;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86);
+}
+
+/* Avoid double check if button already contains a tick character */
+#injectionCard .dose-check .dose-box,
+#injectionCard .dose-icon-btn svg{
+  display:none !important;
+}
+
+@media(max-width:640px){
+  #protocolList .protocol-item,
+  .protocol-list .protocol-item,
+  #weighInTask,
+  #walkTask,
+  #photoTask{
+    grid-template-columns:minmax(0,1fr) 64px !important;
+  }
+}
+</style><style id="hearty-home-final-v9-css">
+/* FINAL V9: hard clean Support, Medication, Photo, Lesson icons */
+
+/* SUPPORT: absolutely no glow in off state */
+#supportCard,
+.support-card{
+  background:var(--card) !important;
+  border-color:rgba(150,166,186,.18) !important;
+  box-shadow:var(--shadow) !important;
+}
+#supportCard .led,
+.support-card .led{
+  background:#c8d4e2 !important;
+  box-shadow:0 0 0 4px rgba(200,212,226,.24) !important;
+}
+#supportCard.is-active,
+.support-card.is-active{
+  background:linear-gradient(180deg, rgba(255,248,238,.99), rgba(255,255,255,.97)) !important;
+  border-color:rgba(245,158,11,.34) !important;
+  box-shadow:0 20px 46px rgba(14,31,53,.12),0 0 0 1px rgba(245,158,11,.10),0 0 28px rgba(245,158,11,.24) !important;
+}
+#supportCard.is-active .led,
+.support-card.is-active .led{
+  background:#f59e0b !important;
+  box-shadow:0 0 0 5px rgba(245,158,11,.14),0 0 18px rgba(245,158,11,.42) !important;
+}
+
+/* MEDICATION: replace old broken duplicated UI */
+#injectionCard{
+  background:var(--card) !important;
+  border-color:rgba(150,166,186,.18) !important;
+  box-shadow:var(--shadow) !important;
+}
+#injectionCard.injection-due{
+  background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96)) !important;
+  border-color:rgba(245,158,11,.30) !important;
+  box-shadow:0 18px 42px rgba(14,31,53,.09),0 0 0 1px rgba(245,158,11,.10),0 0 24px rgba(245,158,11,.18) !important;
+}
+#injectionCard.injection-complete{
+  background:linear-gradient(180deg,rgba(237,251,245,.98),rgba(255,255,255,.96)) !important;
+  border-color:rgba(14,165,107,.30) !important;
+  box-shadow:0 18px 42px rgba(14,31,53,.09),0 0 0 1px rgba(14,165,107,.10),0 0 24px rgba(14,165,107,.16) !important;
+}
+#injectionCard .injection-summary,
+#injectionCard .injection-actions,
+#injectionCard .dose-check,
+#injectionCard .dose-icon-btn,
+#injectionCard > button,
+#injectionCard .injection-date-display,
+#injectionCard .injection-v8{
+  display:none !important;
+}
+.medication-v9{
+  display:grid;
+  gap:12px;
+  margin-top:10px;
+  text-align:center;
+}
+.medication-v9-title{
+  font-size:1.05rem;
+  font-weight:950;
+  letter-spacing:-.03em;
+  color:#132235;
+}
+.medication-v9-label{
+  font-size:.74rem;
+  font-weight:900;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:#6f7c8d;
+}
+.medication-v9-date{
+  font-size:1.2rem;
+  font-weight:950;
+  letter-spacing:-.045em;
+  line-height:1.08;
+  color:#132235;
+}
+.medication-v9-checkbox{
+  min-height:48px;
+  width:100%;
+  border-radius:17px;
+  border:1px solid rgba(160,178,201,.24);
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.92));
+  color:#132235;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(15,23,42,.07),inset 0 1px 0 rgba(255,255,255,.92);
+}
+.medication-v9-checkbox[disabled]{
+  cursor:not-allowed;
+  opacity:.72;
+}
+.medication-v9-box{
+  width:22px;
+  height:22px;
+  border-radius:8px;
+  border:2px solid rgba(111,124,141,.45);
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:15px;
+  font-weight:950;
+  flex:0 0 auto;
+}
+.medication-v9-checkbox.done{
+  color:#0b7a51;
+  border-color:rgba(14,165,107,.25);
+  background:linear-gradient(180deg,rgba(236,253,245,.96),rgba(255,255,255,.90));
+  box-shadow:0 12px 28px rgba(14,165,107,.11),0 0 0 4px rgba(14,165,107,.07),inset 0 1px 0 rgba(255,255,255,.95);
+}
+.medication-v9-checkbox.done .medication-v9-box{
+  background:#0ea56b;
+  border-color:#0ea56b;
+}
+.medication-v9-checkbox.done .medication-v9-box::after{
+  content:"✓";
+}
+
+/* PHOTO simple working sheet */
+.hearty-photo-v9-grid{
+  display:grid;
+  gap:10px;
+}
+.hearty-photo-v9-slot{
+  width:100%;
+  border:1px solid rgba(156,177,200,.22);
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#f6f9fe);
+  padding:12px;
+  text-align:left;
+  display:grid;
+  gap:7px;
+  cursor:pointer;
+}
+.hearty-photo-v9-slot.has-photo{
+  border-color:rgba(14,165,107,.34);
+  background:linear-gradient(180deg,#effbf5,#fff);
+}
+.hearty-photo-v9-slot strong{
+  color:#132235;
+  font-size:.98rem;
+}
+.hearty-photo-v9-slot span{
+  color:#6f7c8d;
+  font-size:.74rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.hearty-photo-v9-slot img{
+  display:none;
+  width:100%;
+  max-height:155px;
+  object-fit:cover;
+  border-radius:14px;
+  border:1px solid rgba(143,163,184,.2);
+}
+.hearty-photo-v9-slot.has-photo img{
+  display:block;
+}
+
+/* Lesson icons — force visible inline SVG icons */
+.lesson-icon svg,
+.lesson-callout svg{
+  display:block !important;
+  width:21px !important;
+  height:21px !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+  fill:none !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.lesson-icon{
+  color:#6757d8 !important;
+}
+.lesson-callout span{
+  width:34px;
+  height:34px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  color:#ff6b00;
+  background:rgba(255,107,0,.10);
+  border:1px solid rgba(255,107,0,.16);
+}
+</style><script id="hearty-standalone-stubs">
+window.HeartyData = window.HeartyData || {
+  get: function(k, f){ try{ var v=localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } },
+  set: function(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+window.heartyNavigate = window.heartyNavigate || function(path){ window.location.href = path; };
+</script><style id="hearty-photo-standalone-click-fix-css">
+[data-v9-photo], [data-photo-slot] { cursor:pointer; }
 </style></head>
 <style id="home-empty-medication-visibility-fix">
 /* Hide empty Home header/injection placeholders completely.
@@ -6343,7 +6798,7 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 </div>
 </div>
 <div class="support-actions-row" id="supportActions">
-<button class="soft-btn support-main-btn" id="supportPrimary" type="button">Get support</button>
+<button class="soft-btn support-main-btn" data-go-support="true" id="supportPrimary" type="button">I need support</button>
 <button class="ghost-btn support-off-btn" disabled="" id="supportOff" type="button">Turn off</button>
 </div>
 </section>
@@ -6423,7 +6878,7 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 <div class="task-title">Progress photos</div>
 </div>
 <div class="task-action">
-<button aria-label="Open photo check-in dialog" class="task-icon-btn task-action-btn" data-action="photos" data-task-id="photoTask" onclick="return window.heartyEmergencyOpenPhotos ? (window.heartyEmergencyOpenPhotos(event), false) : false;"><img alt="" aria-hidden="true" class="icon-main-img icon-default" src="data:image/png;base64,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"/><svg class="icon-check" style="display:none" viewbox="0 0 24 24"><path d="M5 12.5l4.1 4.1L19 6.8"></path></svg></button>
+<button aria-label="Open photo check-in dialog" class="task-icon-btn task-action-btn" data-action="photos" data-task-id="photoTask"><img alt="" aria-hidden="true" class="icon-main-img icon-default" src="data:image/png;base64,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"/><svg class="icon-check" style="display:none" viewbox="0 0 24 24"><path d="M5 12.5l4.1 4.1L19 6.8"></path></svg></button>
 </div>
 </div>
 <div class="protocol-item" data-task="Daily guidance" id="lessonTaskItem">
@@ -6440,9 +6895,9 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 </section>
 </section>
 <div id="injectionBottomAnchor"></div>
-<input accept="image/*" capture="environment" hidden="" id="photoFrontInput" type="file"/>
-<input accept="image/*" capture="environment" hidden="" id="photoSideInput" type="file"/>
-<input accept="image/*" capture="environment" hidden="" id="photoBackInput" type="file"/>
+<input accept="image/*" hidden="" id="photoFrontInput" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" type="file"/>
+<input accept="image/*" hidden="" id="photoSideInput" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" type="file"/>
+<input accept="image/*" hidden="" id="photoBackInput" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" type="file"/>
 <div aria-hidden="true" class="task-sheet-overlay" id="weightSheet">
 <div aria-labelledby="weightSheetTitle" aria-modal="true" class="task-sheet" role="dialog">
 <div aria-hidden="true" class="sheet-handle"></div>
@@ -6475,85 +6930,160 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 </div>
 <div aria-hidden="true" class="task-sheet-overlay" id="photoSheet">
 <div aria-labelledby="photoSheetTitle" aria-modal="true" class="task-sheet photo-sheet" role="dialog">
-<div aria-hidden="true" class="sheet-handle"></div>
+<div class="sheet-handle"></div>
 <div class="sheet-head">
 <div>
-<div class="sheet-title" id="photoSheetTitle">Capture your starting point</div>
+<div class="sheet-title">Progress photos</div>
 <div class="sheet-copy">Front photo is required. Side and back are optional.</div>
 </div>
-<button aria-label="Close photo check-in" class="sheet-close" data-close-sheet="photoSheet" type="button">
-<svg viewbox="0 0 24 24"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg>
+<button aria-label="Close" class="sheet-close" data-close-sheet="photoSheet" type="button">
+<svg viewbox="0 0 24 24"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
 </button>
 </div>
-<div class="photo-checkin-grid">
-<section class="photo-checkin-card">
-<div class="photo-checkin-head">
-<div>
-<div class="photo-checkin-title">Progress photos</div>
-<div class="photo-checkin-copy">Front photo is required. Side and back are optional.</div>
+<div class="photo-home-grid">
+<div class="photo-home-card" data-v9-photo="front" role="button" tabindex="0">
+<div class="ph-left">
+<div class="ph-icon">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3v12H4z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+</div>
+<div class="ph-text">
+<div class="ph-title">Front photo <span class="ph-badge req">Required</span></div>
+<div class="ph-sub" id="v9FrontPhotoState">Add a clear front-facing photo</div>
 </div>
 </div>
-<div class="photo-action-list">
-<div class="photo-action-row" data-photo-slot="front">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Front</div>
-<div class="photo-action-meta">Stand straight. Full body in frame.</div>
-</div>
-<div class="photo-action-status" id="frontPhotoState">PENDING</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="front" type="button">Take front photo</button>
-<div class="photo-review" id="frontPhotoReview">
-<img alt="Front photo preview" class="photo-preview-thumb" id="frontPhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="front" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="front" type="button">Retake</button>
+<div class="ph-right">
+<div class="ph-thumb"><img alt="" id="v9FrontPhotoPreview"/></div>
 </div>
 </div>
+<div class="photo-home-card" data-v9-photo="side" role="button" tabindex="0">
+<div class="ph-left">
+<div class="ph-icon">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3v12H4z"></path><circle cx="12" cy="13" r="4"></circle></svg>
 </div>
-<div class="photo-action-row" data-photo-slot="side">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Side</div>
-<div class="photo-action-meta">Turn sideways. Full body in frame.</div>
-</div>
-<div class="photo-action-status" id="sidePhotoState">PENDING</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="side" type="button">Take side photo</button>
-<div class="photo-review" id="sidePhotoReview">
-<img alt="Side photo preview" class="photo-preview-thumb" id="sidePhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="side" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="side" type="button">Retake</button>
+<div class="ph-text">
+<div class="ph-title">Side photo <span class="ph-badge opt">Optional</span></div>
+<div class="ph-sub" id="v9SidePhotoState">Profile view helps track changes</div>
 </div>
 </div>
-</div>
-<div class="photo-action-row" data-photo-slot="back">
-<div class="photo-action-main">
-<div class="photo-action-label">
-<div class="photo-action-name">Back <span style="font-weight:700;color:var(--muted);font-size:.78rem;">optional</span></div>
-<div class="photo-action-meta">Optional. Use a mirror or helper if you want this angle.</div>
-</div>
-<div class="photo-action-status" id="backPhotoState">OPTIONAL</div>
-</div>
-<button class="photo-action-button" data-photo-trigger="back" type="button">Take back photo</button>
-<div class="photo-review" id="backPhotoReview">
-<img alt="Back photo preview" class="photo-preview-thumb" id="backPhotoPreview"/>
-<div class="photo-review-actions">
-<button class="photo-review-btn approve" data-photo-approve="back" type="button">Approve</button>
-<button class="photo-review-btn retake" data-photo-retake="back" type="button">Retake</button>
+<div class="ph-right">
+<div class="ph-thumb"><img alt="" id="v9SidePhotoPreview"/></div>
 </div>
 </div>
+<div class="photo-home-card" data-v9-photo="back" role="button" tabindex="0">
+<div class="ph-left">
+<div class="ph-icon">
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3v12H4z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+</div>
+<div class="ph-text">
+<div class="ph-title">Back photo <span class="ph-badge opt">Optional</span></div>
+<div class="ph-sub" id="v9BackPhotoState">Rear view completes the set</div>
 </div>
 </div>
-</section>
+<div class="ph-right">
+<div class="ph-thumb"><img alt="" id="v9BackPhotoPreview"/></div>
+</div>
+</div>
 </div>
 <div class="sheet-actions">
-<button class="sheet-btn sheet-btn-secondary" data-close-sheet="photoSheet" type="button">Close</button>
-<button class="sheet-btn sheet-btn-primary" disabled="" id="completePhotoCheckInBtn" type="button">Add front photo to complete</button>
+<button class="sheet-btn sheet-btn-secondary ghost-btn" data-close-sheet="photoSheet" type="button">Cancel</button>
+<button class="sheet-btn sheet-btn-primary soft-btn" disabled="" id="completePhotoCheckInBtn" type="button">Add front photo to complete</button>
 </div>
 </div>
 </div>
+<style id="photo-home-redesign">
+  .photo-home-grid {
+    display: grid;
+    gap: 12px;
+    padding: 0 4px 8px;
+  }
+  .photo-home-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card, #fff);
+    border: 1px solid rgba(150,166,186,.18);
+    border-radius: 20px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  }
+  .photo-home-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16,24,40,.08);
+    border-color: rgba(21,80,179,.25);
+  }
+  .photo-home-card.has-photo {
+    border-color: rgba(14,165,107,.35);
+    background: linear-gradient(180deg, #f6fffa, #fff);
+  }
+  .ph-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .ph-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #eef4ff, #f7faff);
+    color: #1550b3;
+    flex-shrink: 0;
+  }
+  .ph-icon svg { width: 20px; height: 20px; }
+  .ph-title {
+    font-weight: 800;
+    font-size: .98rem;
+    color: #132235;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ph-badge {
+    font-size: .65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .ph-badge.req { background: #e6f0ff; color: #1550b3; }
+  .ph-badge.opt { background: #f1f5f9; color: #64748b; }
+  .ph-sub {
+    font-size: .8rem;
+    color: #6b7a8c;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+  }
+  .ph-right { display: flex; align-items: center; }
+  .ph-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f1f5f9;
+    border: 1px solid rgba(0,0,0,.06);
+    display: grid;
+    place-items: center;
+  }
+  .ph-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .ph-thumb img[src] { display: block; }
+  .photo-home-card.has-photo .ph-thumb { border-color: rgba(14,165,107,.3); }
+  @media (max-width: 480px) {
+    .ph-sub { max-width: 160px; }
+  }
+</style>
 <div class="protocol-complete" id="protocolComplete">
 <svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2" viewbox="0 0 24 24"><path d="M5 12.5l4.1 4.1L19 6.8"></path></svg>
             Today's protocol complete
@@ -6562,7 +7092,7 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 <div class="lesson-top">
 <div class="lesson-meta">
 <div aria-hidden="true" class="lesson-accent">
-<svg viewbox="0 0 24 24"><path d="M6.5 5.5H17a1.5 1.5 0 0 1 1.5 1.5v11.5H8a3 3 0 0 0-3 3V7a1.5 1.5 0 0 1 1.5-1.5Z"></path><path d="M8 5.5v16"></path><path d="M11 9h4.5"></path><path d="M11 12h4.5"></path></svg>
+<svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 12h4l-1-4h6l-1 4h4"></path><path d="M4 12h2M18 12h2"></path><path d="M7 8v8M17 8v8"></path></svg>
 </div>
 <div>
 <div class="section-label" style="margin-bottom:6px">DAILY GUIDANCE</div>
@@ -6580,14 +7110,14 @@ body:not(.support-active-theme) #supportCard:not(.is-active) .led,
 <strong>Today’s focus:</strong> do the basics calmly. Hearty works best when the day feels repeatable, not extreme.
   </div>
 <div class="lesson-block">
-<div class="lesson-icon"><svg viewbox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><path d="m5.6 5.6 2.8 2.8"></path><path d="m15.6 15.6 2.8 2.8"></path><path d="m18.4 5.6-2.8 2.8"></path><path d="m8.4 15.6-2.8 2.8"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
+<div class="lesson-icon"><svg viewbox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><circle cx="12" cy="12" r="3"></circle></svg></div>
 <div>
 <strong>Start simple.</strong>
 <p>Your job today is not to be perfect. Your job is to create a rhythm you can repeat tomorrow.</p>
 </div>
 </div>
 <div class="lesson-block">
-<div class="lesson-icon"><svg viewbox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path><path d="M5 9l2-2 2 2"></path><path d="M10 5l2-2 2 2"></path></svg></div>
+<div class="lesson-icon"><svg viewbox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-7"></path></svg></div>
 <div>
 <strong>Consistency beats intensity.</strong>
 <p>A small walk, a logged weigh-in, enough water, and one useful meal choice are already a strong day.</p>
@@ -7486,7 +8016,6 @@ loadStoredPhotoState();
     refreshProtocol();
     
 </script>
-<script src="js/hearty-nav.js"></script>
 <script>
 const nm = localStorage.getItem('heartyFirstName');
 const headlineEl = document.querySelector('.headline');
@@ -8869,6 +9398,13 @@ html[data-theme="sunlit"] .task-icon-btn.done{
 <h2 class="core-step-title">What should we call you?</h2>
 <p class="core-step-copy">This is the name Hearty will use on your Home screen.</p>
 <label class="field full"><span class="label">First name</span><input autocomplete="given-name" class="input" id="coreSetupName" placeholder="First name"/></label>
+<div class="unit-choice-under-name" id="unitChoiceBlock">
+<span class="unit-label">Units:</span>
+<div class="unit-toggle">
+<label><input checked="" id="unitPreferenceMetric" name="heartyUnitPreference" type="radio" value="metric"/><span>kg</span></label>
+<label><input id="unitPreferenceImperial" name="heartyUnitPreference" type="radio" value="imperial"/><span>lb</span></label>
+</div>
+</div>
 </section>
 <section class="core-setup-step" data-core-step="2">
 <div class="core-step-kicker">Step 2 of 5</div>
@@ -8895,9 +9431,89 @@ html[data-theme="sunlit"] .task-icon-btn.done{
 <div class="field full" id="coreSetupDaysField"><span class="label">Which day or days?</span><div class="core-day-grid"><label><input data-core-med-day="" type="checkbox" value="Monday"/> Monday</label><label><input data-core-med-day="" type="checkbox" value="Tuesday"/> Tuesday</label><label><input data-core-med-day="" type="checkbox" value="Wednesday"/> Wednesday</label><label><input data-core-med-day="" type="checkbox" value="Thursday"/> Thursday</label><label><input data-core-med-day="" type="checkbox" value="Friday"/> Friday</label><label><input data-core-med-day="" type="checkbox" value="Saturday"/> Saturday</label><label><input data-core-med-day="" type="checkbox" value="Sunday"/> Sunday</label></div></div>
 </section>
 </div>
-<div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
+<div class="sheet-actions core-setup-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button>
+<button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Continue</button></div>
 </div>
 </div>
+<style id="unit-under-name-style">
+  .unit-choice-under-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 0;
+  }
+  .unit-choice-under-name .unit-label {
+    font-size: .75rem;
+    font-weight: 700;
+    color: #6b7a8c;
+    white-space: nowrap;
+  }
+  .unit-choice-under-name .unit-toggle {
+    display: inline-flex;
+    background: #f1f5f9;
+    border: 1px solid #d8e2ee;
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+  }
+  .unit-choice-under-name .unit-toggle label {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+  }
+  .unit-choice-under-name .unit-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .unit-choice-under-name .unit-toggle span {
+    display: inline-block;
+    padding: 4px 10px;
+    min-width: 36px;
+    text-align: center;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #5a6b7f;
+    border-radius: 6px;
+    line-height: 1;
+    transition: all .12s ease;
+  }
+  .unit-choice-under-name .unit-toggle input:checked + span {
+    background: #1550b3;
+    color: white;
+    box-shadow: 0 1px 2px rgba(21,80,179,.2);
+  }
+</style>
+<style id="photo-thumbnail-visibility">
+  img[id$="PhotoPreview"], img[id^="v9"][id$="PhotoPreview"] {
+    display: none;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,.08);
+    margin-top: 6px;
+  }
+  img[id$="PhotoPreview"][src], img[id^="v9"][id$="PhotoPreview"][src] {
+    display: block;
+  }
+</style>
+<script id="unit-under-name-script">
+(function(){
+  const KEY='heartyUnitPreference';
+  const m=document.getElementById('unitPreferenceMetric');
+  const i=document.getElementById('unitPreferenceImperial');
+  try{
+    const saved=localStorage.getItem(KEY);
+    if(saved==='imperial' && i) i.checked=true;
+    if(saved==='metric' && m) m.checked=true;
+  }catch(e){}
+  function save(v){try{localStorage.setItem(KEY,v)}catch(e){}}
+  if(m) m.addEventListener('change',()=>{if(m.checked)save('metric')});
+  if(i) i.addEventListener('change',()=>{if(i.checked)save('imperial')});
+})();
+</script>
 <style id="hearty-core-setup-wizard-patch">
 .core-setup-fields{display:grid;gap:12px;margin-top:8px;}
 #coreSetupSheet .field{display:grid;gap:8px;}
@@ -10581,48 +11197,9 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   gap:10px !important;
 }
 </style>
-<style id="hearty-photo-flow-single-source-final-v2">
-  /* HOME photo flow: single source of truth. Front is required; side/back optional. */
-  #completePhotoCheckInBtn[disabled]{
-    opacity:.45 !important;
-    cursor:not-allowed !important;
-    box-shadow:none !important;
-  }
-  #completePhotoCheckInBtn.photo-ready{
-    opacity:1 !important;
-    cursor:pointer !important;
-    background:linear-gradient(180deg,#16a34a,#0f8a5f) !important;
-    color:#fff !important;
-    box-shadow:0 14px 28px rgba(14,165,107,.18) !important;
-  }
-  #photoSheet .photo-action-row.has-file{
-    border-color:rgba(14,165,107,.30) !important;
-    background:linear-gradient(180deg, rgba(239,251,245,.98), rgba(255,255,255,.96)) !important;
-    box-shadow:0 0 0 4px rgba(14,165,107,.08), 0 10px 18px rgba(14,165,107,.08) !important;
-  }
-  #photoSheet .photo-action-row.approved{
-    border-color:rgba(14,165,107,.34) !important;
-  }
-</style>
+
 <!-- PHOTO BUTTON RESCUE PATCH v3: must be last script on page -->
-<style id="hearty-photo-rescue-v3-css">
-  #photoSheet.show{
-    opacity:1 !important;
-    pointer-events:auto !important;
-    display:flex !important;
-    z-index:99998 !important;
-  }
-  #photoSheet.show .task-sheet{
-    transform:translateY(0) !important;
-  }
-  #completePhotoCheckInBtn.photo-ready{
-    opacity:1 !important;
-    cursor:pointer !important;
-    background:linear-gradient(180deg,#16a34a,#0f8a5f) !important;
-    color:#fff !important;
-    box-shadow:0 14px 28px rgba(14,165,107,.18) !important;
-  }
-</style>
+
 <script id="hearty-home-hybrid-clean-controller">(function(){
   "use strict";
 
@@ -10806,15 +11383,15 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
       const state=$("#"+key+"PhotoState");
       const review=$("#"+key+"PhotoReview");
       const img=$("#"+key+"PhotoPreview");
-      if(row){ row.classList.toggle("has-file",!!src); row.classList.toggle("approved",!!(src&&item.approved)); }
-      if(state) state.textContent = src && item.approved ? "APPROVED" : (src ? "REVIEW" : (key==="front"?"REQUIRED":"OPTIONAL"));
-      if(review) review.style.display = src ? "grid" : "none";
+      if(row){ row.classList.toggle("has-file",!!src); row.classList.toggle("approved",!!src); }
+      if(state) state.textContent = src ? "ADDED" : (key==="front"?"REQUIRED":"OPTIONAL");
+      if(review) review.style.display = "none";
       if(img){ if(src) img.src=src; else img.removeAttribute("src"); }
     });
-    const ready=!!(draft.slots.front && photoSrc(draft.slots.front) && draft.slots.front.approved);
+    const ready=!!(draft.slots.front && photoSrc(draft.slots.front));
     const count=PHOTO_SLOTS.filter(k=>!!photoSrc(draft.slots[k])).length;
     const btn=$("#completePhotoCheckInBtn");
-    if(btn){ btn.disabled=!ready; btn.textContent=ready ? "Complete photo check-in ("+count+")" : "Approve front photo first"; }
+    if(btn){ btn.disabled=!ready; btn.textContent=ready ? "Complete photo check-in ("+count+")" : "Add front photo to complete"; }
   }
 
   function photoInputId(key){ return "photo"+key.charAt(0).toUpperCase()+key.slice(1)+"Input"; }
@@ -10824,7 +11401,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     const reader=new FileReader();
     reader.onload=function(){
       const d=getPhotoDraft();
-      d.slots[key]={name:file.name||key+"-photo.jpg",capturedAt:new Date().toISOString(),image:String(reader.result||""),previewUrl:String(reader.result||""),approved:false};
+      d.slots[key]={name:file.name||key+"-photo.jpg",capturedAt:new Date().toISOString(),image:String(reader.result||""),previewUrl:String(reader.result||""),approved:true};
       savePhotoDraft(d);
       renderPhotoSheet();
     };
@@ -10839,16 +11416,20 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }
   function completePhotos(){
     const d=getPhotoDraft();
-    if(!(d.slots.front&&photoSrc(d.slots.front)&&d.slots.front.approved)){ alert("Please add and approve a front photo first."); return; }
+    if(!(d.slots.front&&photoSrc(d.slots.front))){ alert("Please add a front photo first."); return; }
     const used=PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k]));
     let sets=read(KEYS.photoSets,[]);
     sets=Array.isArray(sets)?sets.filter(x=>x&&x.date!==TODAY):[];
-    sets.push({date:TODAY,createdAt:new Date().toISOString(),dateLabel:new Date(TODAY+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.join(", ")+" progress photos",views:used,slots:d.slots});
+    const newSet={date:TODAY,createdAt:new Date().toISOString(),dateLabel:new Date(TODAY+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.join(", ")+" progress photos",views:used,slots:d.slots};
+    sets.push(newSet);
     save(KEYS.photoSets,sets);
+    try{ localStorage.setItem("hearty_progress_photos", JSON.stringify(sets)); }catch(e){}
     const daily=getDaily();
     daily.tasks.photos=true;
     saveDaily(daily);
     closeSheet("photoSheet");
+    if(window.heartyHomeHybridRender) try{ window.heartyHomeHybridRender(); }catch(e){}
+    setTimeout(()=>{ if(window.heartyHomeHybridRender) try{ window.heartyHomeHybridRender(); }catch(e){} }, 300);
     render();
   }
 
@@ -10920,8 +11501,8 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   "use strict";
 
   // Kill exposed older render entrypoints so only this final pass controls the two broken systems.
-  window.heartyHomeHybridRender = null;
-  window.heartyHomeCleanRender = null;
+  // window.heartyHomeHybridRender = null;
+  // window.heartyHomeCleanRender = null;
 
   function readJSON(key, fallback){
     try{
@@ -11098,7 +11679,6 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   window.addEventListener("storage", run);
 })();
 </script>
-
 <script id="hearty-home-final-user-fixes-v4-js">
 (function(){
   "use strict";
@@ -11221,5 +11801,629 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   window.addEventListener("storage", run);
 })();
 </script>
-</body>
+<script id="hearty-home-task-tick-bar-stability-v6-js">
+(function(){
+  "use strict";
+
+  const TODAY = new Date().toISOString().slice(0,10);
+  const TASKS = [
+    ["weight", "weighInTask"],
+    ["photos", "photoTask"],
+    ["movement", "walkTask"]
+  ];
+
+  function readJSON(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(e){
+      return fallback;
+    }
+  }
+
+  function getDaily(){
+    let d = readJSON("heartyDailyState", {date:TODAY,tasks:{}});
+    if(!d || d.date !== TODAY) d = {date:TODAY,tasks:{}};
+    d.tasks = Object.assign({weight:false,photos:false,movement:false,lesson:false}, d.tasks || {});
+    return d;
+  }
+
+  function findProtocolCard(){
+    return document.getElementById("protocolCard")
+      || document.querySelector(".protocol-card")
+      || (document.getElementById("protocolList") && document.getElementById("protocolList").closest(".card"))
+      || (document.getElementById("weighInTask") && document.getElementById("weighInTask").closest(".card"));
+  }
+
+  function applyTaskTicks(){
+    const daily = getDaily();
+
+    TASKS.forEach(([key,id]) => {
+      const row = document.getElementById(id);
+      if(!row) return;
+
+      const done = !!daily.tasks[key];
+      row.classList.toggle("completed", done);
+      row.classList.toggle("done", done);
+
+      const btn = row.querySelector(".task-icon-btn, .task-btn");
+      if(btn){
+        btn.classList.toggle("done", done);
+        btn.setAttribute("aria-pressed", done ? "true" : "false");
+      }
+    });
+
+    const doneCount = TASKS.filter(([key]) => !!daily.tasks[key]).length;
+    const complete = doneCount === TASKS.length;
+
+    const card = findProtocolCard();
+    if(card){
+      card.classList.toggle("protocol-pending", !complete);
+      card.classList.toggle("protocol-complete", complete);
+    }
+
+    document.body.classList.toggle("protocol-pending-state", !complete);
+    document.body.classList.toggle("protocol-complete-state", complete);
+  }
+
+  function run(){
+    applyTaskTicks();
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+
+  document.addEventListener("click", function(){
+    setTimeout(run, 60);
+    setTimeout(run, 250);
+  }, true);
+
+  window.addEventListener("storage", run);
+  setInterval(run, 1500);
+})();
+</script>
+<script id="hearty-home-task-size-injection-apple-v7-js">
+(function(){
+  "use strict";
+
+  function normalizeTaskButtons(){
+    ["weighInTask","walkTask","photoTask"].forEach(function(id){
+      var row = document.getElementById(id);
+      if(!row) return;
+      var btn = row.querySelector(".task-icon-btn, .task-btn");
+      if(!btn) return;
+
+      btn.style.width = "54px";
+      btn.style.height = "54px";
+      btn.style.minWidth = "54px";
+      btn.style.minHeight = "54px";
+      btn.style.maxWidth = "54px";
+      btn.style.maxHeight = "54px";
+
+      if(row.classList.contains("completed") || row.classList.contains("done")){
+        btn.classList.add("done");
+      }
+    });
+  }
+
+  function normalizeInjectionButton(){
+    var card = document.getElementById("injectionCard");
+    if(!card) return;
+    var btn = card.querySelector("button, .dose-check, .dose-icon-btn");
+    if(!btn) return;
+
+    var txt = btn.textContent.trim();
+    if(/done/i.test(txt)){
+      btn.textContent = "Done";
+    }
+  }
+
+  function run(){
+    normalizeTaskButtons();
+    normalizeInjectionButton();
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+
+  document.addEventListener("click", function(){
+    setTimeout(run, 30);
+    setTimeout(run, 180);
+  }, true);
+
+  setInterval(run, 1600);
+})();
+</script>
+<script id="hearty-home-final-v9-js">
+(function(){
+  "use strict";
+
+  const TODAY = new Date().toISOString().slice(0,10);
+  const PHOTO_SLOTS = ["front","side","back"];
+
+  function $(s){ return document.querySelector(s); }
+  function readJSON(key, fallback){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
+  function saveJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+  function getDaily(){
+    let d = readJSON("heartyDailyState", {date:TODAY,tasks:{},water:0,medicationLogged:false});
+    if(!d || d.date !== TODAY) d = {date:TODAY,tasks:{},water:0,medicationLogged:false};
+    d.tasks = Object.assign({weight:false,photos:false,movement:false,lesson:false}, d.tasks || {});
+    return d;
+  }
+  function saveDaily(d){ d.date = TODAY; saveJSON("heartyDailyState", d); }
+
+  function getSupport(){
+    const s = readJSON("heartySupportState", null);
+    return s && typeof s === "object" ? Object.assign({active:false,type:null}, s) : {active:false,type:null};
+  }
+  function saveSupport(s){ saveJSON("heartySupportState", Object.assign({active:false,type:null}, s || {})); }
+
+  function getProfile(){ return readJSON("heartyUserProfile", {}) || {}; }
+  function getMed(){
+    const med = readJSON("heartyMedicationState", null) || readJSON("heartyInjectionState", null) || readJSON("heartyMedication", null) || {};
+    const profile = getProfile();
+    med.nextInjectionDate = med.nextInjectionDate || med.nextDate || med.injectionDate || med.nextDoseDate || profile.nextInjectionDate || profile.injectionDate || profile.nextDoseDate || null;
+    med.injectionWeekday = med.injectionWeekday || profile.injectionWeekday || profile.medicationDay || null;
+    return med;
+  }
+  function parseDate(v){ if(!v) return null; const d = new Date(String(v)); return isNaN(d.getTime()) ? null : d; }
+  function dateKey(d){ return d ? d.toISOString().slice(0,10) : ""; }
+  function formatDate(v){
+    const d = parseDate(v);
+    if(d) return d.toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"short"});
+    const med = getMed();
+    if(med.injectionWeekday) return String(med.injectionWeekday);
+    return "Set in Settings";
+  }
+  function isInjectionDay(){
+    const med = getMed();
+    const d = parseDate(med.nextInjectionDate);
+    if(d) return dateKey(d) === TODAY;
+    if(med.injectionWeekday){
+      const todayName = new Date().toLocaleDateString("en-GB",{weekday:"long"}).toLowerCase();
+      return String(med.injectionWeekday).toLowerCase() === todayName;
+    }
+    return false;
+  }
+
+  function renderSupport(){
+    const card = $("#supportCard") || $(".support-card");
+    if(!card) return;
+    const support = getSupport();
+    card.classList.toggle("is-active", !!support.active);
+    const led = card.querySelector(".led");
+    if(led) led.classList.toggle("active", !!support.active);
+    const btn = card.querySelector("button,a");
+    if(btn){
+      btn.textContent = support.active ? "Support active" : "I need support";
+      btn.setAttribute("data-support-v9","true");
+      if(btn.tagName.toLowerCase()==="a") btn.removeAttribute("href");
+    }
+  }
+
+  function activateSupport(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
+    saveSupport({active:true,type:"general",activatedAt:new Date().toISOString()});
+    renderSupport();
+    window.location.href = "./support.html";
+    return false;
+  }
+
+  function renderMedication(){
+    const card = $("#injectionCard") || $(".medication-compact");
+    if(!card) return;
+    const daily = getDaily();
+    const due = isInjectionDay();
+    const done = !!daily.medicationLogged;
+    card.classList.toggle("injection-due", due && !done);
+    card.classList.toggle("injection-complete", due && done);
+    card.classList.toggle("injection-resting", !due);
+
+    let mount = card.querySelector(".medication-v9");
+    if(!mount){
+      mount = document.createElement("div");
+      mount.className = "medication-v9";
+      card.appendChild(mount);
+    }
+
+    if(due){
+      mount.innerHTML = `
+        <div class="medication-v9-title">${done ? "Medication complete today" : "Medication due today"}</div>
+        <button class="medication-v9-checkbox ${done ? "done" : ""}" id="medicationV9Check" type="button">
+          <span class="medication-v9-box"></span>
+          <span>${done ? "Completed" : "Tick when done"}</span>
+        </button>
+      `;
+    }else{
+      mount.innerHTML = `
+        <div class="medication-v9-label">Medication date</div>
+        <div class="medication-v9-date">${formatDate(getMed().nextInjectionDate)}</div>
+        <button class="medication-v9-checkbox" type="button" disabled>
+          <span class="medication-v9-box"></span>
+          <span>Tickbox appears on injection day</span>
+        </button>
+      `;
+    }
+
+    const title = card.querySelector(".injection-title");
+    if(title) title.textContent = "Medication";
+  }
+
+  function toggleMedication(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
+    const daily = getDaily();
+    daily.medicationLogged = !daily.medicationLogged;
+    saveDaily(daily);
+    renderMedication();
+    return false;
+  }
+
+  function openSheet(id){ const el = document.getElementById(id); if(el){ el.classList.add("show"); document.body.style.overflow="hidden"; } }
+  function closeSheet(id){ const el = document.getElementById(id); if(el){ el.classList.remove("show"); document.body.style.overflow=""; } }
+  function blankDraft(){ return {date:TODAY, slots:{front:null,side:null,back:null}}; }
+  function getDraft(){
+    const d = readJSON("heartyPhotoCheckInDraft", blankDraft());
+    if(!d || d.date !== TODAY) return blankDraft();
+    return {date:TODAY, slots:Object.assign(blankDraft().slots, d.slots || d || {})};
+  }
+  function saveDraft(d){ d.date = TODAY; saveJSON("heartyPhotoCheckInDraft", d); }
+  function photoSrc(item){ return item && (item.image || item.previewUrl || item.dataUrl || ""); }
+  function inputId(key){ return "photo"+cap(key)+"Input"; }
+  function ensureInputs(){
+    PHOTO_SLOTS.forEach(key=>{
+      if(document.getElementById(inputId(key))) return;
+      const input = document.createElement("input");
+      input.id = inputId(key);
+      input.type = "file";
+      input.accept = "image/*";
+      input.style.position = "absolute";
+      input.style.left = "-9999px";
+      input.style.width = "1px";
+      input.style.height = "1px";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+    });
+  }
+  function renderPhoto(){
+    const d = getDraft();
+    PHOTO_SLOTS.forEach(key=>{
+      const src = photoSrc(d.slots[key]);
+      const slot = document.querySelector(`[data-v9-photo="${key}"]`);
+      const state = document.getElementById(`v9${cap(key)}PhotoState`);
+      const img = document.getElementById(`v9${cap(key)}PhotoPreview`);
+      if(slot) slot.classList.toggle("has-photo", !!src);
+      if(state) state.textContent = src ? "Added" : (key==="front" ? "Required" : "Optional");
+      if(img){ if(src) img.src = src; else img.removeAttribute("src"); }
+    });
+    const ready = !!photoSrc(d.slots.front);
+    const count = PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k])).length;
+    const btn = document.getElementById("completePhotoCheckInBtn");
+    if(btn){
+      btn.disabled = !ready;
+      btn.textContent = ready ? `Complete photo check-in (${count})` : "Add front photo to complete";
+    }
+  }
+  function pickPhoto(key){
+    ensureInputs();
+    const input = document.getElementById(inputId(key));
+    if(input){ input.value=""; input.click(); }
+  }
+  function handleFile(key,file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){
+      const d = getDraft();
+      d.slots[key] = {name:file.name || key+"-photo.jpg", capturedAt:new Date().toISOString(), image:String(reader.result||""), previewUrl:String(reader.result||""), approved:true};
+      saveDraft(d);
+      renderPhoto();
+    };
+    reader.readAsDataURL(file);
+  }
+  function completePhoto(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
+    const d = getDraft();
+    if(!photoSrc(d.slots.front)){ alert("Please add a front photo first."); return false; }
+    const used = PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k]));
+    let sets = readJSON("hearty_progress_photos", []);
+    sets = Array.isArray(sets) ? sets.filter(x=>x && x.date !== TODAY) : [];
+    sets.push({date:TODAY, createdAt:new Date().toISOString(), dateLabel:new Date(TODAY+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}), tag:sets.length?"Latest set":"Start set", note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"), views:used, slots:d.slots});
+    saveJSON("hearty_progress_photos", sets);
+    const daily = getDaily();
+    daily.tasks.photos = true;
+    saveDaily(daily);
+    localStorage.setItem("heartyLastPhotoCheckInAt", new Date().toISOString());
+    localStorage.setItem("heartyLastPhotoCheckInCount", String(used.length));
+    const row = document.getElementById("photoTask");
+    if(row) row.classList.add("completed","done");
+    closeSheet("photoSheet");
+    return false;
+  }
+
+  function bind(){
+    ensureInputs();
+    PHOTO_SLOTS.forEach(key=>{
+      const input = document.getElementById(inputId(key));
+      if(input && input.dataset.v9Bound !== "true"){
+        input.dataset.v9Bound = "true";
+        input.addEventListener("change", function(){ handleFile(key,input.files && input.files[0]); input.value=""; });
+      }
+    });
+
+    document.addEventListener("click", function(e){
+      const support = e.target.closest("[data-support-v9], #supportCard button, .support-card button");
+      if(support){ activateSupport(e); return; }
+
+      const med = e.target.closest("#medicationV9Check");
+      if(med){ toggleMedication(e); return; }
+
+      const close = e.target.closest('[data-close-sheet="photoSheet"]');
+      if(close){ e.preventDefault(); closeSheet("photoSheet"); return; }
+
+      const slot = e.target.closest("[data-v9-photo]");
+      if(slot){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); pickPhoto(slot.getAttribute("data-v9-photo")); return; }
+
+      const complete = e.target.closest("#completePhotoCheckInBtn");
+      if(complete){ completePhoto(e); return; }
+
+      const photoAction = e.target.closest('[data-action="photos"], [data-task-id="photoTask"], #photoTask');
+      if(photoAction){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); renderPhoto(); openSheet("photoSheet"); return; }
+    }, true);
+  }
+
+  function boot(){
+    renderSupport();
+    renderMedication();
+    renderPhoto();
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ bind(); boot(); });
+  }else{
+    bind(); boot();
+  }
+  setTimeout(boot,300);
+  setTimeout(boot,1000);
+})();
+</script>
+<script id="hearty-photo-single-controller-v15">
+(function(){
+  "use strict";
+
+  const TODAY = new Date().toISOString().slice(0,10);
+  const SLOTS = ["front","side","back"];
+  const DRAFT_KEY = "heartyPhotoCheckInDraft";
+  const SETS_KEY = "hearty_progress_photos";
+  const DAILY_KEY = "heartyDailyState";
+  let isPicking = false;
+
+  function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+  function readJSON(key, fallback){
+    try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; }
+  }
+  function writeJSON(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
+  }
+  function blankDraft(){ return {date:TODAY, slots:{front:null, side:null, back:null}}; }
+  function getDraft(){
+    const d = readJSON(DRAFT_KEY, blankDraft());
+    if(!d || d.date !== TODAY) return blankDraft();
+    return {date:TODAY, slots:Object.assign(blankDraft().slots, d.slots || {})};
+  }
+  function saveDraft(d){ d.date = TODAY; writeJSON(DRAFT_KEY, d); }
+  function photoSrc(item){ return item && (item.image || item.previewUrl || item.dataUrl || ""); }
+  function inputId(key){ return "photo" + cap(key) + "Input"; }
+  function inputFor(key){
+    let input = document.getElementById(inputId(key));
+    if(!input){
+      input = document.createElement("input");
+      input.id = inputId(key);
+      input.type = "file";
+      input.accept = "image/*";
+      input.hidden = true;
+      document.body.appendChild(input);
+    }
+    return input;
+  }
+
+  function openSheet(){
+    const sheet = document.getElementById("photoSheet");
+    if(!sheet) return;
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+    render();
+  }
+
+  function closeSheet(){
+    const sheet = document.getElementById("photoSheet");
+    if(!sheet) return;
+    sheet.classList.remove("show");
+    sheet.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+
+  function render(){
+    const draft = getDraft();
+
+    SLOTS.forEach(function(key){
+      const src = photoSrc(draft.slots[key]);
+      const card = document.querySelector('[data-v9-photo="' + key + '"]') || document.querySelector('[data-photo-slot="' + key + '"]');
+      const preview = document.getElementById("v9" + cap(key) + "PhotoPreview") || document.getElementById(key + "PhotoPreview");
+      const state = document.getElementById("v9" + cap(key) + "PhotoState") || document.getElementById(key + "PhotoState");
+
+      if(card){
+        card.classList.toggle("has-photo", !!src);
+        card.classList.toggle("has-file", !!src);
+        card.classList.toggle("approved", !!src);
+      }
+
+      if(preview){
+        if(src){
+          preview.src = src;
+          preview.style.display = "block";
+        }else{
+          preview.removeAttribute("src");
+          preview.style.display = "";
+        }
+      }
+
+      if(state){
+        state.textContent = src ? "Added" :
+          key === "front" ? "Add a clear front-facing photo" :
+          key === "side" ? "Profile view helps track changes" :
+          "Rear view completes the set";
+      }
+    });
+
+    const frontReady = !!photoSrc(draft.slots.front);
+    const count = SLOTS.filter(k => !!photoSrc(draft.slots[k])).length;
+    const completeBtn = document.getElementById("completePhotoCheckInBtn");
+    if(completeBtn){
+      completeBtn.disabled = !frontReady;
+      completeBtn.textContent = frontReady ? "Complete photo check-in (" + count + ")" : "Add front photo to complete";
+    }
+  }
+
+  function choosePhoto(key){
+    if(isPicking) return;
+    isPicking = true;
+    const input = inputFor(key);
+    input.value = "";
+    input.click();
+    setTimeout(function(){ isPicking = false; }, 800);
+  }
+
+  function saveFile(key, file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){
+      const draft = getDraft();
+      draft.slots[key] = {
+        name:file.name || key + "-photo.jpg",
+        capturedAt:new Date().toISOString(),
+        image:String(reader.result || ""),
+        previewUrl:String(reader.result || ""),
+        approved:true
+      };
+      saveDraft(draft);
+      render();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function completePhotos(){
+    const draft = getDraft();
+    if(!photoSrc(draft.slots.front)){
+      alert("Please add a front photo first.");
+      return;
+    }
+
+    const used = SLOTS.filter(k => !!photoSrc(draft.slots[k]));
+    let sets = readJSON(SETS_KEY, []);
+    sets = Array.isArray(sets) ? sets.filter(x => x && x.date !== TODAY) : [];
+
+    sets.push({
+      date:TODAY,
+      createdAt:new Date().toISOString(),
+      dateLabel:new Date(TODAY + "T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),
+      tag:sets.length ? "Latest set" : "Start set",
+      note:used.map(cap).join(", ") + " progress photo" + (used.length === 1 ? "" : "s"),
+      views:used,
+      slots:draft.slots
+    });
+    writeJSON(SETS_KEY, sets);
+
+    const daily = readJSON(DAILY_KEY, {date:TODAY,tasks:{}});
+    if(daily.date !== TODAY){ daily.date = TODAY; daily.tasks = {}; }
+    daily.tasks = Object.assign({}, daily.tasks || {}, {photos:true});
+    writeJSON(DAILY_KEY, daily);
+
+    localStorage.setItem("heartyLastPhotoCheckInAt", new Date().toISOString());
+    localStorage.setItem("heartyLastPhotoCheckInCount", String(used.length));
+
+    const task = document.getElementById("photoTask");
+    if(task){
+      task.classList.add("completed","done");
+      const btn = task.querySelector(".task-icon-btn,.task-btn");
+      if(btn) btn.classList.add("done");
+    }
+
+    closeSheet();
+  }
+
+  function bind(){
+    const openBtn = document.querySelector('[data-action="photos"], #photoTask .task-icon-btn, #photoTask .task-btn');
+    if(openBtn){
+      openBtn.onclick = function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openSheet();
+        return false;
+      };
+    }
+
+    SLOTS.forEach(function(key){
+      const card = document.querySelector('[data-v9-photo="' + key + '"]') || document.querySelector('[data-photo-slot="' + key + '"]');
+      if(card){
+        card.onclick = function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          choosePhoto(key);
+          return false;
+        };
+        card.onkeydown = function(e){
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            choosePhoto(key);
+          }
+        };
+      }
+
+      const input = inputFor(key);
+      input.onchange = function(){
+        saveFile(key, input.files && input.files[0]);
+        input.value = "";
+      };
+    });
+
+    const completeBtn = document.getElementById("completePhotoCheckInBtn");
+    if(completeBtn){
+      completeBtn.onclick = function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        completePhotos();
+        return false;
+      };
+    }
+
+    document.querySelectorAll('[data-close-sheet="photoSheet"]').forEach(function(btn){
+      btn.onclick = function(e){
+        e.preventDefault();
+        closeSheet();
+        return false;
+      };
+    });
+  }
+
+  window.heartyEmergencyOpenPhotos = function(e){
+    if(e && e.preventDefault) e.preventDefault();
+    openSheet();
+    return false;
+  };
+  window.heartyPhotoOpen = openSheet;
+  window.heartyPhotoComplete = completePhotos;
+  window.heartyRefreshPhotoBtn = render;
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){ bind(); render(); });
+  }else{
+    bind();
+    render();
+  }
+
+  setTimeout(function(){ bind(); render(); }, 250);
+})();
+</script></body>
 </html>
