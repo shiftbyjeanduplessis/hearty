@@ -7624,7 +7624,7 @@ function completePhotoCheckInFromSheet(){
   }
 }
 
-function I need supportPhotoSheetUI(){
+function updatePhotoSheetUI(){
   ['front','side','back'].forEach(key => {
     const slot = document.querySelector('[data-photo-slot="' + key + '"]');
     const stateEl = document.getElementById(key + 'PhotoState');
@@ -7747,7 +7747,7 @@ Object.entries(photoInputs).forEach(([key, input]) => {
         previewUrl: typeof reader.result === 'string' ? reader.result : ''
       };
       persistPhotoState();
-      I need supportPhotoSheetUI();
+      updatePhotoSheetUI();
     };
     reader.readAsDataURL(file);
   });
@@ -7759,7 +7759,7 @@ document.querySelectorAll('[data-photo-approve]').forEach(btn => {
     if(photoDraftState[key]){
       photoDraftState[key].approved = true;
       persistPhotoState();
-      I need supportPhotoSheetUI();
+      updatePhotoSheetUI();
     }
   });
 });
@@ -7771,7 +7771,7 @@ document.querySelectorAll('[data-photo-retake]').forEach(btn => {
     const key = btn.dataset.photoRetake;
     photoDraftState[key] = null;
     persistPhotoState();
-    I need supportPhotoSheetUI();
+    updatePhotoSheetUI();
     const input = photoInputs[key];
     if(input){
       input.value = '';
@@ -7913,7 +7913,7 @@ loadStoredPhotoState();
 
     currentLiters = loadHydrationToday();
 
-    function I need supportHydrationUI(){
+    function updateHydrationUI(){
       const rounded = Math.round(currentLiters * 100) / 100;
       const pct = Math.min(100, Math.round((rounded / targetLiters) * 100));
       const glasses = Math.max(0, Math.round((rounded * 1000) / 250));
@@ -7936,22 +7936,22 @@ loadStoredPhotoState();
         void waterGlass.offsetWidth;
         waterGlass.classList.add('pressed');
         setTimeout(() => waterGlass.classList.remove('pressed'), 360);
-        I need supportHydrationUI();
+        updateHydrationUI();
       });
     }
     if(waterUndo){
       waterUndo.addEventListener('click', () => {
         currentLiters = Math.max(0, currentLiters - 0.25);
-        I need supportHydrationUI();
+        updateHydrationUI();
       });
     }
     if(waterReset){
       waterReset.addEventListener('click', () => {
         currentLiters = 0;
-        I need supportHydrationUI();
+        updateHydrationUI();
       });
     }
-    I need supportHydrationUI();
+    updateHydrationUI();
 
     const supportLed = document.getElementById('supportLed');
     const supportStateText = document.getElementById('supportStateText');
@@ -10003,7 +10003,7 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
     }
     return null;
   }
-  function I need supportGoalMarker(){
+  function updateGoalMarker(){
     var profile = readProfile();
     var progress = profile.progress || {};
     var targetWeightKg = firstNumber(
@@ -10040,22 +10040,22 @@ html[data-theme="rose_aurora"] .goal-marker.has-goal{
   }
 
   function run(){
-    I need supportGoalMarker();
+    updateGoalMarker();
     tightenMobileSupportSpacing();
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
 
-  window.heartyI need supportGoalMarker = I need supportGoalMarker;
+  window.heartyupdateGoalMarker = updateGoalMarker;
   document.addEventListener('click', function(event){
     if(event.target && event.target.closest && event.target.closest('#saveCoreSetupBtn')){
-      setTimeout(I need supportGoalMarker, 120);
-      setTimeout(I need supportGoalMarker, 500);
+      setTimeout(updateGoalMarker, 120);
+      setTimeout(updateGoalMarker, 500);
     }
   });
   window.addEventListener('storage', function(event){
-    if(event.key === 'hearty_profile') I need supportGoalMarker();
+    if(event.key === 'hearty_profile') updateGoalMarker();
   });
   setTimeout(run, 300);
   setTimeout(run, 1000);
@@ -12010,253 +12010,361 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
 (function(){
   "use strict";
 
+  /*
+    HEARTY HOME PHOTO CONTROLLER — FINAL
+    Owns only the Home progress-photo sheet.
+    Front photo completes the task; side/back remain optional.
+    Uses the existing DOM:
+      - #photoSheet
+      - #photoFrontInput / #photoSideInput / #photoBackInput
+      - [data-v9-photo="front|side|back"]
+      - #completePhotoCheckInBtn
+  */
+
   const TODAY = new Date().toISOString().slice(0,10);
-  const PHOTO_SLOTS = ["front","side","back"];
+  const PHOTO_SLOTS = ["front", "side", "back"];
+  const DRAFT_KEY = "heartyPhotoCheckInDraft";
+  const SETS_KEY = "hearty_progress_photos";
+  const DAILY_KEY = "heartyDailyState";
 
-  function $(s){ return document.querySelector(s); }
-  function readJSON(key, fallback){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
-  function saveJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
-  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+  const $ = (selector, root) => (root || document).querySelector(selector);
 
-  function getDaily(){
-    let d = readJSON("heartyDailyState", {date:TODAY,tasks:{},water:0,medicationLogged:false});
-    if(!d || d.date !== TODAY) d = {date:TODAY,tasks:{},water:0,medicationLogged:false};
-    d.tasks = Object.assign({weight:false,photos:false,movement:false,lesson:false}, d.tasks || {});
-    return d;
-  }
-  function saveDaily(d){ d.date = TODAY; saveJSON("heartyDailyState", d); }
-
-  function getSupport(){
-    const s = readJSON("heartySupportState", null);
-    return s && typeof s === "object" ? Object.assign({active:false,type:null}, s) : {active:false,type:null};
-  }
-  function saveSupport(s){ saveJSON("heartySupportState", Object.assign({active:false,type:null}, s || {})); }
-
-  function getProfile(){ return readJSON("heartyUserProfile", {}) || {}; }
-  function getMed(){
-    const med = readJSON("heartyMedicationState", null) || readJSON("heartyInjectionState", null) || readJSON("heartyMedication", null) || {};
-    const profile = getProfile();
-    med.nextInjectionDate = med.nextInjectionDate || med.nextDate || med.injectionDate || med.nextDoseDate || profile.nextInjectionDate || profile.injectionDate || profile.nextDoseDate || null;
-    med.injectionWeekday = med.injectionWeekday || profile.injectionWeekday || profile.medicationDay || null;
-    return med;
-  }
-  function parseDate(v){ if(!v) return null; const d = new Date(String(v)); return isNaN(d.getTime()) ? null : d; }
-  function dateKey(d){ return d ? d.toISOString().slice(0,10) : ""; }
-  function formatDate(v){
-    const d = parseDate(v);
-    if(d) return d.toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"short"});
-    const med = getMed();
-    if(med.injectionWeekday) return String(med.injectionWeekday);
-    return "Set in Settings";
-  }
-  function isInjectionDay(){
-    const med = getMed();
-    const d = parseDate(med.nextInjectionDate);
-    if(d) return dateKey(d) === TODAY;
-    if(med.injectionWeekday){
-      const todayName = new Date().toLocaleDateString("en-GB",{weekday:"long"}).toLowerCase();
-      return String(med.injectionWeekday).toLowerCase() === todayName;
-    }
-    return false;
+  function cap(value){
+    value = String(value || "");
+    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  function renderSupport(){
-    const card = $("#supportCard") || $(".support-card");
-    if(!card) return;
-    const support = getSupport();
-    card.classList.toggle("is-active", !!support.active);
-    const led = card.querySelector(".led");
-    if(led) led.classList.toggle("active", !!support.active);
-    const btn = card.querySelector("button,a");
-    if(btn){
-      btn.textContent = support.active ? "Support active" : "I need support";
-      btn.setAttribute("data-support-v9","true");
-      if(btn.tagName.toLowerCase()==="a") btn.removeAttribute("href");
+  function readJSON(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(error){
+      return fallback;
     }
   }
 
-  function activateSupport(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
-    saveSupport({active:true,type:"general",activatedAt:new Date().toISOString()});
-    renderSupport();
-    window.location.href = "./support.html";
-    return false;
+  function saveJSON(key, value){
+    try{
+      localStorage.setItem(key, JSON.stringify(value));
+    }catch(error){}
   }
 
-  function renderMedication(){
-    const card = $("#injectionCard") || $(".medication-compact");
-    if(!card) return;
-    const daily = getDaily();
-    const due = isInjectionDay();
-    const done = !!daily.medicationLogged;
-    card.classList.toggle("injection-due", due && !done);
-    card.classList.toggle("injection-complete", due && done);
-    card.classList.toggle("injection-resting", !due);
-
-    let mount = card.querySelector(".medication-v9");
-    if(!mount){
-      mount = document.createElement("div");
-      mount.className = "medication-v9";
-      card.appendChild(mount);
-    }
-
-    if(due){
-      mount.innerHTML = `
-        <div class="medication-v9-title">${done ? "Medication complete today" : "Medication due today"}</div>
-        <button class="medication-v9-checkbox ${done ? "done" : ""}" id="medicationV9Check" type="button">
-          <span class="medication-v9-box"></span>
-          <span>${done ? "Completed" : "Tick when done"}</span>
-        </button>
-      `;
-    }else{
-      mount.innerHTML = `
-        <div class="medication-v9-label">Medication date</div>
-        <div class="medication-v9-date">${formatDate(getMed().nextInjectionDate)}</div>
-        <button class="medication-v9-checkbox" type="button" disabled>
-          <span class="medication-v9-box"></span>
-          <span>Tickbox appears on injection day</span>
-        </button>
-      `;
-    }
-
-    const title = card.querySelector(".injection-title");
-    if(title) title.textContent = "Medication";
+  function blankDraft(){
+    return { date:TODAY, slots:{ front:null, side:null, back:null } };
   }
 
-  function toggleMedication(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
-    const daily = getDaily();
-    daily.medicationLogged = !daily.medicationLogged;
-    saveDaily(daily);
-    renderMedication();
-    return false;
-  }
-
-  function openSheet(id){ const el = document.getElementById(id); if(el){ el.classList.add("show"); document.body.style.overflow="hidden"; } }
-  function closeSheet(id){ const el = document.getElementById(id); if(el){ el.classList.remove("show"); document.body.style.overflow=""; } }
-  function blankDraft(){ return {date:TODAY, slots:{front:null,side:null,back:null}}; }
   function getDraft(){
-    const d = readJSON("heartyPhotoCheckInDraft", blankDraft());
-    if(!d || d.date !== TODAY) return blankDraft();
-    return {date:TODAY, slots:Object.assign(blankDraft().slots, d.slots || d || {})};
+    const saved = readJSON(DRAFT_KEY, null);
+    if(!saved || saved.date !== TODAY) return blankDraft();
+
+    const draft = blankDraft();
+    const savedSlots = saved.slots || saved;
+
+    PHOTO_SLOTS.forEach(function(key){
+      const item = savedSlots && savedSlots[key];
+      if(!item) return;
+
+      const src = item.image || item.previewUrl || item.dataUrl || "";
+      if(!src) return;
+
+      draft.slots[key] = {
+        name: item.name || key + "-photo.jpg",
+        capturedAt: item.capturedAt || new Date().toISOString(),
+        image: src,
+        previewUrl: src,
+        approved: true
+      };
+    });
+
+    return draft;
   }
-  function saveDraft(d){ d.date = TODAY; saveJSON("heartyPhotoCheckInDraft", d); }
-  function photoSrc(item){ return item && (item.image || item.previewUrl || item.dataUrl || ""); }
-  function inputId(key){ return "photo"+cap(key)+"Input"; }
+
+  function saveDraft(draft){
+    draft.date = TODAY;
+    saveJSON(DRAFT_KEY, draft);
+  }
+
+  function photoSrc(item){
+    return item && (item.image || item.previewUrl || item.dataUrl || "");
+  }
+
+  function inputId(key){
+    return "photo" + cap(key) + "Input";
+  }
+
+  function ensureInput(key){
+    let input = document.getElementById(inputId(key));
+    if(input) return input;
+
+    input = document.createElement("input");
+    input.id = inputId(key);
+    input.type = "file";
+    input.accept = "image/*";
+    input.style.position = "absolute";
+    input.style.left = "-9999px";
+    input.style.width = "1px";
+    input.style.height = "1px";
+    input.style.opacity = "0";
+    document.body.appendChild(input);
+    return input;
+  }
+
   function ensureInputs(){
-    PHOTO_SLOTS.forEach(key=>{
-      if(document.getElementById(inputId(key))) return;
-      const input = document.createElement("input");
-      input.id = inputId(key);
-      input.type = "file";
-      input.accept = "image/*";
-      input.style.position = "absolute";
-      input.style.left = "-9999px";
-      input.style.width = "1px";
-      input.style.height = "1px";
-      input.style.opacity = "0";
-      document.body.appendChild(input);
-    });
+    PHOTO_SLOTS.forEach(ensureInput);
   }
-  function renderPhoto(){
-    const d = getDraft();
-    PHOTO_SLOTS.forEach(key=>{
-      const src = photoSrc(d.slots[key]);
-      const slot = document.querySelector(`[data-v9-photo="${key}"]`);
-      const state = document.getElementById(`v9${cap(key)}PhotoState`);
-      const img = document.getElementById(`v9${cap(key)}PhotoPreview`);
-      if(slot) slot.classList.toggle("has-photo", !!src);
-      if(state) state.textContent = src ? "Added" : (key==="front" ? "Required" : "Optional");
-      if(img){ if(src) img.src = src; else img.removeAttribute("src"); }
+
+  function openSheet(){
+    const sheet = document.getElementById("photoSheet");
+    if(!sheet) return;
+    renderPhotoSheet();
+    sheet.classList.add("show");
+    sheet.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSheet(){
+    const sheet = document.getElementById("photoSheet");
+    if(!sheet) return;
+    sheet.classList.remove("show");
+    sheet.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  function renderPhotoSheet(){
+    const draft = getDraft();
+
+    PHOTO_SLOTS.forEach(function(key){
+      const item = draft.slots[key];
+      const src = photoSrc(item);
+      const card = document.querySelector('[data-v9-photo="' + key + '"]');
+      const state = document.getElementById("v9" + cap(key) + "PhotoState");
+      const img = document.getElementById("v9" + cap(key) + "PhotoPreview");
+
+      if(card){
+        card.classList.toggle("has-photo", !!src);
+        card.classList.toggle("approved", !!src);
+      }
+
+      if(state){
+        state.textContent = src
+          ? "Added"
+          : (key === "front" ? "Required" : "Optional");
+      }
+
+      if(img){
+        if(src){
+          img.src = src;
+          img.style.display = "block";
+        }else{
+          img.removeAttribute("src");
+          img.style.display = "none";
+        }
+      }
     });
-    const ready = !!photoSrc(d.slots.front);
-    const count = PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k])).length;
-    const btn = document.getElementById("completePhotoCheckInBtn");
-    if(btn){
-      btn.disabled = !ready;
-      btn.textContent = ready ? `Complete photo check-in (${count})` : "Add front photo to complete";
+
+    const count = PHOTO_SLOTS.filter(function(key){
+      return !!photoSrc(draft.slots[key]);
+    }).length;
+
+    const ready = !!photoSrc(draft.slots.front);
+    const completeButton = document.getElementById("completePhotoCheckInBtn");
+
+    if(completeButton){
+      completeButton.disabled = !ready;
+      completeButton.textContent = ready
+        ? "Complete photo check-in (" + count + ")"
+        : "Add front photo to complete";
     }
   }
+
   function pickPhoto(key){
-    ensureInputs();
-    const input = document.getElementById(inputId(key));
-    if(input){ input.value=""; input.click(); }
+    if(PHOTO_SLOTS.indexOf(key) === -1) return;
+    const input = ensureInput(key);
+    input.value = "";
+    input.click();
   }
-  function handleFile(key,file){
-    if(!file) return;
+
+  function handleFile(key, file){
+    if(!file || PHOTO_SLOTS.indexOf(key) === -1) return;
+
     const reader = new FileReader();
     reader.onload = function(){
-      const d = getDraft();
-      d.slots[key] = {name:file.name || key+"-photo.jpg", capturedAt:new Date().toISOString(), image:String(reader.result||""), previewUrl:String(reader.result||""), approved:true};
-      saveDraft(d);
-      renderPhoto();
+      const src = String(reader.result || "");
+      if(!src) return;
+
+      const draft = getDraft();
+      draft.slots[key] = {
+        name: file.name || key + "-photo.jpg",
+        capturedAt: new Date().toISOString(),
+        image: src,
+        previewUrl: src,
+        approved: true
+      };
+
+      saveDraft(draft);
+      renderPhotoSheet();
     };
     reader.readAsDataURL(file);
   }
-  function completePhoto(e){
-    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); }
-    const d = getDraft();
-    if(!photoSrc(d.slots.front)){ alert("Please add a front photo first."); return false; }
-    const used = PHOTO_SLOTS.filter(k=>!!photoSrc(d.slots[k]));
-    let sets = readJSON("hearty_progress_photos", []);
-    sets = Array.isArray(sets) ? sets.filter(x=>x && x.date !== TODAY) : [];
-    sets.push({date:TODAY, createdAt:new Date().toISOString(), dateLabel:new Date(TODAY+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}), tag:sets.length?"Latest set":"Start set", note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"), views:used, slots:d.slots});
-    saveJSON("hearty_progress_photos", sets);
+
+  function getDaily(){
+    let daily = readJSON(DAILY_KEY, null);
+    if(!daily || daily.date !== TODAY){
+      daily = { date:TODAY, tasks:{}, water:0, medicationLogged:false };
+    }
+    daily.tasks = Object.assign(
+      { weight:false, photos:false, movement:false, lesson:false },
+      daily.tasks || {}
+    );
+    return daily;
+  }
+
+  function saveDaily(daily){
+    daily.date = TODAY;
+    saveJSON(DAILY_KEY, daily);
+  }
+
+  function markPhotoTaskComplete(count){
     const daily = getDaily();
     daily.tasks.photos = true;
     saveDaily(daily);
-    localStorage.setItem("heartyLastPhotoCheckInAt", new Date().toISOString());
-    localStorage.setItem("heartyLastPhotoCheckInCount", String(used.length));
-    const row = document.getElementById("photoTask");
-    if(row) row.classList.add("completed","done");
-    closeSheet("photoSheet");
+
+    try{
+      localStorage.setItem("heartyPhotoCheckInComplete", TODAY);
+      localStorage.setItem("heartyLastPhotoCheckInAt", new Date().toISOString());
+      localStorage.setItem("heartyLastPhotoCheckInCount", String(count));
+    }catch(error){}
+
+    const task = document.getElementById("photoTask");
+    if(task) task.classList.add("completed", "done");
+
+    const actionButton = document.querySelector('[data-action="photos"], [data-task-id="photoTask"]');
+    if(actionButton) actionButton.classList.add("done");
+  }
+
+  function saveProgressSet(draft, used){
+    let sets = readJSON(SETS_KEY, []);
+    sets = Array.isArray(sets) ? sets.filter(function(set){
+      return set && set.date !== TODAY;
+    }) : [];
+
+    const slots = {};
+    used.forEach(function(key){
+      slots[key] = draft.slots[key];
+    });
+
+    sets.push({
+      date: TODAY,
+      createdAt: new Date().toISOString(),
+      dateLabel: new Date(TODAY + "T00:00:00").toLocaleDateString("en-GB", {
+        day:"numeric",
+        month:"short"
+      }),
+      tag: sets.length ? "Latest set" : "Start set",
+      note: used.map(cap).join(", ") + " progress photo" + (used.length === 1 ? "" : "s"),
+      views: used,
+      slots: slots
+    });
+
+    saveJSON(SETS_KEY, sets);
+  }
+
+  function completePhotoCheckIn(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+
+    const draft = getDraft();
+
+    if(!photoSrc(draft.slots.front)){
+      alert("Please add a front photo first.");
+      renderPhotoSheet();
+      return false;
+    }
+
+    const used = PHOTO_SLOTS.filter(function(key){
+      return !!photoSrc(draft.slots[key]);
+    });
+
+    saveProgressSet(draft, used);
+    markPhotoTaskComplete(used.length);
+    closeSheet();
+
+    if(typeof window.heartyHomeHybridRender === "function"){
+      try{ window.heartyHomeHybridRender(); }catch(error){}
+    }
+
     return false;
   }
 
   function bind(){
     ensureInputs();
-    PHOTO_SLOTS.forEach(key=>{
-      const input = document.getElementById(inputId(key));
-      if(input && input.dataset.v9Bound !== "true"){
-        input.dataset.v9Bound = "true";
-        input.addEventListener("change", function(){ handleFile(key,input.files && input.files[0]); input.value=""; });
-      }
+
+    PHOTO_SLOTS.forEach(function(key){
+      const input = ensureInput(key);
+      if(input.dataset.heartyPhotoFinalBound === "true") return;
+
+      input.dataset.heartyPhotoFinalBound = "true";
+      input.addEventListener("change", function(){
+        handleFile(key, input.files && input.files[0]);
+        input.value = "";
+      });
     });
 
-    document.addEventListener("click", function(e){
-      const support = e.target.closest("[data-support-v9], #supportCard button, .support-card button");
-      if(support){ activateSupport(e); return; }
+    document.addEventListener("click", function(event){
+      const photoAction = event.target.closest('[data-action="photos"], [data-task-id="photoTask"], #photoTask');
+      if(photoAction){
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        openSheet();
+        return false;
+      }
 
-      const med = e.target.closest("#medicationV9Check");
-      if(med){ toggleMedication(e); return; }
+      const close = event.target.closest('[data-close-sheet="photoSheet"]');
+      if(close){
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        closeSheet();
+        return false;
+      }
 
-      const close = e.target.closest('[data-close-sheet="photoSheet"]');
-      if(close){ e.preventDefault(); closeSheet("photoSheet"); return; }
+      const photoCard = event.target.closest("[data-v9-photo]");
+      if(photoCard){
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        pickPhoto(photoCard.getAttribute("data-v9-photo"));
+        return false;
+      }
 
-      const slot = e.target.closest("[data-v9-photo]");
-      if(slot){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); pickPhoto(slot.getAttribute("data-v9-photo")); return; }
-
-      const complete = e.target.closest("#completePhotoCheckInBtn");
-      if(complete){ completePhoto(e); return; }
-
-      const photoAction = e.target.closest('[data-action="photos"], [data-task-id="photoTask"], #photoTask');
-      if(photoAction){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation(); renderPhoto(); openSheet("photoSheet"); return; }
+      const completeButton = event.target.closest("#completePhotoCheckInBtn");
+      if(completeButton){
+        return completePhotoCheckIn(event);
+      }
     }, true);
   }
 
   function boot(){
-    renderSupport();
-    renderMedication();
-    renderPhoto();
+    bind();
+    renderPhotoSheet();
   }
 
   if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", function(){ bind(); boot(); });
+    document.addEventListener("DOMContentLoaded", boot);
   }else{
-    bind(); boot();
+    boot();
   }
-  setTimeout(boot,300);
-  setTimeout(boot,1000);
+
+  window.heartyPhotoFinal = {
+    open: openSheet,
+    close: closeSheet,
+    render: renderPhotoSheet,
+    complete: completePhotoCheckIn
+  };
 })();
 </script>
 </body>
