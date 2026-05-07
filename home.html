@@ -12559,17 +12559,21 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   "use strict";
 
   var SLOTS = ["front","side","back"];
-  var DRAFT_KEY = "heartyPhotoCleanDraftV2";
+  var DRAFT_KEY = "heartyPhotoCleanDraftV3";
+  var OLD_DRAFT_KEYS = ["heartyPhotoCleanDraftV2", "heartyPhotoCheckInDraft"];
   var SETS_KEY = "hearty_progress_photos";
   var DAILY_KEY = "heartyDailyState";
   var PHOTO_INTERVAL_DAYS = 21;
+  var MAX_PHOTO_EDGE = 760;
+  var PHOTO_QUALITY = 0.68;
 
   function $(sel, root){ return (root || document).querySelector(sel); }
   function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function cap(s){ return String(s||"").charAt(0).toUpperCase()+String(s||"").slice(1); }
   function todayKey(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
   function read(key, fallback){ try{ var raw=localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
-  function write(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+  function write(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); return true; }catch(e){ return false; } }
+  function removeKey(key){ try{ localStorage.removeItem(key); }catch(e){} }
   function setLS(key, val){ try{ localStorage.setItem(key, val); }catch(e){} }
   function num(v){ var n=parseFloat(String(v == null ? "" : v).replace(",",".")); return Number.isFinite(n) && n>0 ? n : null; }
   function kg(v){ var n=num(v); return n ? n.toFixed(1).replace(/\.0$/,'')+" kg" : "not set"; }
@@ -12601,40 +12605,54 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     function row(key,title,badge,sub){
       var req = key === "front" ? " req" : "";
       return '<button class="hearty-photo-clean-card" data-hearty-photo-slot="'+key+'" type="button">'+
-        '<div><div class="hearty-photo-clean-title">'+title+' <span class="hearty-photo-clean-badge'+req+'" data-hearty-photo-badge="'+key+'">'+badge+'</span></div>'+
-        '<div class="hearty-photo-clean-sub" data-hearty-photo-state="'+key+'">'+sub+'</div></div>'+
-        '<div class="hearty-photo-clean-thumb" data-hearty-photo-thumb="'+key+'">'+cameraIcon()+'</div>'+
+        '<div><div class="hearty-photo-clean-title">'+title+' <span class="hearty-photo-clean-badge'+req+'" data-hearty-photo-badge="'+key+'">'+badge+'</span></div>'+ 
+        '<div class="hearty-photo-clean-sub" data-hearty-photo-state="'+key+'">'+sub+'</div></div>'+ 
+        '<div class="hearty-photo-clean-thumb" data-hearty-photo-thumb="'+key+'">'+cameraIcon()+'</div>'+ 
       '</button>';
     }
     return '<div aria-labelledby="photoSheetTitle" aria-modal="true" class="task-sheet photo-sheet" role="dialog">'+
-      '<div aria-hidden="true" class="sheet-handle"></div>'+
-      '<div class="sheet-head"><div><div class="sheet-title" id="photoSheetTitle">Progress photos</div><div class="sheet-copy">Front photo is required. Side and back are optional.</div></div>'+
-      '<button aria-label="Close progress photos" class="sheet-close" data-hearty-photo-close type="button"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg></button></div>'+
+      '<div aria-hidden="true" class="sheet-handle"></div>'+ 
+      '<div class="sheet-head"><div><div class="sheet-title" id="photoSheetTitle">Progress photos</div><div class="sheet-copy">Front photo is required. Side and back are optional.</div></div>'+ 
+      '<button aria-label="Close progress photos" class="sheet-close" data-hearty-photo-close type="button"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"></path><path d="M18 6 6 18"></path></svg></button></div>'+ 
       '<div class="hearty-photo-clean-list">'+
         row('front','Front photo','Required','Add a clear front-facing photo')+
         row('side','Side photo','Optional','Profile view helps track changes')+
         row('back','Back photo','Optional','Rear view completes the set')+
-      '</div>'+
-      '<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-hearty-photo-close type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" disabled id="completePhotoCheckInBtn" type="button">Add front photo to complete</button></div>'+
+      '</div>'+ 
+      '<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-hearty-photo-close type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" disabled id="completePhotoCheckInBtn" type="button">Add front photo to complete</button></div>'+ 
     '</div>';
   }
 
+  function inputId(key){ return "photo"+cap(key)+"Input"; }
   function ensureInputs(){
     SLOTS.forEach(function(key){
-      var id="photo"+cap(key)+"Input";
+      var id=inputId(key);
       var old=document.getElementById(id);
       if(old && old.parentNode) old.parentNode.removeChild(old);
       var input=document.createElement("input");
       input.type="file";
       input.accept="image/*";
       input.id=id;
-      input.hidden=true;
-      input.style.display="none";
-      input.addEventListener("change", function(){ var file=input.files && input.files[0]; if(file) handleFile(key,file); });
+      input.setAttribute("aria-hidden","true");
+      input.style.position="fixed";
+      input.style.left="-10000px";
+      input.style.top="0";
+      input.style.width="1px";
+      input.style.height="1px";
+      input.style.opacity="0";
+      input.style.pointerEvents="none";
+      input.addEventListener("change", function(){
+        var file=input.files && input.files[0];
+        input.value="";
+        if(file) handleFile(key,file);
+      });
       document.body.appendChild(input);
     });
   }
 
+  function migrateAndClearOldDrafts(){
+    OLD_DRAFT_KEYS.forEach(removeKey);
+  }
   function getDraft(){
     var t=todayKey();
     var d=read(DRAFT_KEY, null);
@@ -12642,8 +12660,51 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     d.slots=Object.assign({front:null,side:null,back:null}, d.slots||{});
     return d;
   }
-  function saveDraft(d){ d.date=todayKey(); write(DRAFT_KEY,d); }
+  function saveDraft(d){
+    d.date=todayKey();
+    migrateAndClearOldDrafts();
+    if(write(DRAFT_KEY,d)) return true;
+    /* Last-resort quota recovery: keep only today's compressed draft, not old full-size drafts. */
+    migrateAndClearOldDrafts();
+    return write(DRAFT_KEY,d);
+  }
   function srcOf(item){ return item && (item.image || item.previewUrl || item.dataUrl || item.src) || ""; }
+
+  function compressFile(file, done){
+    if(!file || !/^image\//i.test(file.type || "")){
+      readFileFallback(file, done);
+      return;
+    }
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function(){
+      try{
+        var w = img.naturalWidth || img.width || MAX_PHOTO_EDGE;
+        var h = img.naturalHeight || img.height || MAX_PHOTO_EDGE;
+        var scale = Math.min(1, MAX_PHOTO_EDGE / Math.max(w,h));
+        var cw = Math.max(1, Math.round(w * scale));
+        var ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement("canvas");
+        canvas.width = cw;
+        canvas.height = ch;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, cw, ch);
+        var dataUrl = canvas.toDataURL("image/jpeg", PHOTO_QUALITY);
+        URL.revokeObjectURL(url);
+        done(dataUrl);
+      }catch(error){
+        URL.revokeObjectURL(url);
+        readFileFallback(file, done);
+      }
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); readFileFallback(file, done); };
+    img.src = url;
+  }
+  function readFileFallback(file, done){
+    var reader = new FileReader();
+    reader.onload = function(){ done(String(reader.result || "")); };
+    reader.readAsDataURL(file);
+  }
 
   function rebuildSheet(){
     var sheet=document.getElementById("photoSheet");
@@ -12656,11 +12717,19 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }
   function openPhotos(){ ensureInputs(); var sheet=rebuildSheet(); sheet.classList.add("show"); sheet.setAttribute("aria-hidden","false"); document.body.classList.add("sheet-open"); document.body.style.overflow="hidden"; }
   function closePhotos(){ var sheet=$("#photoSheet"); if(sheet){sheet.classList.remove("show"); sheet.setAttribute("aria-hidden","true");} document.body.classList.remove("sheet-open"); document.body.style.overflow=""; }
-  function pick(key){ var input=$("#photo"+cap(key)+"Input"); if(input){ input.value=""; input.click(); } }
+  function pick(key){
+    var input=$("#"+inputId(key));
+    if(!input){ ensureInputs(); input=$("#"+inputId(key)); }
+    if(input){ input.value=""; input.click(); }
+  }
   function handleFile(key,file){
-    var reader=new FileReader();
-    reader.onload=function(){ var d=getDraft(); d.slots[key]={name:file.name||key+".jpg",type:file.type||"image/jpeg",capturedAt:new Date().toISOString(),image:String(reader.result||"")}; saveDraft(d); renderPhoto(); };
-    reader.readAsDataURL(file);
+    compressFile(file, function(src){
+      if(!src) return;
+      var d=getDraft();
+      d.slots[key]={name:file.name||key+".jpg",type:"image/jpeg",capturedAt:new Date().toISOString(),image:src,previewUrl:src,compressed:true,maxEdge:MAX_PHOTO_EDGE};
+      saveDraft(d);
+      renderPhoto();
+    });
   }
   function renderPhoto(){
     var d=getDraft(), count=0;
@@ -12668,7 +12737,15 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
       var src=srcOf(d.slots[key]); if(src) count++;
       var card=$("[data-hearty-photo-slot='"+key+"']"), thumb=$("[data-hearty-photo-thumb='"+key+"']"), state=$("[data-hearty-photo-state='"+key+"']"), badge=$("[data-hearty-photo-badge='"+key+"']");
       if(card) card.classList.toggle("has-photo", !!src);
-      if(thumb) thumb.innerHTML = src ? '<img alt="'+key+' progress photo preview" src="'+src+'">' : cameraIcon();
+      if(thumb){
+        if(src){
+          thumb.innerHTML='<img alt="'+key+' progress photo preview">';
+          var img=thumb.querySelector("img");
+          if(img) img.src=src;
+        }else{
+          thumb.innerHTML=cameraIcon();
+        }
+      }
       if(state) state.textContent = src ? "Photo added. Tap to retake." : (key==="front" ? "Add a clear front-facing photo" : key==="side" ? "Profile view helps track changes" : "Rear view completes the set");
       if(badge){ badge.textContent = src ? "Added" : (key==="front" ? "Required" : "Optional"); badge.classList.toggle("done", !!src); }
     });
@@ -12681,7 +12758,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     var t=todayKey();
     var used=SLOTS.filter(function(k){return !!srcOf(d.slots[k]);});
     var sets=read(SETS_KEY, []); sets=Array.isArray(sets)?sets.filter(function(x){return x && x.date!==t;}):[];
-    sets.push({version:"clean-photo-v2",date:t,createdAt:new Date().toISOString(),dateLabel:new Date(t+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"),views:used,slots:d.slots});
+    sets.push({version:"clean-photo-v3-compressed",date:t,createdAt:new Date().toISOString(),dateLabel:new Date(t+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"}),tag:sets.length?"Latest set":"Start set",note:used.map(cap).join(", ")+" progress photo"+(used.length===1?"":"s"),views:used,slots:d.slots});
     write(SETS_KEY, sets);
     setLS("heartyLastPhotoCheckInAt", new Date().toISOString());
     setLS("heartyPhotoCheckInComplete", t);
@@ -12696,7 +12773,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
       var clone=btn.cloneNode(true);
       clone.dataset.heartyCleanPhotoButton="true";
       clone.removeAttribute("onclick");
-      clone.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); openPhotos(); });
+      clone.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); openPhotos(); });
       btn.parentNode.replaceChild(clone, btn);
     }
   }
@@ -12725,9 +12802,7 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
     var due=!last || age>=PHOTO_INTERVAL_DAYS || completedToday;
     var row=$("#photoTask");
     if(row){
-      row.hidden=false; row.removeAttribute("hidden");
-      /* Keep the row visible on Home, but show when it is not due. This avoids the "it vanished" problem. */
-      row.style.display="";
+      row.hidden=false; row.removeAttribute("hidden"); row.style.display="";
       row.classList.toggle("hearty-photo-not-due", !due);
       var sub=row.querySelector(".task-sub");
       if(sub){
@@ -12799,9 +12874,10 @@ html[data-theme="rose_aurora"] #todaysRhythmCard.hearty-welcome-glow-locked{
   }
 
   function boot(){
+    migrateAndClearOldDrafts();
     ensureInputs(); rebuildSheet(); clonePhotoTaskButton(); renderProtocolRules(); renderWeightStrip();
     document.addEventListener("click", intercept, true);
-    window.heartyEmergencyOpenPhotos=function(event){ if(event){event.preventDefault(); event.stopPropagation();} openPhotos(); return false; };
+    window.heartyEmergencyOpenPhotos=function(event){ if(event){event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation();} openPhotos(); return false; };
     window.heartyPhotoSystem={open:openPhotos,close:closePhotos,render:renderPhoto,complete:completePhotos};
     window.heartyHomeProtocolRules=Object.assign(window.heartyHomeProtocolRules||{}, {render:renderProtocolRules, apply:renderProtocolRules, getPhotoRule:function(){ var t=todayKey(), last=getLastPhotoDate(); var age=last?daysBetween(last,t):Infinity; return {due:!last||age>=PHOTO_INTERVAL_DAYS,last:last,age:age,nextDueDate:null}; }});
     [80,300,900,1500].forEach(function(ms){ setTimeout(function(){ renderProtocolRules(); renderWeightStrip(); }, ms); });
