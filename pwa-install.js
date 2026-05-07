@@ -59,7 +59,7 @@
 
   window.addEventListener("load", () => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+      navigator.serviceWorker.register("/sw.js").catch(err => console.warn("[Hearty PWA] service worker registration failed", err));
     }
 
     if (isHomePage()) {

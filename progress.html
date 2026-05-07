@@ -1200,10 +1200,12 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     if(!item || typeof item !== 'object') return null;
     const date = item.date || item.day || (item.createdAt ? String(item.createdAt).slice(0,10) : '');
     const type = item.type || item.angle || item.view || item.slot;
-    const image = item.image || item.previewUrl || item.url || item.dataUrl || item.src;
-    if(!date || !type || !image) return null;
+    const image = item.image || item.previewUrl || item.url || item.dataUrl || item.src || '';
+    const dbKey = item.dbKey || item.idbKey || item.indexedDbKey || '';
+    if(!date || !type) return null;
+    if(!image && !dbKey) return null;
     if(!['front','side','back'].includes(type)) return null;
-    return { date, type, image };
+    return { date, type, image, dbKey };
   }
 
   function collectProgressPhotoRows(){
@@ -1226,8 +1228,9 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
         if(!set || !set.date || !set.slots) return;
         ['front','side','back'].forEach(type => {
           const slot = set.slots[type];
-          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src);
-          if(image) rows.push({ date:set.date, type, image });
+          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src || '');
+          const dbKey = slot && (slot.dbKey || slot.idbKey || slot.indexedDbKey || '');
+          if(image || dbKey) rows.push({ date:set.date, type, image, dbKey });
         });
       });
     }
@@ -1254,9 +1257,10 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     if(!Array.isArray(saved) || !saved.length) return placeholderPhotoSets;
     const grouped = new Map();
     saved.forEach(item => {
-      if(!item || !item.date || !item.type || !item.image) return;
-      if(!grouped.has(item.date)) grouped.set(item.date, { key:item.date, label:formatDateLabel(parseDate(item.date)), day:formatDateLabel(parseDate(item.date)), placeholder:false });
-      grouped.get(item.date)[item.type] = item.image;
+      if(!item || !item.date || !item.type || (!item.image && !item.dbKey)) return;
+      if(!grouped.has(item.date)) grouped.set(item.date, { key:item.date, label:formatDateLabel(parseDate(item.date)), day:formatDateLabel(parseDate(item.date)), placeholder:false, dbKeys:{} });
+      grouped.get(item.date)[item.type] = item.image || '';
+      if(item.dbKey) grouped.get(item.date).dbKeys[item.type] = item.dbKey;
     });
     const result = Array.from(grouped.values()).sort((a,b) => parseDate(a.key) - parseDate(b.key));
     return result.length ? result : placeholderPhotoSets;
@@ -1287,6 +1291,8 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     const img = document.createElement('img');
     img.src = url || makeEmptyFrame(currentAngle);
     img.alt = alt;
+    img.loading = 'lazy';
+    img.decoding = 'async';
     frame.appendChild(img);
   }
 
@@ -1311,6 +1317,43 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
     }
     closeDateMenus();
     updateCompare();
+
+  function openHeartyPhotoDB(){
+    return new Promise((resolve,reject) => {
+      const req = indexedDB.open('hearty-home', 1);
+      req.onupgradeneeded = () => { if(!req.result.objectStoreNames.contains('photos')) req.result.createObjectStore('photos'); };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function loadIndexedProgressPhotos(){
+    const needs = [];
+    photos.forEach(photo => {
+      if(photo.placeholder || !photo.dbKeys) return;
+      ['front','side','back'].forEach(angle => {
+        if(!photo[angle] && photo.dbKeys[angle]) needs.push({photo, angle, key:photo.dbKeys[angle]});
+      });
+    });
+    if(!needs.length) return;
+    try{
+      const db = await openHeartyPhotoDB();
+      await Promise.all(needs.map(item => new Promise(resolve => {
+        const tx = db.transaction('photos','readonly');
+        const req = tx.objectStore('photos').get(item.key);
+        req.onsuccess = () => {
+          const blob = req.result;
+          if(blob) item.photo[item.angle] = URL.createObjectURL(blob);
+          resolve();
+        };
+        req.onerror = () => resolve();
+      })));
+      updateCompare();
+    }catch(e){
+      console.warn('[Hearty Progress] Could not load local progress photos', e);
+    }
+  }
+  loadIndexedProgressPhotos();
   }
 
   function renderDateMenu(menu, target, activeKey){
@@ -1342,7 +1385,7 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
       const item = photos[index];
       const thumbs = card.querySelectorAll('.gallery-thumb');
       ['front','side','back'].forEach((angle, i) => {
-        const img = item[angle] ? `<img src="${item[angle]}" alt="${angle} ${item.label}">` : `<span>${angle.charAt(0).toUpperCase()+angle.slice(1)}</span>`;
+        const img = item[angle] ? `<img src="${item[angle]}" alt="${angle} ${item.label}" loading="lazy" decoding="async">` : `<span>${angle.charAt(0).toUpperCase()+angle.slice(1)}</span>`;
         thumbs[i].innerHTML = img;
       });
       card.classList.toggle('is-a', item.key === compareDateA);

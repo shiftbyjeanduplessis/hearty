@@ -1,14 +1,17 @@
 {
   "name": "Hearty",
   "short_name": "Hearty",
-  "description": "Daily photos, weight and habits — all offline",
-  "start_url": "/index.html?utm_source=pwa",
+  "description": "Your GLP-1 companion.",
+  "start_url": "/home.html?utm_source=pwa",
   "scope": "/",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "window-controls-overlay", "standalone"],
-  "orientation": "portrait-primary",
+  "display_override": [
+    "fullscreen",
+    "window-controls-overlay",
+    "standalone"
+  ],
   "background_color": "#f6f9fe",
-  "theme_color": "#f6f9fe",
+  "theme_color": "#1550b3",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -22,7 +25,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "categories": ["health", "lifestyle", "fitness"],
-  "prefer_related_applications": false
+  ]
 }

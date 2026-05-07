@@ -210,7 +210,24 @@ html[data-theme="rose_aurora"] body::after{opacity:.055;background-image:url("da
       </div>
     </section>
   </main>
-  <nav class="bottom-nav" aria-label="Page selector">
+  
+    <section class="settings-card" id="appVersionCard">
+      <div class="settings-head">
+        <div>
+          <h2 class="settings-title">App version</h2>
+          <p class="settings-copy">Use this during testing to confirm the latest build is active.</p>
+        </div>
+      </div>
+      <div class="kv-list">
+        <div class="kv-row"><div class="kv-key">Version</div><div id="appVersionText" class="kv-val">Hearty v2026.05.08</div></div>
+        <div class="kv-row"><div class="kv-key">Cache</div><div id="cacheStatusText" class="kv-val">Checking…</div></div>
+      </div>
+      <div class="inline-actions" style="margin-top:16px">
+        <button class="btn secondary" id="checkUpdateBtn" type="button">Check for update</button>
+      </div>
+    </section>
+
+<nav class="bottom-nav" aria-label="Page selector">
   <a class="nav-item" href="home.html">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-5h5v5"/></svg>
     <span>Home</span>
@@ -253,7 +270,7 @@ const defaults = {
   heartyAccountEmail:'Not connected', heartyLicenseStatus:'active', heartyLicenseExpiry:'31 Dec 2026',
   heartyStartingWeightKg:'', heartyCurrentWeightKg:'', heartyTargetWeightKg:'', heartyHeightCm:'',
   heartyInjectionName:'', heartyInjectionDose:'', heartyInjectionDay:'Monday', heartyInjectionReminderEnabled:'true',
-  heartyWaterAuto:'true', heartyWaterTargetLitres:'3.0', heartyTheme:'clean_blue', heartyUnitsSystem:'metric', heartyAppVersion:'v1.0.0'
+  heartyWaterAuto:'true', heartyWaterTargetLitres:'3.0', heartyTheme:'clean_blue', heartyUnitsSystem:'metric', heartyAppVersion:'Hearty v2026.05.08'
 };
 Object.keys(defaults).forEach(k => localStorage.getItem(k) === null && localStorage.setItem(k, defaults[k]));
 (function clearLegacyWeightPlaceholders(){
@@ -466,12 +483,28 @@ $('logoutBtn')?.addEventListener('click', async () => {
     }
   } catch(e) {}
 
-  localStorage.removeItem('heartyProfile');
-  localStorage.removeItem('heartyUser');
-  localStorage.removeItem('heartyAuthUser');
-  localStorage.removeItem('heartySession');
+  // MVP rule: logout ends the auth session only. It must not clear local Hearty data
+  // such as meals, progress, photos, onboarding, settings, or hearty:data:v1.
+  ['heartyUser','heartyAuthUser','heartySession'].forEach(k => localStorage.removeItem(k));
   location.href = './login.html';
 });
+
+
+(function initAppVersionBlock(){
+  const version = 'Hearty v2026.05.08';
+  try { localStorage.setItem('heartyAppVersion', version); } catch(e){}
+  const v = document.getElementById('appVersionText');
+  const c = document.getElementById('cacheStatusText');
+  if(v) v.textContent = version;
+  if(c) c.textContent = ('serviceWorker' in navigator) ? 'Active / available' : 'Unavailable';
+  document.getElementById('checkUpdateBtn')?.addEventListener('click', async () => {
+    try {
+      const reg = await navigator.serviceWorker?.getRegistration?.();
+      await reg?.update?.();
+      showToast('Checked for updates');
+    } catch(e) { showToast('Could not check for updates'); }
+  });
+})();
 
 ['privacy-link','terms-link','refund-link'].forEach(id => $(id).addEventListener('click', e => { e.preventDefault(); showToast('Public legal page link to be added'); }));
 hydrateBodyMetricsFromHome();
