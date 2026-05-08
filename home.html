@@ -198,6 +198,177 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script>
+  (function(){
+    "use strict";
+
+    const SUPPORT_STORAGE_KEY = "hearty_support_mode_v1";
+    const LEGACY_SUPPORT_KEY = "heartySupportState";
+    const LEGACY_MEALS_KEY = "meals_support_mode";
+
+    const SUPPORT_MODE_MAP = {
+      nausea: "nausea",
+      bloating: "bloating",
+      constipation: "bloating",
+      fatigue: "exhaustion",
+      exhaustion: "exhaustion",
+      low_energy: "exhaustion",
+      "low energy": "exhaustion",
+      low_appetite: "low_appetite",
+      "low appetite": "low_appetite"
+    };
+
+    const HOME_LABELS = {
+      nausea: "Nausea support is on",
+      bloating: "Bloating support is on",
+      exhaustion: "Low energy support is on",
+      low_appetite: "Low appetite support is on"
+    };
+
+    function normaliseSupportMode(value){
+      if(!value) return null;
+      const cleaned = String(value).trim().toLowerCase().replace(/-/g, "_");
+      return SUPPORT_MODE_MAP[cleaned] || SUPPORT_MODE_MAP[cleaned.replace(/_/g, " ")] || null;
+    }
+
+    function readJSON(key, fallback){
+      try{
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      }catch{
+        return fallback;
+      }
+    }
+
+    function writeJSON(key, value){
+      try{
+        localStorage.setItem(key, JSON.stringify(value));
+      }catch{}
+    }
+
+    function readSupportState(){
+      const shared = readJSON(SUPPORT_STORAGE_KEY, null);
+      if(shared && shared.active){
+        const reason = normaliseSupportMode(shared.reason || shared.mode || shared.type);
+        if(reason) return { active:true, reason, source:shared.source || "shared", updatedAt:shared.updatedAt || null };
+      }
+
+      const legacy = readJSON(LEGACY_SUPPORT_KEY, null);
+      if(legacy && legacy.active){
+        const reason = normaliseSupportMode(legacy.reason || legacy.mode || legacy.type);
+        if(reason) return { active:true, reason, source:"legacy-home", updatedAt:legacy.updatedAt || null };
+      }
+
+      const mealsOnly = normaliseSupportMode(localStorage.getItem(LEGACY_MEALS_KEY));
+      if(mealsOnly) return { active:true, reason:mealsOnly, source:"legacy-meals", updatedAt:null };
+
+      return { active:false, reason:null, source:"home", updatedAt:null };
+    }
+
+    function writeSupportState(reason, source){
+      const mode = normaliseSupportMode(reason);
+      const now = new Date().toISOString();
+
+      if(!mode){
+        writeJSON(SUPPORT_STORAGE_KEY, { active:false, reason:null, source:source || "home", updatedAt:now });
+        writeJSON(LEGACY_SUPPORT_KEY, { active:false, reason:null, updatedAt:Date.now() });
+        try{ localStorage.removeItem(LEGACY_MEALS_KEY); }catch{}
+        window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:false, reason:null } }));
+        return { active:false, reason:null, source:source || "home", updatedAt:now };
+      }
+
+      writeJSON(SUPPORT_STORAGE_KEY, { active:true, reason:mode, source:source || "home", updatedAt:now });
+      writeJSON(LEGACY_SUPPORT_KEY, { active:true, reason:mode, updatedAt:Date.now() });
+      try{ localStorage.setItem(LEGACY_MEALS_KEY, mode); }catch{}
+      window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:true, reason:mode } }));
+      return { active:true, reason:mode, source:source || "home", updatedAt:now };
+    }
+
+    function mirrorLegacySupportIfNeeded(){
+      const current = readSupportState();
+      if(current.active){
+        const shared = readJSON(SUPPORT_STORAGE_KEY, null);
+        if(!shared || !shared.active || normaliseSupportMode(shared.reason) !== current.reason){
+          writeSupportState(current.reason, "home-sync");
+        }
+      }
+      return current;
+    }
+
+    function renderHomeSupportCard(){
+      const state = mirrorLegacySupportIfNeeded();
+      const card = document.getElementById("supportCard");
+      const led = document.getElementById("supportLed");
+      const subtext = document.getElementById("supportSubtext");
+      const primary = document.getElementById("supportPrimary");
+      const offBtn = document.getElementById("supportOff");
+
+      const isOn = !!state.active && !!state.reason;
+      const label = HOME_LABELS[state.reason] || "Support mode is on";
+
+      if(card){
+        card.classList.toggle("is-support-on", isOn);
+        card.classList.toggle("support-mode-active", isOn);
+        card.setAttribute("data-support-active", isOn ? "true" : "false");
+        if(isOn) card.setAttribute("data-support-mode", state.reason);
+        else card.removeAttribute("data-support-mode");
+      }
+
+      if(led){
+        led.classList.toggle("active", isOn);
+        led.classList.toggle("is-active", isOn);
+      }
+
+      if(subtext){
+        subtext.textContent = isOn
+          ? label + ". Meals and exercise will use a softer support plan today."
+          : "If side effects are getting in the way, switch to a softer day from the Support page.";
+      }
+
+      if(primary){
+        primary.textContent = isOn ? "Change support" : "I need support";
+        primary.setAttribute("href", "support.html");
+      }
+
+      if(offBtn){
+        offBtn.hidden = false;
+        offBtn.disabled = !isOn;
+        offBtn.textContent = isOn ? "Turn off" : "Support off";
+        offBtn.classList.toggle("is-active", isOn);
+        offBtn.classList.toggle("active", isOn);
+        offBtn.setAttribute("aria-pressed", isOn ? "true" : "false");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+      renderHomeSupportCard();
+
+      const offBtn = document.getElementById("supportOff");
+      if(offBtn && !offBtn.__heartySupportBound){
+        offBtn.__heartySupportBound = true;
+        offBtn.addEventListener("click", function(event){
+          event.preventDefault();
+          writeSupportState(null, "home-off-button");
+          renderHomeSupportCard();
+        });
+      }
+    });
+
+    window.addEventListener("storage", function(event){
+      if([SUPPORT_STORAGE_KEY, LEGACY_SUPPORT_KEY, LEGACY_MEALS_KEY].includes(event.key)){
+        renderHomeSupportCard();
+      }
+    });
+
+    window.addEventListener("hearty:support-change", renderHomeSupportCard);
+
+    window.HeartySupportMode = window.HeartySupportMode || {};
+    window.HeartySupportMode.read = readSupportState;
+    window.HeartySupportMode.set = function(reason){ return writeSupportState(reason, "home-api"); };
+    window.HeartySupportMode.off = function(){ return writeSupportState(null, "home-api"); };
+  })();
+  </script>
+
+  <script>
   if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').then(reg => {
