@@ -1,5 +1,5 @@
 // /sw.js — Hearty MVP app shell service worker
-const CACHE_NAME = 'hearty-pwa-v2026-05-08';
+const CACHE_NAME = 'hearty-pwa-v2026-05-07-exercise-support-capsule-v1';
 
 const PRECACHE = [
   '/',
