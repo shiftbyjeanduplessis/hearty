@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-v2026-04-29-2";
+const CACHE_NAME = "hearty-v2026-05-08-1";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -6,9 +6,16 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
-    ).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
