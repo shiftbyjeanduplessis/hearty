@@ -1590,6 +1590,41 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   <a href="#" class="sticky-btn" data-paddle-checkout>Get Hearty</a>
 </div>
 </div>
+
+<!-- Partnero Paddle checkout attribution -->
+<script>
+    const partneroQueryParam = 'aff';
+    const partneroCookieName = 'partnero_partner';
+
+    function getCookie(name) {
+        const cookieArr = document.cookie.split(";").map(cookie => cookie.trim());
+        for (const cookie of cookieArr) {
+            const [cookieName, cookieValue] = cookie.split("=");
+            if (name === cookieName) {
+                return decodeURIComponent(cookieValue);
+            }
+        }
+        return null;
+    }
+
+    function injectCustomData() {
+        const customerKey = new URLSearchParams(window.location.search).get(partneroQueryParam) || getCookie(partneroCookieName);
+
+        if (customerKey) {
+            const originalOpen = Paddle.Checkout.open;
+
+            Paddle.Checkout.open = function(options) {
+                options.customData = options.customData || {};
+                options.customData.customer_key = customerKey;
+                originalOpen.call(Paddle.Checkout, options);
+            };
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", injectCustomData);
+</script>
+<!-- End Partnero Paddle checkout attribution -->
+
 <script>
   // ==============================
   // HEARTY PADDLE CHECKOUT
