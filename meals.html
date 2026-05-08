@@ -306,6 +306,23 @@
       cursor:pointer;
     }
 
+    .support-off-btn[hidden]{
+      display:none !important;
+    }
+
+    .support-off-top{
+      min-height:38px;
+      padding:9px 13px;
+      white-space:nowrap;
+    }
+
+    .support-mode-note{
+      color:var(--muted);
+      font-size:.84rem;
+      font-weight:760;
+      text-align:right;
+    }
+
     .switch-btn{
       appearance:none;
       width:54px;
@@ -590,8 +607,9 @@
         <h1 class="headline">Your meals for today</h1>
         <p class="subline">Protein-forward meals based on your setup.</p>
       </div>
-      <div class="status-pills">
+      <div class="status-pills support-status-controls">
         <div class="support-pill is-off" id="supportPill">Support Off</div>
+        <button class="support-off-btn support-off-top" id="supportOffBtn" data-support-off type="button" hidden>Support Off</button>
         <div class="day-pill" id="todayLabel">Today</div>
       </div>
     </section>
@@ -679,7 +697,7 @@
               <strong>Support mode</strong>
               <span id="supportModeLabel">Off</span>
             </div>
-            <button class="support-off-btn" id="supportOffBtn" type="button">Support Off</button>
+            <span class="support-mode-note" id="supportModeNote">Standard meals</span>
           </div>
 
           <div class="control-row">
@@ -796,8 +814,12 @@
           var raw = localStorage.getItem("heartySupportMode") || localStorage.getItem("supportMode") || "";
           if (raw && raw.charAt(0) === "{") {
             var parsed = JSON.parse(raw);
-            if (parsed && parsed.isActive && parsed.reason) return parsed.reason;
+            if (parsed && (parsed.isActive === true || parsed.active === true) && (parsed.reason || parsed.primarySymptom || parsed.mode)) {
+              return parsed.reason || parsed.primarySymptom || parsed.mode;
+            }
+            return localStorage.getItem("meals_support_mode") || "";
           }
+          if (["off","false","0","none"].indexOf(String(raw).toLowerCase()) !== -1) return "";
           return raw || localStorage.getItem("meals_support_mode") || "";
         } catch(e) {
           return "";
@@ -815,8 +837,11 @@
           }));
         } else {
           safeSet("meals_support_mode", "");
+          safeSet("hearty_support_mode", "off");
+          safeSet("heartySupportActive", "false");
           safeSet("heartySupportMode", JSON.stringify({
             isActive:false,
+            active:false,
             reason:null,
             sourcePage:"meals",
             endedAt:new Date().toISOString()
@@ -828,6 +853,8 @@
         var isOn = !!reason;
         var pill = document.getElementById("supportPill");
         var label = document.getElementById("supportModeLabel");
+        var note = document.getElementById("supportModeNote");
+        var offBtn = document.getElementById("supportOffBtn");
 
         if (pill) {
           pill.textContent = isOn ? "Support On" : "Support Off";
@@ -836,6 +863,49 @@
         }
 
         if (label) label.textContent = isOn ? "On" : "Off";
+        if (note) note.textContent = isOn ? "Softer meals active" : "Standard meals";
+        if (offBtn) offBtn.hidden = !isOn;
+      }
+
+      function clearSupportMealCaches(){
+        [
+          "heartySupportMealPlan",
+          "heartySupportMealOverride",
+          "heartyMealSupportAdjustment",
+          "heartyMealsSupportSnapshot",
+          "heartySupportMealsToday",
+          "heartyMealsSupportDay",
+          "hearty_meals_support_override",
+          "hearty_support_meals_cache"
+        ].forEach(function(key){
+          try { localStorage.removeItem(key); } catch(e) {}
+        });
+      }
+
+      function turnSupportOffAndRestoreStandardMeals(){
+        writeGlobalSupport("");
+        clearSupportMealCaches();
+        updateSupportBanner("");
+
+        try {
+          window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", {
+            detail:{ active:false, source:"meals" }
+          }));
+        } catch(e) {}
+
+        var bridge = window.heartyMealsBridge;
+        if (bridge && bridge.state) {
+          bridge.state.adjustments = bridge.state.adjustments || {};
+          bridge.state.adjustments.supportMode = null;
+          bridge.state.adjustments.supportActive = false;
+        }
+
+        if (typeof window.renderMealsForToday === "function") window.renderMealsForToday({ forceStandard:true });
+        else if (typeof window.renderMeals === "function") window.renderMeals({ forceStandard:true });
+        else if (bridge && typeof bridge.generateWeek === "function") bridge.generateWeek();
+        else if (bridge && typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
+        else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
+        else if (bridge && typeof bridge.init === "function") bridge.init();
       }
 
       function bindSupportOffButton(){
@@ -843,20 +913,9 @@
         if (!btn || btn.__bound) return;
 
         btn.__bound = true;
-
-        btn.addEventListener("click", function(){
-          writeGlobalSupport("");
-          updateSupportBanner("");
-
-          var bridge = window.heartyMealsBridge;
-          if (bridge && bridge.state) {
-            bridge.state.adjustments = bridge.state.adjustments || {};
-            bridge.state.adjustments.supportMode = null;
-          }
-
-          if (bridge && typeof bridge.generateWeek === "function") bridge.generateWeek();
-          else if (bridge && typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
-          else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
+        btn.addEventListener("click", function(event){
+          event.preventDefault();
+          turnSupportOffAndRestoreStandardMeals();
         });
       }
 
@@ -1093,6 +1152,14 @@
           showBootWarning("Meal engine did not boot: " + error.message + ". Check that meals-engine.js and meals-bridge.js exist.");
         }
       }
+
+      window.addEventListener("storage", function(){
+        updateSupportBanner(readGlobalSupport());
+      });
+
+      window.addEventListener("hearty:support-mode-changed", function(){
+        updateSupportBanner(readGlobalSupport());
+      });
 
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", bootMeals);
