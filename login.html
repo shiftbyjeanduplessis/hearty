@@ -31,38 +31,182 @@
     .message{margin-top:18px;font-size:14px;color:var(--login-muted);min-height:22px;line-height:1.4;white-space:pre-wrap}
     .debug{display:none;margin-top:12px;padding:10px;border-radius:12px;background:rgba(220,38,38,.08);color:#991b1b;font-size:12px;text-align:left;word-break:break-word}
     @media(max-width:560px){body{padding:18px}.auth-card{padding:30px 20px 26px;border-radius:28px}.auth-logo{height:56px}.auth-title{font-size:1.75rem}}
+  
+    .login-splash{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:radial-gradient(900px 500px at 20% 0%,rgba(255,255,255,.16),transparent 50%),linear-gradient(180deg,#0b62df,#0348b6);
+      color:#fff;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .login-splash.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .login-splash-inner{
+      display:grid;
+      justify-items:center;
+      gap:18px;
+      text-align:center;
+    }
+    .login-splash-logo{
+      width:min(72vw,320px);
+      height:auto;
+      filter:drop-shadow(0 18px 34px rgba(0,0,0,.22));
+    }
+    .login-splash-spinner{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,.28);
+      border-top-color:#fff;
+      animation:loginSpin .9s linear infinite;
+    }
+    .login-splash-copy{
+      font-weight:800;
+      letter-spacing:-.02em;
+      opacity:.92;
+    }
+    @keyframes loginSpin{to{transform:rotate(360deg)}}
+
+  
+    .auth-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .text-link{border:0;background:transparent;color:var(--login-blue);font-size:14px;font-weight:800;padding:6px 8px;margin:0;box-shadow:none;width:auto;cursor:pointer}
+    .text-link:hover{text-decoration:underline}
+    .reset-panel{display:none;margin-top:18px;padding-top:18px;border-top:1px solid rgba(180,200,220,.55);text-align:left}
+    .reset-panel.show{display:block}
+    .reset-title{font-size:1.05rem;font-weight:850;letter-spacing:-.02em;margin:0 0 6px;color:var(--login-ink)}
+    .reset-copy{font-size:14px;line-height:1.45;color:var(--login-muted);margin:0 0 14px}
+    .reset-panel .primary,.reset-panel .ghost{width:100%}
+
   </style>
 </head>
 <body>
   <main class="auth-card">
     <img src="/hearty-logo.png" alt="Hearty" class="auth-logo" />
     <div class="auth-tagline">Your GLP-1 Companion</div>
-    <h1 class="auth-title">Welcome back</h1>
-    <div class="subtitle">Sign in to continue your journey with Hearty.</div>
-    <input id="email" type="email" placeholder="Email address" autocomplete="email" />
-    <button class="primary" id="sendBtn" type="button">Continue with email</button>
-    <button class="ghost" id="googleBtn" type="button">Continue with Google</button>
+
+    <section id="signinPanel">
+      <h1 class="auth-title">Welcome back</h1>
+      <div class="subtitle">Sign in to continue your journey with Hearty.</div>
+      <input id="email" type="email" placeholder="Email address" autocomplete="email" />
+      <button class="primary" id="sendBtn" type="button">Continue with email</button>
+      <button class="ghost" id="googleBtn" type="button">Continue with Google</button>
+      <div class="auth-actions">
+        <button class="text-link" id="forgotPasswordBtn" type="button">Forgot password?</button>
+      </div>
+    </section>
+
+    <section class="reset-panel" id="forgotPanel">
+      <h2 class="reset-title">Reset your password</h2>
+      <p class="reset-copy">Enter your account email and we’ll send you a secure reset link.</p>
+      <input id="resetEmail" type="email" placeholder="Email address" autocomplete="email" />
+      <button class="primary" id="resetSendBtn" type="button">Send reset link</button>
+      <button class="ghost" id="backToLoginBtn" type="button">Back to login</button>
+    </section>
+
+    <section class="reset-panel" id="newPasswordPanel">
+      <h2 class="reset-title">Choose a new password</h2>
+      <p class="reset-copy">Enter a new password for your Hearty account.</p>
+      <input id="newPassword" type="password" placeholder="New password" autocomplete="new-password" />
+      <input id="confirmPassword" type="password" placeholder="Confirm new password" autocomplete="new-password" />
+      <button class="primary" id="savePasswordBtn" type="button">Save new password</button>
+    </section>
+
     <div class="message" id="message"></div>
     <div class="debug" id="debug"></div>
   </main>
+
+  <div class="login-splash" id="loginSplash" aria-live="polite" aria-hidden="true">
+    <div class="login-splash-inner">
+      <img src="/hearty-logo.png" alt="Hearty" class="login-splash-logo">
+      <div class="login-splash-spinner" aria-hidden="true"></div>
+      <div class="login-splash-copy" id="loginSplashCopy">Opening Hearty…</div>
+    </div>
+  </div>
+
 
   <script>
     (function(){
       const emailInput = document.getElementById('email');
       const sendBtn = document.getElementById('sendBtn');
       const googleBtn = document.getElementById('googleBtn');
+      const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+      const signinPanel = document.getElementById('signinPanel');
+      const forgotPanel = document.getElementById('forgotPanel');
+      const newPasswordPanel = document.getElementById('newPasswordPanel');
+      const resetEmail = document.getElementById('resetEmail');
+      const resetSendBtn = document.getElementById('resetSendBtn');
+      const backToLoginBtn = document.getElementById('backToLoginBtn');
+      const newPassword = document.getElementById('newPassword');
+      const confirmPassword = document.getElementById('confirmPassword');
+      const savePasswordBtn = document.getElementById('savePasswordBtn');
       const message = document.getElementById('message');
       const debug = document.getElementById('debug');
 
       const supabase = window.supabaseClient || window.heartySupabase;
       let redirecting = false;
+      let recoveryMode = false;
 
       function setMessage(text){ message.textContent = text || ''; }
-      function setBusy(isBusy){ sendBtn.disabled = isBusy; googleBtn.disabled = isBusy; }
+      function setBusy(isBusy){
+        [sendBtn, googleBtn, resetSendBtn, savePasswordBtn].forEach(btn => { if(btn) btn.disabled = isBusy; });
+      }
+      function showSplash(text){
+        const splash = document.getElementById('loginSplash');
+        const copy = document.getElementById('loginSplashCopy');
+        if(copy) copy.textContent = text || 'Opening Hearty…';
+        if(splash){
+          splash.classList.add('show');
+          splash.setAttribute('aria-hidden','false');
+        }
+      }
+      function hideSplash(){
+        const splash = document.getElementById('loginSplash');
+        if(splash){
+          splash.classList.remove('show');
+          splash.setAttribute('aria-hidden','true');
+        }
+      }
       function showDebug(label, err){
         console.error(label, err);
         debug.style.display = 'block';
         debug.textContent = label + ': ' + (err && (err.message || JSON.stringify(err))) ;
+      }
+      function clearDebug(){
+        debug.style.display = 'none';
+        debug.textContent = '';
+      }
+      function showLogin(){
+        recoveryMode = false;
+        signinPanel.hidden = false;
+        forgotPanel.classList.remove('show');
+        newPasswordPanel.classList.remove('show');
+        setMessage('');
+        clearDebug();
+      }
+      function showForgot(){
+        recoveryMode = false;
+        signinPanel.hidden = true;
+        newPasswordPanel.classList.remove('show');
+        forgotPanel.classList.add('show');
+        resetEmail.value = resetEmail.value || emailInput.value || '';
+        setMessage('');
+        clearDebug();
+      }
+      function showNewPassword(){
+        recoveryMode = true;
+        signinPanel.hidden = true;
+        forgotPanel.classList.remove('show');
+        newPasswordPanel.classList.add('show');
+        setMessage('Enter your new password.');
+        clearDebug();
       }
       function cleanUrl(){
         if (window.history && (window.location.hash || window.location.search)) {
@@ -98,9 +242,10 @@
       }
 
       async function sendToHome(){
-        if (redirecting) return;
+        if (redirecting || recoveryMode) return;
         redirecting = true;
         setBusy(true);
+        showSplash('Opening Hearty…');
         setMessage('Signing you in...');
         await ensureProfile();
         cleanUrl();
@@ -111,6 +256,14 @@
         const raw = window.location.hash ? window.location.hash.slice(1) : '';
         return new URLSearchParams(raw);
       }
+      function getSearchParams(){
+        return new URLSearchParams(window.location.search || '');
+      }
+      function isRecoveryLink(){
+        const hash = getHashParams();
+        const search = getSearchParams();
+        return hash.get('type') === 'recovery' || search.get('type') === 'recovery' || search.get('recovery') === 'true';
+      }
 
       async function handleMagicLinkHash(){
         const params = getHashParams();
@@ -119,11 +272,19 @@
         if (!access_token || !refresh_token) return false;
 
         setBusy(true);
-        setMessage('Completing sign in...');
+        setMessage(isRecoveryLink() ? 'Opening password reset...' : 'Completing sign in...');
 
         const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
         if (error) throw error;
+
         if (data && data.session) {
+          if (isRecoveryLink()) {
+            hideSplash();
+            setBusy(false);
+            cleanUrl();
+            showNewPassword();
+            return true;
+          }
           await sendToHome();
           return true;
         }
@@ -133,10 +294,18 @@
       async function handleCodeRedirect(){
         if (!window.location.search.includes('code=')) return false;
         setBusy(true);
-        setMessage('Completing sign in...');
+        setMessage(isRecoveryLink() ? 'Opening password reset...' : 'Completing sign in...');
         const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href);
         if (error) throw error;
+
         if (data && data.session) {
+          if (isRecoveryLink()) {
+            hideSplash();
+            setBusy(false);
+            cleanUrl();
+            showNewPassword();
+            return true;
+          }
           await sendToHome();
           return true;
         }
@@ -145,21 +314,24 @@
 
       async function checkExistingSession(){
         try {
+          showSplash('Checking sign in…');
           setMessage('Checking sign in...');
           if (await handleMagicLinkHash()) return;
           if (await handleCodeRedirect()) return;
 
           const { data, error } = await supabase.auth.getSession();
           if (error) throw error;
-          if (data && data.session) {
+          if (data && data.session && !isRecoveryLink()) {
             await sendToHome();
             return;
           }
 
           setMessage('');
+          hideSplash();
           setBusy(false);
         } catch (err) {
           setMessage('Could not complete sign in. Try the link again or use Google.');
+          hideSplash();
           setBusy(false);
           showDebug('Auth redirect error', err);
         }
@@ -170,6 +342,7 @@
         if (!email) { setMessage('Please enter your email address.'); return; }
         try {
           setBusy(true);
+          clearDebug();
           setMessage('Sending login link...');
           const { error } = await supabase.auth.signInWithOtp({
             email,
@@ -190,6 +363,7 @@
       googleBtn.addEventListener('click', async function(){
         try {
           setBusy(true);
+          clearDebug();
           setMessage('Opening Google sign in...');
           const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -203,10 +377,62 @@
         }
       });
 
-      emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendBtn.click(); });
+      forgotPasswordBtn.addEventListener('click', showForgot);
+      backToLoginBtn.addEventListener('click', showLogin);
 
-      supabase.auth.onAuthStateChange(function(_event, session){
-        if (session && !redirecting) sendToHome();
+      resetSendBtn.addEventListener('click', async function(){
+        const email = resetEmail.value.trim() || emailInput.value.trim();
+        if (!email) { setMessage('Please enter your email address.'); return; }
+        try {
+          setBusy(true);
+          clearDebug();
+          setMessage('Sending password reset link...');
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/login.html?type=recovery'
+          });
+          if (error) throw error;
+          setMessage('Check your email for the password reset link.');
+        } catch (err) {
+          setMessage(err.message || 'Could not send reset link.');
+          showDebug('Password reset failed', err);
+        } finally {
+          setBusy(false);
+        }
+      });
+
+      savePasswordBtn.addEventListener('click', async function(){
+        const p1 = newPassword.value;
+        const p2 = confirmPassword.value;
+        if (!p1 || p1.length < 8) { setMessage('Password must be at least 8 characters.'); return; }
+        if (p1 !== p2) { setMessage('Passwords do not match.'); return; }
+
+        try {
+          setBusy(true);
+          clearDebug();
+          setMessage('Saving new password...');
+          const { error } = await supabase.auth.updateUser({ password: p1 });
+          if (error) throw error;
+          setMessage('Password updated. Opening Hearty...');
+          await sendToHome();
+        } catch (err) {
+          setMessage(err.message || 'Could not update password.');
+          setBusy(false);
+          showDebug('Password update failed', err);
+        }
+      });
+
+      emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendBtn.click(); });
+      resetEmail.addEventListener('keydown', function(e){ if (e.key === 'Enter') resetSendBtn.click(); });
+      confirmPassword.addEventListener('keydown', function(e){ if (e.key === 'Enter') savePasswordBtn.click(); });
+
+      supabase.auth.onAuthStateChange(function(event, session){
+        if (event === 'PASSWORD_RECOVERY') {
+          hideSplash();
+          setBusy(false);
+          showNewPassword();
+          return;
+        }
+        if (session && !redirecting && !recoveryMode) sendToHome();
       });
 
       setBusy(false);
