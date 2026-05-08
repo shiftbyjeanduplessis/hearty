@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script> 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1543,6 +1544,61 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   <a href="#pricing" class="sticky-btn">Get Hearty</a>
 </div>
 </div>
+<script>
+  // ==============================
+  // HEARTY PADDLE CHECKOUT
+  // ==============================
 
+  const HEARTY_PADDLE = {
+    clientToken: "PASTE_YOUR_CLIENT_SIDE_TOKEN_HERE",
+    priceId: "PASTE_YOUR_PRICE_ID_HERE"
+  };
+
+  function initHeartyPaddle() {
+    if (!window.Paddle) {
+      console.warn("Paddle.js did not load.");
+      return;
+    }
+
+    Paddle.Initialize({
+      token: HEARTY_PADDLE.clientToken
+    });
+  }
+
+  function openHeartyPaddleCheckout() {
+    if (!window.Paddle) {
+      alert("Checkout is still loading. Please try again.");
+      return;
+    }
+
+    Paddle.Checkout.open({
+      items: [
+        {
+          priceId: HEARTY_PADDLE.priceId,
+          quantity: 1
+        }
+      ],
+      settings: {
+        displayMode: "overlay",
+        theme: "light",
+        variant: "one-page",
+        successUrl: "https://hearty.health/login"
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initHeartyPaddle();
+
+    const paddleButtons = document.querySelectorAll("[data-paddle-checkout]");
+
+    paddleButtons.forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        openHeartyPaddleCheckout();
+      });
+    });
+  });
+</script>
 </body>
 </html>
