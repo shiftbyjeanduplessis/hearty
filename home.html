@@ -15,6 +15,33 @@
   <script src="js/hearty-data-layer.v1.js"></script>
   <script defer src="js/hearty-home-v15-refactor-aesthetic.js"></script>
   <meta name="mobile-web-app-capable" content="yes">
+  <style id="hearty-medication-day-picker-css">
+    .day-toggle-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-top:10px;
+    }
+    .day-toggle-grid button{
+      min-height:44px;
+      border-radius:14px;
+      border:1px solid var(--line, rgba(143,163,184,.24));
+      background:var(--surface-button, rgba(255,255,255,.9));
+      color:var(--muted, #6d7b8c);
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06));
+    }
+    .day-toggle-grid button.active{
+      background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));
+      color:var(--theme-accent, #2f6df6);
+      border-color:rgba(47,109,246,.26);
+    }
+    @media(max-width:520px){
+      .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+  </style>
 </head>
 <body>
   <div class="shell" id="app">
@@ -191,10 +218,9 @@
       <div class="setup-step" data-step="1" hidden><label class="field-label" for="coreSetupStartingWeight">Starting weight</label><input class="field-input" id="coreSetupStartingWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Your baseline weight"><p class="sheet-copy">This gives Hearty your baseline. Your daily weigh-in still happens from Home.</p></div>
       <div class="setup-step" data-step="2" hidden><label class="field-label" for="coreSetupTargetWeight">Doctor target weight</label><input class="field-input" id="coreSetupTargetWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Optional"><p class="sheet-copy">Optional. Target weight should be provided by your doctor.</p></div>
       <div class="setup-step" data-step="3" hidden><label class="field-label" for="coreSetupMedication">Medication type</label><select class="field-input" id="coreSetupMedication"><option value="">Not set yet</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Saxenda</option><option>Trulicity</option><option>Victoza</option><option>Rybelsus</option><option>Other GLP-1</option><option>Not sure yet</option><option>Not using medication yet</option></select></div>
-      <div class="setup-step" data-step="4" hidden><label class="field-label" for="coreSetupFrequency">How often do you take your medication?</label><select class="field-input" id="coreSetupFrequency"><option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="twice_weekly">Twice weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="monthly">Every 4 weeks / monthly</option><option value="custom">Custom / as prescribed</option><option value="not_sure">Not sure yet</option><option value="not_using">I’m not using medication yet</option></select></div>
-      <div class="setup-step" data-step="5" hidden><label class="field-label" for="coreSetupDaysField">Usual medication day</label><select class="field-input" id="coreSetupDaysField"><option value="">Not sure yet</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select><p class="sheet-copy">For twice-weekly, every-2-week, monthly, or custom schedules, the next medication date below is the most important reminder.</p></div>
-      <div class="setup-step" data-step="6" hidden><label class="field-label" for="coreSetupNextDoseDate">Next medication date</label><input class="field-input" id="coreSetupNextDoseDate" type="date"><p class="sheet-copy">This helps Hearty show your next dose reminder, even if your schedule is custom.</p></div>
-      <div class="setup-step" data-step="7" hidden><label class="field-label" for="coreSetupReminder">Medication reminder</label><select class="field-input" id="coreSetupReminder"><option value="true" selected>Remind me</option><option value="false">No reminder for now</option></select></div>
+      <div class="setup-step" data-step="4" hidden><label class="field-label" for="coreSetupFrequency">How often do you take your medication?</label><select class="field-input" id="coreSetupFrequency"><option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="twice_weekly">Twice weekly</option><option value="custom_days">Custom days</option><option value="not_sure">Not sure yet</option><option value="not_using">I’m not using medication yet</option></select><p class="sheet-copy">Choose the rhythm you follow. Hearty will remind you on the days you select.</p></div>
+      <div class="setup-step" data-step="5" hidden><label class="field-label">Medication day(s)</label><div class="unit-toggle day-toggle-grid" id="coreSetupDaysField" role="group" aria-label="Medication days"><button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button></div><p class="sheet-copy" id="coreSetupDaysHint">Weekly: choose one day. Twice weekly: choose two days. Custom days: choose the days you need.</p></div>
+      <div class="setup-step" data-step="6" hidden><label class="field-label" for="coreSetupReminder">Medication reminder</label><select class="field-input" id="coreSetupReminder"><option value="true" selected>Remind me on selected days</option><option value="false">No reminder for now</option></select></div>
       <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
     </div>
   </section>
@@ -225,8 +251,10 @@
       var targetWeight = readVal('coreSetupTargetWeight');
       var medication = readVal('coreSetupMedication');
       var frequency = readVal('coreSetupFrequency');
-      var dayValue = readVal('coreSetupDaysField');
-      var nextDoseDate = readVal('coreSetupNextDoseDate');
+      var dayButtons = Array.prototype.slice.call(document.querySelectorAll('[data-med-day].active'));
+      var selectedDays = dayButtons.map(function(btn){ return String(btn.getAttribute('data-med-day')); });
+      var dayValue = selectedDays[0] || '';
+      var nextDoseDate = '';
       var reminder = readVal('coreSetupReminder') !== 'false';
       var dayName = dayNameFromValue(dayValue);
       var now = new Date().toISOString();
@@ -253,21 +281,24 @@
       set('heartyInjectionName', medication);
       set('heartyMedicationFrequency', frequency);
       set('heartyInjectionFrequency', frequency);
-      set('heartyMedicationNextDate', nextDoseDate);
-      set('heartyNextDoseDate', nextDoseDate);
+      set('heartyMedicationDays', selectedDays.join(','));
+      set('heartyMedicationNextDate', '');
+      set('heartyNextDoseDate', '');
       set('heartyInjectionReminderEnabled', reminder ? 'true' : 'false');
 
       if(dayValue !== ''){
         set('heartyInjectionDay', dayValue);
         set('heartyInjectionDayName', dayName);
       }
+      set('heartyInjectionDays', selectedDays.join(','));
 
       setJSON('heartyInjectionSchedule', {
         medication: medication,
         frequency: frequency,
         day: dayValue,
+        days: selectedDays,
         dayName: dayName,
-        nextDoseDate: nextDoseDate,
+        nextDoseDate: '',
         reminderEnabled: reminder,
         source: 'home-onboarding',
         updatedAt: now
@@ -277,8 +308,9 @@
         type: medication,
         frequency: frequency,
         day: dayValue,
+        days: selectedDays,
         dayName: dayName,
-        nextDoseDate: nextDoseDate,
+        nextDoseDate: '',
         reminderEnabled: reminder,
         updatedAt: now
       };
@@ -295,6 +327,34 @@
         }}));
       } catch(e) {}
     }
+
+    document.addEventListener('click', function(event){
+      var dayBtn = event.target && event.target.closest && event.target.closest('[data-med-day]');
+      if(dayBtn){
+        var frequency = readVal('coreSetupFrequency') || 'weekly';
+        if(frequency === 'daily' || frequency === 'not_sure' || frequency === 'not_using'){
+          return;
+        }
+
+        if(frequency === 'weekly'){
+          Array.prototype.slice.call(document.querySelectorAll('[data-med-day]')).forEach(function(btn){
+            if(btn !== dayBtn) btn.classList.remove('active');
+          });
+          dayBtn.classList.toggle('active');
+        } else if(frequency === 'twice_weekly'){
+          if(dayBtn.classList.contains('active')){
+            dayBtn.classList.remove('active');
+          } else {
+            var active = document.querySelectorAll('[data-med-day].active');
+            if(active.length < 2) dayBtn.classList.add('active');
+          }
+        } else {
+          dayBtn.classList.toggle('active');
+        }
+
+        syncExpandedCoreOnboarding();
+      }
+    }, true);
 
     document.addEventListener('change', function(event){
       if(event.target && event.target.closest && event.target.closest('#coreSetupSheet')){
