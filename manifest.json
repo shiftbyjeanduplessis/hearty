@@ -1,15 +1,11 @@
 {
+  "id": "/home.html",
   "name": "Hearty",
   "short_name": "Hearty",
   "description": "Your GLP-1 companion.",
   "start_url": "/home.html?utm_source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui",
-    "browser"
-  ],
   "background_color": "#0057ff",
   "theme_color": "#0057ff",
   "icons": [
