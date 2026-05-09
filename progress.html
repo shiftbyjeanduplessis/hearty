@@ -665,6 +665,14 @@ html[data-theme="midnight"]{--bg-1:#0b1424;--bg-2:#050b15;--bg-base:#0a111b;--bg
 html[data-theme="rose_aurora"]{--bg-1:#1a0f1a;--bg-2:#2a1428;--bg-base:#0d0a10;--bg-layer-1:radial-gradient(900px 320px at 18% -8%,rgba(210,143,178,.14),transparent 48%);--bg-layer-2:radial-gradient(760px 280px at 82% 0%,rgba(165,128,190,.10),transparent 46%);--bg-layer-3:linear-gradient(180deg,#18111a 0%,#171118 52%,#130d14 100%);--ink:#f8f0f5;--muted:#b89fac;--line:rgba(195,148,172,.14);--card:rgba(22,16,26,.82);--shadow:0 22px 52px rgba(6,2,10,.44);--shadow-soft:0 10px 26px rgba(6,2,10,.30);--surface-top:rgba(30,21,36,.80);--surface-bottom:rgba(20,15,24,.68);--surface-button:rgba(36,26,42,.88);--surface-chip:rgba(38,27,44,.92);--accent:#d89abb;--accent-2:#c9955c;--theme-accent:#d89abb;--topbar-bg:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));--icon-bg:var(--surface-button);--pill-bg:var(--surface-chip)}
 body{background:var(--bg-base)!important;color:var(--ink)!important}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:var(--bg-layer-1),var(--bg-layer-2),var(--bg-layer-3),var(--bg-base)!important}.topbar{background:var(--topbar-bg)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.icon-btn{background:var(--icon-bg)!important;border-color:var(--line)!important;color:var(--muted)!important}.bottom-nav{background:color-mix(in srgb,var(--surface-chip) 78%,transparent)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:var(--theme-accent)!important}html[data-theme="midnight"] .card,html[data-theme="midnight"] .settings-card,html[data-theme="midnight"] .settings-panel,html[data-theme="midnight"] .tile,html[data-theme="midnight"] .placeholder-card,html[data-theme="rose_aurora"] .card,html[data-theme="rose_aurora"] .settings-card,html[data-theme="rose_aurora"] .settings-panel,html[data-theme="rose_aurora"] .tile,html[data-theme="rose_aurora"] .placeholder-card{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}html[data-theme="midnight"] input,html[data-theme="midnight"] select,html[data-theme="midnight"] textarea,html[data-theme="rose_aurora"] input,html[data-theme="rose_aurora"] select,html[data-theme="rose_aurora"] textarea{background:rgba(255,255,255,.04)!important;color:var(--ink)!important;border-color:var(--line)!important}
 </style>
+<style id="hearty-progress-day-medication-css">
+.medication-days-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.medication-days-grid button{min-height:42px;border-radius:14px;border:1px solid rgba(150,166,186,.22);background:#fff;color:#607084;font:inherit;font-size:.84rem;font-weight:800;cursor:pointer;box-shadow:var(--shadow-soft)}
+.medication-days-grid button.active{background:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));color:var(--theme-accent,#2f6df6);border-color:rgba(47,109,246,.24)}
+.medication-days-grid button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:560px){.medication-days-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+
 </head>
 <script src="js/hearty-data-layer.v1.js"></script>
 </head>
@@ -753,7 +761,19 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
 <div class="field-card"><label class="control-label" for="scheduleSelect">Injection day</label><select class="progress-select" id="scheduleSelect"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
 <div class="field-card"><label class="control-label" for="dosageSelect">Dosage</label><select class="progress-select" id="dosageSelect"><option>0.25 mg</option><option>0.5 mg</option><option selected>1.0 mg</option><option>1.7 mg</option><option>2.4 mg</option></select></div>
 </div>
-<div class="field-card"><span class="control-label">Past injections</span><div class="history-list" id="injectionHistory"></div></div>
+<div class="field-card"><span class="control-label">Past injections</span><div class="field-card" id="medicationDaysCard">
+<label class="control-label">Medication day(s)</label>
+<div class="medication-days-grid" id="medicationDaysGrid" role="group" aria-label="Medication days">
+<button type="button" data-progress-med-day="1">Mon</button>
+<button type="button" data-progress-med-day="2">Tue</button>
+<button type="button" data-progress-med-day="3">Wed</button>
+<button type="button" data-progress-med-day="4">Thu</button>
+<button type="button" data-progress-med-day="5">Fri</button>
+<button type="button" data-progress-med-day="6">Sat</button>
+<button type="button" data-progress-med-day="0">Sun</button>
+</div>
+</div>
+<div class="history-list" id="injectionHistory"></div></div>
 </div>
 </details>
 </section>
@@ -1643,5 +1663,67 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
 </script>
 
 <script src="/js/hearty-updater.js?v=1.0.1"></script>
+<script id="hearty-progress-day-medication-sync">
+(function(){
+"use strict";
+function $(id){return document.getElementById(id);}
+function readJSON(key,fallback){try{var raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
+function writeJSON(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
+function set(key,value){try{localStorage.setItem(key,String(value==null?"":value));}catch(e){}}
+function normaliseDays(value){if(Array.isArray(value))return value.map(String).filter(function(v){return /^[0-6]$/.test(v);});if(value==null||value==="")return [];return String(value).split(",").map(function(v){return v.trim();}).filter(function(v){return /^[0-6]$/.test(v);});}
+function dayName(day){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][Number(day)]||"";}
+function dayNames(days){return normaliseDays(days).map(dayName);}
+function frequencyLabel(value){return ({daily:"Daily",weekly:"Weekly",twice_weekly:"Twice weekly",custom_days:"Custom days",not_sure:"Not sure yet",not_using:"Not using medication yet"})[value]||"Weekly";}
+function input(ids){for(var i=0;i<ids.length;i++){var el=$(ids[i]);if(el)return el;}return null;}
+function medInput(){return input(["medicationType","medicationName","injectionMedication","injectionName"]);}
+function freqInput(){return input(["medicationFrequency","injectionFrequency"]);}
+function reminderInput(){return input(["medicationReminder","injectionReminder","reminderEnabled"]);}
+function readMedicationState(){
+ var med=readJSON("heartyMedication",{})||{}, setup=readJSON("heartyMedicationSetupV1",{})||{}, schedule=readJSON("heartyInjectionSchedule",{})||{};
+ var merged=Object.assign({},med,setup,schedule);
+ var frequency=merged.frequency||localStorage.getItem("heartyMedicationFrequency")||localStorage.getItem("heartyInjectionFrequency")||"weekly";
+ var days=normaliseDays(merged.days||localStorage.getItem("heartyMedicationDays")||localStorage.getItem("heartyInjectionDays")||merged.day||localStorage.getItem("heartyInjectionDay")||"");
+ var medication=merged.medication||merged.type||localStorage.getItem("heartyMedicationType")||localStorage.getItem("heartyInjectionName")||"";
+ var reminderEnabled=merged.reminderEnabled!==false&&localStorage.getItem("heartyInjectionReminderEnabled")!=="false";
+ return {type:medication,medication:medication,frequency:frequency,day:days[0]||"",days:days,dayName:days[0]?dayName(days[0]):"",dayNames:dayNames(days),nextDoseDate:"",reminderEnabled:reminderEnabled,updatedAt:new Date().toISOString()};
+}
+function saveMedicationState(state){
+ var days=normaliseDays(state.days), primary=days[0]||"", names=dayNames(days);
+ var payload={type:state.type||state.medication||"",medication:state.type||state.medication||"",frequency:state.frequency||"weekly",day:primary,days:days,dayName:primary?dayName(primary):"",dayNames:names,nextDoseDate:"",reminderEnabled:state.reminderEnabled!==false,source:"progress",updatedAt:new Date().toISOString()};
+ writeJSON("heartyMedication",payload);writeJSON("heartyMedicationSetupV1",payload);writeJSON("heartyInjectionSchedule",payload);
+ set("heartyMedicationType",payload.medication);set("heartyInjectionName",payload.medication);set("heartyMedicationFrequency",payload.frequency);set("heartyInjectionFrequency",payload.frequency);set("heartyMedicationDays",days.join(","));set("heartyInjectionDays",days.join(","));set("heartyInjectionDay",primary);set("heartyInjectionDayName",payload.dayName);set("heartyMedicationNextDate","");set("heartyNextDoseDate","");set("heartyInjectionReminderEnabled",payload.reminderEnabled?"true":"false");
+ try{window.dispatchEvent(new CustomEvent("hearty:medicationSetupUpdated",{detail:payload}));}catch(e){}
+ return payload;
+}
+function paintDayButtons(days){var selected=normaliseDays(days);document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){btn.classList.toggle("active",selected.indexOf(String(btn.getAttribute("data-progress-med-day")))>=0);});}
+function selectedDays(){return Array.prototype.slice.call(document.querySelectorAll("[data-progress-med-day].active")).map(function(btn){return String(btn.getAttribute("data-progress-med-day"));});}
+function updateDayButtons(){var f=freqInput()?freqInput().value:"weekly";document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){btn.disabled=f==="daily"||f==="not_sure"||f==="not_using";});if(f==="daily"||f==="not_sure"||f==="not_using")paintDayButtons([]);}
+function scheduleCopy(state){var names=dayNames(state.days);if(state.frequency==="daily")return "Daily medication reminder is active.";if(state.frequency==="weekly"&&names.length)return "Weekly reminder: "+names[0]+".";if(state.frequency==="twice_weekly"&&names.length)return "Twice-weekly reminder: "+names.join(" and ")+".";if(state.frequency==="custom_days"&&names.length)return "Reminder days: "+names.join(", ")+".";if(state.frequency==="not_using")return "Medication reminders are off for now.";if(state.frequency==="not_sure")return "Medication schedule not set yet.";return "Choose your medication days.";}
+function paintText(state){
+ var med=state.medication||state.type||"Medication", freq=frequencyLabel(state.frequency), days=state.dayNames&&state.dayNames.length?state.dayNames.join(", "):"Not set", copy=scheduleCopy(state);
+ [["medicationCurrentName",med],["currentMedication",med],["injectionNameValue",med],["medicationFrequencyValue",freq],["injectionFrequencyValue",freq],["medicationDaysValue",days],["injectionDayValue",days],["nextMedicationDateValue",copy],["nextInjectionDateValue",copy]].forEach(function(pair){var el=$(pair[0]);if(el)el.textContent=pair[1];});
+ document.querySelectorAll("[data-medication-summary],[data-injection-summary]").forEach(function(el){el.textContent=copy;});
+}
+function loadIntoControls(){var state=readMedicationState(), mi=medInput(), fi=freqInput(), ri=reminderInput();if(mi&&state.medication)mi.value=state.medication;if(fi)fi.value=state.frequency||"weekly";if(ri)ri.value=state.reminderEnabled?"true":"false";paintDayButtons(state.days);updateDayButtons();paintText(state);}
+function saveFromControls(){
+ var current=readMedicationState(), mi=medInput(), fi=freqInput(), ri=reminderInput(), frequency=fi?fi.value:(current.frequency||"weekly"), days=selectedDays();
+ if(frequency==="daily"||frequency==="not_sure"||frequency==="not_using")days=[];
+ var state={type:mi?mi.value:(current.medication||current.type||""),medication:mi?mi.value:(current.medication||current.type||""),frequency:frequency,days:days,reminderEnabled:ri?ri.value!=="false":current.reminderEnabled!==false};
+ var saved=saveMedicationState(state);paintDayButtons(saved.days);updateDayButtons();paintText(saved);
+}
+document.addEventListener("DOMContentLoaded",function(){
+ loadIntoControls();
+ [medInput(),freqInput(),reminderInput()].forEach(function(el){if(el&&!el.__heartyMedicationBound){el.__heartyMedicationBound=true;el.addEventListener("change",saveFromControls);}});
+ document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){if(btn.__heartyMedicationDayBound)return;btn.__heartyMedicationDayBound=true;btn.addEventListener("click",function(){
+   var f=freqInput()?freqInput().value:"weekly";if(f==="daily"||f==="not_sure"||f==="not_using")return;
+   if(f==="weekly"){document.querySelectorAll("[data-progress-med-day]").forEach(function(other){if(other!==btn)other.classList.remove("active");});btn.classList.toggle("active");}
+   else if(f==="twice_weekly"){if(btn.classList.contains("active"))btn.classList.remove("active");else if(document.querySelectorAll("[data-progress-med-day].active").length<2)btn.classList.add("active");}
+   else{btn.classList.toggle("active");}
+   saveFromControls();
+ });});
+});
+window.addEventListener("storage",function(event){if(["heartyMedication","heartyMedicationSetupV1","heartyInjectionSchedule","heartyMedicationDays","heartyInjectionDays","heartyMedicationFrequency","heartyInjectionFrequency"].indexOf(event.key)>=0)loadIntoControls();});
+})();
+</script>
 </body>
 </html>
