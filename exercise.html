@@ -79,6 +79,97 @@ html[data-theme="rose_aurora"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d1
 }
 .support-card{display:none!important}
 
+
+.exercise-guide-btn{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 13px;
+  border-radius:999px;
+  border:1px solid rgba(47,109,246,.16);
+  background:var(--surface-button);
+  color:var(--accent);
+  font-size:.78rem;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:var(--shadow-soft);
+  white-space:nowrap;
+  cursor:pointer;
+}
+.exercise-guide-modal[hidden]{display:none!important}
+.exercise-guide-modal{
+  position:fixed;
+  inset:0;
+  z-index:130;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:rgba(12,24,40,.46);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.exercise-guide-panel{
+  width:min(680px,100%);
+  max-height:min(82vh,760px);
+  overflow:auto;
+  border-radius:28px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:0 28px 72px rgba(14,31,53,.22);
+  padding:22px;
+}
+.exercise-guide-head{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:14px;
+}
+.exercise-guide-title{
+  margin:0;
+  font-size:1.35rem;
+  line-height:1.05;
+  letter-spacing:-.035em;
+  color:var(--ink);
+}
+.exercise-guide-close{
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--surface-button);
+  color:var(--muted);
+  font-size:1.45rem;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:var(--shadow-soft);
+}
+.exercise-guide-section{
+  padding:13px 0;
+  border-top:1px solid var(--line);
+}
+.exercise-guide-section:first-of-type{border-top:none}
+.exercise-guide-section h3{
+  margin:0 0 6px;
+  font-size:.96rem;
+  letter-spacing:-.015em;
+  color:var(--ink);
+}
+.exercise-guide-section p,
+.exercise-guide-section li{
+  margin:0;
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.5;
+}
+.exercise-guide-section ul{
+  margin:7px 0 0;
+  padding-left:18px;
+  display:grid;
+  gap:4px;
+}
+
 </style>
 
 <!-- Shared Hearty theme system -->
@@ -115,7 +206,7 @@ html[data-theme="rose_aurora"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d1
   <section class="status-strip" aria-label="Page intro"><div><div class="eyebrow">EXERCISE</div><h1 class="headline">Training</h1><div class="subline">Choose home or gym and start the right session for today.</div></div></section>
   <main class="stack">
     <section class="card hero">
-      <div class="hero-top"><div><div class="section-label">STRENGTH</div><h2 class="hero-title">Start your session</h2><p>One clear starting point. Choose home or gym, then get straight into your session.</p><div class="pill-row support-status-controls"><div class="soft-pill" id="heroModePill">Home workout</div><div class="soft-pill" id="heroSessionsPill">0 of 3 this week</div><div class="status-mini-pill support" id="heroSupportMiniPill" hidden>Support active</div><a class="support-top-action" id="exerciseSupportAction" href="support.html">I need support</a><button class="support-top-action off" id="exerciseSupportOff" type="button" hidden>Support Off</button></div></div><div class="location-toggle" aria-label="Workout location"><button class="loc-btn active" id="locHome" type="button">Home</button><button class="loc-btn" id="locGym" type="button">Gym</button></div></div>
+      <div class="hero-top"><div><div class="section-label">STRENGTH</div><h2 class="hero-title">Start your session</h2><p>One clear starting point. Choose home or gym, then get straight into your session.</p><div class="pill-row support-status-controls"><div class="soft-pill" id="heroModePill">Home workout</div><div class="soft-pill" id="heroSessionsPill">0 of 3 this week</div><button class="exercise-guide-btn" id="openExerciseGuideBtn" type="button">How Exercise Works</button><div class="status-mini-pill support" id="heroSupportMiniPill" hidden>Support active</div><a class="support-top-action" id="exerciseSupportAction" href="support.html">I need support</a><button class="support-top-action off" id="exerciseSupportOff" type="button" hidden>Support Off</button></div></div><div class="location-toggle" aria-label="Workout location"><button class="loc-btn active" id="locHome" type="button">Home</button><button class="loc-btn" id="locGym" type="button">Gym</button></div></div>
       <div class="start-wrap"><button class="start-btn" id="startBtn" type="button"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 5 7 7-7 7"></path></svg><span id="startBtnLabel">START</span></button><div class="start-hint" id="startHint">Tap start when you're ready.</div><div class="last-session-inline" id="lastSessionInline">Last session: —</div></div>
     </section>
     <section class="mini-grid">
@@ -128,6 +219,59 @@ html[data-theme="rose_aurora"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d1
   </main>
   <nav class="bottom-nav" aria-label="Page selector" id="bottomNav"></nav>
 </div>
+
+<section class="exercise-guide-modal" id="exerciseGuideModal" hidden aria-hidden="true">
+  <div class="exercise-guide-panel" role="dialog" aria-modal="true" aria-labelledby="exerciseGuideTitle">
+    <div class="exercise-guide-head">
+      <div>
+        <div class="section-label">EXERCISE GUIDE</div>
+        <h2 class="exercise-guide-title" id="exerciseGuideTitle">How Exercise Works</h2>
+        <p class="compact-copy">Exercise in Hearty is built to protect strength, keep progression simple, and reduce pressure on hard GLP-1 days.</p>
+      </div>
+      <button class="exercise-guide-close" id="closeExerciseGuideBtn" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>Why strength matters</h3>
+      <p>During weight loss, the goal is not only to lose weight. The goal is to protect muscle, strength, and daily function as much as possible.</p>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>How often to train</h3>
+      <p>Aim for three strength sessions per week. The app tracks your weekly rhythm and your three-workout streak.</p>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>Home or gym</h3>
+      <p>Choose Home or Gym before starting. Home uses bodyweight and band progressions. Gym uses machine-based progressions.</p>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>How progression works</h3>
+      <ul>
+        <li>Complete your sets with control.</li>
+        <li>When you hit the top of the rep range often enough, Hearty moves you toward the next step.</li>
+        <li>The progression ladder shows your current step and the next step.</li>
+      </ul>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>What counts as a workout</h3>
+      <p>A workout counts when you complete the strength session and tap Finish. Daily walking or general movement is handled separately from strength workouts.</p>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>Support Mode</h3>
+      <p>Support Mode is for harder GLP-1 days. When it is active, exercise difficulty is reduced by about 25%. It helps you keep the rhythm without forcing a full-intensity session.</p>
+    </div>
+
+    <div class="exercise-guide-section">
+      <h3>Low-energy days</h3>
+      <p>If energy is low, use Support Mode, choose the easier version, move slowly, and stop if you feel unwell. The goal is consistency, not punishment.</p>
+    </div>
+  </div>
+</section>
+
 <div id="workoutOverlay" hidden><div class="wo-shell"><div class="wo-header"><button class="wo-close" id="closeWorkoutBtn" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><div class="wo-title"><div class="wo-session-title">STRENGTH SESSION</div><div class="wo-ex-progress" id="woProgress">Exercise 1 of 5</div></div><div style="width:40px"></div></div><div id="screenActive"><div class="ex-card"><div class="ex-movement" id="exMovement">LOWER BODY</div><div class="ex-name" id="exName">Assisted Sit-to-Stand</div><div class="overlay-badge" id="overlaySupportBadge" hidden>Support mode activated — exercise reduced by 25%</div><div class="ex-image" id="exImage"></div><div class="ex-meta"><div class="ex-meta-item"><div class="ex-meta-label">TARGET</div><div class="ex-meta-val" id="exTarget">8–12 reps</div></div><div class="ex-meta-item"><div class="ex-meta-label">WEIGHT</div><div class="ex-meta-val" id="exWeight">Bodyweight</div></div><div class="ex-meta-item"><div class="ex-meta-label">SET</div><div class="ex-meta-val" id="exSetOf">1 of 3</div></div></div><div class="set-dots" id="setDots"></div><div class="technique"><div class="technique-title">How to do it</div><div class="technique-body" id="techniqueBullets"></div></div></div><div class="action-area"><button class="action-btn primary" id="setActionBtn" type="button">START SET</button></div></div><div id="screenReps" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:16px"><div class="section-label">HOW MANY REPS DID YOU COMPLETE?</div><div style="font-size:.88rem;color:var(--muted)" id="repSetLabel">Set 1 of 3</div></div><div style="display:flex;flex-direction:column;align-items:center"><div class="rep-grid" id="repGrid"></div><div class="rep-extra" id="repExtra"></div></div></div><div class="action-area" id="repConfirmArea" style="display:none"><button class="action-btn primary" id="confirmSetBtn" type="button">CONFIRM SET</button></div></div><div id="screenRest" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:12px"><div class="section-label">REST</div><div style="font-size:.88rem;color:var(--muted)" id="restNextLabel">Set 2 starts soon</div></div><div class="rest-wrap"><div class="rest-box"><div><div class="rest-count" id="restCount">75</div><div style="font-size:.72rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-align:center">SECONDS</div></div></div><div class="rest-flash" id="restFlash">Ready — let's go!</div></div></div><div class="action-area"><button class="action-btn primary" id="nextSetBtn" type="button">START NEXT SET</button></div></div><div id="screenExComplete" style="display:none"><div class="complete-card"><div class="complete-check"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div style="font-size:1.32rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px" id="exCompleteTitle">EXERCISE COMPLETE</div><div style="font-size:.86rem;color:var(--muted);margin-bottom:12px" id="exCompleteSub">Sets logged</div><div class="sets-result" id="setsResult"></div><div id="progressReadyBadge" style="display:none" class="progress-badge">Progress building — ready to advance next session</div></div><div class="action-area"><button class="action-btn primary" id="nextExerciseBtn" type="button">NEXT EXERCISE →</button></div></div><div id="screenWoComplete" style="display:none"><div class="complete-card"><div style="font-size:2.4rem;margin-bottom:10px;color:var(--success)">✓</div><div style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">WORKOUT COMPLETE</div><div style="font-size:.86rem;color:var(--muted);margin-bottom:4px">Consistency builds strength.</div><div class="wo-stat-row"><div class="wo-stat"><div class="wo-stat-val" id="wStatEx">5</div><div class="wo-stat-label">EXERCISES</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatSets">15</div><div class="wo-stat-label">SETS</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatTime">—</div><div class="wo-stat-label">MINUTES</div></div></div><div id="mvFeedbackRows"></div></div><div class="action-area"><button class="action-btn primary" id="finishWorkoutBtn" type="button">FINISH</button></div></div></div></div>
 <div class="exit-overlay" id="exitOverlay"><div class="exit-box"><div style="font-size:1.1rem;font-weight:900;margin-bottom:6px">Exit workout?</div><div style="font-size:.88rem;color:var(--muted);line-height:1.5">Your in-progress session will be discarded.</div><div class="action-area"><button class="action-btn primary" id="continueWorkoutBtn" type="button">CONTINUE WORKOUT</button><button class="action-btn" id="exitWorkoutBtn" type="button">EXIT SESSION</button></div></div></div>
 <script>
@@ -175,7 +319,21 @@ function renderExerciseComplete(){const ex=SESSION.workout[SESSION.exIndex];docu
 function updateProgressFromWorkout(){const loc=ST.location||'home';if(supportMode)return;SESSION.workout.forEach(ex=>{const prog=ST.movementProgress[ex.key];prog.eligibleCount=Number(prog.eligibleCount||0)+1;const hitTop=ex.sets.some(s=>parseInt(s,10)>=12);if(hitTop)prog.recentTopWins=Number(prog.recentTopWins||0)+1;if(loc==='home'){if(prog.recentTopWins>=2&&prog.eligibleCount>=2){prog.homeLevel=Math.min(MOVEMENTS[ex.key].homeChain.length,Number(prog.homeLevel||1)+1);prog.readyToProgress=true;prog.recentTopWins=0;prog.eligibleCount=0}else prog.readyToProgress=false}else{if(hitTop){prog.gymWeight=roundWeight(Number(prog.gymWeight||0)+(ex.key==='squat'?5:2.5));prog.readyToProgress=true}else prog.readyToProgress=false}})}
 function finishWorkout(){updateProgressFromWorkout();const session={date:new Date().toISOString(),completed:true,type:supportMode?'support':'train',location:ST.location||'home',support_mode_active:!!supportMode,exercises:SESSION.workout.map(ex=>({key:ex.key,name:ex.name,sets:ex.sets,weight:ex.weight,target:ex.target}))};ST.sessions.push(session);saveState();queueExerciseSync(session);renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession();document.getElementById('workoutOverlay').hidden=true}
 async function queueExerciseSync(session){try{const mod=await import('./frontend/exercise_sync_adapter.js');const client=await import('./supabase-client.js');const id=session.client_session_id||`exercise_${Date.now()}_${Math.random().toString(36).slice(2)}`;session.client_session_id=id;mod.queueExerciseSyncEvent({client_event_id:`${id}_completed`,event_type:'exercise_session_completed',payload:{source:'exercise.html',mode:session.location||ST.location||'home',support_mode_active:!!session.support_mode_active,completed_at:session.date||new Date().toISOString(),session,progress:ST.movementProgress||{}}});mod.flushExerciseSyncQueue(client.supabase)}catch(e){}}
-function bind(){document.getElementById('locHome').onclick=()=>setLocation('home');document.getElementById('locGym').onclick=()=>setLocation('gym');document.getElementById('startBtn').onclick=startWorkout;const supportOffBtn=document.getElementById('exerciseSupportOff');if(supportOffBtn)supportOffBtn.onclick=clearExerciseSupport;document.getElementById('ladderToggleBtn').onclick=()=>{const card=document.getElementById('ladderCard'),body=document.getElementById('ladderBody'),btn=document.getElementById('ladderToggleBtn'),open=body.hasAttribute('hidden');if(open){body.removeAttribute('hidden');card.classList.remove('collapsed');btn.setAttribute('aria-expanded','true')}else{body.setAttribute('hidden','');card.classList.add('collapsed');btn.setAttribute('aria-expanded','false')}};document.getElementById('setActionBtn').onclick=handleSetAction;document.getElementById('confirmSetBtn').onclick=confirmReps;document.getElementById('nextSetBtn').onclick=advanceAfterRest;document.getElementById('nextExerciseBtn').onclick=nextExercise;document.getElementById('finishWorkoutBtn').onclick=finishWorkout;document.getElementById('closeWorkoutBtn').onclick=requestExit;document.getElementById('continueWorkoutBtn').onclick=closeExitDialog;document.getElementById('exitWorkoutBtn').onclick=confirmExit}
+
+function openExerciseGuide(){
+  const modal=document.getElementById('exerciseGuideModal');
+  if(!modal)return;
+  modal.hidden=false;
+  modal.setAttribute('aria-hidden','false');
+  try{localStorage.setItem('heartyExerciseGuideSeen','true')}catch(e){}
+}
+function closeExerciseGuide(){
+  const modal=document.getElementById('exerciseGuideModal');
+  if(!modal)return;
+  modal.hidden=true;
+  modal.setAttribute('aria-hidden','true');
+}
+function bind(){const guideBtn=document.getElementById('openExerciseGuideBtn');if(guideBtn)guideBtn.onclick=openExerciseGuide;const guideClose=document.getElementById('closeExerciseGuideBtn');if(guideClose)guideClose.onclick=closeExerciseGuide;const guideModal=document.getElementById('exerciseGuideModal');if(guideModal)guideModal.addEventListener('click',e=>{if(e.target===guideModal)closeExerciseGuide()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeExerciseGuide()});document.getElementById('locHome').onclick=()=>setLocation('home');document.getElementById('locGym').onclick=()=>setLocation('gym');document.getElementById('startBtn').onclick=startWorkout;const supportOffBtn=document.getElementById('exerciseSupportOff');if(supportOffBtn)supportOffBtn.onclick=clearExerciseSupport;document.getElementById('ladderToggleBtn').onclick=()=>{const card=document.getElementById('ladderCard'),body=document.getElementById('ladderBody'),btn=document.getElementById('ladderToggleBtn'),open=body.hasAttribute('hidden');if(open){body.removeAttribute('hidden');card.classList.remove('collapsed');btn.setAttribute('aria-expanded','true')}else{body.setAttribute('hidden','');card.classList.add('collapsed');btn.setAttribute('aria-expanded','false')}};document.getElementById('setActionBtn').onclick=handleSetAction;document.getElementById('confirmSetBtn').onclick=confirmReps;document.getElementById('nextSetBtn').onclick=advanceAfterRest;document.getElementById('nextExerciseBtn').onclick=nextExercise;document.getElementById('finishWorkoutBtn').onclick=finishWorkout;document.getElementById('closeWorkoutBtn').onclick=requestExit;document.getElementById('continueWorkoutBtn').onclick=closeExitDialog;document.getElementById('exitWorkoutBtn').onclick=confirmExit}
 function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{buildNav();bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 </script>
 <script src="/js/hearty-updater.js?v=1.0.1"></script>
