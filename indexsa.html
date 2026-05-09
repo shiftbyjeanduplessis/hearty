@@ -1545,30 +1545,80 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 </div>
 <script>
   // ==============================
-  // HEARTY SOUTH AFRICA CHECKOUT
+  // HEARTY SOUTH AFRICA PAYFAST CHECKOUT
   // ==============================
+  // Replace ONLY the merchantId and merchantKey values below.
+  // Keep the amount as "350.00" for the South African once-off launch offer.
 
-  const HEARTY_SA_CHECKOUT = {
-    // Replace this with your live PayFast/payment gateway payment link.
-    // Example: "https://www.payfast.co.za/eng/process?..."
-    checkoutUrl: "PASTE_YOUR_SOUTH_AFRICAN_PAYMENT_LINK_HERE",
-    successUrl: "https://hearty.health/login"
+  const HEARTY_SA_PAYFAST = {
+    merchantId: "30731969",
+    merchantKey: "1a6bzt38cibgl",
+
+    amount: "350.00",
+    itemName: "Hearty GLP-1 Companion App",
+    itemDescription: "Once-off lifetime access to the Hearty GLP-1 companion web app.",
+
+    // After payment, PayFast will send the customer here.
+    // For the manual-access launch version, send them to login/create account.
+    returnUrl: "https://hearty.health/login",
+
+    // If they cancel payment, send them back to the South African sales page.
+    cancelUrl: "https://hearty.health/sa",
+
+    // Leave blank for now because this static page cannot receive PayFast ITN notifications.
+    // Later, use a Supabase Edge Function or Render backend endpoint here.
+    notifyUrl: ""
   };
 
-  function hasLiveSACheckoutConfig() {
+  function hasPayFastConfig() {
     return Boolean(
-      HEARTY_SA_CHECKOUT.checkoutUrl &&
-      !HEARTY_SA_CHECKOUT.checkoutUrl.includes("PASTE_")
+      HEARTY_SA_PAYFAST.merchantId &&
+      HEARTY_SA_PAYFAST.merchantKey &&
+      !HEARTY_SA_PAYFAST.merchantId.includes("PASTE_") &&
+      !HEARTY_SA_PAYFAST.merchantKey.includes("PASTE_")
     );
   }
 
+  function addHiddenField(form, name, value) {
+    if (value === undefined || value === null || value === "") return;
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  }
+
   function openHeartySACheckout() {
-    if (!hasLiveSACheckoutConfig()) {
-      alert("South African checkout is not connected yet. Please add your PayFast or SA payment link.");
+    if (!hasPayFastConfig()) {
+      alert("PayFast is not connected yet. Add your PayFast merchant_id and merchant_key in the checkout script at the bottom of this page.");
       return;
     }
 
-    window.location.href = HEARTY_SA_CHECKOUT.checkoutUrl;
+    const form = document.createElement("form");
+    form.method = "post";
+    form.action = "https://www.payfast.co.za/eng/process";
+    form.style.display = "none";
+
+    addHiddenField(form, "merchant_id", HEARTY_SA_PAYFAST.merchantId);
+    addHiddenField(form, "merchant_key", HEARTY_SA_PAYFAST.merchantKey);
+
+    addHiddenField(form, "return_url", HEARTY_SA_PAYFAST.returnUrl);
+    addHiddenField(form, "cancel_url", HEARTY_SA_PAYFAST.cancelUrl);
+    addHiddenField(form, "notify_url", HEARTY_SA_PAYFAST.notifyUrl);
+
+    addHiddenField(form, "m_payment_id", "HEARTY-SA-" + Date.now());
+    addHiddenField(form, "amount", HEARTY_SA_PAYFAST.amount);
+    addHiddenField(form, "item_name", HEARTY_SA_PAYFAST.itemName);
+    addHiddenField(form, "item_description", HEARTY_SA_PAYFAST.itemDescription);
+
+    // Useful reference fields for later manual reconciliation/export.
+    addHiddenField(form, "custom_str1", "hearty_sa_lifetime");
+    addHiddenField(form, "custom_str2", "south_africa");
+    addHiddenField(form, "custom_str3", "once_off_r350");
+
+    document.body.appendChild(form);
+    form.submit();
   }
 
   document.addEventListener("DOMContentLoaded", function () {
