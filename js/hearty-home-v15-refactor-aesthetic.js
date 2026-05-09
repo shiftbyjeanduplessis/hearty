@@ -9,7 +9,7 @@
   const RING_CIRC = 339.292;
 
   const LESSONS = [
-    {"icon": "🧭", "title": "What Actually Makes This Work", "body": "\n<p>Hearty works because it turns a big, emotional goal into a small daily rhythm. GLP-1 medication can reduce appetite, but it does not automatically create structure. People still need to drink, eat enough protein, move their bodies, take progress seriously, and know what to do when side effects get in the way.</p>\n<p>The trap is thinking the medication should do everything. When appetite drops, it can feel like the plan is working by itself. But if the day has no structure, the basics often disappear quietly. Water drops. Protein drops. Movement drops. Strength drops. Then the person may lose weight, but also feel flat, weak, tired, or disconnected from their own progress.</p>\n<p>The daily rhythm is the safety rail. You weigh in so you have feedback. You log water so hydration does not become an afterthought. You move because strength and confidence matter. You use meals as anchors, not punishment. You use Support Mode when symptoms make a normal day unrealistic.</p>\n<p>None of this needs to be perfect. In fact, the most successful rhythm is usually boring and repeatable. A low-energy day can still count if you do the smallest useful version: drink some water, eat something protein-forward, walk gently, and stay connected to the plan.</p>\n<div class=\"lesson-callout\">🧭 <strong>Today’s focus:</strong> do the smallest version of the plan rather than quitting the plan.</div>\n"},
+    {"icon": "🧭", "title": "Your Daily Hearty Rhythm", "body": "\n<p>Hearty works best when you follow a simple daily rhythm.</p>\n<p>Start your morning with your weigh-in. Weigh yourself first thing in the morning, before eating or drinking, and try to use the same scale each time. Daily weight can move up and down, so Hearty focuses on your trend over time.</p>\n<p>Next, check your medication rhythm. If today is your medication day, confirm your dose and pay attention to how you feel over the next day or two.</p>\n<p>Use Meals as your food guide for the day. Your plan is built around simple portions, enough protein, and practical meals that are easier to follow while using GLP-1 medication.</p>\n<p>If appetite is very low, nausea appears, or your stomach feels unsettled, use Support Mode. Support Mode gives you a softer day by simplifying meals and reducing exercise pressure.</p>\n<p>Aim to keep water steady through the day. GLP-1 medication can make it easier to under-eat and under-drink, so hydration matters.</p>\n<p>Exercise is not here to punish you. It is here to help protect your strength and muscle while you lose weight. Start small and build consistency.</p>\n<p>Progress photos are optional but useful. Take them privately, ideally once per week, so you can see changes that the scale may not show.</p>\n<p>Your goal each day is not perfection. Your goal is rhythm: weigh in, eat what you can, drink water, move your body, and use support when you need it.</p>\n<div class=\"lesson-callout\">🧭 <strong>Today’s focus:</strong> establish the rhythm before chasing perfection.</div>\n"},
     {"icon": "🍽️", "title": "The Appetite Trap", "body": "\n<p>Lower appetite can feel like a breakthrough, especially if food used to feel difficult to control. But eating as little as possible is not the goal. The goal is to lose weight while keeping your body nourished enough to function, recover, and stay strong.</p>\n<p>When intake drops too low for too long, people often start to feel dull, cold, weak, emotional, or unmotivated. Training feels harder. Constipation and headaches can become worse. Protein drops. Muscle loss becomes more likely. Then, later, hunger can rebound and the plan starts to feel unstable.</p>\n<p>A better target is simple, steady intake. You do not need large meals if your appetite is low. You need anchors. Examples include yoghurt, eggs, tuna, chicken, cottage cheese, lean meat, fish, soup with protein, or a smaller plate built around protein and vegetables. Small meals are fine. Simple meals are fine. Skipping everything is not the goal.</p>\n<p>Think of food as a tool, not a test of willpower. On GLP-1 medication, the question is often not “How little can I eat?” but “What is the smallest useful meal that protects my body today?”</p>\n<div class=\"lesson-callout\">🍽️ <strong>Today’s focus:</strong> low appetite means smaller food, not no food.</div>\n"},
     {"icon": "💧", "title": "Hydration Is Not a Wellness Bonus", "body": "\n<p>Hydration becomes more important when appetite and food intake drop. If you are eating less, you may also be getting less fluid from food. Some people also drink less because meals are no longer acting as reminders. Over time, that can worsen headaches, constipation, fatigue, dizziness, and low energy.</p>\n<p>Water will not magically cause fat loss, but dehydration can make the whole process feel harder than it needs to be. It can also make normal medication side effects feel more intense. This is why the water tracker is not decoration. It is there to keep hydration visible before the day gets away from you.</p>\n<p>The goal is not to drink everything at night in a panic. Small amounts earlier in the day work better. A glass in the morning, another mid-morning, another with lunch, and another in the afternoon can change how the day feels. If plain water is difficult, safe options like herbal tea, diluted sugar-free drinks, or water with lemon can help.</p>\n<p>Your hydration target does not have to be perfect every day. The point is awareness and steady contact. Each glass is a small vote for feeling better later.</p>\n<div class=\"lesson-callout\">💧 <strong>Today’s focus:</strong> log water early so hydration does not become an evening rescue mission.</div>\n"},
     {"icon": "🥩", "title": "Protein Is Your Insurance Policy", "body": "\n<p>Protein matters because weight loss is not only about becoming lighter. It is also about protecting the body you are living in. When appetite drops, protein is often one of the first things to fall. That can increase the risk of losing muscle along with fat.</p>\n<p>Muscle matters for strength, shape, blood sugar control, posture, daily energy, and long-term weight maintenance. You do not need to become a bodybuilder. You simply need to give your body a reason and the building blocks to hold onto useful tissue while weight comes down.</p>\n<p>This is why Hearty keeps meals protein-forward. The idea is not complicated: start with protein, then add vegetables, fruit, and starch according to the plan and your tolerance. On low-appetite days, protein can be simple: yoghurt, eggs, tuna, chicken, lean mince, fish, cottage cheese, or a smaller portion of leftovers.</p>\n<p>If you cannot finish a full meal, try to finish the protein first. If a normal dinner feels too much, use a smaller protein-based meal. If you feel nauseous, use Support Mode and simplify the day. The habit is not “eat perfectly.” The habit is “protect protein whenever possible.”</p>\n<div class=\"lesson-callout\">🥩 <strong>Today’s focus:</strong> build meals around protein before worrying about perfection.</div>\n"},
@@ -37,29 +37,74 @@
     return names[Number.isFinite(n) && n >= 0 && n <= 6 ? n : 1];
   }
   function frequencyDays(value){
-    return value === 'daily' ? 1 : 7;
+    const map = {
+      daily: 1,
+      weekly: 7,
+      twice_weekly: 3.5,
+      every_2_weeks: 14,
+      monthly: 28,
+      custom: null,
+      not_sure: null,
+      not_using: null
+    };
+    return Object.prototype.hasOwnProperty.call(map, value) ? map[value] : 7;
   }
   function saveInjectionBridge(){
     try{
       const med = state.medication || {};
-      const dayName = weekdayNameFromNumber(med.day);
-      const schedule = { day:dayName, frequency:frequencyDays(med.frequency), source:'home', updatedAt:new Date().toISOString() };
+      const hasDay = med.day !== '' && med.day !== null && med.day !== undefined && Number.isFinite(Number(med.day));
+      const dayName = hasDay ? weekdayNameFromNumber(med.day) : '';
+      const frequency = med.frequency || 'weekly';
+      const nextDoseDate = med.nextDoseDate || med.nextDate || localStorage.getItem('heartyMedicationNextDate') || '';
+      const reminderEnabled = med.reminderEnabled !== false;
+
+      const schedule = {
+        medication: med.type || '',
+        day: hasDay ? String(Number(med.day)) : '',
+        dayName: dayName,
+        frequency: frequency,
+        intervalDays: frequencyDays(frequency),
+        nextDoseDate: nextDoseDate,
+        reminderEnabled: reminderEnabled,
+        source:'home',
+        updatedAt:new Date().toISOString()
+      };
+
       writeJSON('heartyInjectionSchedule', schedule);
+      writeJSON('heartyMedicationSetupV1', schedule);
+      writeJSON('heartyMedication', Object.assign({}, med, {
+        type: med.type || '',
+        frequency: frequency,
+        day: hasDay ? Number(med.day) : '',
+        dayName: dayName,
+        nextDoseDate: nextDoseDate,
+        reminderEnabled: reminderEnabled
+      }));
+
       if(med.type) localStorage.setItem('heartyMedicationType', med.type);
       if(med.type) localStorage.setItem('heartyInjectionName', med.type);
-      localStorage.setItem('heartyInjectionDay', dayName);
-      localStorage.setItem('heartyInjectionDayNumber', String(Number(med.day)));
-      localStorage.setItem('heartyInjectionFrequency', med.frequency || 'weekly');
+      if(dayName) localStorage.setItem('heartyInjectionDayName', dayName);
+      if(hasDay) localStorage.setItem('heartyInjectionDay', String(Number(med.day)));
+      if(hasDay) localStorage.setItem('heartyInjectionDayNumber', String(Number(med.day)));
+      localStorage.setItem('heartyInjectionFrequency', frequency);
+      localStorage.setItem('heartyMedicationFrequency', frequency);
+      localStorage.setItem('heartyMedicationNextDate', nextDoseDate);
+      localStorage.setItem('heartyNextDoseDate', nextDoseDate);
+      localStorage.setItem('heartyInjectionReminderEnabled', reminderEnabled ? 'true' : 'false');
       if(!localStorage.getItem('heartyCurrentDosage')) localStorage.setItem('heartyCurrentDosage', 'Not set');
+
       if(window.HeartyData && typeof window.HeartyData.set === 'function'){
         window.HeartyData.set('profile.medication_name', med.type || '');
         window.HeartyData.set('profile.injection_name', med.type || '');
-        window.HeartyData.set('profile.injection_day', String(Number(med.day)));
+        window.HeartyData.set('profile.injection_day', hasDay ? String(Number(med.day)) : '');
         window.HeartyData.set('profile.injection_day_name', dayName);
-        window.HeartyData.set('profile.injection_frequency', med.frequency || 'weekly');
+        window.HeartyData.set('profile.injection_frequency', frequency);
+        window.HeartyData.set('profile.next_dose_date', nextDoseDate);
+        window.HeartyData.set('settings.injection_reminder_enabled', reminderEnabled);
       }
     }catch(e){ console.warn('[Hearty] injection bridge save failed', e); }
   }
+
   function appendLegacyProgressPhotoSet(record){
     try{
       const key = 'hearty_progress_photos';
@@ -86,6 +131,17 @@
     if (!iso) return 'not set';
     const [y,m,d] = iso.split('-').map(Number);
     return new Date(y, m-1, d).toLocaleDateString(undefined,{day:'numeric',month:'short'});
+  }
+  function parseLocalDate(iso){
+    if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(String(iso))) return null;
+    const [y,m,d] = String(iso).split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+  function isDateTodayOrPast(iso){
+    const dt = parseLocalDate(iso);
+    if(!dt) return false;
+    const today = parseLocalDate(localDate());
+    return dt.getTime() <= today.getTime();
   }
   function addDays(iso, days){ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d); dt.setDate(dt.getDate()+days); return localDate(dt); }
   function daysBetween(a,b){ const [ay,am,ad]=a.split('-').map(Number); const [by,bm,bd]=b.split('-').map(Number); return Math.floor((new Date(by,bm-1,bd)-new Date(ay,am-1,ad))/86400000); }
@@ -115,7 +171,7 @@
     if(isAndroidDevice()){
       return {
         title:'Install Hearty',
-        copy: deferredInstallPrompt ? 'Add Hearty to your home screen for the full-screen app experience.' : 'Open this page in Chrome, then use the menu to install the app if the prompt is not visible yet.',
+        copy: deferredInstallPrompt ? 'Add Hearty to your home screen for the app-like experience.' : 'Open this page in Chrome, then use the menu to install the app if the prompt is not visible yet.',
         action: deferredInstallPrompt ? 'Install' : 'How to install',
         mode: deferredInstallPrompt ? 'prompt' : 'android-help'
       };
@@ -123,7 +179,7 @@
 
     return {
       title:'Install Hearty',
-      copy: deferredInstallPrompt ? 'Install Hearty for a full-screen app experience.' : 'Use your browser menu to install Hearty when available.',
+      copy: deferredInstallPrompt ? 'Install Hearty for a app-like experience.' : 'Use your browser menu to install Hearty when available.',
       action: deferredInstallPrompt ? 'Install' : 'Got it',
       mode: deferredInstallPrompt ? 'prompt' : 'desktop-help'
     };
@@ -223,7 +279,7 @@
     state.weightLogs = Array.isArray(readJSON(KEY.weightLogs, [])) ? readJSON(KEY.weightLogs, []) : [];
     state.water = readJSON(KEY.water, {}) || {};
     state.photos = Array.isArray(readJSON(KEY.photos, [])) ? readJSON(KEY.photos, []) : [];
-    state.medication = Object.assign({type:'',frequency:'weekly',day:1,lastDoseDate:''}, readJSON(KEY.medication, {}));
+    state.medication = Object.assign({type:'',frequency:'weekly',day:'',nextDoseDate:'',reminderEnabled:true,lastDoseDate:''}, readJSON(KEY.medication, {}));
     state.support = Object.assign({active:false,type:''}, readJSON(KEY.support, {}));
     const canonical = hdData();
     if(canonical){
@@ -244,10 +300,26 @@
       }
       if(p.medication_name && !state.medication.type) state.medication.type = p.medication_name;
       if(p.injection_day !== '' && p.injection_day != null) state.medication.day = Number(p.injection_day);
+      if(p.next_dose_date && !state.medication.nextDoseDate) state.medication.nextDoseDate = p.next_dose_date;
       if(s.injection_reminder_enabled === false) state.medication.reminderEnabled = false;
       state.support.active = !!(sup.active_state || state.support.active);
       state.support.type = sup.active_state || state.support.type || '';
     }
+    try{
+      const schedule = readJSON('heartyInjectionSchedule', {}) || {};
+      const setup = readJSON('heartyMedicationSetupV1', {}) || {};
+      const homeMed = readJSON('heartyMedication', {}) || {};
+      const sourceMed = Object.assign({}, homeMed, setup, schedule);
+      if(!state.medication.type) state.medication.type = sourceMed.medication || sourceMed.type || localStorage.getItem('heartyMedicationType') || localStorage.getItem('heartyInjectionName') || '';
+      if(!state.medication.frequency) state.medication.frequency = sourceMed.frequency || localStorage.getItem('heartyMedicationFrequency') || localStorage.getItem('heartyInjectionFrequency') || 'weekly';
+      if(state.medication.day === '' || state.medication.day === null || state.medication.day === undefined) {
+        const storedDay = sourceMed.day || localStorage.getItem('heartyInjectionDay') || '';
+        state.medication.day = storedDay === '' ? '' : Number(storedDay);
+      }
+      if(!state.medication.nextDoseDate) state.medication.nextDoseDate = sourceMed.nextDoseDate || localStorage.getItem('heartyMedicationNextDate') || localStorage.getItem('heartyNextDoseDate') || '';
+      if(sourceMed.reminderEnabled === false || localStorage.getItem('heartyInjectionReminderEnabled') === 'false') state.medication.reminderEnabled = false;
+    }catch(e){}
+
     const daily = readJSON(KEY.daily, null);
     const today = localDate();
     if (!daily || daily.date !== today) state.daily = {date:today,tasks:{weight:false,walk:false,photos:false,lesson:false}};
@@ -385,15 +457,43 @@
 
   function renderMedication(){
     const med = state.medication || {};
-    if(med.type || med.frequency || med.day !== undefined) saveInjectionBridge();
-    const title = med.type ? `${med.type} reminder` : 'Dose reminder'; $('medicationTitle').textContent = title;
-    const today = localDate(); const due = med.frequency === 'daily' || (med.frequency === 'weekly' && Number(med.day) === new Date().getDay());
+    if(med.type || med.frequency || med.day !== undefined || med.nextDoseDate) saveInjectionBridge();
+
+    const title = med.type ? `${med.type} reminder` : 'Dose reminder';
+    $('medicationTitle').textContent = title;
+
+    const today = localDate();
+    const frequency = med.frequency || 'weekly';
+    const hasNextDose = !!med.nextDoseDate;
+    const hasDay = med.day !== '' && med.day !== null && med.day !== undefined && Number.isFinite(Number(med.day));
+
+    let due = false;
+    if(med.type && med.type !== 'Not using medication yet'){
+      if(hasNextDose) due = isDateTodayOrPast(med.nextDoseDate);
+      else if(frequency === 'daily') due = true;
+      else if(frequency === 'weekly' && hasDay) due = Number(med.day) === new Date().getDay();
+    }
+
     const logged = med.lastDoseDate === today;
-    $('injectionCard').classList.toggle('due', due && !logged); $('injectionCard').classList.toggle('logged', logged); $('logDoseBtn').classList.toggle('active', logged);
-    if (!med.type) $('nextInjectionDateText').textContent = 'Set your medication schedule during setup.';
-    else if (logged) $('nextInjectionDateText').textContent = 'Dose logged for today.';
-    else if (due) $('nextInjectionDateText').textContent = 'Dose due today.';
-    else $('nextInjectionDateText').textContent = med.frequency === 'weekly' ? `Next weekly dose is on ${weekdayNameFromNumber(med.day)}.` : 'Medication schedule active.';
+    $('injectionCard').classList.toggle('due', due && !logged);
+    $('injectionCard').classList.toggle('logged', logged);
+    $('logDoseBtn').classList.toggle('active', logged);
+
+    if (!med.type || med.type === 'Not set yet') {
+      $('nextInjectionDateText').textContent = 'Set your medication schedule during setup.';
+    } else if (med.type === 'Not using medication yet') {
+      $('nextInjectionDateText').textContent = 'Medication reminders are off for now.';
+    } else if (logged) {
+      $('nextInjectionDateText').textContent = 'Dose logged for today.';
+    } else if (due) {
+      $('nextInjectionDateText').textContent = 'Dose due today.';
+    } else if (hasNextDose) {
+      $('nextInjectionDateText').textContent = `Next dose: ${prettyDate(med.nextDoseDate)}.`;
+    } else if (frequency === 'weekly' && hasDay) {
+      $('nextInjectionDateText').textContent = `Next weekly dose is on ${weekdayNameFromNumber(med.day)}.`;
+    } else {
+      $('nextInjectionDateText').textContent = 'Medication schedule active.';
+    }
   }
 
   function renderSupport(){
@@ -501,6 +601,10 @@
     $('logDoseBtn').addEventListener('click',()=>{
       const today = localDate();
       state.medication.lastDoseDate = today;
+      const interval = frequencyDays(state.medication.frequency || 'weekly');
+      if(interval && Number.isFinite(Number(interval))){
+        state.medication.nextDoseDate = addDays(today, Math.round(Number(interval)));
+      }
       writeJSON(KEY.medication,state.medication);
       saveInjectionBridge();
       try{
@@ -561,32 +665,125 @@
   }
 
   function bindSetup(){
-    document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{ state.profile.unit=btn.dataset.unit; document.querySelectorAll('[data-unit]').forEach(b=>b.classList.toggle('active',b.dataset.unit===state.profile.unit)); }));
-    function showStep(){ document.querySelectorAll('.setup-step').forEach(el=>el.hidden=Number(el.dataset.step)!==state.setupStep); $('coreSetupBackBtn').disabled=state.setupStep===0; $('coreSetupNextBtn').textContent=state.setupStep>=4?'Finish':'Next'; }
-    $('coreSetupBackBtn').addEventListener('click',()=>{ state.setupStep=Math.max(0,state.setupStep-1); showStep(); });
-    $('coreSetupNextBtn').addEventListener('click',()=>{
-      if(state.setupStep===0){ state.profile.name=$('coreSetupName').value.trim(); }
-      if(state.setupStep===1){ const v=num($('coreSetupTargetWeight').value); if(v) state.profile.targetWeightKg=convertToKg(v); }
-      if(state.setupStep===2){ state.medication.type=$('coreSetupMedication').value; }
-      if(state.setupStep===3){ state.medication.frequency=$('coreSetupFrequency').value; }
+    const TOTAL_SETUP_STEPS = 7;
+
+    function setIfExists(id, value){
+      const el = $(id);
+      if(el && value !== undefined && value !== null) el.value = value;
+    }
+
+    function syncSetupInputsFromState(){
+      setIfExists('coreSetupName', state.profile.name || localStorage.getItem('heartyFirstName') || '');
+      if(state.profile.startingWeightKg) setIfExists('coreSetupStartingWeight', convertDisplay(Number(state.profile.startingWeightKg)).toFixed(1));
+      if(state.profile.targetWeightKg) setIfExists('coreSetupTargetWeight', convertDisplay(Number(state.profile.targetWeightKg)).toFixed(1));
+      setIfExists('coreSetupMedication', state.medication.type || '');
+      setIfExists('coreSetupFrequency', state.medication.frequency || 'weekly');
+      setIfExists('coreSetupDaysField', state.medication.day === undefined || state.medication.day === null ? '' : String(state.medication.day));
+      setIfExists('coreSetupNextDoseDate', state.medication.nextDoseDate || '');
+      setIfExists('coreSetupReminder', state.medication.reminderEnabled === false ? 'false' : 'true');
+    }
+
+    function saveCurrentSetupStep(){
+      if(state.setupStep===0){
+        state.profile.name = $('coreSetupName') ? $('coreSetupName').value.trim() : state.profile.name;
+      }
+
+      if(state.setupStep===1){
+        const v = num($('coreSetupStartingWeight')?.value);
+        if(v){
+          const kg = convertToKg(v);
+          state.profile.startingWeightKg = kg;
+          try{
+            localStorage.setItem('heartyStartingWeightKg', String(kg));
+            localStorage.setItem('heartyCurrentWeightKg', String(kg));
+            localStorage.setItem('heartyWeightStartingKg', String(kg));
+            localStorage.setItem('heartyWeightCurrentKg', String(kg));
+          }catch(e){}
+          if(!state.weightLogs.length){
+            state.weightLogs.push({date:localDate(), kg, createdAt:new Date().toISOString(), source:'home-onboarding'});
+            writeJSON(KEY.weightLogs, state.weightLogs);
+          }
+          hdSet('profile.starting_weight_kg', kg);
+          hdSet('profile.current_weight_kg', kg);
+        }
+      }
+
+      if(state.setupStep===2){
+        const v = num($('coreSetupTargetWeight')?.value);
+        if(v) state.profile.targetWeightKg = convertToKg(v);
+      }
+
+      if(state.setupStep===3){
+        state.medication.type = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
+      }
+
       if(state.setupStep===4){
-        state.medication.day=Number($('coreSetupDaysField').value);
+        state.medication.frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'weekly';
+      }
+
+      if(state.setupStep===5){
+        const dayValue = $('coreSetupDaysField') ? $('coreSetupDaysField').value : '';
+        state.medication.day = dayValue === '' ? '' : Number(dayValue);
+      }
+
+      if(state.setupStep===6){
+        state.medication.nextDoseDate = $('coreSetupNextDoseDate') ? $('coreSetupNextDoseDate').value : '';
+      }
+
+      if(state.setupStep===7){
+        state.medication.reminderEnabled = $('coreSetupReminder') ? $('coreSetupReminder').value !== 'false' : true;
+      }
+
+      saveProfile();
+      writeJSON(KEY.medication,state.medication);
+      saveInjectionBridge();
+    }
+
+    document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{
+      state.profile.unit=btn.dataset.unit;
+      document.querySelectorAll('[data-unit]').forEach(b=>b.classList.toggle('active',b.dataset.unit===state.profile.unit));
+      syncSetupInputsFromState();
+    }));
+
+    function showStep(){
+      document.querySelectorAll('.setup-step').forEach(el=>el.hidden=Number(el.dataset.step)!==state.setupStep);
+      $('coreSetupBackBtn').disabled=state.setupStep===0;
+      $('coreSetupNextBtn').textContent=state.setupStep>=TOTAL_SETUP_STEPS?'Finish':'Next';
+    }
+
+    $('coreSetupBackBtn').addEventListener('click',()=>{
+      saveCurrentSetupStep();
+      state.setupStep=Math.max(0,state.setupStep-1);
+      showStep();
+    });
+
+    $('coreSetupNextBtn').addEventListener('click',()=>{
+      saveCurrentSetupStep();
+
+      if(state.setupStep>=TOTAL_SETUP_STEPS){
         state.profile.setupComplete=true;
         saveProfile();
         writeJSON(KEY.medication,state.medication);
         saveInjectionBridge();
-        hdSet('profile.medication_name', state.medication.type || '');
-        hdSet('profile.injection_name', state.medication.type || '');
-        hdSet('profile.injection_day', String(state.medication.day));
-        hdSet('profile.injection_day_name', weekdayNameFromNumber(state.medication.day));
-        hdSet('profile.injection_frequency', state.medication.frequency || 'weekly');
         hdSet('settings.onboarding_complete', true);
-        closeSheets(); renderAll(); toast('Hearty setup complete.'); maybeShowInstallPrompt(); return;
+        closeSheets();
+        renderAll();
+        toast('Hearty setup complete.');
+        return;
       }
-      state.setupStep++; showStep();
+
+      state.setupStep++;
+      showStep();
     });
+
+    syncSetupInputsFromState();
     document.querySelector(`[data-unit="${state.profile.unit||'metric'}"]`)?.classList.add('active');
-    if(!state.profile.setupComplete){ state.setupStep=0; showStep(); openSheet('coreSetupSheet'); }
+
+    if(!state.profile.setupComplete){
+      state.setupStep=0;
+      showStep();
+      openSheet('coreSetupSheet');
+    }
   }
 
   function bindClose(){
@@ -597,7 +794,8 @@
 
   function boot(){
     applyTheme(); load(); bindClose(); bindWeight(); bindWater(); bindTasks(); bindPhotos(); bindSetup(); renderAll();
-    window.setTimeout(() => maybeShowInstallPrompt(false), 1200);
+    // Install prompt is now controlled from Settings or a future explicit Home card.
+
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
