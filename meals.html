@@ -5,6 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Hearty — Meals</title>
 
+  <section class="meals-help-modal" id="mealsHelpModal" hidden aria-hidden="true">
+    <div class="meals-help-panel" role="dialog" aria-modal="true" aria-labelledby="mealsHelpTitle">
+      <div class="meals-help-head">
+        <div>
+          <div class="section-label">MEALS GUIDE</div>
+          <h2 class="meals-help-title" id="mealsHelpTitle">How Meals Works</h2>
+          <p class="compact-copy">Your meals are built to help you get enough protein, keep eating simple, and support you through GLP-1 appetite changes.</p>
+        </div>
+        <button class="meals-help-close" id="closeMealsHelpBtn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Daily plan</h3>
+        <p>Each day gives you breakfast, lunch, dinner, and optional snacks if snacks are enabled.</p>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Portions</h3>
+        <ul>
+          <li>Protein = 1 portion</li>
+          <li>Starch = 1 portion</li>
+          <li>Vegetables = 1–2 portions</li>
+          <li>Yoghurt = 1 cup</li>
+          <li>Fruit = 1 fruit or 1 small serving</li>
+        </ul>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Snacks</h3>
+        <p>Snacks are optional. Use them when appetite is low, protein is difficult, or you need something small between meals.</p>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Swaps</h3>
+        <p>You can swap meals when needed. Try to swap like-for-like: protein for protein, starch for starch, and snack for snack.</p>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Leftovers</h3>
+        <p>If leftovers are enabled, dinner may become the next day’s lunch.</p>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Support Mode</h3>
+        <p>Support Mode is for harder GLP-1 days. When appetite is low or side effects are active, meals may become smaller, simpler, softer, or snack-based for the day. Turning Support Mode off should return you to your standard meal plan.</p>
+      </div>
+
+      <div class="meals-help-section">
+        <h3>Shopping list</h3>
+        <p>Use the shopping list after generating your weekly meals. You can download or copy it without leaving the app.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="meals-toast" id="mealsToast" role="status" aria-live="polite"></div>
+
   <script>
     (function(){
       document.documentElement.setAttribute("data-theme", "clean_blue");
@@ -568,7 +624,104 @@
       line-height:1.45;
     }
 
-    .boot-warning.show{display:block}
+    .meals-help-modal[hidden]{display:none!important}
+    .meals-help-modal{
+      position:fixed;
+      inset:0;
+      z-index:120;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      background:rgba(12,24,40,.46);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .meals-help-panel{
+      width:min(680px,100%);
+      max-height:min(82vh,760px);
+      overflow:auto;
+      border-radius:28px;
+      border:1px solid var(--line);
+      background:var(--card);
+      box-shadow:0 28px 72px rgba(14,31,53,.22);
+      padding:22px;
+    }
+
+    .meals-help-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .meals-help-title{
+      margin:0;
+      font-size:1.35rem;
+      line-height:1.05;
+      letter-spacing:-.035em;
+      color:var(--ink);
+    }
+
+    .meals-help-close{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--surface-button);
+      color:var(--muted);
+      font-size:1.45rem;
+      line-height:1;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .meals-help-section{
+      padding:13px 0;
+      border-top:1px solid var(--line);
+    }
+
+    .meals-help-section:first-of-type{border-top:none}
+    .meals-help-section h3{
+      margin:0 0 6px;
+      font-size:.96rem;
+      letter-spacing:-.015em;
+      color:var(--ink);
+    }
+
+    .meals-help-section p,
+    .meals-help-section li{
+      margin:0;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+
+    .meals-help-section ul{
+      margin:7px 0 0;
+      padding-left:18px;
+      display:grid;
+      gap:4px;
+    }
+
+    .meals-toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%);
+      z-index:140;
+      max-width:min(92vw,420px);
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(19,34,53,.94);
+      color:#fff;
+      box-shadow:0 16px 38px rgba(15,23,42,.24);
+      font-size:.86rem;
+      font-weight:760;
+      display:none;
+    }
+    .meals-toast.show{display:block}
 
     @media(max-width:1080px){.layout{grid-template-columns:1fr}}
 
@@ -654,6 +807,7 @@
               <p class="compact-copy">Your meals update from your preferences, support status and snack setting.</p>
             </div>
             <div class="planner-actions">
+              <button class="planner-action" type="button" id="openMealsHelpBtn">How Meals Works</button>
               <button class="planner-action" type="button" data-regenerate-day>Regenerate day</button>
               <button class="planner-action primary" type="button" data-regenerate-week>Generate week</button>
             </div>
@@ -713,10 +867,11 @@
 
         <section class="card">
           <div class="section-label">SHOPPING LIST</div>
-          <h2 class="compact-title">Download shopping list</h2>
-          <p class="compact-copy">Create a print-ready shopping list with 7-day and 30-day quantities.</p>
+          <h2 class="compact-title">Shopping list</h2>
+          <p class="compact-copy">Download or copy your shopping list without leaving the app.</p>
           <div class="planner-actions" style="margin-top:14px">
-            <button class="planner-action primary" type="button" id="shoppingPdfBtn">Create PDF</button>
+            <button class="planner-action primary" type="button" id="shoppingDownloadBtn">Download List</button>
+            <button class="planner-action" type="button" id="shoppingCopyBtn">Copy List</button>
           </div>
         </section>
       </aside>
@@ -958,31 +1113,139 @@
         ];
       }
 
-      function openShoppingPdf(){
+      function buildShoppingListText(){
         var items = collectShoppingItems();
+        var lines = [];
+        var today = new Date().toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
 
-        var rows = items.map(function(item){
+        lines.push("Hearty Shopping List");
+        lines.push("Generated: " + today);
+        lines.push("");
+        lines.push("7-day and 30-day quantities generated from your current meal plan.");
+        lines.push("");
+
+        items.forEach(function(item){
           var name = item.name || item.item || item.label || item[0] || "";
           var qty7 = item.qty7 || item.weekQty || item.quantity7 || item[1] || "";
           var qty30 = item.qty30 || item.monthQty || item.quantity30 || item[2] || "";
 
           if (!qty30 && qty7) qty30 = "≈ 4.3 × 7-day quantity";
 
-          return "<tr><td>" + escapeHtml(name) + "</td><td>" + escapeHtml(qty7) + "</td><td>" + escapeHtml(qty30) + "</td></tr>";
-        }).join("");
+          lines.push("- " + name);
+          if (qty7) lines.push("  7 days: " + qty7);
+          if (qty30) lines.push("  30 days: " + qty30);
+          lines.push("");
+        });
 
-        var win = window.open("", "_blank", "width=900,height=1100");
-        if (!win) return;
-
-        win.document.write("<!doctype html><html><head><title>Hearty Shopping List</title><style>body{font-family:Inter,Arial,sans-serif;padding:32px;color:#102033}h1{margin:0 0 8px;font-size:28px}p{color:#66788c}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{border-bottom:1px solid #e3eaf3;padding:12px;text-align:left;vertical-align:top}th{background:#f4f7fb}.note{margin-top:18px;font-size:12px;color:#7a8798}</style></head><body><h1>Hearty Shopping List</h1><p>7-day and 30-day quantities generated from your current meal plan.</p><table><thead><tr><th>Item</th><th>7 days</th><th>30 days</th></tr></thead><tbody>" + rows + "</tbody></table><p class='note'>Use your browser print dialog and choose Save as PDF.</p><script>window.onload=function(){window.print()};<\/script></body></html>");
-        win.document.close();
+        return lines.join("\n");
       }
 
-      function bindShoppingPdf(){
-        var btn = document.getElementById("shoppingPdfBtn");
-        if (!btn || btn.__bound) return;
-        btn.__bound = true;
-        btn.addEventListener("click", openShoppingPdf);
+      function showMealsToast(message){
+        var toast = document.getElementById("mealsToast");
+        if (!toast) return;
+        toast.textContent = message || "";
+        toast.classList.add("show");
+        clearTimeout(showMealsToast._timer);
+        showMealsToast._timer = setTimeout(function(){
+          toast.classList.remove("show");
+        }, 2200);
+      }
+
+      function downloadShoppingList(){
+        var text = buildShoppingListText();
+        var blob = new Blob([text], { type:"text/plain;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+
+        a.href = url;
+        a.download = "hearty-shopping-list.txt";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+        showMealsToast("Shopping list downloaded.");
+      }
+
+      async function copyShoppingList(){
+        var text = buildShoppingListText();
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            var area = document.createElement("textarea");
+            area.value = text;
+            area.setAttribute("readonly", "");
+            area.style.position = "fixed";
+            area.style.left = "-9999px";
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand("copy");
+            area.remove();
+          }
+
+          showMealsToast("Shopping list copied.");
+        } catch(error) {
+          console.warn("[Hearty Meals] Copy shopping list failed:", error);
+          showMealsToast("Could not copy. Try download instead.");
+        }
+      }
+
+      function bindShoppingListActions(){
+        var downloadBtn = document.getElementById("shoppingDownloadBtn");
+        var copyBtn = document.getElementById("shoppingCopyBtn");
+
+        if (downloadBtn && !downloadBtn.__bound) {
+          downloadBtn.__bound = true;
+          downloadBtn.addEventListener("click", downloadShoppingList);
+        }
+
+        if (copyBtn && !copyBtn.__bound) {
+          copyBtn.__bound = true;
+          copyBtn.addEventListener("click", copyShoppingList);
+        }
+      }
+
+      function openMealsHelp(){
+        var modal = document.getElementById("mealsHelpModal");
+        if (!modal) return;
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        try { localStorage.setItem("heartyMealsHelpSeen", "true"); } catch(e) {}
+      }
+
+      function closeMealsHelp(){
+        var modal = document.getElementById("mealsHelpModal");
+        if (!modal) return;
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      function bindMealsHelp(){
+        var openBtn = document.getElementById("openMealsHelpBtn");
+        var closeBtn = document.getElementById("closeMealsHelpBtn");
+        var modal = document.getElementById("mealsHelpModal");
+
+        if (openBtn && !openBtn.__bound) {
+          openBtn.__bound = true;
+          openBtn.addEventListener("click", openMealsHelp);
+        }
+
+        if (closeBtn && !closeBtn.__bound) {
+          closeBtn.__bound = true;
+          closeBtn.addEventListener("click", closeMealsHelp);
+        }
+
+        if (modal && !modal.__bound) {
+          modal.__bound = true;
+          modal.addEventListener("click", function(event){
+            if (event.target === modal) closeMealsHelp();
+          });
+          document.addEventListener("keydown", function(event){
+            if (event.key === "Escape" && !modal.hidden) closeMealsHelp();
+          });
+        }
       }
 
       function loadScript(src){
@@ -1079,7 +1342,8 @@
         updateSupportBanner(readGlobalSupport());
         bindSnackToggle();
         bindSupportOffButton();
-        bindShoppingPdf();
+        bindShoppingListActions();
+        bindMealsHelp();
 
         try {
           var mealProfile = readMealProfile();
