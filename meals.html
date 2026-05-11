@@ -1048,6 +1048,73 @@
         });
       }
 
+      function forceBridgeIntoStandardMealMode(){
+        var bridge = window.heartyMealsBridge;
+
+        if (bridge && bridge.state) {
+          bridge.state.adjustments = bridge.state.adjustments || {};
+          bridge.state.adjustments.supportMode = null;
+          bridge.state.adjustments.supportActive = false;
+          bridge.state.adjustments.lowAppetite = false;
+          bridge.state.adjustments.easyDigestion = false;
+          bridge.state.adjustments.softTextureBias = false;
+          bridge.state.adjustments.lighterMeals = false;
+          bridge.state.adjustments.lowerBulkBias = false;
+          bridge.state.adjustments.quick = false;
+          bridge.state.adjustments.lowPrep = false;
+          bridge.state.adjustments.leftoversPreferred = false;
+          bridge.state.adjustments.snacksOn = getSnacksOn();
+        }
+
+        return bridge;
+      }
+
+      function refreshBridgeMeals(){
+        var bridge = window.heartyMealsBridge;
+        if (!bridge) return;
+        if (typeof bridge.refreshMealsUI === "function") bridge.refreshMealsUI();
+        else if (typeof bridge.refresh === "function") bridge.refresh();
+      }
+
+      function regenerateStandardMeals(options){
+        options = options || {};
+        var bridge = forceBridgeIntoStandardMealMode();
+        if (!bridge) return;
+
+        /*
+          The bridge has document-level handlers for regenerate day/week.
+          If the current week was created while Support Mode was active,
+          regenerating a single day can reuse the support-generated week as
+          its base. Force a clean standard week first, then regenerate the
+          active day from that clean standard base if requested.
+        */
+        if (typeof bridge.toggleSupportMode === "function") {
+          try { bridge.toggleSupportMode(null); } catch(e) { console.warn("[Hearty Meals] toggleSupportMode(null) failed:", e); }
+        }
+
+        forceBridgeIntoStandardMealMode();
+
+        if (typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
+        else if (typeof bridge.generateWeek === "function") bridge.generateWeek();
+        else if (typeof bridge.init === "function") bridge.init();
+
+        forceBridgeIntoStandardMealMode();
+
+        if (options.day === true && typeof bridge.regenerateDay === "function") {
+          try {
+            var index = Number(bridge.state && bridge.state.activeDayIndex);
+            if (!Number.isFinite(index)) index = 0;
+            bridge.regenerateDay(index);
+          } catch(e) {
+            console.warn("[Hearty Meals] standard regenerateDay failed:", e);
+          }
+        }
+
+        refreshBridgeMeals();
+        setTimeout(refreshBridgeMeals, 50);
+        setTimeout(refreshBridgeMeals, 250);
+      }
+
       function turnSupportOffAndRestoreStandardMeals(){
         writeGlobalSupport("");
         clearSupportMealCaches();
@@ -1055,6 +1122,9 @@
 
         try { localStorage.removeItem("meals_support_mode"); } catch(e) {}
         try { localStorage.removeItem("supportMode"); } catch(e) {}
+        try { localStorage.removeItem("meals_low_appetite"); } catch(e) {}
+        try { localStorage.removeItem("meals_busy_day"); } catch(e) {}
+        try { localStorage.removeItem("meals_extra_hunger"); } catch(e) {}
         try { localStorage.setItem("hearty_support_mode", "off"); } catch(e) {}
         try { localStorage.setItem("heartySupportActive", "false"); } catch(e) {}
 
@@ -1106,77 +1176,43 @@
           localStorage.setItem("hearty:data:v1", JSON.stringify(canonical));
         } catch(e) {}
 
+        forceBridgeIntoStandardMealMode();
+        regenerateStandardMeals({ day:false });
+
         try {
           window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", {
             detail:{ active:false, source:"meals" }
           }));
         } catch(e) {}
 
-        var bridge = window.heartyMealsBridge;
-
-        if (bridge && bridge.state) {
-          bridge.state.adjustments = bridge.state.adjustments || {};
-          bridge.state.adjustments.supportMode = null;
-          bridge.state.adjustments.supportActive = false;
-          bridge.state.adjustments.lowAppetite = false;
-          bridge.state.adjustments.easyDigestion = false;
-          bridge.state.adjustments.softTextureBias = false;
-          bridge.state.adjustments.lighterMeals = false;
-          bridge.state.adjustments.lowerBulkBias = false;
-          bridge.state.adjustments.quick = false;
-          bridge.state.adjustments.lowPrep = false;
-          bridge.state.adjustments.leftoversPreferred = false;
-
-          try { bridge.state.supportWeek = null; } catch(e) {}
-          try { bridge.state.supportPlan = null; } catch(e) {}
-          try { bridge.state.adjustedWeek = null; } catch(e) {}
-          try { bridge.state.renderedSupportDay = null; } catch(e) {}
-        }
-
-        function forceStandardMealUiRefresh(){
-          var b = window.heartyMealsBridge;
-
-          if (b && b.state) {
-            b.state.adjustments = b.state.adjustments || {};
-            b.state.adjustments.supportMode = null;
-            b.state.adjustments.supportActive = false;
-            b.state.adjustments.snacksOn = getSnacksOn();
-          }
-
-          if (typeof window.renderMealsForToday === "function") {
-            window.renderMealsForToday({ forceStandard:true, supportMode:null });
-            return;
-          }
-
-          if (typeof window.renderMeals === "function") {
-            window.renderMeals({ forceStandard:true, supportMode:null });
-            return;
-          }
-
-          if (b && typeof b.refreshMealsUI === "function") {
-            b.refreshMealsUI();
-            return;
-          }
-
-          if (b && typeof b.refresh === "function") {
-            b.refresh();
-            return;
-          }
-        }
-
-        if (bridge && typeof bridge.regenerateWeek === "function") {
-          bridge.regenerateWeek();
-        } else if (bridge && typeof bridge.generateWeek === "function") {
-          bridge.generateWeek();
-        } else if (bridge && typeof bridge.init === "function") {
-          bridge.init();
-        }
-
-        forceStandardMealUiRefresh();
-        setTimeout(forceStandardMealUiRefresh, 50);
-        setTimeout(forceStandardMealUiRefresh, 250);
+        setTimeout(function(){
+          forceBridgeIntoStandardMealMode();
+          refreshBridgeMeals();
+        }, 350);
 
         showMealsToast("Support Mode off. Standard meals restored.");
+      }
+
+      function bindStandardRegenerateOverrides(){
+        if (document.__heartyStandardRegenerateOverridesBound) return;
+        document.__heartyStandardRegenerateOverridesBound = true;
+
+        document.addEventListener("click", function(event){
+          var dayBtn = event.target && event.target.closest && event.target.closest("[data-regenerate-day]");
+          var weekBtn = event.target && event.target.closest && event.target.closest("[data-regenerate-week]");
+
+          if (!dayBtn && !weekBtn) return;
+          if (readGlobalSupport()) return;
+
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+
+          clearSupportMealCaches();
+          forceBridgeIntoStandardMealMode();
+          regenerateStandardMeals({ day: !!dayBtn });
+          showMealsToast(dayBtn ? "Standard day regenerated." : "Standard week generated.");
+        }, true);
       }
 
       function bindSupportOffButton(){
@@ -1186,6 +1222,8 @@
         btn.__bound = true;
         btn.addEventListener("click", function(event){
           event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
           turnSupportOffAndRestoreStandardMeals();
         });
       }
@@ -1458,6 +1496,7 @@
         updateSupportBanner(readGlobalSupport());
         bindSnackToggle();
         bindSupportOffButton();
+        bindStandardRegenerateOverrides();
         bindShoppingListActions();
         bindMealsHelp();
 
