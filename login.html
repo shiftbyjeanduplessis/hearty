@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Hearty">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/glp-supabase-config.js"></script>
   <style>
@@ -36,46 +36,18 @@
       position:fixed;
       inset:0;
       z-index:9999;
-      display:grid;
-      place-items:center;
-      padding:24px;
-      background:radial-gradient(900px 500px at 20% 0%,rgba(255,255,255,.16),transparent 50%),linear-gradient(180deg,#0b62df,#0348b6);
-      color:#fff;
+      display:block;
+      background:#0057ff url("/assets/hearty-splash-screen.png") center center / cover no-repeat;
       opacity:0;
       pointer-events:none;
-      transition:opacity .18s ease;
+      transition:opacity .22s ease;
     }
     .login-splash.show{
       opacity:1;
       pointer-events:auto;
     }
-    .login-splash-inner{
-      display:grid;
-      justify-items:center;
-      gap:18px;
-      text-align:center;
-    }
-    .login-splash-logo{
-      width:min(72vw,320px);
-      height:auto;
-      filter:drop-shadow(0 18px 34px rgba(0,0,0,.22));
-    }
-    .login-splash-spinner{
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      border:3px solid rgba(255,255,255,.28);
-      border-top-color:#fff;
-      animation:loginSpin .9s linear infinite;
-    }
-    .login-splash-copy{
-      font-weight:800;
-      letter-spacing:-.02em;
-      opacity:.92;
-    }
-    @keyframes loginSpin{to{transform:rotate(360deg)}}
 
-  
+
     .auth-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
     .text-link{border:0;background:transparent;color:var(--login-blue);font-size:14px;font-weight:800;padding:6px 8px;margin:0;box-shadow:none;width:auto;cursor:pointer}
     .text-link:hover{text-decoration:underline}
@@ -123,13 +95,7 @@
     <div class="debug" id="debug"></div>
   </main>
 
-  <div class="login-splash" id="loginSplash" aria-live="polite" aria-hidden="true">
-    <div class="login-splash-inner">
-      <img src="/hearty-logo.png" alt="Hearty" class="login-splash-logo">
-      <div class="login-splash-spinner" aria-hidden="true"></div>
-      <div class="login-splash-copy" id="loginSplashCopy">Opening Hearty…</div>
-    </div>
-  </div>
+  <div class="login-splash" id="loginSplash" aria-live="polite" aria-hidden="true"></div>
 
 
   <script>
@@ -160,8 +126,6 @@
       }
       function showSplash(text){
         const splash = document.getElementById('loginSplash');
-        const copy = document.getElementById('loginSplashCopy');
-        if(copy) copy.textContent = text || 'Opening Hearty…';
         if(splash){
           splash.classList.add('show');
           splash.setAttribute('aria-hidden','false');
