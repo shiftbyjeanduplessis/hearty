@@ -181,10 +181,10 @@ button#settingsInstallBtn.settings-install-btn,
   </header>
 <main class="settings-layout">
     <section id="account-card" class="settings-card">
-      <div class="settings-head"><div><h2 class="settings-title">Account &amp; Plan</h2><p class="settings-copy">Plan, account, and support details for your app.</p></div><span id="license-status-pill" class="status-pill">Active</span></div>
+      <div class="settings-head"><div><h2 class="settings-title">Account &amp; Plan</h2><p class="settings-copy">Your Hearty access, account, and support details.</p></div><span id="license-status-pill" class="status-pill">Lifetime</span></div>
       <div class="kv">
         <div class="kv-row"><div class="kv-key">Account</div><div id="account-email" class="kv-val">Not connected</div></div>
-        <div class="kv-row"><div class="kv-key">Plan</div><div class="kv-val">Lifetime Access</div></div>
+        <div class="kv-row"><div class="kv-key">Access</div><div class="kv-val">Lifetime Access</div></div>
         <div class="kv-row"><div class="kv-key">Support</div><div class="kv-val"><a href="mailto:support@hearty.health">support@hearty.health</a></div></div>
       </div>
 
@@ -302,7 +302,7 @@ button#settingsInstallBtn.settings-install-btn,
         </div>
       </div>
       <div class="kv-list">
-        <div class="kv-row"><div class="kv-key">Version</div><div id="appVersionText" class="kv-val">Hearty v2026.05.08</div></div>
+        <div class="kv-row"><div class="kv-key">Version</div><div id="appVersionText" class="kv-val">Hearty v2026.05.11</div></div>
         <div class="kv-row"><div class="kv-key">Cache</div><div id="cacheStatusText" class="kv-val">Checking…</div></div>
       </div>
       <div class="inline-actions" style="margin-top:16px">
@@ -344,18 +344,24 @@ button#settingsInstallBtn.settings-install-btn,
 <div id="settings-toast" class="toast"></div>
 <script>
 const STORAGE = {
-  accountEmail:'heartyAccountEmail', licenseStatus:'heartyLicenseStatus', licenseExpiry:'heartyLicenseExpiry',
+  accountEmail:'heartyAccountEmail', licenseStatus:'heartyLicenseStatus',
   startingWeight:'heartyStartingWeightKg', currentWeight:'heartyCurrentWeightKg', targetWeight:'heartyTargetWeightKg', heightCm:'heartyHeightCm',
   injectionName:'heartyInjectionName', injectionDose:'heartyInjectionDose', injectionDay:'heartyInjectionDay', injectionReminderEnabled:'heartyInjectionReminderEnabled',
   waterAuto:'heartyWaterAuto', waterTargetLitres:'heartyWaterTargetLitres', theme:'heartyTheme', unitsSystem:'heartyUnitsSystem', appVersion:'heartyAppVersion'
 };
 const defaults = {
-  heartyAccountEmail:'Not connected', heartyLicenseStatus:'active', heartyLicenseExpiry:'',
+  heartyAccountEmail:'Not connected', heartyLicenseStatus:'lifetime',
   heartyStartingWeightKg:'', heartyCurrentWeightKg:'', heartyTargetWeightKg:'', heartyHeightCm:'',
   heartyInjectionName:'', heartyInjectionDose:'', heartyInjectionDay:'Monday', heartyInjectionReminderEnabled:'true',
-  heartyWaterAuto:'true', heartyWaterTargetLitres:'3.0', heartyTheme:'clean_blue', heartyUnitsSystem:'metric', heartyAppVersion:'Hearty v2026.05.08'
+  heartyWaterAuto:'true', heartyWaterTargetLitres:'3.0', heartyTheme:'clean_blue', heartyUnitsSystem:'metric', heartyAppVersion:'Hearty v2026.05.11'
 };
 Object.keys(defaults).forEach(k => localStorage.getItem(k) === null && localStorage.setItem(k, defaults[k]));
+try {
+  localStorage.setItem('heartyLicenseStatus', 'lifetime');
+  localStorage.removeItem('heartyLicenseExpiry');
+  localStorage.removeItem('heartyLicensePeriod');
+  localStorage.removeItem('heartyPlanExpiry');
+} catch(e) {}
 (function clearLegacyWeightPlaceholders(){
   if(localStorage.getItem('heartySettingsPlaceholdersClearedV1')==='true') return;
   const legacy = { heartyStartingWeightKg:'98.0', heartyCurrentWeightKg:'94.4', heartyTargetWeightKg:'75.0', heartyHeightCm:'165' };
@@ -402,11 +408,11 @@ const computeWaterLitres = ()=> {
 };
 function applyTheme(theme){ document.documentElement.setAttribute('data-theme', theme || 'clean_blue'); localStorage.setItem('heartyTheme', theme || 'clean_blue'); localStorage.setItem('hearty-theme', theme || 'clean_blue'); }
 function updateLicenseUI(){
-  const status = localStorage.getItem(STORAGE.licenseStatus) || 'active';
   const pill = $('license-status-pill');
   if (!pill) return;
-  pill.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-  pill.className = 'status-pill' + (status === 'grace' ? ' grace' : status === 'expired' ? ' expired' : '');
+  pill.textContent = 'Lifetime';
+  pill.className = 'status-pill';
+  try { localStorage.setItem(STORAGE.licenseStatus, 'lifetime'); } catch(e) {}
 }
 
 function readCanonicalData(){
@@ -723,7 +729,7 @@ $('logoutBtn')?.addEventListener('click', async () => {
 })();
 
 (function initAppVersionBlock(){
-  const version = 'Hearty v2026.05.08';
+  const version = 'Hearty v2026.05.11';
   try { localStorage.setItem('heartyAppVersion', version); } catch(e){}
   const v = document.getElementById('appVersionText');
   const c = document.getElementById('cacheStatusText');
