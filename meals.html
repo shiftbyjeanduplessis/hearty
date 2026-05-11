@@ -1031,7 +1031,18 @@
           "heartySupportMealsToday",
           "heartyMealsSupportDay",
           "hearty_meals_support_override",
-          "hearty_support_meals_cache"
+          "hearty_support_meals_cache",
+          "heartyMealsSupportPlan",
+          "heartyMealsGeneratedSupportWeek",
+          "heartyMealsSupportWeek",
+          "heartyMealsAdjustedWeek",
+          "heartyMealsCurrentSupportWeek",
+          "heartyMealsSupportCache",
+          "heartySupportAdjustedMeals",
+          "heartyMealsSupportModeCache",
+          "heartyMealsRenderedSupportDay",
+          "heartyMealsCurrentMode",
+          "heartyMealsSupportSnapshotV1"
         ].forEach(function(key){
           try { localStorage.removeItem(key); } catch(e) {}
         });
@@ -1042,6 +1053,59 @@
         clearSupportMealCaches();
         updateSupportBanner("");
 
+        try { localStorage.removeItem("meals_support_mode"); } catch(e) {}
+        try { localStorage.removeItem("supportMode"); } catch(e) {}
+        try { localStorage.setItem("hearty_support_mode", "off"); } catch(e) {}
+        try { localStorage.setItem("heartySupportActive", "false"); } catch(e) {}
+
+        try {
+          localStorage.setItem("heartySupportMode", JSON.stringify({
+            isActive:false,
+            active:false,
+            reason:null,
+            primarySymptom:null,
+            mode:null,
+            sourcePage:"meals",
+            endedAt:new Date().toISOString()
+          }));
+        } catch(e) {}
+
+        try {
+          localStorage.setItem("heartySupportState", JSON.stringify({
+            active:false,
+            isActive:false,
+            reason:null,
+            primarySymptom:null,
+            mode:null,
+            updatedAt:new Date().toISOString()
+          }));
+        } catch(e) {}
+
+        try {
+          localStorage.setItem("hearty_support_state", JSON.stringify({
+            active:false,
+            isActive:false,
+            reason:null,
+            primarySymptom:null,
+            mode:null,
+            updatedAt:new Date().toISOString()
+          }));
+        } catch(e) {}
+
+        try {
+          var canonical = JSON.parse(localStorage.getItem("hearty:data:v1") || "{}");
+          canonical.support = Object.assign({}, canonical.support || {}, {
+            active:false,
+            isActive:false,
+            active_state:"",
+            reason:null,
+            primarySymptom:null,
+            mode:null,
+            updated_at:new Date().toISOString()
+          });
+          localStorage.setItem("hearty:data:v1", JSON.stringify(canonical));
+        } catch(e) {}
+
         try {
           window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", {
             detail:{ active:false, source:"meals" }
@@ -1049,18 +1113,70 @@
         } catch(e) {}
 
         var bridge = window.heartyMealsBridge;
+
         if (bridge && bridge.state) {
           bridge.state.adjustments = bridge.state.adjustments || {};
           bridge.state.adjustments.supportMode = null;
           bridge.state.adjustments.supportActive = false;
+          bridge.state.adjustments.lowAppetite = false;
+          bridge.state.adjustments.easyDigestion = false;
+          bridge.state.adjustments.softTextureBias = false;
+          bridge.state.adjustments.lighterMeals = false;
+          bridge.state.adjustments.lowerBulkBias = false;
+          bridge.state.adjustments.quick = false;
+          bridge.state.adjustments.lowPrep = false;
+          bridge.state.adjustments.leftoversPreferred = false;
+
+          try { bridge.state.supportWeek = null; } catch(e) {}
+          try { bridge.state.supportPlan = null; } catch(e) {}
+          try { bridge.state.adjustedWeek = null; } catch(e) {}
+          try { bridge.state.renderedSupportDay = null; } catch(e) {}
         }
 
-        if (typeof window.renderMealsForToday === "function") window.renderMealsForToday({ forceStandard:true });
-        else if (typeof window.renderMeals === "function") window.renderMeals({ forceStandard:true });
-        else if (bridge && typeof bridge.generateWeek === "function") bridge.generateWeek();
-        else if (bridge && typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
-        else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
-        else if (bridge && typeof bridge.init === "function") bridge.init();
+        function forceStandardMealUiRefresh(){
+          var b = window.heartyMealsBridge;
+
+          if (b && b.state) {
+            b.state.adjustments = b.state.adjustments || {};
+            b.state.adjustments.supportMode = null;
+            b.state.adjustments.supportActive = false;
+            b.state.adjustments.snacksOn = getSnacksOn();
+          }
+
+          if (typeof window.renderMealsForToday === "function") {
+            window.renderMealsForToday({ forceStandard:true, supportMode:null });
+            return;
+          }
+
+          if (typeof window.renderMeals === "function") {
+            window.renderMeals({ forceStandard:true, supportMode:null });
+            return;
+          }
+
+          if (b && typeof b.refreshMealsUI === "function") {
+            b.refreshMealsUI();
+            return;
+          }
+
+          if (b && typeof b.refresh === "function") {
+            b.refresh();
+            return;
+          }
+        }
+
+        if (bridge && typeof bridge.regenerateWeek === "function") {
+          bridge.regenerateWeek();
+        } else if (bridge && typeof bridge.generateWeek === "function") {
+          bridge.generateWeek();
+        } else if (bridge && typeof bridge.init === "function") {
+          bridge.init();
+        }
+
+        forceStandardMealUiRefresh();
+        setTimeout(forceStandardMealUiRefresh, 50);
+        setTimeout(forceStandardMealUiRefresh, 250);
+
+        showMealsToast("Support Mode off. Standard meals restored.");
       }
 
       function bindSupportOffButton(){
@@ -1421,8 +1537,20 @@
         updateSupportBanner(readGlobalSupport());
       });
 
-      window.addEventListener("hearty:support-mode-changed", function(){
-        updateSupportBanner(readGlobalSupport());
+      window.addEventListener("hearty:support-mode-changed", function(event){
+        var reason = readGlobalSupport();
+        updateSupportBanner(reason);
+
+        if (!reason && event && event.detail && event.detail.active === false) {
+          var bridge = window.heartyMealsBridge;
+          if (bridge && bridge.state) {
+            bridge.state.adjustments = bridge.state.adjustments || {};
+            bridge.state.adjustments.supportMode = null;
+            bridge.state.adjustments.supportActive = false;
+          }
+          if (bridge && typeof bridge.refreshMealsUI === "function") bridge.refreshMealsUI();
+          else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
+        }
       });
 
       if (document.readyState === "loading") {
