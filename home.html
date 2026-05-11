@@ -328,33 +328,7 @@
       } catch(e) {}
     }
 
-    document.addEventListener('click', function(event){
-      var dayBtn = event.target && event.target.closest && event.target.closest('[data-med-day]');
-      if(dayBtn){
-        var frequency = readVal('coreSetupFrequency') || 'weekly';
-        if(frequency === 'daily' || frequency === 'not_sure' || frequency === 'not_using'){
-          return;
-        }
-
-        if(frequency === 'weekly'){
-          Array.prototype.slice.call(document.querySelectorAll('[data-med-day]')).forEach(function(btn){
-            if(btn !== dayBtn) btn.classList.remove('active');
-          });
-          dayBtn.classList.toggle('active');
-        } else if(frequency === 'twice_weekly'){
-          if(dayBtn.classList.contains('active')){
-            dayBtn.classList.remove('active');
-          } else {
-            var active = document.querySelectorAll('[data-med-day].active');
-            if(active.length < 2) dayBtn.classList.add('active');
-          }
-        } else {
-          dayBtn.classList.toggle('active');
-        }
-
-        syncExpandedCoreOnboarding();
-      }
-    }, true);
+    // Medication day button clicks are handled by the external Home JS only.
 
     document.addEventListener('change', function(event){
       if(event.target && event.target.closest && event.target.closest('#coreSetupSheet')){
