@@ -1042,7 +1042,15 @@
           "heartyMealsSupportModeCache",
           "heartyMealsRenderedSupportDay",
           "heartyMealsCurrentMode",
-          "heartyMealsSupportSnapshotV1"
+          "heartyMealsSupportSnapshotV1",
+          "heartyMealsWeekSupport",
+          "heartyMealsWeekAdjusted",
+          "heartyMealsSupportActiveWeek",
+          "heartyMealsLastSupportWeek",
+          "heartyMealsTodaySupport",
+          "heartyMealsSupportMeals",
+          "heartyMealsGeneratedWeek_support",
+          "heartyMealsGeneratedWeekSupport"
         ].forEach(function(key){
           try { localStorage.removeItem(key); } catch(e) {}
         });
@@ -1063,46 +1071,95 @@
           bridge.state.adjustments.quick = false;
           bridge.state.adjustments.lowPrep = false;
           bridge.state.adjustments.leftoversPreferred = false;
-          bridge.state.adjustments.snacksOn = getSnacksOn();
+
+          // Clear common in-memory support/generated plan fields.
+          [
+            "supportWeek",
+            "supportPlan",
+            "adjustedWeek",
+            "renderedSupportDay",
+            "supportMeals",
+            "supportGeneratedWeek",
+            "activeSupportWeek",
+            "currentSupportWeek",
+            "supportDay",
+            "supportSnapshot"
+          ].forEach(function(key){
+            try {
+              if (Object.prototype.hasOwnProperty.call(bridge.state, key)) bridge.state[key] = null;
+            } catch(e) {}
+          });
         }
 
         return bridge;
       }
 
+      function clearVisibleMealsBeforeStandardRepaint(){
+        var list = document.getElementById("mealList");
+        if (!list) return;
+        list.innerHTML = '<article class="meal-card"><div class="meal-card__header"><div><div class="meal-card__eyebrow">Refreshing</div><h3 class="meal-card__title">Restoring standard meals</h3><div class="meal-card__subtitle">Support Mode is off. Rebuilding your standard plan…</div></div><div class="meal-card__protein">—</div></div></article>';
+      }
+
       function refreshBridgeMeals(){
         var bridge = window.heartyMealsBridge;
         if (!bridge) return;
-        if (typeof bridge.refreshMealsUI === "function") bridge.refreshMealsUI();
-        else if (typeof bridge.refresh === "function") bridge.refresh();
+
+        if (typeof bridge.refreshMealsUI === "function") {
+          bridge.refreshMealsUI();
+          return;
+        }
+
+        if (typeof bridge.renderMeals === "function") {
+          bridge.renderMeals();
+          return;
+        }
+
+        if (typeof bridge.render === "function") {
+          bridge.render();
+          return;
+        }
+
+        if (typeof bridge.refresh === "function") {
+          bridge.refresh();
+          return;
+        }
       }
 
       function regenerateStandardMeals(options){
         options = options || {};
+        clearSupportMealCaches();
+        clearVisibleMealsBeforeStandardRepaint();
+
         var bridge = forceBridgeIntoStandardMealMode();
         if (!bridge) return;
 
-        /*
-          The bridge has document-level handlers for regenerate day/week.
-          If the current week was created while Support Mode was active,
-          regenerating a single day can reuse the support-generated week as
-          its base. Force a clean standard week first, then regenerate the
-          active day from that clean standard base if requested.
-        */
+        // Some bridge versions expose a support toggle. Use it, then force state again.
         if (typeof bridge.toggleSupportMode === "function") {
-          try { bridge.toggleSupportMode(null); } catch(e) { console.warn("[Hearty Meals] toggleSupportMode(null) failed:", e); }
+          try { bridge.toggleSupportMode(null); } catch(e) {}
+          forceBridgeIntoStandardMealMode();
+        }
+
+        // Force a standard week first. This is more reliable than only regenerating one day
+        // from a week that was originally built during Support Mode.
+        if (typeof bridge.generateWeek === "function") {
+          bridge.generateWeek();
+        } else if (typeof bridge.regenerateWeek === "function") {
+          bridge.regenerateWeek();
+        } else if (typeof bridge.init === "function") {
+          bridge.init();
         }
 
         forceBridgeIntoStandardMealMode();
 
-        if (typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
-        else if (typeof bridge.generateWeek === "function") bridge.generateWeek();
-        else if (typeof bridge.init === "function") bridge.init();
-
-        forceBridgeIntoStandardMealMode();
-
+        // Only after the standard week exists, regenerate the active day if requested.
         if (options.day === true && typeof bridge.regenerateDay === "function") {
           try {
-            var index = Number(bridge.state && bridge.state.activeDayIndex);
+            var index = Number(bridge.state && (
+              bridge.state.activeDayIndex ??
+              bridge.state.selectedDayIndex ??
+              bridge.state.currentDayIndex ??
+              bridge.state.dayIndex
+            ));
             if (!Number.isFinite(index)) index = 0;
             bridge.regenerateDay(index);
           } catch(e) {
@@ -1110,15 +1167,23 @@
           }
         }
 
+        forceBridgeIntoStandardMealMode();
         refreshBridgeMeals();
-        setTimeout(refreshBridgeMeals, 50);
-        setTimeout(refreshBridgeMeals, 250);
+        setTimeout(function(){
+          forceBridgeIntoStandardMealMode();
+          refreshBridgeMeals();
+        }, 75);
+        setTimeout(function(){
+          forceBridgeIntoStandardMealMode();
+          refreshBridgeMeals();
+        }, 300);
       }
 
       function turnSupportOffAndRestoreStandardMeals(){
         writeGlobalSupport("");
         clearSupportMealCaches();
         updateSupportBanner("");
+        clearVisibleMealsBeforeStandardRepaint();
 
         try { localStorage.removeItem("meals_support_mode"); } catch(e) {}
         try { localStorage.removeItem("supportMode"); } catch(e) {}
@@ -1188,9 +1253,23 @@
         setTimeout(function(){
           forceBridgeIntoStandardMealMode();
           refreshBridgeMeals();
-        }, 350);
+        }, 400);
 
         showMealsToast("Support Mode off. Standard meals restored.");
+      }
+
+      function bindSupportOffButton(){
+        var btn = document.getElementById("supportOffBtn");
+        if (!btn || btn.__bound) return;
+
+        btn.__bound = true;
+
+        btn.addEventListener("click", function(event){
+          event.preventDefault();
+          event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          turnSupportOffAndRestoreStandardMeals();
+        }, true);
       }
 
       function bindStandardRegenerateOverrides(){
@@ -1202,30 +1281,17 @@
           var weekBtn = event.target && event.target.closest && event.target.closest("[data-regenerate-week]");
 
           if (!dayBtn && !weekBtn) return;
+
+          // Only override when Support is off. If Support is on, allow support regeneration.
           if (readGlobalSupport()) return;
 
           event.preventDefault();
           event.stopPropagation();
           if (event.stopImmediatePropagation) event.stopImmediatePropagation();
 
-          clearSupportMealCaches();
-          forceBridgeIntoStandardMealMode();
           regenerateStandardMeals({ day: !!dayBtn });
           showMealsToast(dayBtn ? "Standard day regenerated." : "Standard week generated.");
         }, true);
-      }
-
-      function bindSupportOffButton(){
-        var btn = document.getElementById("supportOffBtn");
-        if (!btn || btn.__bound) return;
-
-        btn.__bound = true;
-        btn.addEventListener("click", function(event){
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-          turnSupportOffAndRestoreStandardMeals();
-        });
       }
 
       function syncTodayLabel(){
@@ -1581,14 +1647,9 @@
         updateSupportBanner(reason);
 
         if (!reason && event && event.detail && event.detail.active === false) {
-          var bridge = window.heartyMealsBridge;
-          if (bridge && bridge.state) {
-            bridge.state.adjustments = bridge.state.adjustments || {};
-            bridge.state.adjustments.supportMode = null;
-            bridge.state.adjustments.supportActive = false;
-          }
-          if (bridge && typeof bridge.refreshMealsUI === "function") bridge.refreshMealsUI();
-          else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
+          clearSupportMealCaches();
+          forceBridgeIntoStandardMealMode();
+          refreshBridgeMeals();
         }
       });
 
