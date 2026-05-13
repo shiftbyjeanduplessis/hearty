@@ -452,26 +452,81 @@
     return true;
   }
 
+  function communityLocalKey(){
+    return `heartyCommunityEnabled_${currentUser?.id || 'anonymous'}`;
+  }
+
+  function getStoredCommunityEnabled(){
+    try {
+      return localStorage.getItem(communityLocalKey()) === 'true';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setStoredCommunityEnabled(next){
+    try {
+      localStorage.setItem(communityLocalKey(), next ? 'true' : 'false');
+    } catch (_) {}
+  }
+
+  function supabaseErrorMessage(error, fallback){
+    if (!error) return fallback || 'Unknown error';
+    return error.message || error.details || error.hint || fallback || 'Unknown Supabase error';
+  }
+
   async function isEnabled(){
     if (!usingSupabase || !currentUser || !sb) return false;
-    const { data, error } = await sb.from(SETTINGS_TABLE).select('community_enabled').eq('user_id', currentUser.id).maybeSingle();
-    if (error && error.code !== 'PGRST116') console.warn(error);
-    communityEnabledCache = data ? data.community_enabled === true : false;
-    return communityEnabledCache;
+
+    const storedEnabled = getStoredCommunityEnabled();
+
+    try {
+      const { data, error } = await sb
+        .from(SETTINGS_TABLE)
+        .select('community_enabled')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.warn('[Community] settings read failed. Falling back to local state:', error);
+        communityEnabledCache = storedEnabled;
+        return communityEnabledCache;
+      }
+
+      if (data) {
+        communityEnabledCache = data.community_enabled === true;
+        setStoredCommunityEnabled(communityEnabledCache);
+        return communityEnabledCache;
+      }
+
+      // No settings row yet. Do not silently block posting if the user already enabled Community locally.
+      communityEnabledCache = storedEnabled;
+      return communityEnabledCache;
+    } catch (err) {
+      console.warn('[Community] settings read crashed. Falling back to local state:', err);
+      communityEnabledCache = storedEnabled;
+      return communityEnabledCache;
+    }
   }
 
   async function setEnabled(next){
     if (!(await requireUser())) return;
+
+    communityEnabledCache = Boolean(next);
+    setStoredCommunityEnabled(communityEnabledCache);
+    await updateStatus();
+
     const { error } = await sb.from(SETTINGS_TABLE).upsert({
       user_id: currentUser.id,
-      community_enabled: next,
+      community_enabled: communityEnabledCache,
       updated_at: new Date().toISOString()
     }, { onConflict: 'user_id' });
+
     if (error) {
-      console.warn(error);
-      showToast('Could not update Community setting.');
-      return;
+      console.warn('[Community] setting save failed:', error);
+      showToast('Community switched locally, but Supabase settings failed: ' + supabaseErrorMessage(error, 'Check community_user_settings policy.'));
     }
+
     await renderAll();
   }
 
@@ -673,15 +728,63 @@
     return { imagePath, imageUrl };
   }
 
+  function isMissingColumnError(error){
+    const msg = String(supabaseErrorMessage(error, '')).toLowerCase();
+    return error?.code === 'PGRST204' || msg.includes('could not find') || msg.includes('column') || msg.includes('schema cache');
+  }
+
+  async function insertCommunityPost(payload){
+    // First try the full current schema. This is the preferred community_posts structure.
+    let result = await sb.from(POSTS_TABLE).insert(payload).select('id').single();
+    if (!result.error) return result;
+
+    // If Supabase says one of the newer columns is missing, retry with a smaller payload.
+    // This keeps old databases working while the schema catches up.
+    if (isMissingColumnError(result.error)) {
+      console.warn('[Community] full post payload failed, retrying minimal payload:', result.error);
+      const minimalPayload = {
+        user_id: payload.user_id,
+        body: payload.body
+      };
+
+      if (payload.image_url) minimalPayload.image_url = payload.image_url;
+      if (payload.image_path) minimalPayload.image_path = payload.image_path;
+      if (payload.expires_at) minimalPayload.expires_at = payload.expires_at;
+
+      result = await sb.from(POSTS_TABLE).insert(minimalPayload).select('id').single();
+    }
+
+    return result;
+  }
+
   async function createPost(){
-    if (!(await isEnabled())) return;
+    const button = document.getElementById('communityPostBtn');
     const input = document.getElementById('communityPostInput');
-    const body = input.value.trim().slice(0,280);
-    if (!body && !selectedPostImage) return;
+
+    if (!(await requireUser())) return;
+
+    const enabled = await isEnabled();
+    if (!enabled) {
+      showToast('Community is off. Turn Community on before posting.');
+      return;
+    }
+
+    const body = (input?.value || '').trim().slice(0,280);
+    if (!body && !selectedPostImage) {
+      showToast('Write something or add a photo before posting.');
+      return;
+    }
+
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Posting...';
+    }
+
     try {
-      const image = await uploadPostImage(selectedPostImage);
+      const image = selectedPostImage ? await uploadPostImage(selectedPostImage) : { imagePath:null, imageUrl:null };
       const expiresAt = image.imageUrl ? new Date(Date.now() + 24*60*60*1000).toISOString() : null;
-      const { error } = await sb.from(POSTS_TABLE).insert({
+
+      const payload = {
         user_id: currentUser.id,
         post_type: 'user_post',
         event_type: 'user_post',
@@ -689,29 +792,52 @@
         image_path: image.imagePath,
         image_url: image.imageUrl,
         expires_at: expiresAt
-      });
+      };
+
+      const { data, error } = await insertCommunityPost(payload);
+      console.log('[Community] post insert result:', { data, error });
+
       if (error) throw error;
+
       input.value = '';
       clearPostImage();
+      showToast('Posted.');
       await renderAll();
     } catch (err) {
-      console.warn(err);
-      showToast('Post could not be saved. Check community_posts table columns/policies.');
+      console.error('[Community] createPost failed:', err);
+      showToast('Post failed: ' + supabaseErrorMessage(err, 'Check community_posts RLS/table columns.'));
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Post';
+      }
     }
   }
 
   async function fetchPosts(){
     if (!(await isEnabled())) { postsCache = []; return []; }
     const nowIso = new Date().toISOString();
-    const { data, error } = await sb
+
+    let result = await sb
       .from(POSTS_TABLE)
       .select('id,user_id,post_type,event_type,body,image_url,image_path,created_at,expires_at')
       .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
       .order('created_at', { ascending:false })
       .limit(50);
+
+    if (isMissingColumnError(result.error)) {
+      console.warn('[Community] full post select failed, retrying minimal select:', result.error);
+      result = await sb
+        .from(POSTS_TABLE)
+        .select('id,user_id,body,image_url,created_at')
+        .order('created_at', { ascending:false })
+        .limit(50);
+    }
+
+    const { data, error } = result;
     if (error) {
-      console.warn(error);
-      showToast('Could not load Community posts.');
+      console.warn('[Community] fetchPosts failed:', error);
+      showToast('Could not load Community posts: ' + supabaseErrorMessage(error, 'Check community_posts select policy.'));
       postsCache = [];
       return [];
     }
