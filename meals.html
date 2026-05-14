@@ -964,32 +964,63 @@
         });
       }
 
+      function normaliseSupportReasonForMeals(value){
+        if (!value) return "";
+        var raw = String(value).trim();
+        if (!raw) return "";
+        var lower = raw.toLowerCase();
+        if (["off","false","0","none","null","undefined"].indexOf(lower) !== -1) return "";
+        var map = {
+          "nausea":"nausea",
+          "bloating":"bloating",
+          "fatigue":"fatigue",
+          "exhaustion":"fatigue",
+          "low energy":"fatigue",
+          "low_energy":"fatigue",
+          "tired":"fatigue",
+          "low appetite":"low_appetite",
+          "low_appetite":"low_appetite",
+          "low-appetite":"low_appetite",
+          "appetite":"low_appetite"
+        };
+        return map[lower] || "";
+      }
+
       function readGlobalSupport(){
         try {
           var canonicalRaw = localStorage.getItem("hearty_support_mode_v1");
 
-          // If the canonical bridge key exists, trust it first.
-          // This prevents older stale keys from reactivating Support Mode after it was switched off.
+          // Canonical key is the authority. If it exists and is off, do NOT fall back
+          // to old Meals-only keys, because that is what resurrected Support Mode.
           if (canonicalRaw) {
             try {
               var canonical = JSON.parse(canonicalRaw);
               if (canonical && (canonical.active === true || canonical.isActive === true)) {
-                return canonical.reason || canonical.primarySymptom || canonical.symptom || canonical.mode || canonical.type || "";
+                return normaliseSupportReasonForMeals(canonical.reason || canonical.primarySymptom || canonical.symptom || canonical.mode || canonical.type || "");
               }
               return "";
-            } catch(e) {}
+            } catch(e) {
+              return "";
+            }
           }
 
+          // Legacy fallback is now conservative: only accept an explicit active object
+          // or a plain valid reason. An explicit off object must block stale meals_support_mode.
           var raw = localStorage.getItem("heartySupportMode") || localStorage.getItem("supportMode") || "";
           if (raw && raw.charAt(0) === "{") {
             var parsed = JSON.parse(raw);
-            if (parsed && (parsed.isActive === true || parsed.active === true) && (parsed.reason || parsed.primarySymptom || parsed.mode)) {
-              return parsed.reason || parsed.primarySymptom || parsed.mode;
+            if (parsed && (parsed.isActive === true || parsed.active === true)) {
+              return normaliseSupportReasonForMeals(parsed.reason || parsed.primarySymptom || parsed.symptom || parsed.mode || parsed.type || "");
             }
-            return localStorage.getItem("meals_support_mode") || "";
+            return "";
           }
-          if (["off","false","0","none"].indexOf(String(raw).toLowerCase()) !== -1) return "";
-          return raw || localStorage.getItem("meals_support_mode") || "";
+
+          var plain = normaliseSupportReasonForMeals(raw);
+          if (plain) return plain;
+
+          // Last resort only. This key is old and often stale, so only use it if it is
+          // a clean valid reason and no explicit off key exists above.
+          return normaliseSupportReasonForMeals(localStorage.getItem("meals_support_mode") || "");
         } catch(e) {
           return "";
         }
