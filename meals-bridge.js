@@ -1,25 +1,18 @@
 (function () {
   /**
-   * Hearty Meals Bridge — Support Sync Fix
+   * Hearty Meals Bridge — Support Sync Fix v2
    *
    * Drop-in replacement for js/meals-bridge.js.
    *
-   * What this fixes:
-   * 1. Meals no longer owns support mode locally.
-   * 2. Meals reads/writes the shared support key: hearty_support_mode_v1.
-   * 3. Support Off from any page is respected when Meals loads, regains focus, or receives a storage event.
-   * 4. Standard meals are preserved separately from support meals, so turning support off restores the normal plan.
+   * v2 fixes from screenshot:
+   * - Does NOT revive old/legacy support keys.
+   * - Only reads the canonical shared support key: hearty_support_mode_v1.
+   * - Hides internal engine tags such as baseline, primary, chia, salad, support.
+   * - Shows a clean support pill only when canonical support is actively on.
+   * - Preserves normal meals separately from temporary support meals.
    */
 
   const SUPPORT_KEY = 'hearty_support_mode_v1';
-
-  const LEGACY_SUPPORT_KEYS = [
-    'hearty_support_state_v3',
-    'heartySupportState',
-    'heartySupportMode',
-    'supportMode',
-    'meals_support_mode'
-  ];
 
   const VALID_REASONS = new Set(['nausea', 'bloating', 'fatigue', 'low_appetite']);
 
@@ -32,6 +25,30 @@
     lowappetite: 'low_appetite',
     appetite: 'low_appetite'
   };
+
+  const HIDDEN_ENGINE_TAGS = new Set([
+    'baseline',
+    'primary',
+    'secondary',
+    'support',
+    'support adjusted',
+    'support-adjusted',
+    'chia',
+    'oats',
+    'eggs',
+    'yoghurt',
+    'yogurt',
+    'salad',
+    'stirfry',
+    'stir fry',
+    'stew',
+    'bowl',
+    'snack',
+    'main',
+    'light',
+    'soft',
+    'simple'
+  ]);
 
   const SLOT_TO_INDEX = { breakfast: 0, lunch: 1, dinner: 2, snack: 3 };
   const SLOT_LABELS = {
@@ -114,77 +131,34 @@
       if (!store) return fallback;
 
       const canonical = safeJsonParse(store.getItem(SUPPORT_KEY));
-      if (canonical && typeof canonical === 'object') {
-        const reason =
-          normaliseReason(canonical.reason) ||
-          normaliseReason(canonical.symptom) ||
-          normaliseReason(canonical.type);
 
-        const active = canonical.active === true || canonical.isActive === true;
+      if (!canonical || typeof canonical !== 'object') {
+        return fallback;
+      }
 
-        if (active && reason) {
-          return {
-            active: true,
-            reason,
-            sourcePage: canonical.sourcePage || canonical.source || null,
-            startedAt: canonical.startedAt || canonical.updatedAt || null,
-            lastChangedAt: canonical.lastChangedAt || canonical.updatedAt || null
-          };
-        }
+      const active = canonical.active === true || canonical.isActive === true;
+      const reason =
+        normaliseReason(canonical.reason) ||
+        normaliseReason(canonical.symptom) ||
+        normaliseReason(canonical.type);
 
+      if (!active || !reason) {
         return {
           active: false,
           reason: null,
           sourcePage: canonical.sourcePage || canonical.source || null,
-          startedAt: canonical.startedAt || null,
+          startedAt: null,
           lastChangedAt: canonical.lastChangedAt || canonical.updatedAt || null
         };
       }
 
-      // Legacy fallback: read older keys, but immediately migrate to canonical shape.
-      for (const key of LEGACY_SUPPORT_KEYS) {
-        const raw = store.getItem(key);
-        if (!raw) continue;
-
-        const parsed = safeJsonParse(raw);
-
-        if (parsed && typeof parsed === 'object') {
-          const reason =
-            normaliseReason(parsed.reason) ||
-            normaliseReason(parsed.symptom) ||
-            normaliseReason(parsed.type) ||
-            normaliseReason(parsed.mode);
-
-          const active = parsed.active === true || parsed.isActive === true || !!reason;
-
-          if (active && reason) {
-            const migrated = {
-              active: true,
-              reason,
-              sourcePage: parsed.sourcePage || parsed.source || key,
-              startedAt: parsed.startedAt || parsed.updatedAt || new Date().toISOString(),
-              lastChangedAt: parsed.lastChangedAt || parsed.updatedAt || new Date().toISOString()
-            };
-            writeGlobalSupportMode(migrated.reason, migrated.sourcePage || 'meals-migration', migrated.startedAt);
-            return migrated;
-          }
-        }
-
-        const reason = normaliseReason(raw);
-        if (reason) {
-          const migrated = {
-            active: true,
-            reason,
-            sourcePage: key,
-            startedAt: new Date().toISOString(),
-            lastChangedAt: new Date().toISOString()
-          };
-          writeGlobalSupportMode(reason, 'meals-migration', migrated.startedAt);
-          return migrated;
-        }
-      }
-
-      return fallback;
+      return {
+        active: true,
+        reason,
+        sourcePage: canonical.sourcePage || canonical.source || null,
+        startedAt: canonical.startedAt || canonical.updatedAt || null,
+        lastChangedAt: canonical.lastChangedAt || canonical.updatedAt || null
+      };
     }
 
     function writeGlobalSupportMode(reason, sourcePage = 'meals', existingStartedAt = null) {
@@ -211,13 +185,21 @@
       if (store) {
         store.setItem(SUPPORT_KEY, JSON.stringify(next));
 
-        // Clear the old Meals-only key so it cannot resurrect support after global off.
-        store.removeItem('meals_support_mode');
-
-        // Important: leave historical/analytics keys alone, but prevent obvious boolean legacy state.
+        /**
+         * Do not migrate/read legacy support keys.
+         * But when switching support off, clear obvious old Meals-only keys so they cannot
+         * visually leak back into this page through older scripts.
+         */
         if (!normalisedReason) {
-          store.setItem('heartySupportMode', JSON.stringify(next));
-          store.setItem('heartySupportState', JSON.stringify(next));
+          [
+            'meals_support_mode',
+            'heartySupportMode',
+            'supportMode'
+          ].forEach((key) => {
+            try {
+              store.removeItem(key);
+            } catch (_) {}
+          });
         }
       }
 
@@ -252,9 +234,11 @@
       if (typeof engine.generateWeekPlan === 'function') {
         return engine.generateWeekPlan({ profile: state.profile, adjustments });
       }
+
       if (typeof engine.buildWeek === 'function') {
         return engine.buildWeek({ profile: state.profile, adjustments });
       }
+
       throw new Error('Meals engine must expose generateWeekPlan() or buildWeek()');
     }
 
@@ -300,12 +284,11 @@
       state.week = state.weekRaw.map((day, index) => adaptEngineDayToUiDay(day, index));
 
       if (state.activeDayIndex >= state.week.length) state.activeDayIndex = 0;
+
       return state.week;
     }
 
     function regenerateWeek() {
-      // If support is off, regenerate the real standard week.
-      // If support is on, regenerate only the temporary support view.
       syncSupportAdjustmentFromGlobal();
 
       if (state.adjustments.supportMode) {
@@ -403,7 +386,6 @@
       writeGlobalSupportMode(null, 'meals');
       syncSupportAdjustmentFromGlobal();
 
-      // Restore the untouched standard week immediately.
       state.supportWeekRaw = [];
       state.weekRaw = clone(state.standardWeekRaw || []);
       state.week = state.weekRaw.map((day, index) => adaptEngineDayToUiDay(day, index));
@@ -415,15 +397,18 @@
     function turnSupportOn(reason) {
       const current = readGlobalSupportMode();
       const startedAt = current.active ? current.startedAt : null;
+
       writeGlobalSupportMode(reason, 'meals', startedAt);
       rebuildWeekFromEngine({ forceStandard: false });
       refreshMealsUI();
+
       return state.week;
     }
 
     function maybeRefreshFromExternalSupportChange() {
       const support = readGlobalSupportMode();
       const nextSignature = supportSignature(support);
+
       if (nextSignature === state.lastSupportSignature) return;
 
       const previousSupportMode = state.adjustments.supportMode;
@@ -431,12 +416,10 @@
       state.lastSupportSignature = nextSignature;
 
       if (!state.adjustments.supportMode) {
-        // External Support Off: restore standard meals immediately.
         state.supportWeekRaw = [];
         state.weekRaw = clone(state.standardWeekRaw || []);
         state.week = state.weekRaw.map((day, index) => adaptEngineDayToUiDay(day, index));
       } else if (state.adjustments.supportMode !== previousSupportMode) {
-        // External Support On/Switch: generate temporary support view only.
         const supportWeek = engineGenerateWeek(buildSupportAdjustments());
         state.supportWeekRaw = clone(getDays(supportWeek));
         state.weekRaw = clone(state.supportWeekRaw);
@@ -448,12 +431,13 @@
 
     function bindSupportSyncEvents() {
       window.addEventListener('storage', function (event) {
-        if (!event || event.key === SUPPORT_KEY || LEGACY_SUPPORT_KEYS.includes(event.key)) {
+        if (!event || event.key === SUPPORT_KEY) {
           maybeRefreshFromExternalSupportChange();
         }
       });
 
       window.addEventListener('focus', maybeRefreshFromExternalSupportChange);
+
       document.addEventListener('visibilitychange', function () {
         if (!document.hidden) maybeRefreshFromExternalSupportChange();
       });
@@ -465,14 +449,16 @@
     function adaptEngineMealToUiMeal(engineMeal, slotKey, dayIndex) {
       if (!engineMeal) return null;
 
+      const visibleTags = cleanVisibleTags(engineMeal.tags);
+
       return {
         id: `${dayIndex}-${slotKey}-${engineMeal.templateId || 'meal'}`,
         slotKey,
         slotLabel: SLOT_LABELS[slotKey] || slotKey,
-        title: engineMeal.title,
+        title: engineMeal.title || engineMeal.name || 'Meal',
         subtitle: buildMealSubtitle(engineMeal),
-        protein: Number(engineMeal.proteinEstimate || 0),
-        tags: Array.isArray(engineMeal.tags) ? engineMeal.tags : [],
+        protein: Number(engineMeal.proteinEstimate || engineMeal.protein || 0),
+        tags: visibleTags,
         supportAdjusted: !!engineMeal.supportAdjusted || !!state.adjustments.supportMode,
         templateId: engineMeal.templateId || null,
         raw: engineMeal
@@ -495,14 +481,27 @@
       };
     }
 
+    function cleanVisibleTags(tags) {
+      if (!Array.isArray(tags)) return [];
+
+      return tags
+        .map((tag) => String(tag || '').trim())
+        .filter(Boolean)
+        .filter((tag) => !HIDDEN_ENGINE_TAGS.has(tag.toLowerCase()))
+        .filter((tag) => !tag.toLowerCase().startsWith('support'))
+        .slice(0, 3);
+    }
+
     function buildMealSubtitle(engineMeal) {
       const parts = [];
 
-      if (engineMeal?.method) {
-        parts.push(String(engineMeal.method).replace(/_/g, ' '));
+      const method = engineMeal?.method ? String(engineMeal.method).replace(/_/g, ' ') : '';
+
+      if (method && !HIDDEN_ENGINE_TAGS.has(method.toLowerCase())) {
+        parts.push(method);
       }
 
-      if (engineMeal?.supportAdjusted || state.adjustments.supportMode) {
+      if (state.adjustments.supportMode) {
         parts.push('support adjusted');
       }
 
@@ -510,7 +509,7 @@
     }
 
     function refreshMealsUI() {
-      maybeRefreshSupportButtonsOnly();
+      syncSupportAdjustmentFromGlobal();
 
       const activeDay = state.week?.[state.activeDayIndex] || null;
 
@@ -522,12 +521,6 @@
       renderSupportButtons();
 
       return activeDay;
-    }
-
-    function maybeRefreshSupportButtonsOnly() {
-      const support = readGlobalSupportMode();
-      state.adjustments.supportMode = support.active ? support.reason : null;
-      state.lastSupportSignature = supportSignature(support);
     }
 
     function renderDayTabs(days, activeDayIndex) {
@@ -560,7 +553,7 @@
         : '';
 
       const supportBadge = state.adjustments.supportMode
-        ? `<span class="meal-tag">Support: ${escapeHtml(formatReason(state.adjustments.supportMode))}</span>`
+        ? `<span class="meal-tag meal-tag--support">Support: ${escapeHtml(formatReason(state.adjustments.supportMode))}</span>`
         : '';
 
       return `
@@ -623,6 +616,7 @@
 
       if (ringEl) ringEl.style.setProperty('--protein-percent', String(percent));
       if (textEl) textEl.textContent = `${score} / ${target} protein meals`;
+
       if (pipsEl) {
         pipsEl.innerHTML = Array.from(
           { length: target },
@@ -662,8 +656,7 @@
         btn.setAttribute('aria-pressed', String(!!reason && reason === activeReason));
       });
 
-      const offButtons = document.querySelectorAll('[data-support-off]');
-      offButtons.forEach((offBtn) => {
+      document.querySelectorAll('[data-support-off]').forEach((offBtn) => {
         offBtn.classList.toggle('is-active', !activeReason);
         offBtn.setAttribute('aria-pressed', String(!activeReason));
       });
@@ -676,7 +669,10 @@
       });
 
       document.documentElement.classList.toggle('hearty-support-active', !!activeReason);
-      document.body?.classList.toggle('hearty-support-active', !!activeReason);
+
+      if (document.body) {
+        document.body.classList.toggle('hearty-support-active', !!activeReason);
+      }
     }
 
     function bindMealsEvents() {
