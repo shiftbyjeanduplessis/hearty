@@ -78,16 +78,23 @@
   function readGlobalSupportMode() {
     try {
       const raw = localStorage.getItem(SUPPORT_STORAGE_KEY);
+
+      // Canonical key is the authority. If it exists and is off, never fall back
+      // to meals_support_mode because that key may be stale from an old support day.
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.active) {
-          return normaliseSupportMode(parsed.reason || parsed.mode || parsed.type);
+        if (parsed && (parsed.active === true || parsed.isActive === true)) {
+          return normaliseSupportMode(parsed.reason || parsed.mode || parsed.type || parsed.symptom);
         }
         return null;
       }
-    } catch {}
+    } catch {
+      return null;
+    }
 
-    return normaliseSupportMode(localStorage.getItem(LEGACY_SUPPORT_KEY));
+    // Legacy fallback disabled to prevent support turning on by itself.
+    // Other pages should write hearty_support_mode_v1 going forward.
+    return null;
   }
 
   function writeGlobalSupportMode(mode, source) {
