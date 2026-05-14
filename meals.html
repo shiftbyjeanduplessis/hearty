@@ -966,6 +966,20 @@
 
       function readGlobalSupport(){
         try {
+          var canonicalRaw = localStorage.getItem("hearty_support_mode_v1");
+
+          // If the canonical bridge key exists, trust it first.
+          // This prevents older stale keys from reactivating Support Mode after it was switched off.
+          if (canonicalRaw) {
+            try {
+              var canonical = JSON.parse(canonicalRaw);
+              if (canonical && (canonical.active === true || canonical.isActive === true)) {
+                return canonical.reason || canonical.primarySymptom || canonical.symptom || canonical.mode || canonical.type || "";
+              }
+              return "";
+            } catch(e) {}
+          }
+
           var raw = localStorage.getItem("heartySupportMode") || localStorage.getItem("supportMode") || "";
           if (raw && raw.charAt(0) === "{") {
             var parsed = JSON.parse(raw);
@@ -982,24 +996,56 @@
       }
 
       function writeGlobalSupport(reason){
+        var now = new Date().toISOString();
+
         if (reason) {
           safeSet("meals_support_mode", reason);
-          safeSet("heartySupportMode", JSON.stringify({
+
+          safeSet("hearty_support_mode_v1", JSON.stringify({
+            active:true,
             isActive:true,
             reason:reason,
+            mode:reason,
             sourcePage:"meals",
-            startedAt:new Date().toISOString()
+            startedAt:now,
+            updatedAt:now,
+            lastChangedAt:now
+          }));
+
+          safeSet("heartySupportMode", JSON.stringify({
+            isActive:true,
+            active:true,
+            reason:reason,
+            sourcePage:"meals",
+            startedAt:now,
+            updatedAt:now
           }));
         } else {
           safeSet("meals_support_mode", "");
           safeSet("hearty_support_mode", "off");
           safeSet("heartySupportActive", "false");
+
+          // This is the key the bridge reads. It must be explicitly off before regeneration.
+          safeSet("hearty_support_mode_v1", JSON.stringify({
+            active:false,
+            isActive:false,
+            reason:null,
+            symptom:null,
+            type:null,
+            mode:null,
+            sourcePage:"meals",
+            startedAt:null,
+            updatedAt:now,
+            lastChangedAt:now
+          }));
+
           safeSet("heartySupportMode", JSON.stringify({
             isActive:false,
             active:false,
             reason:null,
             sourcePage:"meals",
-            endedAt:new Date().toISOString()
+            endedAt:now,
+            updatedAt:now
           }));
         }
       }
@@ -1180,10 +1226,26 @@
       }
 
       function turnSupportOffAndRestoreStandardMeals(){
+        var now = new Date().toISOString();
+
+        // 1) Write every support system to OFF before the bridge regenerates.
+        // The bridge reads hearty_support_mode_v1, so this key must be off first.
         writeGlobalSupport("");
-        clearSupportMealCaches();
-        updateSupportBanner("");
-        clearVisibleMealsBeforeStandardRepaint();
+
+        try {
+          localStorage.setItem("hearty_support_mode_v1", JSON.stringify({
+            active:false,
+            isActive:false,
+            reason:null,
+            symptom:null,
+            type:null,
+            mode:null,
+            sourcePage:"meals",
+            startedAt:null,
+            updatedAt:now,
+            lastChangedAt:now
+          }));
+        } catch(e) {}
 
         try { localStorage.removeItem("meals_support_mode"); } catch(e) {}
         try { localStorage.removeItem("supportMode"); } catch(e) {}
@@ -1201,7 +1263,9 @@
             primarySymptom:null,
             mode:null,
             sourcePage:"meals",
-            endedAt:new Date().toISOString()
+            endedAt:now,
+            updatedAt:now,
+            lastChangedAt:now
           }));
         } catch(e) {}
 
@@ -1212,7 +1276,9 @@
             reason:null,
             primarySymptom:null,
             mode:null,
-            updatedAt:new Date().toISOString()
+            sourcePage:"meals",
+            updatedAt:now,
+            lastChangedAt:now
           }));
         } catch(e) {}
 
@@ -1223,7 +1289,9 @@
             reason:null,
             primarySymptom:null,
             mode:null,
-            updatedAt:new Date().toISOString()
+            sourcePage:"meals",
+            updatedAt:now,
+            lastChangedAt:now
           }));
         } catch(e) {}
 
@@ -1236,18 +1304,39 @@
             reason:null,
             primarySymptom:null,
             mode:null,
-            updated_at:new Date().toISOString()
+            sourcePage:"meals",
+            updated_at:now,
+            updatedAt:now,
+            lastChangedAt:now
           });
           localStorage.setItem("hearty:data:v1", JSON.stringify(canonical));
         } catch(e) {}
 
+        // 2) Clear cached support meals and update the visible banner.
+        clearSupportMealCaches();
+        updateSupportBanner("");
+        clearVisibleMealsBeforeStandardRepaint();
+
+        // 3) Force the existing bridge state to standard mode, then regenerate.
         forceBridgeIntoStandardMealMode();
         regenerateStandardMeals({ day:false });
 
+        // 4) Notify any page/listener that Support Mode is now off.
         try {
-          window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", {
-            detail:{ active:false, source:"meals" }
-          }));
+          var offDetail = {
+            active:false,
+            isActive:false,
+            reason:null,
+            mode:null,
+            source:"meals",
+            sourcePage:"meals",
+            updatedAt:now,
+            lastChangedAt:now
+          };
+
+          window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", { detail:offDetail }));
+          window.dispatchEvent(new CustomEvent("hearty:support-changed", { detail:offDetail }));
+          window.dispatchEvent(new CustomEvent("hearty-support-mode-changed", { detail:offDetail }));
         } catch(e) {}
 
         setTimeout(function(){
@@ -1647,9 +1736,11 @@
         updateSupportBanner(reason);
 
         if (!reason && event && event.detail && event.detail.active === false) {
+          // Support may have been switched off from another page.
+          // Rebuild standard meals instead of only repainting the current support week.
           clearSupportMealCaches();
           forceBridgeIntoStandardMealMode();
-          refreshBridgeMeals();
+          regenerateStandardMeals({ day:false });
         }
       });
 
