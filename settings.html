@@ -42,7 +42,38 @@
       .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
   </style>
-  <link rel="stylesheet" href="./hearty-page-selector.css">
+
+<style id="hearty-page-selector-safe-lock">
+/* Safe local page selector lock — no shared JS, no nav rebuild. */
+.bottom-nav .nav-item svg,
+#bottomNav .nav-item svg{
+  width:20px!important;
+  height:20px!important;
+  max-width:22px!important;
+  max-height:22px!important;
+  display:block!important;
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  overflow:visible!important;
+}
+.bottom-nav .nav-item svg *,
+#bottomNav .nav-item svg *{
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  vector-effect:non-scaling-stroke!important;
+}
+.bottom-nav .nav-item,
+#bottomNav .nav-item{
+  overflow:hidden!important;
+}
+</style>
+
 </head>
 <body>
   <div class="shell" id="app">
@@ -566,6 +597,5 @@
   }
   </script>
 
-  <script src="./hearty-page-selector.js"></script>
 </body>
 </html>
