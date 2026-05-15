@@ -196,6 +196,7 @@ html[data-theme="rose_aurora"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d1
   document.addEventListener('DOMContentLoaded', fixLogo);
 })();
 </script>
+  <link rel="stylesheet" href="./hearty-page-selector.css">
 </head>
 <body data-page="exercise">
 <div class="shell">
@@ -336,6 +337,7 @@ function closeExerciseGuide(){
 function bind(){const guideBtn=document.getElementById('openExerciseGuideBtn');if(guideBtn)guideBtn.onclick=openExerciseGuide;const guideClose=document.getElementById('closeExerciseGuideBtn');if(guideClose)guideClose.onclick=closeExerciseGuide;const guideModal=document.getElementById('exerciseGuideModal');if(guideModal)guideModal.addEventListener('click',e=>{if(e.target===guideModal)closeExerciseGuide()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeExerciseGuide()});document.getElementById('locHome').onclick=()=>setLocation('home');document.getElementById('locGym').onclick=()=>setLocation('gym');document.getElementById('startBtn').onclick=startWorkout;const supportOffBtn=document.getElementById('exerciseSupportOff');if(supportOffBtn)supportOffBtn.onclick=clearExerciseSupport;document.getElementById('ladderToggleBtn').onclick=()=>{const card=document.getElementById('ladderCard'),body=document.getElementById('ladderBody'),btn=document.getElementById('ladderToggleBtn'),open=body.hasAttribute('hidden');if(open){body.removeAttribute('hidden');card.classList.remove('collapsed');btn.setAttribute('aria-expanded','true')}else{body.setAttribute('hidden','');card.classList.add('collapsed');btn.setAttribute('aria-expanded','false')}};document.getElementById('setActionBtn').onclick=handleSetAction;document.getElementById('confirmSetBtn').onclick=confirmReps;document.getElementById('nextSetBtn').onclick=advanceAfterRest;document.getElementById('nextExerciseBtn').onclick=nextExercise;document.getElementById('finishWorkoutBtn').onclick=finishWorkout;document.getElementById('closeWorkoutBtn').onclick=requestExit;document.getElementById('continueWorkoutBtn').onclick=closeExitDialog;document.getElementById('exitWorkoutBtn').onclick=confirmExit}
 function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{buildNav();bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 </script>
-<script src="/js/hearty-updater.js?v=1.0.1"></script>
+<script src="./hearty-page-selector.js"></script>
+  <script src="/js/hearty-updater.js?v=1.0.1"></script>
 </body>
 </html>
