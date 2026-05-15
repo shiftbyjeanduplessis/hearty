@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clean_blue">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Hearty — Social</title>
+<link rel="stylesheet" href="/css/hearty-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/glp-supabase-config.js?v=1001"></script>
+<script>
+(function(){
+  // Hard bridge: if the external config is cached/missing, expose the Supabase client here too.
+  var SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M';
+  if (!window.supabaseClient && window.supabase && window.supabase.createClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+  }
+  window.heartySupabase = window.supabaseClient || window.heartySupabase;
+  window.heartySupabaseClient = window.supabaseClient || window.heartySupabaseClient;
+})();
+</script>
+<script src="/js/hearty-data-layer.v1.js"></script>
+<script src="/js/hearty-supabase-sync.v1.js"></script>
+<script src="/js/hearty-theme.js"></script>
+<style>
+  :root {
+    --bg-1:#eef4fb;
+    --bg-2:#f8fbff;
+    --card:rgba(255,255,255,.92);
+    --card-solid:#fff;
+    --ink:#102033;
+    --muted:#6d7b8c;
+    --line:rgba(143,163,184,.24);
+    --shadow:0 18px 44px rgba(14,31,53,.10);
+    --shadow-soft:0 8px 22px rgba(14,31,53,.06);
+    --blue:#2f6df6;
+    --blue-soft:rgba(47,109,246,.10);
+    --success:#15803d;
+    --success-soft:rgba(21,128,61,.12);
+    --warning:#d97706;
+    --warning-soft:rgba(217,119,6,.12);
+    --danger:#dc2626;
+    --radius-xl:28px;
+    --radius-lg:22px;
+    --max:1280px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at top right,rgba(59,130,246,.10),transparent 24%),
+      linear-gradient(180deg,#f9fbff 0%,var(--bg-1) 55%,#eef3fa 100%);
+    overflow-x:hidden;
+  }
+  button,input,textarea{font:inherit}
+  button{border:none;cursor:pointer;transition:.18s ease}
+  button:active{transform:scale(.985)}
+  a{color:inherit;text-decoration:none}
+  .shell{
+    width:min(100%,var(--max));
+    max-width:1280px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:20px 20px 32px;
+    position:relative;
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    min-height:88px;margin-bottom:18px;padding:0 18px;
+    border:1px solid var(--line);border-radius:22px;
+    background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.62));
+    box-shadow:var(--shadow-soft);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand-logo{display:block;height:48px;width:auto;max-width:min(72vw,300px);object-fit:contain;object-position:left center}
+  .icon-btn{
+    width:44px;height:44px;border-radius:16px;display:grid;place-items:center;
+    background:rgba(255,255,255,.9);color:#5d6c7d;box-shadow:var(--shadow-soft);border:1px solid var(--line);flex:0 0 auto;
+  }
+  .icon-btn svg,.nav-item svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+  main{padding:0 16px 8px}
+  .hero-card,.card,.composer-card,.post-card,.empty-card{
+    background:var(--card);border:1px solid rgba(255,255,255,.72);border-radius:var(--radius-xl);
+    box-shadow:var(--shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  }
+  .hero-card{padding:18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  .hero-copy h1{margin:0;font-size:clamp(2rem,3.6vw,2.7rem);line-height:1.08;letter-spacing:-.04em;font-weight:560}
+  .hero-copy p{margin:8px 0 0;max-width:760px;color:var(--muted);font-size:14px;line-height:1.55}
+  .hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+  .community-switch{min-width:172px;min-height:54px;border-radius:999px;padding:7px 9px 7px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(24,32,51,.08);border:1px solid var(--line);color:var(--muted);font-weight:850;box-shadow:var(--shadow-soft)}
+  .community-switch .switch-copy{display:grid;text-align:left;line-height:1.05}
+  .community-switch .switch-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;opacity:.72}
+  .community-switch .switch-state{font-size:15px;color:var(--ink);margin-top:3px}
+  .switch-track{width:54px;height:32px;border-radius:999px;background:rgba(24,32,51,.14);position:relative;box-shadow:inset 0 0 0 1px rgba(24,32,51,.05);flex:0 0 auto}
+  .switch-track::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;top:4px;left:4px;background:white;box-shadow:var(--shadow-soft);transition:.2s ease}
+  .community-switch.on{background:rgba(47,109,246,.13);border-color:rgba(47,109,246,.22);color:var(--blue)}
+  .community-switch.on .switch-track{background:rgba(47,109,246,.48)}
+  .community-switch.on .switch-track::after{left:26px}
+  .community-switch.on .switch-state{color:var(--blue)}
+  .action-btn,.ghost-btn,.reaction-btn,.file-pill{
+    min-height:46px;padding:12px 16px;border-radius:16px;font-weight:750;
+  }
+  .action-btn{background:linear-gradient(180deg,#3f7cff,var(--blue));color:white;box-shadow:0 10px 22px rgba(47,109,246,.18)}
+  .action-btn.off{background:var(--blue-soft);color:var(--blue);box-shadow:none}
+  .ghost-btn{background:rgba(24,32,51,.06);color:var(--ink)}
+  .ghost-btn.danger{color:var(--danger);background:rgba(220,38,38,.08)}
+  .status-card{display:none}
+  .community-disabled{opacity:.48;filter:saturate(.82);pointer-events:none;user-select:none}
+  .community-disabled input,.community-disabled textarea,.community-disabled button{cursor:not-allowed}
+  .layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;margin-top:16px;align-items:start}
+  .sidebar-column{display:grid;gap:16px;position:sticky;top:12px}
+  .profile-card{padding:18px}
+  .people-card{padding:18px}
+  .people-title{margin:0 0 12px;font-size:15px;font-weight:850;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .people-title span{font-size:12px;color:var(--muted);font-weight:750}
+  .people-search{width:100%;border:1px solid rgba(24,32,51,.08);background:white;border-radius:16px;padding:12px 13px;margin:0 0 12px;outline:none;color:var(--ink);font-size:14px}
+  .people-search:focus{border-color:rgba(47,109,246,.36);box-shadow:0 0 0 4px rgba(47,109,246,.08)}
+  .people-list{display:grid;gap:10px}
+  .person-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(24,32,51,.06)}
+  .person-row strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .person-row small{display:block;margin-top:2px;color:var(--muted);font-size:11px}
+  .follow-btn{min-height:34px;padding:8px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:850;border:1px solid rgba(47,109,246,.16)}
+  .follow-btn.following{background:rgba(24,32,51,.06);color:var(--muted);border-color:var(--line)}
+  .feed-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .feed-filter{min-height:34px;padding:8px 12px;border-radius:999px;background:rgba(24,32,51,.06);color:var(--muted);font-size:12px;font-weight:850}
+  .feed-filter.active{background:var(--blue-soft);color:var(--blue)}
+  .profile-top{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+  .avatar-lg,.avatar{border-radius:24px;background:linear-gradient(180deg,#e8eefb,#fff);border:1px solid rgba(24,32,51,.06);display:grid;place-items:center;overflow:hidden;color:var(--blue);font-weight:800;flex:0 0 auto}
+  .avatar-lg{width:82px;height:82px;font-size:24px}.avatar{width:46px;height:46px;border-radius:18px;font-size:14px}
+  .avatar-lg img,.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .profile-info strong{display:block;font-size:18px;letter-spacing:-.02em}.profile-info span{display:block;margin-top:5px;color:var(--muted);font-size:13px;line-height:1.4}
+  .profile-actions{display:grid;gap:10px;margin-top:16px}.profile-actions input[type=file]{display:none}
+  .field{display:grid;gap:8px;margin-top:14px}.field label{font-size:13px;font-weight:750}.field input{border:1px solid rgba(24,32,51,.08);background:white;border-radius:16px;padding:13px 14px;outline:none;color:var(--ink)}
+  .field input:focus,.composer-card textarea:focus{border-color:rgba(47,109,246,.36);box-shadow:0 0 0 4px rgba(47,109,246,.08)}
+  .feed-column{display:grid;gap:16px}
+  .composer-card{padding:18px;display:grid;gap:12px;background:rgba(255,255,255,.94);border:1px solid rgba(24,32,51,.06);box-shadow:var(--shadow-soft)}
+  .composer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.composer-head strong{display:block;font-size:16px;letter-spacing:-.01em}.composer-head span{display:block;margin-top:4px;color:var(--muted);font-size:13px;line-height:1.4}
+  .composer-card textarea{width:100%;min-height:104px;resize:vertical;border:1px solid rgba(24,32,51,.08);background:white;border-radius:18px;padding:14px;color:var(--ink);outline:none;line-height:1.5}
+  .composer-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.composer-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .file-pill{display:inline-flex;align-items:center;gap:8px;background:var(--blue-soft);color:var(--blue);cursor:pointer}.file-pill input{display:none}
+  .image-preview{display:none;position:relative;width:100%;overflow:hidden;border-radius:20px;border:1px solid rgba(24,32,51,.08);background:white}.image-preview.active{display:block}.image-preview img{display:block;width:100%;max-height:320px;object-fit:cover}.image-preview button{position:absolute;right:10px;top:10px;min-height:36px;padding:8px 12px;border-radius:999px;background:rgba(15,23,42,.72);color:white;font-weight:800}
+  .feed-list{display:grid;gap:16px}
+  .post-card{padding:18px;background:rgba(255,255,255,.94);border:1px solid rgba(24,32,51,.06);box-shadow:var(--shadow-soft)}
+  .post-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center}.post-user strong{display:block;font-size:16px;line-height:1.2;letter-spacing:-.01em}.meta{margin-top:4px;color:var(--muted);font-size:13px;line-height:1.35}
+  .post-text{margin:15px 0 0;font-size:15px;line-height:1.6;color:#243045;white-space:pre-wrap}.post-image{width:100%;max-height:420px;object-fit:cover;display:block;margin-top:14px;border-radius:20px;border:1px solid rgba(24,32,51,.08)}
+  .post-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}.reaction-btn{min-height:42px;padding:11px 15px;border-radius:999px;background:rgba(24,32,51,.055);color:#324055;display:inline-flex;gap:8px;align-items:center}.reaction-btn.active{background:var(--blue-soft);color:var(--blue);box-shadow:inset 0 0 0 1px rgba(29,78,216,.08)}
+  .empty-card{padding:26px 16px;text-align:center;color:var(--muted)}.empty-icon{width:72px;height:72px;border-radius:24px;margin:0 auto 14px;display:grid;place-items:center;background:rgba(24,32,51,.05);font-size:28px}.empty-card h3{margin:0 0 8px;color:var(--ink);font-size:18px}.empty-card p{margin:0 auto 14px;max-width:340px;line-height:1.55}
+  .bottom-nav{margin-top:18px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;background:rgba(255,255,255,.74);border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;bottom:12px;z-index:40}
+  .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;color:#627286;text-align:center;font-size:.78rem;font-weight:650}.nav-item.active,.nav-item[aria-current=page]{color:#1f4ec0;background:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 18px rgba(47,109,246,.10)}.nav-item svg{width:22px;height:22px}
+  .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:90;max-width:min(92vw,440px);padding:12px 14px;border-radius:16px;background:rgba(16,32,51,.94);color:white;box-shadow:0 16px 38px rgba(15,23,42,.24);font-size:13px;line-height:1.4;display:none}.toast.show{display:block}
+  @media (min-width:760px){.shell{border-left:1px solid rgba(24,32,51,.06);border-right:1px solid rgba(24,32,51,.06);background:rgba(255,255,255,.24)}}
+  @media (max-width:860px){.layout{grid-template-columns:1fr}.sidebar-column{position:static}.hero-card{grid-template-columns:1fr}.hero-actions{justify-content:flex-start}}
+  @media (max-width:760px){.shell{padding:14px 14px 24px}.topbar{min-height:78px;padding:0 14px;border-radius:20px}.brand-logo{height:40px}main{padding:0}.hero-copy h1{font-size:2rem}.post-card,.composer-card,.profile-card,.people-card{padding:16px}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.bottom-nav .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.bottom-nav .nav-item svg{width:18px;height:18px}}
+</style>
+
+<style id="hearty-page-selector-safe-lock">
+/* Local nav icon safety lock — no shared JS, no nav replacement. */
+.bottom-nav .nav-item svg,
+#bottomNav .nav-item svg{
+  width:20px!important;
+  height:20px!important;
+  max-width:22px!important;
+  max-height:22px!important;
+  display:block!important;
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  overflow:visible!important;
+}
+.bottom-nav .nav-item svg *,
+#bottomNav .nav-item svg *{
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  vector-effect:non-scaling-stroke!important;
+}
+.bottom-nav .nav-item,
+#bottomNav .nav-item{
+  overflow:hidden!important;
+}
+</style>
+
+</head>
+<body data-page="community">
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <img data-default-logo="/hearty-logo.png" data-rose-aurora-logo="/hearty-logo-gold.png" class="brand-logo" alt="Hearty" src="/hearty-logo.png" />
+    </div>
+    <a class="icon-btn" href="./settings.html" aria-label="Settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg>
+    </a>
+  </header>
+
+  <main>
+    <section class="hero-card" aria-label="Community overview">
+      <div class="hero-copy">
+        <div class="eyebrow">Social</div>
+        <h1>Share intentionally.</h1>
+        <p>Post a quick update or photo when you choose. Your Community can be turned off at any time. Photo posts expire after 24 hours.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="community-switch" id="communityToggle" type="button" aria-pressed="false" aria-label="Turn Community on or off">
+          <span class="switch-copy">
+            <span class="switch-kicker">Community</span>
+            <span class="switch-state" id="communityToggleText">Off</span>
+          </span>
+          <span class="switch-track" aria-hidden="true"></span>
+        </button>
+      </div>
+    </section>
+
+    <div class="layout" id="communityContent">
+      <aside class="sidebar-column" aria-label="Community sidebar">
+        <div class="profile-card card" aria-label="Community profile">
+        <div class="profile-top">
+          <div class="avatar-lg" id="profileAvatarLarge">H</div>
+          <div class="profile-info">
+            <strong id="profileDisplayName">Your profile</strong>
+            <span>Set the name and photo other people see in Community.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="displayNameInput">Display name</label>
+          <input id="displayNameInput" maxlength="40" placeholder="Your name" autocomplete="name" />
+        </div>
+        <div class="profile-actions">
+          <label class="file-pill" for="profilePhotoInput">📷 Choose profile photo<input id="profilePhotoInput" data-upload-scope="profile" type="file" accept="image/*" /></label>
+          <button class="action-btn" id="saveProfileBtn" type="button">Save Profile</button>
+        </div>
+        </div>
+
+        <div class="people-card card" aria-label="People on Community">
+          <h2 class="people-title">People on Community <span id="peopleCount">0</span></h2>
+          <input class="people-search" id="peopleSearchInput" type="search" placeholder="Search by name" autocomplete="off" />
+          <div class="people-list" id="peopleList">
+            <div class="empty-card" style="padding:16px"><p>Loading people…</p></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="feed-column" aria-label="Community feed">
+        <div class="composer-card" id="composerCard">
+          <div class="composer-head">
+            <div>
+              <strong>Post to Community</strong>
+              <span id="composerStatus">Community is off</span>
+              <div class="feed-tools" aria-label="Feed filter">
+                <button class="feed-filter active" id="feedEveryoneBtn" type="button">Everyone</button>
+                <button class="feed-filter" id="feedFollowingBtn" type="button">Following</button>
+              </div>
+            </div>
+          </div>
+          <textarea id="communityPostInput" maxlength="280" placeholder="Share a quick update or encouragement..."></textarea>
+          <div class="image-preview" id="imagePreviewWrap">
+            <img id="imagePreview" alt="Selected image preview" />
+            <button id="clearImageBtn" type="button">Remove</button>
+          </div>
+          <div class="composer-actions">
+            <div class="composer-left">
+              <label class="file-pill" for="communityImageInput">🖼️ Add photo<input id="communityImageInput" data-upload-scope="community-post" type="file" accept="image/*" /></label>
+            </div>
+            <button class="action-btn" id="communityPostBtn" type="button">Post</button>
+          </div>
+        </div>
+        <div class="feed-list" id="feedList"></div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav" aria-label="Hearty navigation"></nav>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const SETTINGS_TABLE = 'community_user_settings';
+  const POSTS_TABLE = 'community_posts';
+  const LOVES_TABLE = 'community_reactions';
+  const PROFILES_TABLE = 'profiles';
+  const FOLLOWS_TABLE = 'community_follows';
+  const COMMUNITY_BUCKET = 'community-images';
+  const PROFILE_BUCKET = 'profile-photos';
+
+  let sb = null;
+  let currentUser = null;
+  let usingSupabase = false;
+  let selectedPostImage = null;
+  let selectedProfileImage = null;
+  let profile = null;
+  let postsCache = [];
+  let reactionsCache = {};
+  let communityEnabledCache = false;
+  let followingCache = new Set();
+  let profilesById = {};
+  let peopleSearchTerm = '';
+  let feedMode = 'everyone';
+
+  function showToast(message){
+    const el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  function escapeHTML(value){
+    return String(value || '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function timeAgo(ts){
+    const when = typeof ts === 'string' ? new Date(ts).getTime() : Number(ts || Date.now());
+    const diff = Math.max(0, Date.now() - when);
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins} min ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs} hr ago`;
+    return 'Yesterday';
+  }
+
+  function isSupabaseClient(c){
+    return c && typeof c === 'object' && typeof c.from === 'function' && c.auth && typeof c.auth.getSession === 'function';
+  }
+
+  function findSupabaseClient(){
+    /*
+      IMPORTANT:
+      Community must reuse the main Hearty Supabase client.
+      It must not create its own separate login/client.
+    */
+    const candidates = [
+      window.heartyDataLayer?.supabase,
+      window.heartyDataLayer?.client,
+      window.heartyData?.supabase,
+      window.heartyData?.client,
+      window.HeartyData?.supabase,
+      window.HeartyData?.client,
+      window.Hearty?.supabase,
+      window.Hearty?.client,
+      window.hearty?.supabase,
+      window.hearty?.client,
+      window.heartySupabaseClient,
+      window.heartySupabase,
+      window.supabaseClient,
+      window.supabaseClientV1,
+      window.sb,
+      window._supabase,
+      window.__supabase,
+      window.heartyDb,
+      window.heartyDatabase
+    ];
+    const direct = candidates.find(isSupabaseClient);
+    if (direct) return direct;
+
+    // Last resort: scan shallow window objects for the already-created app client.
+    for (const key of Object.keys(window)) {
+      try {
+        const v = window[key];
+        if (isSupabaseClient(v)) return v;
+        if (v && typeof v === 'object' && !Array.isArray(v)) {
+          for (const innerKey of Object.keys(v)) {
+            try { if (isSupabaseClient(v[innerKey])) return v[innerKey]; } catch (_) {}
+          }
+        }
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  function getSupabaseConfig(){
+    const cfg = window.GLP_SUPABASE_CONFIG || window.HEARTY_SUPABASE_CONFIG || window.SUPABASE_CONFIG || {};
+    const url = cfg.url || cfg.supabaseUrl || cfg.SUPABASE_URL || cfg.projectUrl || '';
+    const anonKey = cfg.anonKey || cfg.anon_key || cfg.supabaseAnonKey || cfg.SUPABASE_ANON_KEY || cfg.key || '';
+    return { url, anonKey };
+  }
+
+  function createConfiguredSupabaseClient(){
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+    const cfg = getSupabaseConfig();
+    if (!cfg.url || !cfg.anonKey) return null;
+    try {
+      const client = window.supabase.createClient(cfg.url, cfg.anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
+      window.heartySupabaseClient = client;
+      window.supabaseClient = client;
+      window.heartySupabase = client;
+      window.sb = client;
+      return client;
+    } catch (err) {
+      console.warn('[Community] createConfiguredSupabaseClient failed:', err);
+      return null;
+    }
+  }
+
+  async function waitForSupabaseClient(){
+    for (let i = 0; i < 20; i++) {
+      const existing = findSupabaseClient();
+      if (existing) return existing;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    // Main app pages do not always expose their client globally.
+    // In that case, create the same Supabase client from the shared config file.
+    // Because this is the same domain/project, Supabase will read the existing Hearty session from localStorage.
+    const configured = createConfiguredSupabaseClient();
+    if (configured) return configured;
+
+    return null;
+  }
+
+  async function readCurrentUserFromClient(client){
+    if (!client || !client.auth) return null;
+
+    // Match the rest of Hearty: use getUser first.
+    for (let i = 0; i < 10; i++) {
+      try {
+        const userResult = await client.auth.getUser();
+        const user = userResult?.data?.user || null;
+        if (user) return user;
+      } catch (err) {
+        console.warn('[Community] getUser failed:', err);
+      }
+
+      try {
+        const sessionResult = await client.auth.getSession();
+        const sessionUser = sessionResult?.data?.session?.user || null;
+        if (sessionUser) return sessionUser;
+      } catch (err) {
+        console.warn('[Community] getSession failed:', err);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 150));
+    }
+
+    return null;
+  }
+
+  async function initSupabase(){
+    sb = await waitForSupabaseClient();
+
+    if (!sb) {
+      usingSupabase = false;
+      currentUser = null;
+      showToast('Community bridge missing. Hard refresh and check Supabase config.');
+      return false;
+    }
+
+    currentUser = await readCurrentUserFromClient(sb);
+    usingSupabase = Boolean(currentUser);
+
+    if (!usingSupabase) {
+      showToast('Session not detected. Please refresh the app.');
+      return false;
+    }
+
+    return true;
+  }
+
+  async function requireUser(){
+    if (usingSupabase && currentUser && sb) return true;
+    const recovered = await initSupabase();
+    if (!recovered) {
+      showToast('Session not detected. Please refresh the app.');
+      return false;
+    }
+    return true;
+  }
+
+  function communityLocalKey(){
+    return `heartyCommunityEnabled_${currentUser?.id || 'anonymous'}`;
+  }
+
+  function getStoredCommunityEnabled(){
+    try {
+      return localStorage.getItem(communityLocalKey()) === 'true';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setStoredCommunityEnabled(next){
+    try {
+      localStorage.setItem(communityLocalKey(), next ? 'true' : 'false');
+    } catch (_) {}
+  }
+
+  function supabaseErrorMessage(error, fallback){
+    if (!error) return fallback || 'Unknown error';
+    return error.message || error.details || error.hint || fallback || 'Unknown Supabase error';
+  }
+
+  async function isEnabled(){
+    if (!usingSupabase || !currentUser || !sb) return false;
+
+    const storedEnabled = getStoredCommunityEnabled();
+
+    try {
+      const { data, error } = await sb
+        .from(SETTINGS_TABLE)
+        .select('community_enabled')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') {
+        console.warn('[Community] settings read failed. Falling back to local state:', error);
+        communityEnabledCache = storedEnabled;
+        return communityEnabledCache;
+      }
+
+      if (data) {
+        communityEnabledCache = data.community_enabled === true;
+        setStoredCommunityEnabled(communityEnabledCache);
+        return communityEnabledCache;
+      }
+
+      // No settings row yet. Do not silently block posting if the user already enabled Community locally.
+      communityEnabledCache = storedEnabled;
+      return communityEnabledCache;
+    } catch (err) {
+      console.warn('[Community] settings read crashed. Falling back to local state:', err);
+      communityEnabledCache = storedEnabled;
+      return communityEnabledCache;
+    }
+  }
+
+  async function setEnabled(next){
+    if (!(await requireUser())) return;
+
+    communityEnabledCache = Boolean(next);
+    setStoredCommunityEnabled(communityEnabledCache);
+    await updateStatus();
+
+    const { error } = await sb.from(SETTINGS_TABLE).upsert({
+      user_id: currentUser.id,
+      community_enabled: communityEnabledCache,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+
+    if (error) {
+      console.warn('[Community] setting save failed:', error);
+      showToast('Community switched locally, but Supabase settings failed: ' + supabaseErrorMessage(error, 'Check community_user_settings policy.'));
+    }
+
+    await renderAll();
+  }
+
+  function initials(name){
+    const source = String(name || currentUser?.email || 'H').trim();
+    const parts = source.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return source[0] ? source[0].toUpperCase() : 'H';
+  }
+
+  function renderAvatar(container, url, name){
+    if (!container) return;
+    if (url) container.innerHTML = `<img src="${escapeHTML(url)}" alt="${escapeHTML(name || 'Profile photo')}" />`;
+    else container.textContent = initials(name);
+  }
+
+  async function loadProfile(){
+    if (!(await requireUser())) return null;
+    const { data, error } = await sb
+      .from(PROFILES_TABLE)
+      .select('id,display_name,avatar_url,avatar_path')
+      .eq('id', currentUser.id)
+      .maybeSingle();
+    if (error && error.code !== 'PGRST116') console.warn(error);
+    profile = data || { id: currentUser.id, display_name: '', avatar_url: '', avatar_path: '' };
+    const input = document.getElementById('displayNameInput');
+    if (input && !input.value) input.value = profile.display_name || '';
+    document.getElementById('profileDisplayName').textContent = profile.display_name || 'Your profile';
+    renderAvatar(document.getElementById('profileAvatarLarge'), profile.avatar_url, profile.display_name);
+    return profile;
+  }
+
+  async function uploadToBucket(bucket, path, file){
+    const { error } = await sb.storage.from(bucket).upload(path, file, {
+      upsert: true,
+      cacheControl: '86400',
+      contentType: file.type || 'image/jpeg'
+    });
+    if (error) throw error;
+    const { data } = sb.storage.from(bucket).getPublicUrl(path);
+    return data && data.publicUrl ? data.publicUrl : '';
+  }
+
+  async function saveProfile(){
+    if (!(await requireUser())) return;
+    const name = document.getElementById('displayNameInput').value.trim().slice(0,40) || 'Hearty member';
+    let avatarUrl = profile?.avatar_url || '';
+    let avatarPath = profile?.avatar_path || '';
+    try {
+      if (selectedProfileImage) {
+        const ext = (selectedProfileImage.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+        avatarPath = `${currentUser.id}/avatar.${ext}`;
+        avatarUrl = await uploadToBucket(PROFILE_BUCKET, avatarPath, selectedProfileImage);
+      }
+      const { error } = await sb.from(PROFILES_TABLE).upsert({
+        id: currentUser.id,
+        display_name: name,
+        avatar_url: avatarUrl,
+        avatar_path: avatarPath,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+      if (error) throw error;
+      selectedProfileImage = null;
+      await loadProfile();
+      await renderFeed();
+      showToast('Profile saved.');
+    } catch (err) {
+      console.warn(err);
+      showToast(selectedProfileImage ? 'Profile photo could not be saved. Check the profile-photos bucket and policies.' : 'Profile could not be saved. Check profiles table policy.');
+    }
+  }
+
+
+  async function loadFollowing(){
+    followingCache = new Set();
+    if (!usingSupabase || !currentUser || !sb) return;
+    const { data, error } = await sb
+      .from(FOLLOWS_TABLE)
+      .select('following_id')
+      .eq('follower_id', currentUser.id);
+    if (error) { console.warn('[Community] loadFollowing failed:', error); return; }
+    followingCache = new Set((data || []).map(row => row.following_id));
+  }
+
+  async function fetchProfilesForUserIds(userIds){
+    const ids = [...new Set((userIds || []).filter(Boolean))];
+    if (!ids.length || !sb) return;
+    const { data, error } = await sb
+      .from(PROFILES_TABLE)
+      .select('id,display_name,avatar_url')
+      .in('id', ids);
+    if (error) { console.warn('[Community] fetchProfilesForUserIds failed:', error); return; }
+    (data || []).forEach(p => { profilesById[p.id] = p; });
+  }
+
+  async function loadPeople(){
+    const list = document.getElementById('peopleList');
+    const count = document.getElementById('peopleCount');
+    if (!list || !count) return;
+
+    if (!usingSupabase || !currentUser || !sb || !communityEnabledCache) {
+      count.textContent = '0';
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Turn Community on to see members.</p></div>';
+      return;
+    }
+
+    /*
+      Members are now loaded directly from profiles so their profile photos show.
+      The visible image is profiles.avatar_url. Current user is excluded.
+    */
+    const { data: members, error } = await sb
+      .from(PROFILES_TABLE)
+      .select('id,display_name,avatar_url,updated_at')
+      .neq('id', currentUser.id)
+      .order('updated_at', { ascending: false })
+      .limit(80);
+
+    if (error) {
+      console.warn('[Community] loadPeople profiles failed:', error);
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>Could not load members yet. Check profiles table select policy.</p></div>';
+      return;
+    }
+
+    const people = (members || []).filter(person => person && person.id);
+
+    people.forEach(person => {
+      profilesById[person.id] = person;
+    });
+
+    const term = peopleSearchTerm.trim().toLowerCase();
+    const visiblePeople = people.filter(person => {
+      if (!term) return true;
+      const name = String(person.display_name || 'Hearty member').toLowerCase();
+      return name.includes(term);
+    });
+
+    count.textContent = term ? `${visiblePeople.length}/${people.length}` : String(people.length);
+
+    if (!visiblePeople.length) {
+      list.innerHTML = '<div class="empty-card" style="padding:16px"><p>No matching members found.</p></div>';
+      return;
+    }
+
+    list.innerHTML = visiblePeople.map(person => {
+      const id = person.id;
+      const name = person.display_name || 'Hearty member';
+      const avatar = person.avatar_url || '';
+      const isFollowing = followingCache.has(id);
+
+      return `
+        <div class="person-row">
+          <div class="avatar">
+            ${
+              avatar
+                ? `<img src="${escapeHTML(avatar)}" alt="${escapeHTML(name)}" loading="lazy" />`
+                : escapeHTML(initials(name))
+            }
+          </div>
+          <div>
+            <strong>${escapeHTML(name)}</strong>
+            <small>${isFollowing ? 'Following' : 'Hearty member'}</small>
+          </div>
+          <button class="follow-btn ${isFollowing ? 'following' : ''}" data-follow-id="${escapeHTML(id)}" type="button">
+            ${isFollowing ? 'Following' : 'Follow'}
+          </button>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-follow-id]').forEach(btn => {
+      btn.onclick = () => toggleFollow(btn.dataset.followId);
+    });
+  }
+
+  async function toggleFollow(userId){
+    if (!(await requireUser()) || !userId || userId === currentUser.id) return;
+    try {
+      if (followingCache.has(userId)) {
+        const { error } = await sb.from(FOLLOWS_TABLE).delete().eq('follower_id', currentUser.id).eq('following_id', userId);
+        if (error) throw error;
+        followingCache.delete(userId);
+      } else {
+        const { error } = await sb.from(FOLLOWS_TABLE).upsert({ follower_id: currentUser.id, following_id: userId }, { onConflict:'follower_id,following_id' });
+        if (error) throw error;
+        followingCache.add(userId);
+      }
+      await loadPeople();
+      await renderFeed();
+    } catch (err) {
+      console.warn('[Community] toggleFollow failed:', err);
+      showToast('Could not update follow. Check community_follows policies.');
+    }
+  }
+
+  async function uploadPostImage(file){
+    if (!file) return { imagePath:null, imageUrl:null };
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g,'') || 'jpg';
+    const imagePath = `${currentUser.id}/${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const imageUrl = await uploadToBucket(COMMUNITY_BUCKET, imagePath, file);
+    return { imagePath, imageUrl };
+  }
+
+  function isMissingColumnError(error){
+    const msg = String(supabaseErrorMessage(error, '')).toLowerCase();
+    return error?.code === 'PGRST204' || msg.includes('could not find') || msg.includes('column') || msg.includes('schema cache');
+  }
+
+  async function insertCommunityPost(payload){
+    // First try the full current schema. This is the preferred community_posts structure.
+    let result = await sb.from(POSTS_TABLE).insert(payload).select('id').single();
+    if (!result.error) return result;
+
+    // If Supabase says one of the newer columns is missing, retry with a smaller payload.
+    // This keeps old databases working while the schema catches up.
+    if (isMissingColumnError(result.error)) {
+      console.warn('[Community] full post payload failed, retrying minimal payload:', result.error);
+      const minimalPayload = {
+        user_id: payload.user_id,
+        body: payload.body
+      };
+
+      if (payload.image_url) minimalPayload.image_url = payload.image_url;
+      if (payload.image_path) minimalPayload.image_path = payload.image_path;
+      if (payload.expires_at) minimalPayload.expires_at = payload.expires_at;
+
+      result = await sb.from(POSTS_TABLE).insert(minimalPayload).select('id').single();
+    }
+
+    return result;
+  }
+
+  async function createPost(){
+    const button = document.getElementById('communityPostBtn');
+    const input = document.getElementById('communityPostInput');
+
+    if (!(await requireUser())) return;
+
+    const enabled = await isEnabled();
+    if (!enabled) {
+      showToast('Community is off. Turn Community on before posting.');
+      return;
+    }
+
+    const body = (input?.value || '').trim().slice(0,280);
+    if (!body && !selectedPostImage) {
+      showToast('Write something or add a photo before posting.');
+      return;
+    }
+
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Posting...';
+    }
+
+    try {
+      const image = selectedPostImage ? await uploadPostImage(selectedPostImage) : { imagePath:null, imageUrl:null };
+      const expiresAt = image.imageUrl ? new Date(Date.now() + 24*60*60*1000).toISOString() : null;
+
+      const payload = {
+        user_id: currentUser.id,
+        post_type: 'user_post',
+        event_type: 'user_post',
+        body,
+        image_path: image.imagePath,
+        image_url: image.imageUrl,
+        expires_at: expiresAt
+      };
+
+      const { data, error } = await insertCommunityPost(payload);
+      console.log('[Community] post insert result:', { data, error });
+
+      if (error) throw error;
+
+      input.value = '';
+      clearPostImage();
+      showToast('Posted.');
+      await renderAll();
+    } catch (err) {
+      console.error('[Community] createPost failed:', err);
+      showToast('Post failed: ' + supabaseErrorMessage(err, 'Check community_posts RLS/table columns.'));
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Post';
+      }
+    }
+  }
+
+  async function fetchPosts(){
+    if (!(await isEnabled())) { postsCache = []; return []; }
+    const nowIso = new Date().toISOString();
+
+    let result = await sb
+      .from(POSTS_TABLE)
+      .select('id,user_id,post_type,event_type,body,image_url,image_path,created_at,expires_at')
+      .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
+      .order('created_at', { ascending:false })
+      .limit(50);
+
+    if (isMissingColumnError(result.error)) {
+      console.warn('[Community] full post select failed, retrying minimal select:', result.error);
+      result = await sb
+        .from(POSTS_TABLE)
+        .select('id,user_id,body,image_url,created_at')
+        .order('created_at', { ascending:false })
+        .limit(50);
+    }
+
+    const { data, error } = result;
+    if (error) {
+      console.warn('[Community] fetchPosts failed:', error);
+      showToast('Could not load Community posts: ' + supabaseErrorMessage(error, 'Check community_posts select policy.'));
+      postsCache = [];
+      return [];
+    }
+    postsCache = data || [];
+    await fetchProfilesForUserIds(postsCache.map(p => p.user_id));
+    if (feedMode === 'following') {
+      postsCache = postsCache.filter(p => p.user_id === currentUser.id || followingCache.has(p.user_id));
+    }
+    await fetchReactions();
+    return postsCache;
+  }
+
+  async function fetchReactions(){
+    reactionsCache = {};
+    if (!postsCache.length) return;
+    const ids = postsCache.map(p => p.id);
+    const { data, error } = await sb.from(LOVES_TABLE).select('post_id,user_id,reaction_type').in('post_id', ids);
+    if (error) { console.warn(error); return; }
+    (data || []).forEach(r => {
+      reactionsCache[r.post_id] = reactionsCache[r.post_id] || {};
+      reactionsCache[r.post_id][r.user_id] = r.reaction_type || 'love';
+    });
+  }
+
+  function reactionCount(postId){ return reactionsCache[postId] ? Object.keys(reactionsCache[postId]).length : 0; }
+  function hasReacted(postId){ return Boolean(reactionsCache[postId] && reactionsCache[postId][currentUser.id]); }
+
+  async function toggleLove(postId){
+    if (!(await isEnabled())) return;
+    try {
+      if (hasReacted(postId)) {
+        const { error } = await sb.from(LOVES_TABLE).delete().eq('post_id', postId).eq('user_id', currentUser.id);
+        if (error) throw error;
+      } else {
+        const { error } = await sb.from(LOVES_TABLE).upsert({ post_id: postId, user_id: currentUser.id, reaction_type:'love' }, { onConflict:'post_id,user_id' });
+        if (error) throw error;
+      }
+      await renderFeed();
+    } catch (err) {
+      console.warn(err);
+      showToast('Could not update love.');
+    }
+  }
+
+  async function updateStatus(){
+    const signedIn = usingSupabase && currentUser;
+    const enabled = signedIn ? await isEnabled() : false;
+    const toggle = document.getElementById('communityToggle');
+    const content = document.getElementById('communityContent');
+    if (toggle) {
+      toggle.classList.toggle('on', enabled);
+      toggle.setAttribute('aria-pressed', String(enabled));
+    }
+    document.getElementById('communityToggleText').textContent = enabled ? 'On' : 'Off';
+    document.getElementById('composerStatus').textContent = enabled ? 'Ready to post' : 'Community is off';
+    if (content) content.classList.toggle('community-disabled', !enabled);
+    ['displayNameInput','profilePhotoInput','saveProfileBtn','communityPostInput','communityImageInput','communityPostBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = !enabled;
+    });
+  }
+
+  function renderPost(post){
+    const postProfile = profilesById[post.user_id] || {};
+    const name = post.user_id === currentUser?.id ? (profile?.display_name || 'You') : (postProfile.display_name || 'Hearty member');
+    const avatar = postProfile.avatar_url || '';
+    const text = escapeHTML(post.body || '');
+    const imageUrl = post.image_url || '';
+    const expiresText = imageUrl ? ' • Photo expires after 24h' : '';
+    return `
+      <article class="post-card">
+        <div class="post-head">
+          <div class="avatar">${avatar ? `<img src="${escapeHTML(avatar)}" alt="${escapeHTML(name)}" />` : escapeHTML(initials(name))}</div>
+          <div class="post-user">
+            <strong>${escapeHTML(name)}</strong>
+            <div class="meta">${timeAgo(post.created_at)}${expiresText}</div>
+          </div>
+        </div>
+        ${text ? `<div class="post-text">${text}</div>` : ''}
+        ${imageUrl ? `<img class="post-image" src="${escapeHTML(imageUrl)}" alt="Community photo post" loading="lazy" />` : ''}
+        <div class="post-actions">
+          <button class="reaction-btn ${hasReacted(post.id) ? 'active' : ''}" data-love-post="${post.id}" type="button">❤️ <span>${reactionCount(post.id)}</span></button>
+        </div>
+      </article>`;
+  }
+
+  function renderEmpty(title, text, buttonText=''){
+    return `<div class="empty-card"><div class="empty-icon">✦</div><h3>${escapeHTML(title)}</h3><p>${escapeHTML(text)}</p>${buttonText ? `<button class="action-btn" id="emptyActionBtn" type="button">${escapeHTML(buttonText)}</button>` : ''}</div>`;
+  }
+
+  async function renderFeed(){
+    const feed = document.getElementById('feedList');
+    if (!usingSupabase || !currentUser) {
+      feed.innerHTML = renderEmpty('Session not detected', 'Refresh the app from inside Hearty so Community can see your existing session.');
+      return;
+    }
+    if (!(await isEnabled())) {
+      feed.innerHTML = renderEmpty('Community is off', 'Turn Community on at the top to unlock the profile, composer, feed, and photo posting.');
+      return;
+    }
+    const posts = await fetchPosts();
+    if (!posts.length) {
+      feed.innerHTML = renderEmpty('No posts yet', 'Write a quick update or add a photo above.');
+      return;
+    }
+    feed.innerHTML = posts.map(renderPost).join('');
+    document.querySelectorAll('[data-love-post]').forEach(btn => btn.onclick = () => toggleLove(btn.dataset.lovePost));
+  }
+
+  async function renderAll(){ await updateStatus(); await loadProfile(); await loadFollowing(); await renderFeed(); await loadPeople(); }
+
+  function clearPostImage(){
+    selectedPostImage = null;
+    const input = document.getElementById('communityImageInput');
+    const wrap = document.getElementById('imagePreviewWrap');
+    const img = document.getElementById('imagePreview');
+    if (input) input.value = '';
+    if (img) img.removeAttribute('src');
+    if (wrap) wrap.classList.remove('active');
+  }
+
+  function previewPostImage(file){
+    selectedPostImage = file || null;
+    const wrap = document.getElementById('imagePreviewWrap');
+    const img = document.getElementById('imagePreview');
+    if (!file || !wrap || !img) { clearPostImage(); return; }
+    const reader = new FileReader();
+    reader.onload = () => { img.src = reader.result; wrap.classList.add('active'); };
+    reader.readAsDataURL(file);
+  }
+
+  function previewProfileImage(file){
+    selectedProfileImage = file || null;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => renderAvatar(document.getElementById('profileAvatarLarge'), reader.result, document.getElementById('displayNameInput').value);
+    reader.readAsDataURL(file);
+  }
+
+  function renderNav(){
+    const pages = [
+      ['home.html','Home','<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'],
+      ['meals.html','Meals','<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8h-4.5"></path>'],
+      ['exercise.html','Exercise','<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>'],
+      ['progress.html','Progress','<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>'],
+      ['support.html','Support','<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>'],
+      ['social.html','Social','<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'],
+      ['settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']
+    ];
+    const nav = document.getElementById('bottomNav');
+    nav.innerHTML = pages.map(item => {
+      const active = item[0] === 'social.html';
+      return `<a class="nav-item ${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''} href="./${item[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${item[2]}</svg><span>${item[1]}</span></a>`;
+    }).join('');
+  }
+
+  window.heartyCommunityIsEnabled = isEnabled;
+  window.heartyLogCommunityEvent = async function(){ return false; };
+
+  document.addEventListener('DOMContentLoaded', async function(){
+    renderNav();
+    await initSupabase();
+    if (sb?.auth?.onAuthStateChange) {
+      sb.auth.onAuthStateChange(async function(_event, session){
+        currentUser = session?.user || currentUser;
+        usingSupabase = Boolean(currentUser);
+        await renderAll();
+      });
+    }
+    await loadProfile();
+    await renderAll();
+    document.getElementById('communityToggle').onclick = async () => setEnabled(!(await isEnabled()));
+    document.getElementById('communityPostBtn').onclick = createPost;
+    document.getElementById('feedEveryoneBtn').onclick = async function(){ feedMode = 'everyone'; document.getElementById('feedEveryoneBtn').classList.add('active'); document.getElementById('feedFollowingBtn').classList.remove('active'); await renderFeed(); };
+    document.getElementById('feedFollowingBtn').onclick = async function(){ feedMode = 'following'; document.getElementById('feedFollowingBtn').classList.add('active'); document.getElementById('feedEveryoneBtn').classList.remove('active'); await renderFeed(); };
+    const peopleSearchInput = document.getElementById('peopleSearchInput');
+    if (peopleSearchInput) peopleSearchInput.addEventListener('input', async function(e){ peopleSearchTerm = e.target.value || ''; await loadPeople(); });
+    document.getElementById('saveProfileBtn').onclick = saveProfile;
+    document.getElementById('communityPostInput').addEventListener('keydown', function(e){ if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') createPost(); });
+    const communityImageInput = document.getElementById('communityImageInput');
+    if (communityImageInput) {
+      communityImageInput.dataset.uploadScope = 'community-post';
+      communityImageInput.addEventListener('click', e => e.stopPropagation());
+      communityImageInput.addEventListener('change', e => {
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        previewPostImage(e.target.files && e.target.files[0]);
+      }, true);
+    }
+
+    const profilePhotoInput = document.getElementById('profilePhotoInput');
+    if (profilePhotoInput) {
+      profilePhotoInput.dataset.uploadScope = 'profile';
+      profilePhotoInput.addEventListener('click', e => e.stopPropagation());
+      profilePhotoInput.addEventListener('change', e => {
+        e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        previewProfileImage(e.target.files && e.target.files[0]);
+      }, true);
+    }
+    document.getElementById('clearImageBtn').onclick = clearPostImage;
+  });
+})();
+</script>
+</body>
+</html>
