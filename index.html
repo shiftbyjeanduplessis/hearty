@@ -1677,7 +1677,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   const HEARTY_PADDLE = {
     environment: "production", // Keep as "production" for your live Hearty launch page.
     clientToken: "live_516a138666d2aaaca6729c439ba",
-    priceId: "PASTE_LIVE_29_PRICE_ID_HERE",
+    priceId: "pri_01krrpc5hxx3dnak7bxjetm8qp",
     successUrl: "https://hearty.health/login"
   };
 
@@ -1779,7 +1779,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 
   function openHeartyPaddleCheckout() {
     if (!initHeartyPaddle()) {
-      alert("Checkout is not connected yet. Add your Paddle client-side token and live $29 price ID in the HEARTY_PADDLE config block.");
+      alert("Checkout is not connected yet. Paddle checkout configuration is incomplete. Check the HEARTY_PADDLE config block.");
       return;
     }
 
