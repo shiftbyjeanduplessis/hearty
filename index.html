@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script> 
 <head>
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="no">
-<meta name="mobile-web-app-capable" content="no">
-<meta name="theme-color" content="#f8fbff">
 <title>Hearty — Your GLP-1 Companion</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700;1,800&display=swap" rel="stylesheet">
 <!-- Hearty icon preloads: prevents premium landing-page icons popping in while scrolling. -->
@@ -1161,7 +1158,6 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 }
 
 
-
 /* SPECIAL LAUNCH PRICE URGENCY PASS */
 .launch-note{
   margin-top:12px;
@@ -1178,8 +1174,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   font-weight:700;
   box-shadow:0 12px 26px rgba(234,88,12,.08), inset 0 1px 0 rgba(255,255,255,.9);
 }
-.launch-note span,
-.launch-ribbon{
+.launch-note span{
   background:linear-gradient(135deg,#f97316,#2f6df6);
   color:#fff;
   border-radius:999px;
@@ -1190,16 +1185,6 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   text-transform:uppercase;
   letter-spacing:.08em;
   box-shadow:0 8px 18px rgba(249,115,22,.18);
-}
-.launch-ribbon{
-  display:inline-flex;
-  align-items:center;
-  margin-bottom:14px;
-  padding:7px 13px;
-}
-.pricing-card .launch-ribbon{
-  position:relative;
-  z-index:2;
 }
 .pricing-card.launch-offer{
   border-color:rgba(249,115,22,.24) !important;
@@ -1558,20 +1543,19 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <!-- PRICING -->
 <section class="section" id="pricing" style="padding-top:56px;background:var(--bg)">
 <div class="section-inner">
-  <div class="section-tag">Launch pricing</div>
-  <h2>Special launch price.<br>Buy once. Use Hearty forever.</h2>
-  <p class="lead">Launch users can get lifetime access for $29. No monthly billing. No confusing upgrade ladder. Just a simple special launch price.</p>
+  <div class="section-tag">Simple pricing</div>
+  <h2>Buy once.<br>Use Hearty forever.</h2>
+  <p class="lead">A full GLP-1 support system for less than many people spend on one takeaway. No monthly billing. No confusing upgrade ladder.</p>
 
   <div class="pricing-wrap">
     <div class="pricing-card launch-offer">
-      <div class="launch-ribbon">Special launch price</div>
-      <div class="pricing-badge">Lifetime Access</div>
-      <div class="pricing-name">Hearty App</div>
+      <div class="pricing-badge">Special Launch Price</div>
+      <div class="pricing-name">Hearty Lifetime Access</div>
       <p class="pricing-desc">The full GLP-1 companion system: taste-based meals, home and gym movement, Support Mode, weigh-ins, private photos and symptom tracking.</p>
       <div class="pricing-amount"><sup>$</sup>29</div>
-      <div class="pricing-per">one-time launch payment · lifetime access</div>
-      <div class="launch-price-note"><strong>Launch offer:</strong> $29 lifetime access. Special launch price, once-off payment.</div>
-      <div class="pricing-highlight">Once-off lifetime access. No monthly subscription.</div>
+      <div class="pricing-per">one-time payment · lifetime access</div>
+      <div class="pricing-highlight">Special launch price. No monthly subscription.</div>
+      <div class="launch-price-note"><strong>$29 special launch price</strong> for lifetime access. One payment. No monthly billing.</div>
       <ul class="pricing-list">
         <li>GLP-1 meal planner</li>
         <li>Low-appetite support</li>
@@ -1584,11 +1568,10 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
       </ul>
       <div class="price-reassurance"><div>7-day refund</div><div>One payment</div><div>Private by default</div></div>
       <a href="#" class="btn-pricing" data-paddle-checkout>Claim the $29 special launch price</a>
-      <div class="pricing-trust">Special launch price · private by default · lifetime access</div>
+      <div class="pricing-trust">Private by default · lifetime access · built for GLP-1 life</div>
     </div>
 
     <div class="pricing-side">
-      <div class="pricing-side-card"><strong>Special launch offer.</strong><span>$29 once-off for lifetime access during the launch offer.</span></div>
       <div class="pricing-side-card"><strong>Not another subscription trap.</strong><span>Hearty is priced as a once-off lifetime purchase, not a monthly bill that quietly keeps running.</span></div>
       <div class="pricing-side-card"><strong>Built by a practitioner.</strong><span>Created from years of coaching real clients through the gaps between appointments.</span></div>
       <div class="pricing-side-card"><strong>Useful between appointments.</strong><span>Track patterns over time so your next doctor visit starts with real information, not memory.</span></div>
@@ -1635,8 +1618,8 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <section class="cta-section" style="padding-top:56px;padding-bottom:58px;background:linear-gradient(135deg,#0b2442,#123b68)">
 <h2>Start your GLP-1 journey properly.</h2>
 <p>No subscriptions. No noise. Just meals, movement, support and tracking built for the reality of GLP-1 life.</p>
-<a href="#" class="btn-white" data-paddle-checkout>Claim the $29 special launch price</a>
-<div class="cta-note">Special launch price · 7-day refund · private by default · lifetime access</div>
+<a href="#" class="btn-white" data-paddle-checkout>Get the $29 special launch price</a>
+<div class="cta-note">7-day refund · private by default · lifetime access</div>
 </section>
 
 <!-- FOOTER -->
@@ -1657,25 +1640,18 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <!-- STICKY BAR (mobile) -->
 <div class="sticky">
 <div class="sticky-inner">
-  <div class="sticky-text"><strong>Special launch price — $29</strong>Lifetime access during the launch offer</div>
-  <a href="#" class="sticky-btn" data-paddle-checkout>Claim offer</a>
+  <div class="sticky-text"><strong>Hearty — $29 launch price</strong>One payment. Lifetime access</div>
+  <a href="#" class="sticky-btn" data-paddle-checkout>Get Hearty</a>
 </div>
 </div>
 
 <!-- Paddle checkout: Hearty special launch offer -->
 <script>
   // =========================================================
-  // HEARTY PADDLE CHECKOUT CONFIG
+  // HEARTY PADDLE CHECKOUT CONFIG — LIVE
   // =========================================================
-  // Replace ONLY these two values after copying them from Paddle:
-  // 1) clientToken: Paddle > Developer Tools > Authentication > Client-side tokens
-  // 2) priceId: Paddle > Catalog > Products > Hearty > Prices > Copy price ID
-  //
-  // Use a LIVE client-side token + LIVE $29 price for real payments.
-  // Do not paste a Paddle API key here. API keys are secret and backend-only.
-
   const HEARTY_PADDLE = {
-    environment: "production", // Keep as "production" for your live Hearty launch page.
+    environment: "production",
     clientToken: "live_516a138666d2aaaca6729c439ba",
     priceId: "pri_01krrpc5hxx3dnak7bxjetm8qp",
     successUrl: "https://hearty.health/login"
@@ -1711,19 +1687,11 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     const token = HEARTY_PADDLE.clientToken || "";
     const priceId = HEARTY_PADDLE.priceId || "";
 
-    if (!token || token.includes("PASTE_")) {
-      problems.push("Missing Paddle client-side token");
-    }
-
-    if (!priceId || priceId.includes("PASTE_")) {
-      problems.push("Missing Paddle $29 price ID");
-    }
-
-    if (token && !token.includes("PASTE_") && !/^(test|live)_[A-Za-z0-9]+$/.test(token)) {
+    if (!/^(test|live)_[A-Za-z0-9]+$/.test(token)) {
       problems.push("Client-side token should start with test_ or live_");
     }
 
-    if (priceId && !priceId.includes("PASTE_") && !/^pri_[A-Za-z0-9]+$/.test(priceId)) {
+    if (!/^pri_[A-Za-z0-9]+$/.test(priceId)) {
       problems.push("Price ID should start with pri_");
     }
 
@@ -1748,7 +1716,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 
     const problems = getPaddleConfigProblems();
     if (problems.length) {
-      console.warn("Paddle is not configured yet:", problems.join("; "));
+      console.warn("Paddle configuration problem:", problems.join("; "));
       return false;
     }
 
@@ -1779,7 +1747,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 
   function openHeartyPaddleCheckout() {
     if (!initHeartyPaddle()) {
-      alert("Checkout is not connected yet. Paddle checkout configuration is incomplete. Check the HEARTY_PADDLE config block.");
+      alert("Checkout could not initialize. Please refresh and try again.");
       return;
     }
 
@@ -1793,7 +1761,6 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
         }
       ],
       settings: {
-        // Overlay + multi-page keeps checkout compact and avoids the full-screen-style one-page flow.
         displayMode: "overlay",
         theme: "light",
         variant: "multi-page",
@@ -1819,14 +1786,17 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    initHeartyPaddle();
+    const checkoutButtons = document.querySelectorAll("[data-paddle-checkout]");
 
-    document.querySelectorAll("[data-paddle-checkout]").forEach(function (button) {
+    checkoutButtons.forEach(function (button) {
       button.addEventListener("click", function (event) {
         event.preventDefault();
         openHeartyPaddleCheckout();
       });
     });
+
+    // Warm-initialize Paddle after the page has loaded.
+    initHeartyPaddle();
   });
 </script>
 </body>
