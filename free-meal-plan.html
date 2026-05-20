@@ -649,6 +649,7 @@
       const SUPABASE_URL = "";
       const SUPABASE_ANON_KEY = "";
       const LEADS_TABLE = "meal_plan_leads";
+
       const urlParams = new URLSearchParams(window.location.search);
       const tracking = {
         ref: urlParams.get("ref") || "",
@@ -663,7 +664,6 @@
       const state = { step:0, firstName:"", email:"", whatsapp:"", medication:"", country:"ZA", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
       let latestPlanText = "";
       let latestPlan = [];
-      let currentLeadId = "";
 
       const root = document.querySelector("[data-wizard-root]");
       const resultPanel = document.getElementById("resultPanel");
@@ -898,14 +898,7 @@
         return lines.join("\n");
       }
 
-      document.getElementById("copyPlan").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText(latestPlanText);
-          updateLeadEvent({ copied_plan: true, copied_at: new Date().toISOString() });
-          showToast("Plan copied");
-        } catch(e) { showToast("Copy failed"); }
-      });
-
+      document.getElementById("copyPlan").addEventListener("click", async () => { try { await navigator.clipboard.writeText(latestPlanText); showToast("Plan copied"); } catch(e) { showToast("Copy failed"); } });
       document.getElementById("downloadPlan").addEventListener("click", () => {
         const blob = new Blob([latestPlanText], { type:"text/plain;charset=utf-8" });
         const url = URL.createObjectURL(blob);
@@ -916,20 +909,8 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        updateLeadEvent({ downloaded_plan: true, downloaded_at: new Date().toISOString() });
       });
-
-      document.getElementById("printPlan").addEventListener("click", () => {
-        updateLeadEvent({ printed_plan: true, printed_at: new Date().toISOString() });
-        window.print();
-      });
-
-      document.querySelectorAll("[data-sales-link]").forEach(link => {
-        link.addEventListener("click", () => {
-          updateLeadEvent({ clicked_hearty: true, clicked_hearty_at: new Date().toISOString() });
-        });
-      });
-
+      document.getElementById("printPlan").addEventListener("click", () => window.print());
       function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 1800); }
 
       async function saveLead(generatedPlan){
@@ -957,38 +938,12 @@
           lead_status: "New"
         };
         try {
-          const response = await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?select=id`, {
+          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}`, {
             method:"POST",
-            headers:{
-              "Content-Type":"application/json",
-              "apikey":SUPABASE_ANON_KEY,
-              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
-              "Prefer":"return=representation"
-            },
+            headers:{ "Content-Type":"application/json", "apikey":SUPABASE_ANON_KEY, "Authorization":`Bearer ${SUPABASE_ANON_KEY}` },
             body: JSON.stringify(payload)
           });
-
-          if(response.ok){
-            const data = await response.json();
-            currentLeadId = data?.[0]?.id || "";
-          }
         } catch(err) { console.warn("Lead capture failed", err); }
-      }
-
-      async function updateLeadEvent(fields){
-        if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !currentLeadId) return;
-
-        try {
-          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?id=eq.${currentLeadId}`, {
-            method:"PATCH",
-            headers:{
-              "Content-Type":"application/json",
-              "apikey":SUPABASE_ANON_KEY,
-              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify(fields)
-          });
-        } catch(err) { console.warn("Lead event update failed", err); }
       }
 
       function listLabels(values){
