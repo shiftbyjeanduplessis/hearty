@@ -1,11 +1,14 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
-  <meta name="description" content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." />
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
+  <!-- HEARTY_LEAD_MAGNET_CHECKOUT_DIRECT_V4: buy CTAs open checkout, not sales pages -->
+<meta content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." name="description"/>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<style>
     :root {
       --ink: #102033;
       --muted: #617389;
@@ -459,6 +462,80 @@
     .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(120%); background: #102033; color: #fff; padding: 12px 16px; border-radius: 999px; box-shadow: var(--shadow-soft); opacity: 0; transition: all .22s ease; z-index: 100; font-weight: 850; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    .country-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(16, 32, 51, 0.38);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .country-gate.show { display: flex; }
+    .country-gate-card {
+      width: min(480px, 100%);
+      border-radius: 30px;
+      background:
+        radial-gradient(420px 220px at 10% 0%, rgba(47,109,246,0.12), transparent 56%),
+        radial-gradient(420px 220px at 90% 10%, rgba(34,184,167,0.14), transparent 54%),
+        rgba(255,255,255,0.96);
+      border: 1px solid rgba(126,148,174,.20);
+      box-shadow: 0 28px 80px rgba(14,31,53,.22);
+      padding: 26px;
+      position: relative;
+    }
+    .country-gate-card h3 {
+      margin: 0 34px 8px 0;
+      font-size: clamp(1.65rem, 4vw, 2.2rem);
+      letter-spacing: -.05em;
+      line-height: 1.08;
+    }
+    .country-gate-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .country-gate-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .country-choice {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      box-shadow: 0 14px 28px rgba(47,109,246,0.18);
+    }
+    .country-choice.secondary {
+      color: #193550;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(126,148,174,.22);
+      box-shadow: 0 10px 24px rgba(14,31,53,.07);
+    }
+    .country-gate-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(126,148,174,.18);
+      background: rgba(255,255,255,.74);
+      color: #40566f;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; padding-top: 26px; }
       .phone-stage { min-height: auto; }
@@ -494,162 +571,184 @@
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="topbar">
-      <div class="shell topbar-inner">
-        <a class="brand" href="https://hearty.health" aria-label="Hearty home">
-          <img src="hearty-logo.png" alt="Hearty" />
-        </a>
-        <nav class="nav-actions" aria-label="Page navigation">
-          <a class="mini-link" href="#generator">Free plan</a>
-          <a class="mini-link" href="#full-app">Why Hearty</a>
-          <a class="btn btn-primary btn-small buy-link" data-sales-link href="https://hearty.health">Get Hearty</a>
-        </nav>
-      </div>
-    </header>
-
-    <main>
-      <section class="shell hero">
-        <div>
-          <div class="eyebrow">Free GLP-1 meal plan generator</div>
-          <h1>Get a 7-day <span class="gradient-text">GLP-1 friendly</span> meal plan.</h1>
-          <p class="hero-copy">Choose the foods you enjoy and Hearty will build a simple, protein-focused starter plan for Ozempic, Mounjaro, Wegovy, Saxenda, Retatrutide or similar medication.</p>
-          <div class="hero-actions">
-            <a href="#generator" class="btn btn-primary">Generate my free plan</a>
-            <a data-sales-link href="https://hearty.health" class="btn btn-secondary">Buy the full Hearty app</a>
-          </div>
-          <p class="micro-proof">Built by nutrition coaches for real GLP-1 life: smaller meals, lower appetite days and practical food choices.</p>
-        </div>
-
-        <div class="phone-stage" aria-hidden="true">
-          <div class="phone-glow"></div>
-          <div class="phone">
-            <div class="screen">
-              <div class="screen-title">Your 7-day plan</div>
-              <div class="screen-sub">Generated from your country + food preferences</div>
-              <div class="screen-banner"><small>Free starter plan</small><strong>Protein first. Simple meals. Easy portions.</strong></div>
-              <div class="meal-mini"><strong>Breakfast</strong><span>Low-fat yoghurt bowl with fruit and oats.</span></div>
-              <div class="meal-mini"><strong>Lunch</strong><span>Chicken salad wrap with familiar local food wording.</span></div>
-              <div class="meal-mini"><strong>Dinner</strong><span>Fish, vegetables and one sensible starch portion.</span></div>
-              <div class="meal-mini"><strong>After day 7</strong><span>Continue inside Hearty for ongoing meals, tracking and support.</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="shell lead-panel" aria-label="Why this free plan works">
-        <div class="lead-block">
-          <h2>A starter plan that feels realistic, not random.</h2>
-          <p>The free generator asks for the food choices that actually matter: your country, proteins, breakfasts, starches, vegetables, fruits and snacks. The result is a first-week plan that is easier to follow because it starts with foods you already accept.</p>
-          <ul class="clean-list">
-            <li>Country-aware wording so the plan uses familiar food names.</li>
-            <li>Simple GLP-1 friendly meals instead of complicated recipes.</li>
-            <li>Downloadable 7-day output you can save, print or reuse.</li>
-          </ul>
-        </div>
-        <div class="lead-block companion-card">
-          <h3>Hearty is the full GLP-1 companion app</h3>
-          <p>Your free 7-day meal plan gets you started. Hearty is built to support the full GLP-1 journey after that: meals, tracking, rough days, progress and daily structure.</p>
-          <ul class="companion-list">
-            <li><span class="mini-icon">&#127869;</span><span>Ongoing meal generation based on your food preferences, country and routine</span></li>
-            <li><span class="mini-icon">P</span><span>Protein visibility so you can see whether meals are helping you reach the right targets</span></li>
-            <li><span class="mini-icon">&#128167;</span><span>Hydration goals based on your body and daily needs</span></li>
-            <li><span class="mini-icon">&#9878;</span><span>Daily weigh-ins to keep progress visible without overcomplicating it</span></li>
-            <li><span class="mini-icon">&#128247;</span><span>Progress photo reminders so changes are not only measured by the scale</span></li>
-            <li><span class="mini-icon">&#128137;</span><span>Medication rhythm support for injection days and weekly routines</span></li>
-            <li><span class="mini-icon">+</span><span>Support Mode for rough days when appetite, nausea or side effects make eating harder</span></li>
-            <li><span class="mini-icon">&#127947;</span><span>Home and gym exercise guidance built for people losing weight on GLP-1s</span></li>
-            <li><span class="mini-icon">&#128218;</span><span>Short daily lessons so users understand the journey without information overload</span></li>
-          </ul>
-          <a data-sales-link class="btn btn-primary" href="https://hearty.health">Get Hearty</a>
-        </div>
-      </section>
-
-      <section id="generator" class="shell section generator-section">
-        <div class="generator-head">
-          <div class="setup-capsule">Free meal plan setup</div>
-          <h2>Build your free 7-day plan</h2>
-          <p>Add your details, choose the foods you enjoy, and Hearty will generate a simple GLP-1 friendly starter plan using familiar food wording for your country.</p>
-        </div>
-
-        <section class="setup-card" data-wizard-root></section>
-        <section class="result-panel" id="resultPanel" aria-live="polite">
-          <div class="result-head">
-            <div>
-              <h2 id="resultTitle">Your 7-day GLP-1 meal plan</h2>
-              <p id="resultSubtitle">A simple starter plan based on your selected food preferences.</p>
-            </div>
-            <span class="market-tag" id="marketTag">Free starter plan</span>
-          </div>
-          <div class="days-grid" id="daysGrid"></div>
-          <div class="result-actions">
-            <button class="btn btn-secondary btn-small" type="button" id="copyPlan">Copy plan</button>
-            <button class="btn btn-secondary btn-small" type="button" id="downloadPlan">Download plan</button>
-            <button class="btn btn-secondary btn-small" type="button" id="printPlan">Print</button>
-          </div>
-          <div class="upsell">
-            <h3>Need your next plan after day 7?</h3>
-            <p>Hearty gives you ongoing GLP-1 meal generation, protein tracking, hydration goals, progress tracking, Support Mode for rough side-effect days and short daily guidance.</p>
-            <a data-sales-link class="btn btn-primary" href="https://hearty.health">Continue with Hearty</a>
-          </div>
-        </section>
-      </section>
-
-      <section id="full-app" class="shell section">
-        <div class="info-panel">
-          <div class="info-layout">
-            <div>
-              <div class="info-kicker">Nutrition basics</div>
-              <h2>What a good GLP-1 meal plan should do</h2>
-              <p>GLP-1 medication can reduce appetite and slow digestion, so the meal plan has to protect nutrition while keeping meals small, familiar and easy to repeat.</p>
-              <div class="info-cta"><a data-sales-link class="btn btn-primary" href="https://hearty.health">Get Hearty</a></div>
-            </div>
-            <div class="info-body">
-              <section>
-                <ul class="info-bullets">
-                  <li><strong>Protein at every meal.</strong> Prioritise lean protein first so smaller meals still support muscle retention while weight is dropping.</li>
-                  <li><strong>Do not skip nutrition when appetite is low.</strong> A light yoghurt bowl, eggs, tuna, chicken, beans or a protein drink is better than an empty day.</li>
-                  <li><strong>Build plates in order.</strong> Start with protein, add vegetables or fruit, then add a sensible starch if it helps energy and satisfaction.</li>
-                  <li><strong>Use slow, useful carbohydrates.</strong> Oats, potatoes, rice, whole wheat wraps, beans and fruit can support energy without turning the plan into a sugar-heavy diet.</li>
-                  <li><strong>Keep fibre steady.</strong> Vegetables, fruit, oats, legumes and whole grains help gut regularity, especially when food volume is lower.</li>
-                  <li><strong>Increase fibre with fluids.</strong> More fibre without enough liquid can make constipation worse, so hydration has to rise with it.</li>
-                  <li><strong>Plan hydration deliberately.</strong> Smaller appetite often means less drinking too, so the plan should keep water, soups or water-rich foods visible.</li>
-                  <li><strong>Manage nausea with meal size.</strong> Smaller, plainer meals are often easier than large, rich or greasy meals on rough days.</li>
-                  <li><strong>Protect micronutrients.</strong> Fruit, vegetables, dairy or fortified alternatives, legumes and varied proteins help cover vitamins and minerals when portions shrink.</li>
-                  <li><strong>Include calcium and vitamin D sources.</strong> Yoghurt, milk, fortified alternatives, tinned fish with bones or appropriate supplements may matter when intake is low.</li>
-                  <li><strong>Keep healthy fats measured.</strong> Avocado, olive oil, nuts and seeds are useful, but large high-fat meals can feel heavy during delayed digestion.</li>
-                  <li><strong>Use simple snacks strategically.</strong> Protein yoghurt, cottage cheese, boiled eggs, tuna, fruit or a small handful of nuts can close nutrition gaps.</li>
-                  <li><strong>Avoid extreme restriction.</strong> The goal is consistent nourishment, not starving, skipping meals or cutting out whole food groups unnecessarily.</li>
-                  <li><strong>Match food to injection rhythm.</strong> Some people need gentler meals around injection days and more complete meals when appetite improves.</li>
-                  <li><strong>Make the plan repeatable.</strong> Familiar foods and realistic portions beat complicated recipes that disappear after one motivated week.</li>
-                </ul>
-              </section>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <section class="shell care-banner" aria-label="Important note">
-      <strong>Important note:</strong> Hearty is a GLP-1 companion app and does not replace medical care. This free meal plan is general education and lifestyle support only. Please follow your healthcare provider’s advice, especially if you have medical conditions or prescribed dietary instructions.
+<div class="page">
+<header class="topbar">
+<div class="shell topbar-inner">
+<a aria-label="Hearty home" class="brand" href="https://hearty.health">
+<img alt="Hearty" src="hearty-logo.png"/>
+</a>
+<nav aria-label="Page navigation" class="nav-actions">
+<a class="mini-link" href="#generator">Free plan</a>
+<a class="mini-link" href="#full-app">Why Hearty</a>
+<button class="btn btn-primary btn-small buy-link" data-hearty-checkout="" type="button">Get Hearty</button>
+</nav>
+</div>
+</header>
+<main>
+<section class="shell hero">
+<div>
+<div class="eyebrow">Free GLP-1 meal plan generator</div>
+<h1>Get a 7-day <span class="gradient-text">GLP-1 friendly</span> meal plan.</h1>
+<p class="hero-copy">Choose the foods you enjoy and Hearty will build a simple, protein-focused starter plan for Ozempic, Mounjaro, Wegovy, Saxenda, Retatrutide or similar medication.</p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="#generator">Generate my free plan</a>
+<button class="btn btn-secondary" data-hearty-checkout="" type="button">Buy the full Hearty app</button>
+</div>
+<p class="micro-proof">Built by nutrition coaches for real GLP-1 life: smaller meals, lower appetite days and practical food choices.</p>
+</div>
+<div aria-hidden="true" class="phone-stage">
+<div class="phone-glow"></div>
+<div class="phone">
+<div class="screen">
+<div class="screen-title">Your 7-day plan</div>
+<div class="screen-sub">Generated from your country + food preferences</div>
+<div class="screen-banner"><small>Free starter plan</small><strong>Protein first. Simple meals. Easy portions.</strong></div>
+<div class="meal-mini"><strong>Breakfast</strong><span>Low-fat yoghurt bowl with fruit and oats.</span></div>
+<div class="meal-mini"><strong>Lunch</strong><span>Chicken salad wrap with familiar local food wording.</span></div>
+<div class="meal-mini"><strong>Dinner</strong><span>Fish, vegetables and one sensible starch portion.</span></div>
+<div class="meal-mini"><strong>After day 7</strong><span>Continue inside Hearty for ongoing meals, tracking and support.</span></div>
+</div>
+</div>
+</div>
+</section>
+<section aria-label="Why this free plan works" class="shell lead-panel">
+<div class="lead-block">
+<h2>A starter plan that feels realistic, not random.</h2>
+<p>The free generator asks for the food choices that actually matter: your country, proteins, breakfasts, starches, vegetables, fruits and snacks. The result is a first-week plan that is easier to follow because it starts with foods you already accept.</p>
+<ul class="clean-list">
+<li>Country-aware wording so the plan uses familiar food names.</li>
+<li>Simple GLP-1 friendly meals instead of complicated recipes.</li>
+<li>Downloadable 7-day output you can save, print or reuse.</li>
+</ul>
+</div>
+<div class="lead-block companion-card">
+<h3>Hearty is the full GLP-1 companion app</h3>
+<p>Your free 7-day meal plan gets you started. Hearty is built to support the full GLP-1 journey after that: meals, tracking, rough days, progress and daily structure.</p>
+<ul class="companion-list">
+<li><span class="mini-icon">🍽</span><span>Ongoing meal generation based on your food preferences, country and routine</span></li>
+<li><span class="mini-icon">P</span><span>Protein visibility so you can see whether meals are helping you reach the right targets</span></li>
+<li><span class="mini-icon">💧</span><span>Hydration goals based on your body and daily needs</span></li>
+<li><span class="mini-icon">⚖</span><span>Daily weigh-ins to keep progress visible without overcomplicating it</span></li>
+<li><span class="mini-icon">📷</span><span>Progress photo reminders so changes are not only measured by the scale</span></li>
+<li><span class="mini-icon">💉</span><span>Medication rhythm support for injection days and weekly routines</span></li>
+<li><span class="mini-icon">+</span><span>Support Mode for rough days when appetite, nausea or side effects make eating harder</span></li>
+<li><span class="mini-icon">🏋</span><span>Home and gym exercise guidance built for people losing weight on GLP-1s</span></li>
+<li><span class="mini-icon">📚</span><span>Short daily lessons so users understand the journey without information overload</span></li>
+</ul>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty</button>
+</div>
+</section>
+<section class="shell section generator-section" id="generator">
+<div class="generator-head">
+<div class="setup-capsule">Free meal plan setup</div>
+<h2>Build your free 7-day plan</h2>
+<p>Add your details, choose the foods you enjoy, and Hearty will generate a simple GLP-1 friendly starter plan using familiar food wording for your country.</p>
+</div>
+<section class="setup-card" data-wizard-root=""></section>
+<section aria-live="polite" class="result-panel" id="resultPanel">
+<div class="result-head">
+<div>
+<h2 id="resultTitle">Your 7-day GLP-1 meal plan</h2>
+<p id="resultSubtitle">A simple starter plan based on your selected food preferences.</p>
+</div>
+<span class="market-tag" id="marketTag">Free starter plan</span>
+</div>
+<div class="days-grid" id="daysGrid"></div>
+<div class="result-actions">
+<button class="btn btn-secondary btn-small" id="copyPlan" type="button">Copy plan</button>
+<button class="btn btn-secondary btn-small" id="downloadPlan" type="button">Download plan</button>
+<button class="btn btn-secondary btn-small" id="printPlan" type="button">Print</button>
+</div>
+<div class="upsell">
+<h3>Need your next plan after day 7?</h3>
+<p>Hearty gives you ongoing GLP-1 meal generation, protein tracking, hydration goals, progress tracking, Support Mode for rough side-effect days and short daily guidance.</p>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Continue with Hearty</button>
+</div>
+</section>
+</section>
+<section class="shell section" id="full-app">
+<div class="info-panel">
+<div class="info-layout">
+<div>
+<div class="info-kicker">Nutrition basics</div>
+<h2>What a good GLP-1 meal plan should do</h2>
+<p>GLP-1 medication can reduce appetite and slow digestion, so the meal plan has to protect nutrition while keeping meals small, familiar and easy to repeat.</p>
+<div class="info-cta"><button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty</button></div>
+</div>
+<div class="info-body">
+<section>
+<ul class="info-bullets">
+<li><strong>Protein at every meal.</strong> Prioritise lean protein first so smaller meals still support muscle retention while weight is dropping.</li>
+<li><strong>Do not skip nutrition when appetite is low.</strong> A light yoghurt bowl, eggs, tuna, chicken, beans or a protein drink is better than an empty day.</li>
+<li><strong>Build plates in order.</strong> Start with protein, add vegetables or fruit, then add a sensible starch if it helps energy and satisfaction.</li>
+<li><strong>Use slow, useful carbohydrates.</strong> Oats, potatoes, rice, whole wheat wraps, beans and fruit can support energy without turning the plan into a sugar-heavy diet.</li>
+<li><strong>Keep fibre steady.</strong> Vegetables, fruit, oats, legumes and whole grains help gut regularity, especially when food volume is lower.</li>
+<li><strong>Increase fibre with fluids.</strong> More fibre without enough liquid can make constipation worse, so hydration has to rise with it.</li>
+<li><strong>Plan hydration deliberately.</strong> Smaller appetite often means less drinking too, so the plan should keep water, soups or water-rich foods visible.</li>
+<li><strong>Manage nausea with meal size.</strong> Smaller, plainer meals are often easier than large, rich or greasy meals on rough days.</li>
+<li><strong>Protect micronutrients.</strong> Fruit, vegetables, dairy or fortified alternatives, legumes and varied proteins help cover vitamins and minerals when portions shrink.</li>
+<li><strong>Include calcium and vitamin D sources.</strong> Yoghurt, milk, fortified alternatives, tinned fish with bones or appropriate supplements may matter when intake is low.</li>
+<li><strong>Keep healthy fats measured.</strong> Avocado, olive oil, nuts and seeds are useful, but large high-fat meals can feel heavy during delayed digestion.</li>
+<li><strong>Use simple snacks strategically.</strong> Protein yoghurt, cottage cheese, boiled eggs, tuna, fruit or a small handful of nuts can close nutrition gaps.</li>
+<li><strong>Avoid extreme restriction.</strong> The goal is consistent nourishment, not starving, skipping meals or cutting out whole food groups unnecessarily.</li>
+<li><strong>Match food to injection rhythm.</strong> Some people need gentler meals around injection days and more complete meals when appetite improves.</li>
+<li><strong>Make the plan repeatable.</strong> Familiar foods and realistic portions beat complicated recipes that disappear after one motivated week.</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</section>
+</main>
+<section aria-label="Important note" class="shell care-banner">
+<strong>Important note:</strong> Hearty is a GLP-1 companion app and does not replace medical care. This free meal plan is general education and lifestyle support only. Please follow your healthcare provider’s advice, especially if you have medical conditions or prescribed dietary instructions.
     </section>
-
-    <footer class="footer">
-      <strong>Hearty</strong> GLP-1 meal planning, tracking and daily support
+<footer class="footer">
+<strong>Hearty</strong> GLP-1 meal planning, tracking and daily support
     </footer>
-  </div>
-
-  <div id="toast" class="toast">Copied</div>
-  <script src="meals-engine.js"></script>
-  <script>
+</div>
+<div class="toast" id="toast">Copied</div>
+<div aria-hidden="true" aria-labelledby="countryGateTitle" aria-modal="true" class="country-gate" id="countryGate" role="dialog">
+<div class="country-gate-card">
+<button aria-label="Close" class="country-gate-close" data-country-gate-close="" type="button">×</button>
+<h3 id="countryGateTitle">Where are you based?</h3>
+<p>Choose once and Hearty will open the correct checkout directly.</p>
+<div class="country-gate-actions">
+<button class="country-choice" data-country-choice="ZA" type="button">South Africa checkout</button>
+<button class="country-choice secondary" data-country-choice="INT" type="button">International checkout</button>
+</div>
+</div>
+</div>
+<script src="meals-engine.js"></script>
+<script>
     (function(){
       "use strict";
       const SA_SALES_URL = "https://hearty.health/sa.html";
       const INT_SALES_URL = "https://hearty.health";
+
+      // Direct checkout configuration.
+      // South Africa uses the same PayFast direct checkout as the SA sales page. International uses Paddle when configured.
+      const HEARTY_SA_PAYFAST = {
+        receiver: "30731969",
+        amount: "200",
+        itemName: "Hearty Lifetime License",
+        itemDescription: "Hearty Lifetime License",
+        returnUrl: "https://hearty.health/login",
+        cancelUrl: "https://hearty.health/sa"
+      };
+
+      const HEARTY_PADDLE = {
+        clientToken: "PASTE_YOUR_PADDLE_CLIENT_SIDE_TOKEN_HERE",
+        priceId: "PASTE_YOUR_PADDLE_PRICE_ID_HERE"
+      };
+
+      // Optional: paste a hosted Paddle checkout/payment link here if you prefer not to use Paddle overlay.
+      // Leave blank if you are using clientToken + priceId above.
+      const HEARTY_INT_HOSTED_CHECKOUT_URL = "";
+
       const SUPABASE_URL = "";
       const SUPABASE_ANON_KEY = "";
       const LEADS_TABLE = "meal_plan_leads";
-
       const urlParams = new URLSearchParams(window.location.search);
       const tracking = {
         ref: urlParams.get("ref") || "",
@@ -661,19 +760,21 @@
 
       const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
       const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
-      const state = { step:0, firstName:"", email:"", whatsapp:"", medication:"", country:"ZA", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      const state = { step:0, firstName:"", email:"", whatsapp:"", medication:"", country:"", countrySelected:false, proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
       let latestPlanText = "";
       let latestPlan = [];
+      let currentLeadId = "";
 
       const root = document.querySelector("[data-wizard-root]");
       const resultPanel = document.getElementById("resultPanel");
       const daysGrid = document.getElementById("daysGrid");
       const marketTag = document.getElementById("marketTag");
       const toast = document.getElementById("toast");
+      const countryGate = document.getElementById("countryGate");
 
       const steps = [
         { id:"lead", kicker:"Start", title:"First, where should we send your plan?", copy:"Your plan appears instantly on this page. We use your email for the meal-plan follow-up and your WhatsApp number only if you add it.", type:"lead" },
-        { id:"country", kicker:"Step 1", title:"Select your country", copy:"This helps Hearty use familiar food names and send you to the correct version of the app after your plan is generated.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
+        { id:"country", kicker:"Step 1", title:"Select your country", copy:"This helps Hearty use familiar food names and open the correct checkout if you decide to buy.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
         { id:"proteins", kicker:"Step 2", title:"Which proteins do you enjoy?", copy:"Choose the main proteins you want your plan to use. If you do not eat something, do not select it.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""],["turkey","Turkey",""]] },
         { id:"breakfast", kicker:"Step 3", title:"Which breakfasts do you enjoy?", copy:"Breakfast options stay simple and protein-aware.", type:"multi", key:"breakfast", options:[["eggs","Eggs","Written as 2 eggs."],["all_bran","All Bran / Bran Flakes","Served as a bowl with low-fat milk."],["oats","Cooked oats","Served as a bowl with low-fat milk."],["overnight_oats","Overnight oats","Made with low-fat milk."],["yoghurt_bowl","Low-fat yoghurt bowl","Yoghurt with fruit where selected."]] },
         { id:"starches", kicker:"Step 4", title:"Which starches do you enjoy?", copy:"Hearty uses sensible starch portions where the meal needs it.", type:"multi", key:"starches", options:[["rice","Rice",""],["potato","Potato",""],["sweet_potato","Sweet potato",""],["couscous","Couscous",""],["whole_wheat_pasta","Whole wheat pasta",""],["whole_wheat_wraps","Whole wheat wraps",""],["whole_wheat_bread","Whole wheat bread / toast",""]] },
@@ -764,7 +865,7 @@
               state[key] = state[key].includes(value) ? state[key].filter(v => v !== value) : state[key].concat(value);
             } else {
               state[key] = value;
-              if(key === "country") updateSalesLinks();
+              if(key === "country"){ state.countrySelected = true; updateSalesLinks(); }
             }
             render();
           });
@@ -783,12 +884,102 @@
         return Array.isArray(value) ? value.length > 0 : Boolean(value);
       }
 
+      function getSalesUrl(){
+        // Used for downloaded plan text and lead records.
+        // The live CTA opens checkout directly instead of sending buyers back to the sales page.
+        return state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL;
+      }
+
+      function getCheckoutMarket(){
+        return state.country === "ZA" ? "ZA" : "INT";
+      }
+
       function updateSalesLinks(){
-        const isZa = state.country === "ZA";
-        document.querySelectorAll("[data-sales-link]").forEach(link => {
-          link.href = isZa ? SA_SALES_URL : INT_SALES_URL;
-          if(link.textContent.includes("Hearty") && link.classList.contains("btn-primary")) link.textContent = "Get Hearty";
+        document.querySelectorAll("[data-hearty-checkout]").forEach(button => {
+          button.setAttribute("type", "button");
+          button.setAttribute("aria-label", "Open Hearty checkout");
+          if(button.textContent.includes("Hearty") && button.classList.contains("btn-primary")) button.textContent = "Get Hearty";
         });
+      }
+
+      function addHiddenField(form, name, value){
+        if(value === undefined || value === null || value === "") return;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      }
+
+      function openHeartySACheckout(){
+        const form = document.createElement("form");
+        form.name = "PayFastPayNowForm";
+        form.method = "post";
+        form.action = "https://payment.payfast.io/eng/process";
+        form.style.display = "none";
+
+        addHiddenField(form, "cmd", "_paynow");
+        addHiddenField(form, "receiver", HEARTY_SA_PAYFAST.receiver);
+        addHiddenField(form, "return_url", HEARTY_SA_PAYFAST.returnUrl);
+        addHiddenField(form, "cancel_url", HEARTY_SA_PAYFAST.cancelUrl);
+        addHiddenField(form, "amount", HEARTY_SA_PAYFAST.amount);
+        addHiddenField(form, "item_name", HEARTY_SA_PAYFAST.itemName);
+        addHiddenField(form, "item_description", HEARTY_SA_PAYFAST.itemDescription);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+
+      function hasLivePaddleConfig(){
+        return Boolean(
+          HEARTY_PADDLE.clientToken &&
+          HEARTY_PADDLE.priceId &&
+          !HEARTY_PADDLE.clientToken.includes("PASTE_") &&
+          !HEARTY_PADDLE.priceId.includes("PASTE_")
+        );
+      }
+
+      let paddleInitialized = false;
+      function initHeartyPaddle(){
+        if(paddleInitialized) return true;
+        if(!window.Paddle || !hasLivePaddleConfig()) return false;
+        try {
+          Paddle.Initialize({ token: HEARTY_PADDLE.clientToken });
+          paddleInitialized = true;
+          return true;
+        } catch(error){
+          console.error("Paddle initialization failed", error);
+          return false;
+        }
+      }
+
+      function openHeartyInternationalCheckout(){
+        if(initHeartyPaddle()){
+          Paddle.Checkout.open({
+            items: [{ priceId: HEARTY_PADDLE.priceId, quantity: 1 }],
+            settings: {
+              displayMode: "overlay",
+              theme: "light",
+              variant: "one-page",
+              successUrl: "https://hearty.health/login"
+            }
+          });
+          return;
+        }
+
+        if(HEARTY_INT_HOSTED_CHECKOUT_URL){
+          window.location.href = HEARTY_INT_HOSTED_CHECKOUT_URL;
+          return;
+        }
+
+        alert("International checkout is not connected yet. Add the Paddle client-side token + price ID, or paste a hosted checkout link into HEARTY_INT_HOSTED_CHECKOUT_URL.");
+        salesNavigationStarted = false;
+        checkoutOpened = false;
+      }
+
+      function openCorrectCheckout(){
+        if(getCheckoutMarket() === "ZA") openHeartySACheckout();
+        else openHeartyInternationalCheckout();
       }
 
       function generateAndShowPlan(){
@@ -898,7 +1089,14 @@
         return lines.join("\n");
       }
 
-      document.getElementById("copyPlan").addEventListener("click", async () => { try { await navigator.clipboard.writeText(latestPlanText); showToast("Plan copied"); } catch(e) { showToast("Copy failed"); } });
+      document.getElementById("copyPlan").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(latestPlanText);
+          updateLeadEvent({ copied_plan: true, copied_at: new Date().toISOString() });
+          showToast("Plan copied");
+        } catch(e) { showToast("Copy failed"); }
+      });
+
       document.getElementById("downloadPlan").addEventListener("click", () => {
         const blob = new Blob([latestPlanText], { type:"text/plain;charset=utf-8" });
         const url = URL.createObjectURL(blob);
@@ -909,8 +1107,78 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+        updateLeadEvent({ downloaded_plan: true, downloaded_at: new Date().toISOString() });
       });
-      document.getElementById("printPlan").addEventListener("click", () => window.print());
+
+      document.getElementById("printPlan").addEventListener("click", () => {
+        updateLeadEvent({ printed_plan: true, printed_at: new Date().toISOString() });
+        window.print();
+      });
+
+      let salesNavigationStarted = false;
+      let checkoutOpened = false;
+
+      function openCheckoutOnce(){
+        if(checkoutOpened) return;
+        checkoutOpened = true;
+        openCorrectCheckout();
+      }
+
+      function goToSales(){
+        if(salesNavigationStarted) return;
+        salesNavigationStarted = true;
+        updateLeadEvent({ clicked_hearty: true, clicked_hearty_at: new Date().toISOString() })
+          .finally(openCheckoutOnce);
+        setTimeout(openCheckoutOnce, 450);
+      }
+
+      document.addEventListener("click", (event) => {
+        const checkoutButton = event.target.closest("[data-hearty-checkout]");
+        if(!checkoutButton) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if(!state.countrySelected){
+          openCountryGate();
+          return;
+        }
+
+        goToSales();
+      }, true);
+
+      function openCountryGate(){
+        if(!countryGate) return;
+        countryGate.classList.add("show");
+        countryGate.setAttribute("aria-hidden", "false");
+      }
+
+      function closeCountryGate(){
+        if(!countryGate) return;
+        countryGate.classList.remove("show");
+        countryGate.setAttribute("aria-hidden", "true");
+      }
+
+      document.querySelectorAll("[data-country-choice]").forEach(button => {
+        button.addEventListener("click", () => {
+          const choice = button.getAttribute("data-country-choice");
+          state.country = choice === "ZA" ? "ZA" : "OTHER";
+          state.countrySelected = true;
+          updateSalesLinks();
+          closeCountryGate();
+          if(steps[state.step]?.id === "country") render();
+          goToSales();
+        });
+      });
+
+      document.querySelector("[data-country-gate-close]")?.addEventListener("click", closeCountryGate);
+      countryGate?.addEventListener("click", (event) => {
+        if(event.target === countryGate) closeCountryGate();
+      });
+      document.addEventListener("keydown", (event) => {
+        if(event.key === "Escape") closeCountryGate();
+      });
+
       function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 1800); }
 
       async function saveLead(generatedPlan){
@@ -938,12 +1206,38 @@
           lead_status: "New"
         };
         try {
-          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}`, {
+          const response = await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?select=id`, {
             method:"POST",
-            headers:{ "Content-Type":"application/json", "apikey":SUPABASE_ANON_KEY, "Authorization":`Bearer ${SUPABASE_ANON_KEY}` },
+            headers:{
+              "Content-Type":"application/json",
+              "apikey":SUPABASE_ANON_KEY,
+              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
+              "Prefer":"return=representation"
+            },
             body: JSON.stringify(payload)
           });
+
+          if(response.ok){
+            const data = await response.json();
+            currentLeadId = data?.[0]?.id || "";
+          }
         } catch(err) { console.warn("Lead capture failed", err); }
+      }
+
+      async function updateLeadEvent(fields){
+        if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !currentLeadId) return;
+
+        try {
+          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?id=eq.${currentLeadId}`, {
+            method:"PATCH",
+            headers:{
+              "Content-Type":"application/json",
+              "apikey":SUPABASE_ANON_KEY,
+              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify(fields)
+          });
+        } catch(err) { console.warn("Lead event update failed", err); }
       }
 
       function listLabels(values){
@@ -958,6 +1252,14 @@
       }
       function escapeHtml(value){ return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
       function escapeAttr(value){ return escapeHtml(value).replaceAll("`","&#096;"); }
+
+
+      // Checkout safety lock: these CTAs must never fall through to the standard sales page.
+      document.querySelectorAll("[data-hearty-checkout]").forEach((button) => {
+        button.removeAttribute("href");
+        button.setAttribute("type", "button");
+        button.setAttribute("role", "button");
+      });
 
       updateSalesLinks();
       render();
