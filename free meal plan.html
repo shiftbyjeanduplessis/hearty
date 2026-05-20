@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
+  <meta name="description" content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." />
+  <style>
+    :root {
+      --ink: #102033;
+      --muted: #617389;
+      --muted-2: #8292a7;
+      --line: rgba(126, 148, 174, 0.22);
+      --card: rgba(255,255,255,0.88);
+      --white: #ffffff;
+      --bg: #f6fbff;
+      --blue: #2f6df6;
+      --blue-dark: #1550b3;
+      --teal: #22b8a7;
+      --teal-dark: #148b7f;
+      --mint: #e7fbf7;
+      --soft-blue: #eaf4ff;
+      --shadow: 0 22px 70px rgba(14, 31, 53, 0.12);
+      --shadow-soft: 0 10px 30px rgba(14, 31, 53, 0.08);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at -8% -12%, rgba(47,109,246,0.13), transparent 58%),
+        radial-gradient(900px 460px at 108% 0%, rgba(34,184,167,0.12), transparent 55%),
+        radial-gradient(660px 440px at 50% 12%, rgba(255,228,140,0.16), transparent 58%),
+        linear-gradient(180deg, #fbfdff 0%, #f3f8fe 46%, #ffffff 100%);
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    .page { overflow: hidden; }
+    .shell { width: min(var(--max), calc(100% - 34px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: 100%;
+      padding: 0;
+      background: rgba(255,255,255,0.82);
+      border-bottom: 1px solid rgba(126,148,174,0.14);
+      box-shadow: 0 8px 26px rgba(14,31,53,0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .topbar::before {
+      content: none;
+    }
+    .brand { display: inline-flex; align-items: center; text-decoration: none; min-width: 0; }
+    .brand img { display: block; height: 46px; width: auto; max-width: min(270px, 42vw); object-fit: contain; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .mini-link {
+      text-decoration: none;
+      color: #4f637b;
+      font-weight: 750;
+      font-size: .92rem;
+      padding: 10px 13px;
+      border-radius: 999px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 21px;
+      border-radius: 999px;
+      font-weight: 900;
+      text-decoration: none;
+      font-size: .98rem;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: #fff; background: linear-gradient(135deg, var(--teal), var(--blue)); box-shadow: 0 14px 28px rgba(47,109,246,0.20); }
+    .btn-secondary { color: #193550; background: rgba(255,255,255,0.78); border: 1px solid rgba(126,148,174,0.18); box-shadow: 0 10px 24px rgba(14,31,53,0.06); }
+    .btn-small { min-height: 44px; padding: 0 16px; font-size: .9rem; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 30px;
+      align-items: center;
+      padding: 42px 0 22px;
+    }
+    .eyebrow,
+    .setup-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      color: var(--teal-dark);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(34,184,167,0.22);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .78rem;
+      box-shadow: 0 10px 24px rgba(14,31,53,0.06);
+    }
+    .eyebrow::before,
+    .setup-capsule::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--teal); }
+    h1 {
+      margin: 18px 0 16px;
+      max-width: 780px;
+      font-size: clamp(2.65rem, 5.75vw, 5.45rem);
+      line-height: 1.05;
+      letter-spacing: -0.07em;
+    }
+    .gradient-text { background: linear-gradient(135deg, var(--blue), #20a9e7 46%, var(--teal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-copy { max-width: 650px; margin: 0; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.22rem); line-height: 1.62; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .micro-proof { margin-top: 18px; color: var(--muted-2); font-size: .93rem; }
+
+    .phone-stage { position: relative; min-height: 475px; display: grid; place-items: center; }
+    .phone-glow { position:absolute; width: 92%; height: 70%; border-radius: 44px; background: radial-gradient(circle at 50% 35%, rgba(47,109,246,0.18), transparent 55%), radial-gradient(circle at 58% 84%, rgba(34,184,167,0.16), transparent 56%); filter: blur(2px); }
+    .phone {
+      position: relative;
+      width: min(310px, 80vw);
+      min-height: 610px;
+      padding: 14px;
+      border-radius: 44px;
+      background: linear-gradient(145deg, #171b21, #050607);
+      box-shadow: 0 36px 74px rgba(14,31,53,0.24), inset 0 0 0 2px rgba(255,255,255,0.10);
+    }
+    .phone::before { content: ""; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 84px; height: 24px; border-radius: 999px; background: #050607; z-index: 2; }
+    .screen {
+      min-height: 582px;
+      border-radius: 32px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f7fbff, #edf6ff);
+      padding: 48px 16px 18px;
+    }
+    .screen-title { font-weight: 950; letter-spacing: -0.04em; font-size: 1.08rem; margin-bottom: 5px; }
+    .screen-sub { color: #7c8ea4; font-size: .74rem; font-weight: 800; margin-bottom: 14px; }
+    .screen-banner { padding: 15px; border-radius: 20px; background: linear-gradient(135deg, #2f6df6, #2055c7); color: #fff; box-shadow: 0 12px 22px rgba(47,109,246,.22); margin-bottom: 12px; }
+    .screen-banner small { display: block; opacity: .76; font-weight: 900; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .screen-banner strong { display: block; font-size: .94rem; }
+    .meal-mini { padding: 14px; border-radius: 18px; background: rgba(255,255,255,.9); border: 1px solid rgba(126,148,174,.13); box-shadow: 0 10px 18px rgba(14,31,53,.04); margin-bottom: 10px; }
+    .meal-mini span { display: block; color: #6d7b8c; font-size: .76rem; line-height: 1.35; margin-top: 3px; }
+
+    .lead-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(300px, .94fr);
+      gap: 18px;
+      align-items: stretch;
+      padding: 6px 0 0;
+    }
+    .lead-block {
+      border-radius: 28px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(126,148,174,.16);
+      box-shadow: 0 14px 34px rgba(14,31,53,.07);
+      padding: 24px;
+    }
+    .lead-block h2,
+    .lead-block h3 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      letter-spacing: -.04em;
+      line-height: 1.12;
+    }
+    .lead-block h2 { font-size: clamp(1.7rem, 3vw, 2.35rem); }
+    .lead-block h3 { font-size: 1.45rem; }
+    .lead-block p { margin: 0; color: var(--muted); line-height: 1.58; }
+    .clean-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .clean-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #40566f;
+      line-height: 1.48;
+      font-weight: 650;
+    }
+    .clean-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .64em;
+      width: 7px;
+      height: 7px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+    }
+    .lead-cta {
+      background: linear-gradient(135deg, rgba(34,184,167,.14), rgba(47,109,246,.12));
+    }
+    .lead-cta .btn { margin-top: 18px; }
+    .companion-card {
+      background:
+        linear-gradient(135deg, rgba(34,184,167,.14), rgba(47,109,246,.12)),
+        rgba(255,255,255,.84);
+    }
+    .companion-card p { margin-bottom: 16px; }
+    .companion-card .btn { margin-top: 18px; }
+    .companion-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .companion-list li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      min-width: 0;
+      color: #40566f;
+      line-height: 1.35;
+      font-size: .88rem;
+      font-weight: 720;
+    }
+    .mini-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      box-shadow: 0 8px 16px rgba(47,109,246,.14);
+      font-size: .84rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .section { padding: 34px 0; }
+    .generator-section { padding-top: 28px; }
+    .generator-head { margin-bottom: 24px; }
+    .generator-head h2 { margin: 12px 0 8px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.04; letter-spacing: -.055em; }
+    .generator-head p { margin: 0; max-width: 730px; color: var(--muted); line-height: 1.58; font-size: 1.03rem; }
+    .setup-capsule { margin-top: 0; }
+
+    .setup-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(126,148,174,.18);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .progress-wrap { display: grid; gap: 10px; margin-bottom: 18px; }
+    .progress-meta { display: flex; justify-content: space-between; gap: 12px; color: #7b8998; font-size: .76rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    .progress-track { height: 9px; border-radius: 999px; overflow: hidden; background: #e8eef7; border: 1px solid rgba(160,178,201,.20); }
+    .progress-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width .25s ease; }
+    .question { display: grid; align-content: start; gap: 14px; }
+    .kicker { color: #7b8998; font-size: .75rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .question h3 { margin: 0; font-size: clamp(1.65rem, 3.2vw, 2.35rem); letter-spacing: -.05em; line-height: 1.08; }
+    .question-copy { margin: -4px 0 0; color: var(--muted); line-height: 1.54; max-width: 700px; }
+    .option-grid { display: grid; gap: 10px; margin-top: 2px; }
+    .option-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .option-btn {
+      width: 100%;
+      min-height: 58px;
+      text-align: left;
+      border-radius: 18px;
+      border: 1px solid rgba(143,163,184,.22);
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,255,.94));
+      color: var(--ink);
+      box-shadow: 0 8px 18px rgba(14,31,53,.04);
+      padding: 14px 16px;
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .option-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(14,31,53,.07); }
+    .option-btn.selected { border-color: rgba(47,109,246,.42); background: linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96)); box-shadow: 0 0 0 4px rgba(47,109,246,.07), 0 12px 24px rgba(14,31,53,.06); }
+    .option-title { font-weight: 850; letter-spacing: -.02em; }
+    .option-sub { color: var(--muted); font-size: .86rem; line-height: 1.35; margin-top: 3px; }
+    .option-sub:empty { display: none; }
+    .selector-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(143,163,184,.32); flex: 0 0 auto; }
+    .option-btn.selected .selector-dot { border-color: transparent; background: radial-gradient(circle at 50% 50%, #fff 0 26%, transparent 27%), var(--blue); }
+
+    .lead-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .field { display: grid; gap: 7px; }
+    .field label { font-weight: 850; color: #173653; font-size: .92rem; }
+    .field input, .field select {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(126,148,174,.26);
+      border-radius: 16px;
+      background: rgba(255,255,255,.82);
+      padding: 0 15px;
+      font: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+    .field input:focus, .field select:focus { border-color: rgba(34,184,167,.56); box-shadow: 0 0 0 4px rgba(34,184,167,.11); }
+    .form-note { margin: 0; color: var(--muted-2); font-size: .9rem; line-height: 1.45; }
+
+    .summary-grid { display: grid; gap: 10px; }
+    .summary-row { display: flex; justify-content: space-between; gap: 14px; padding: 13px 14px; border-radius: 16px; background: rgba(247,250,255,.92); border: 1px solid rgba(143,163,184,.16); }
+    .summary-row span:first-child { color: var(--muted); font-weight: 800; }
+    .summary-row span:last-child { text-align: right; font-weight: 850; }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(14,31,53,.08);
+    }
+
+    .result-panel {
+      display: none;
+      max-width: 980px;
+      margin: 26px auto 0;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(126,148,174,.18);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+    .result-panel.show { display: block; }
+    .result-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+    .result-head h2 { margin: 0 0 7px; font-size: clamp(1.8rem, 3.2vw, 2.55rem); line-height: 1.05; letter-spacing: -.05em; }
+    .result-head p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .market-tag { border-radius: 999px; padding: 8px 12px; background: var(--mint); color: var(--teal-dark); font-weight: 900; font-size: .82rem; white-space: nowrap; }
+    .days-grid { display: grid; gap: 14px; }
+    .day-card { border-radius: 22px; background: linear-gradient(180deg, rgba(247,251,255,.98), rgba(255,255,255,.96)); border: 1px solid rgba(126,148,174,.15); padding: 18px; }
+    .day-card h3 { margin: 0 0 12px; font-size: 1.15rem; letter-spacing: -.03em; }
+    .meal-row { display: grid; grid-template-columns: 104px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(126,148,174,.12); }
+    .meal-row:first-of-type { border-top: 0; }
+    .meal-label { color: #6f8095; font-weight: 900; font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; }
+    .meal-text { color: #183650; line-height: 1.44; }
+    .result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .upsell { margin-top: 20px; border-radius: 24px; padding: 22px; background: linear-gradient(135deg, rgba(47,109,246,.10), rgba(34,184,167,.12)); border: 1px solid rgba(47,109,246,.14); }
+    .upsell h3 { margin: 0 0 8px; font-size: 1.35rem; letter-spacing: -.035em; }
+    .upsell p { margin: 0 0 15px; color: var(--muted); line-height: 1.55; max-width: 760px; }
+
+    .info-panel {
+      border-radius: 32px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(126,148,174,.16);
+      box-shadow: var(--shadow-soft);
+      padding: clamp(24px, 4vw, 42px);
+    }
+    .info-layout { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(22px, 4vw, 46px); align-items: start; }
+    .info-panel h2 { margin: 0 0 13px; font-size: clamp(2rem, 4vw, 3.05rem); line-height: 1.06; letter-spacing: -.06em; }
+    .info-panel p { color: var(--muted); line-height: 1.65; margin: 0; }
+    .info-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--teal-dark);
+      font-size: .78rem;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .info-kicker::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--teal); }
+    .info-body { display: grid; gap: 18px; }
+    .info-body h3 { margin: 0 0 8px; font-size: 1.16rem; letter-spacing: -.03em; }
+    .info-body section { padding-top: 16px; border-top: 1px solid rgba(126,148,174,.16); }
+    .info-body section:first-child { padding-top: 0; border-top: 0; }
+    .info-cta { margin-top: 20px; }
+    .info-bullets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .info-bullets li {
+      position: relative;
+      padding: 13px 14px 13px 34px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(126,148,174,.14);
+      color: #40566f;
+      line-height: 1.46;
+      font-size: .94rem;
+    }
+    .info-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 20px;
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+    }
+    .info-bullets strong { color: var(--ink); }
+    .care-banner {
+      margin-top: 6px;
+      margin-bottom: 34px;
+      padding: 18px 22px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(47,109,246,.09), rgba(34,184,167,.10));
+      border: 1px solid rgba(126,148,174,.18);
+      color: #40566f;
+      line-height: 1.58;
+      box-shadow: 0 12px 30px rgba(14,31,53,.06);
+      font-size: .94rem;
+    }
+    .care-banner strong { color: var(--ink); }
+
+    .footer {
+      width: min(760px, calc(100% - 34px));
+      margin: 0 auto 30px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #102033;
+      color: rgba(255,255,255,.84);
+      text-align: center;
+      font-size: .86rem;
+      font-weight: 800;
+      line-height: 1.35;
+      box-shadow: 0 12px 30px rgba(14,31,53,.12);
+    }
+    .footer strong { color: #fff; }
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(120%); background: #102033; color: #fff; padding: 12px 16px; border-radius: 999px; box-shadow: var(--shadow-soft); opacity: 0; transition: all .22s ease; z-index: 100; font-weight: 850; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 26px; }
+      .phone-stage { min-height: auto; }
+      .phone { width: min(300px, 88vw); min-height: 520px; }
+      .screen { min-height: 492px; }
+      .lead-panel { grid-template-columns: 1fr; }
+      .info-layout { grid-template-columns: 1fr; }
+      .info-bullets { grid-template-columns: 1fr; }
+      .mini-link:not(.buy-link) { display: none; }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 24px, var(--max)); }
+      .brand img { height: 40px; max-width: 210px; }
+      .hero { gap: 18px; }
+      h1 { font-size: clamp(2.35rem, 12vw, 3.55rem); }
+      .hero-actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .setup-card, .result-panel { border-radius: 24px; padding: 18px; }
+      .option-grid.two, .lead-grid { grid-template-columns: 1fr; }
+      .nav-row { position: static; }
+      .result-head { display: block; }
+      .market-tag { display: inline-flex; margin-top: 12px; }
+      .meal-row { grid-template-columns: 1fr; gap: 4px; }
+      .companion-list { grid-template-columns: 1fr; }
+      .footer { width: min(100% - 24px, 760px); border-radius: 18px; }
+    }
+    @media print {
+      .topbar, .hero, .lead-panel, .generator-head, .setup-card, .info-panel, .footer, .result-actions, .upsell { display: none !important; }
+      body { background: #fff; }
+      .result-panel { display: block !important; width: 100% !important; max-width: none !important; box-shadow: none !important; border: 0 !important; padding: 0 !important; }
+      .day-card { break-inside: avoid; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="https://hearty.health" aria-label="Hearty home">
+          <img src="hearty-logo.png" alt="Hearty" />
+        </a>
+        <nav class="nav-actions" aria-label="Page navigation">
+          <a class="mini-link" href="#generator">Free plan</a>
+          <a class="mini-link" href="#full-app">Why Hearty</a>
+          <a class="btn btn-primary btn-small buy-link" data-sales-link href="https://hearty.health">Get Hearty</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="shell hero">
+        <div>
+          <div class="eyebrow">Free GLP-1 meal plan generator</div>
+          <h1>Get a 7-day <span class="gradient-text">GLP-1 friendly</span> meal plan.</h1>
+          <p class="hero-copy">Choose the foods you enjoy and Hearty will build a simple, protein-focused starter plan for Ozempic, Mounjaro, Wegovy, Saxenda, Retatrutide or similar medication.</p>
+          <div class="hero-actions">
+            <a href="#generator" class="btn btn-primary">Generate my free plan</a>
+            <a data-sales-link href="https://hearty.health" class="btn btn-secondary">Buy the full Hearty app</a>
+          </div>
+          <p class="micro-proof">Built by nutrition coaches for real GLP-1 life: smaller meals, lower appetite days and practical food choices.</p>
+        </div>
+
+        <div class="phone-stage" aria-hidden="true">
+          <div class="phone-glow"></div>
+          <div class="phone">
+            <div class="screen">
+              <div class="screen-title">Your 7-day plan</div>
+              <div class="screen-sub">Generated from your country + food preferences</div>
+              <div class="screen-banner"><small>Free starter plan</small><strong>Protein first. Simple meals. Easy portions.</strong></div>
+              <div class="meal-mini"><strong>Breakfast</strong><span>Low-fat yoghurt bowl with fruit and oats.</span></div>
+              <div class="meal-mini"><strong>Lunch</strong><span>Chicken salad wrap with familiar local food wording.</span></div>
+              <div class="meal-mini"><strong>Dinner</strong><span>Fish, vegetables and one sensible starch portion.</span></div>
+              <div class="meal-mini"><strong>After day 7</strong><span>Continue inside Hearty for ongoing meals, tracking and support.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell lead-panel" aria-label="Why this free plan works">
+        <div class="lead-block">
+          <h2>A starter plan that feels realistic, not random.</h2>
+          <p>The free generator asks for the food choices that actually matter: your country, proteins, breakfasts, starches, vegetables, fruits and snacks. The result is a first-week plan that is easier to follow because it starts with foods you already accept.</p>
+          <ul class="clean-list">
+            <li>Country-aware wording so the plan uses familiar food names.</li>
+            <li>Simple GLP-1 friendly meals instead of complicated recipes.</li>
+            <li>Downloadable 7-day output you can save, print or reuse.</li>
+          </ul>
+        </div>
+        <div class="lead-block companion-card">
+          <h3>Hearty is the full GLP-1 companion app</h3>
+          <p>Your free 7-day meal plan gets you started. Hearty is built to support the full GLP-1 journey after that: meals, tracking, rough days, progress and daily structure.</p>
+          <ul class="companion-list">
+            <li><span class="mini-icon">&#127869;</span><span>Ongoing meal generation based on your food preferences, country and routine</span></li>
+            <li><span class="mini-icon">P</span><span>Protein visibility so you can see whether meals are helping you reach the right targets</span></li>
+            <li><span class="mini-icon">&#128167;</span><span>Hydration goals based on your body and daily needs</span></li>
+            <li><span class="mini-icon">&#9878;</span><span>Daily weigh-ins to keep progress visible without overcomplicating it</span></li>
+            <li><span class="mini-icon">&#128247;</span><span>Progress photo reminders so changes are not only measured by the scale</span></li>
+            <li><span class="mini-icon">&#128137;</span><span>Medication rhythm support for injection days and weekly routines</span></li>
+            <li><span class="mini-icon">+</span><span>Support Mode for rough days when appetite, nausea or side effects make eating harder</span></li>
+            <li><span class="mini-icon">&#127947;</span><span>Home and gym exercise guidance built for people losing weight on GLP-1s</span></li>
+            <li><span class="mini-icon">&#128218;</span><span>Short daily lessons so users understand the journey without information overload</span></li>
+          </ul>
+          <a data-sales-link class="btn btn-primary" href="https://hearty.health">Get Hearty</a>
+        </div>
+      </section>
+
+      <section id="generator" class="shell section generator-section">
+        <div class="generator-head">
+          <div class="setup-capsule">Free meal plan setup</div>
+          <h2>Build your free 7-day plan</h2>
+          <p>Add your details, choose the foods you enjoy, and Hearty will generate a simple GLP-1 friendly starter plan using familiar food wording for your country.</p>
+        </div>
+
+        <section class="setup-card" data-wizard-root></section>
+        <section class="result-panel" id="resultPanel" aria-live="polite">
+          <div class="result-head">
+            <div>
+              <h2 id="resultTitle">Your 7-day GLP-1 meal plan</h2>
+              <p id="resultSubtitle">A simple starter plan based on your selected food preferences.</p>
+            </div>
+            <span class="market-tag" id="marketTag">Free starter plan</span>
+          </div>
+          <div class="days-grid" id="daysGrid"></div>
+          <div class="result-actions">
+            <button class="btn btn-secondary btn-small" type="button" id="copyPlan">Copy plan</button>
+            <button class="btn btn-secondary btn-small" type="button" id="downloadPlan">Download plan</button>
+            <button class="btn btn-secondary btn-small" type="button" id="printPlan">Print</button>
+          </div>
+          <div class="upsell">
+            <h3>Need your next plan after day 7?</h3>
+            <p>Hearty gives you ongoing GLP-1 meal generation, protein tracking, hydration goals, progress tracking, Support Mode for rough side-effect days and short daily guidance.</p>
+            <a data-sales-link class="btn btn-primary" href="https://hearty.health">Continue with Hearty</a>
+          </div>
+        </section>
+      </section>
+
+      <section id="full-app" class="shell section">
+        <div class="info-panel">
+          <div class="info-layout">
+            <div>
+              <div class="info-kicker">Nutrition basics</div>
+              <h2>What a good GLP-1 meal plan should do</h2>
+              <p>GLP-1 medication can reduce appetite and slow digestion, so the meal plan has to protect nutrition while keeping meals small, familiar and easy to repeat.</p>
+              <div class="info-cta"><a data-sales-link class="btn btn-primary" href="https://hearty.health">Get Hearty</a></div>
+            </div>
+            <div class="info-body">
+              <section>
+                <ul class="info-bullets">
+                  <li><strong>Protein at every meal.</strong> Prioritise lean protein first so smaller meals still support muscle retention while weight is dropping.</li>
+                  <li><strong>Do not skip nutrition when appetite is low.</strong> A light yoghurt bowl, eggs, tuna, chicken, beans or a protein drink is better than an empty day.</li>
+                  <li><strong>Build plates in order.</strong> Start with protein, add vegetables or fruit, then add a sensible starch if it helps energy and satisfaction.</li>
+                  <li><strong>Use slow, useful carbohydrates.</strong> Oats, potatoes, rice, whole wheat wraps, beans and fruit can support energy without turning the plan into a sugar-heavy diet.</li>
+                  <li><strong>Keep fibre steady.</strong> Vegetables, fruit, oats, legumes and whole grains help gut regularity, especially when food volume is lower.</li>
+                  <li><strong>Increase fibre with fluids.</strong> More fibre without enough liquid can make constipation worse, so hydration has to rise with it.</li>
+                  <li><strong>Plan hydration deliberately.</strong> Smaller appetite often means less drinking too, so the plan should keep water, soups or water-rich foods visible.</li>
+                  <li><strong>Manage nausea with meal size.</strong> Smaller, plainer meals are often easier than large, rich or greasy meals on rough days.</li>
+                  <li><strong>Protect micronutrients.</strong> Fruit, vegetables, dairy or fortified alternatives, legumes and varied proteins help cover vitamins and minerals when portions shrink.</li>
+                  <li><strong>Include calcium and vitamin D sources.</strong> Yoghurt, milk, fortified alternatives, tinned fish with bones or appropriate supplements may matter when intake is low.</li>
+                  <li><strong>Keep healthy fats measured.</strong> Avocado, olive oil, nuts and seeds are useful, but large high-fat meals can feel heavy during delayed digestion.</li>
+                  <li><strong>Use simple snacks strategically.</strong> Protein yoghurt, cottage cheese, boiled eggs, tuna, fruit or a small handful of nuts can close nutrition gaps.</li>
+                  <li><strong>Avoid extreme restriction.</strong> The goal is consistent nourishment, not starving, skipping meals or cutting out whole food groups unnecessarily.</li>
+                  <li><strong>Match food to injection rhythm.</strong> Some people need gentler meals around injection days and more complete meals when appetite improves.</li>
+                  <li><strong>Make the plan repeatable.</strong> Familiar foods and realistic portions beat complicated recipes that disappear after one motivated week.</li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="shell care-banner" aria-label="Important note">
+      <strong>Important note:</strong> Hearty is a GLP-1 companion app and does not replace medical care. This free meal plan is general education and lifestyle support only. Please follow your healthcare provider’s advice, especially if you have medical conditions or prescribed dietary instructions.
+    </section>
+
+    <footer class="footer">
+      <strong>Hearty</strong> GLP-1 meal planning, tracking and daily support
+    </footer>
+  </div>
+
+  <div id="toast" class="toast">Copied</div>
+  <script src="meals-engine.js"></script>
+  <script>
+    (function(){
+      "use strict";
+      const SA_SALES_URL = "https://hearty.health/sa.html";
+      const INT_SALES_URL = "https://hearty.health";
+      const SUPABASE_URL = "";
+      const SUPABASE_ANON_KEY = "";
+      const LEADS_TABLE = "meal_plan_leads";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const tracking = {
+        ref: urlParams.get("ref") || "",
+        utm_source: urlParams.get("utm_source") || "",
+        utm_medium: urlParams.get("utm_medium") || "",
+        utm_campaign: urlParams.get("utm_campaign") || "",
+        utm_content: urlParams.get("utm_content") || ""
+      };
+
+      const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
+      const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
+      const state = { step:0, firstName:"", email:"", whatsapp:"", medication:"", country:"ZA", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      let latestPlanText = "";
+      let latestPlan = [];
+
+      const root = document.querySelector("[data-wizard-root]");
+      const resultPanel = document.getElementById("resultPanel");
+      const daysGrid = document.getElementById("daysGrid");
+      const marketTag = document.getElementById("marketTag");
+      const toast = document.getElementById("toast");
+
+      const steps = [
+        { id:"lead", kicker:"Start", title:"First, where should we send your plan?", copy:"Your plan appears instantly on this page. We use your email for the meal-plan follow-up and your WhatsApp number only if you add it.", type:"lead" },
+        { id:"country", kicker:"Step 1", title:"Select your country", copy:"This helps Hearty use familiar food names and send you to the correct version of the app after your plan is generated.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
+        { id:"proteins", kicker:"Step 2", title:"Which proteins do you enjoy?", copy:"Choose the main proteins you want your plan to use. If you do not eat something, do not select it.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""],["turkey","Turkey",""]] },
+        { id:"breakfast", kicker:"Step 3", title:"Which breakfasts do you enjoy?", copy:"Breakfast options stay simple and protein-aware.", type:"multi", key:"breakfast", options:[["eggs","Eggs","Written as 2 eggs."],["all_bran","All Bran / Bran Flakes","Served as a bowl with low-fat milk."],["oats","Cooked oats","Served as a bowl with low-fat milk."],["overnight_oats","Overnight oats","Made with low-fat milk."],["yoghurt_bowl","Low-fat yoghurt bowl","Yoghurt with fruit where selected."]] },
+        { id:"starches", kicker:"Step 4", title:"Which starches do you enjoy?", copy:"Hearty uses sensible starch portions where the meal needs it.", type:"multi", key:"starches", options:[["rice","Rice",""],["potato","Potato",""],["sweet_potato","Sweet potato",""],["couscous","Couscous",""],["whole_wheat_pasta","Whole wheat pasta",""],["whole_wheat_wraps","Whole wheat wraps",""],["whole_wheat_bread","Whole wheat bread / toast",""]] },
+        { id:"vegetables", kicker:"Step 5", title:"Which vegetables do you enjoy?", copy:"Choose enough options so the plan can rotate realistic vegetable combinations.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
+        { id:"fruits", kicker:"Step 6", title:"Which fruits do you like?", copy:"Used for breakfast bowls and snack suggestions. You can skip this if you prefer.", type:"multi", key:"fruits", allowSkip:true, options:[["apple","Apple",""],["banana","Banana",""],["orange","Orange",""],["grapes","Grapes",""],["peach","Peach",""],["strawberries","Strawberries",""],["blueberries","Blueberries",""],["raspberries","Raspberries",""],["pineapple","Pineapple",""],["pawpaw","Pawpaw / papaya",""],["kiwi","Kiwi fruit",""],["grapefruit","Grapefruit",""]] },
+        { id:"snackPreferences", kicker:"Step 7", title:"Which snacks do you prefer?", copy:"Choose snacks you would be happy to see in your 7-day plan. You can skip this if you prefer.", type:"multi", key:"snackPreferences", allowSkip:true, dynamicOptions:getSnackOptions },
+        { id:"summary", kicker:"Final step", title:"Your meal setup is ready", copy:"Hearty will now generate a 7-day GLP-1 friendly starter plan around your preferences.", type:"summary" }
+      ];
+
+      function getVegetableOptions(){
+        const marrow = state.country === "UK" ? "Courgette" : (state.country === "ZA" ? "Baby marrow" : "Zucchini");
+        return [["broccoli","Broccoli",""],["cauliflower","Cauliflower",""],["carrots","Carrots",""],["baby_marrow",marrow,""],["spinach","Spinach",""],["mushrooms","Mushrooms",""],["peppers","Peppers",""],["green_beans","Green beans",""],["corn","Corn",""],["butternut","Butternut",""],["cabbage","Cabbage",""],["lettuce","Lettuce / salad greens",""],["cucumber","Cucumber",""],["tomato","Tomato",""],["onion","Onion",""],["peas","Peas",""],["mixed_veg","Mixed vegetables",""]];
+      }
+      function getSnackOptions(){
+        const jerky = state.country === "ZA" ? "Biltong" : (state.country === "US" || state.country === "CA" ? "Beef jerky" : "Biltong / beef jerky");
+        return [["low_fat_yoghurt", localYoghurt(), ""],["cottage_cheese","Cottage cheese",""],["fruit","Fruit",""],["biltong", jerky, ""],["nuts_seeds","Nuts and seeds",""],["peanut_butter","Peanut butter",""],["rice_cakes","Rice cakes",""],["wholegrain_crackers","Wholegrain crackers",""],["boiled_eggs","Boiled eggs",""],["tuna_rice_cakes","Tuna on rice cakes",""]];
+      }
+
+      function render(){
+        const step = steps[state.step];
+        const progress = Math.round(((state.step + 1) / steps.length) * 100);
+        root.innerHTML = `
+          <div class="progress-wrap">
+            <div class="progress-meta"><span>${escapeHtml(step.kicker)}</span><span>${state.step + 1} / ${steps.length}</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+          </div>
+          <div class="question">
+            <div class="kicker">${escapeHtml(step.kicker)}</div>
+            <h3>${escapeHtml(step.title)}</h3>
+            <p class="question-copy">${escapeHtml(step.copy)}</p>
+            ${renderStepBody(step)}
+          </div>
+          <div class="nav-row">
+            <button class="btn btn-secondary" type="button" data-action="back" ${state.step === 0 ? "disabled" : ""}>Back</button>
+            <button class="btn btn-primary" type="button" data-action="${step.type === "summary" ? "finish" : "next"}" ${canContinue(step) ? "" : "disabled"}>${step.type === "summary" ? "Generate my free 7-day plan" : "Next"}</button>
+          </div>`;
+        bind();
+      }
+
+      function renderStepBody(step){
+        if(step.type === "lead") return renderLeadStep();
+        if(step.type === "summary") return renderSummary();
+        const options = typeof step.dynamicOptions === "function" ? step.dynamicOptions() : step.options;
+        const selected = Array.isArray(state[step.key]) ? state[step.key] : [state[step.key]];
+        return `<div class="option-grid two">${options.map(([value,title,sub]) => `
+          <button class="option-btn ${selected.includes(value) ? "selected" : ""}" type="button" data-action="select" data-key="${step.key}" data-value="${value}">
+            <span><span class="option-title">${escapeHtml(title)}</span><span class="option-sub">${escapeHtml(sub)}</span></span>
+            <span class="selector-dot" aria-hidden="true"></span>
+          </button>`).join("")}</div>${step.allowSkip ? `<button class="btn btn-secondary btn-small" type="button" data-action="skip">Skip this step</button>` : ""}`;
+      }
+
+      function renderLeadStep(){
+        return `<div class="lead-grid">
+          <div class="field"><label for="firstName">First name</label><input id="firstName" value="${escapeAttr(state.firstName)}" autocomplete="given-name" required placeholder="Jean" /></div>
+          <div class="field"><label for="email">Email</label><input id="email" type="email" value="${escapeAttr(state.email)}" autocomplete="email" required placeholder="you@example.com" /></div>
+          <div class="field"><label for="whatsapp">WhatsApp number <span style="color:#7b8998;font-weight:750;">optional</span></label><input id="whatsapp" type="tel" value="${escapeAttr(state.whatsapp)}" autocomplete="tel" placeholder="082 000 0000" /></div>
+          <div class="field"><label for="medication">Medication</label><select id="medication"><option value="">Select one</option>${["Ozempic / Wegovy / semaglutide","Mounjaro / Zepbound / tirzepatide","Saxenda / liraglutide","Retatrutide","Other GLP-1 medication","Not using medication yet"].map(v => `<option value="${escapeAttr(v)}" ${state.medication === v ? "selected" : ""}>${escapeHtml(v)}</option>`).join("")}</select></div>
+          <p class="form-note" style="grid-column:1/-1;">Your plan appears instantly. Email lets us send meal-plan follow-up tips. WhatsApp is optional.</p>
+        </div>`;
+      }
+
+      function renderSummary(){
+        return `<div class="summary-grid">
+          ${summaryRow("Name", state.firstName || "Not added")}
+          ${summaryRow("Country", countryLabels[state.country] || "Other")}
+          ${summaryRow("Proteins", listLabels(state.proteins))}
+          ${summaryRow("Breakfasts", listLabels(state.breakfast))}
+          ${summaryRow("Starches", listLabels(state.starches))}
+          ${summaryRow("Vegetables", listLabels(state.vegetables))}
+          ${summaryRow("Fruit", listLabels(state.fruits))}
+          ${summaryRow("Snacks", listLabels(state.snackPreferences))}
+        </div>`;
+      }
+      function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
+
+      function bind(){
+        ["firstName","email","whatsapp","medication"].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.addEventListener("input", () => { state[id] = el.value.trim(); updateNavButton(); });
+        });
+        root.querySelectorAll("[data-action='select']").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-key");
+            const value = btn.getAttribute("data-value");
+            const step = steps[state.step];
+            if(step.type === "multi"){
+              state[key] = Array.isArray(state[key]) ? state[key] : [];
+              state[key] = state[key].includes(value) ? state[key].filter(v => v !== value) : state[key].concat(value);
+            } else {
+              state[key] = value;
+              if(key === "country") updateSalesLinks();
+            }
+            render();
+          });
+        });
+        root.querySelector("[data-action='back']")?.addEventListener("click", () => { if(state.step > 0){ state.step -= 1; render(); } });
+        root.querySelector("[data-action='next']")?.addEventListener("click", () => { saveLeadInputs(); const step = steps[state.step]; if(!canContinue(step)) return; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='skip']")?.addEventListener("click", () => { const step = steps[state.step]; state[step.key] = []; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
+      }
+      function saveLeadInputs(){ ["firstName","email","whatsapp","medication"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
+      function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
+      function canContinue(step){
+        if(step.type === "lead") return state.firstName.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim());
+        if(step.type === "summary" || step.allowSkip) return true;
+        const value = state[step.key];
+        return Array.isArray(value) ? value.length > 0 : Boolean(value);
+      }
+
+      function updateSalesLinks(){
+        const isZa = state.country === "ZA";
+        document.querySelectorAll("[data-sales-link]").forEach(link => {
+          link.href = isZa ? SA_SALES_URL : INT_SALES_URL;
+          if(link.textContent.includes("Hearty") && link.classList.contains("btn-primary")) link.textContent = "Get Hearty";
+        });
+      }
+
+      function generateAndShowPlan(){
+        latestPlan = buildPlan();
+        latestPlanText = makePlanText(latestPlan);
+        renderPlan(latestPlan);
+        saveLead(latestPlanText);
+        resultPanel.classList.add("show");
+        marketTag.textContent = "Free starter plan";
+        updateSalesLinks();
+        resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+
+      function buildPlan(){
+        const proteins = state.proteins.length ? state.proteins : ["chicken","beef","fish","eggs","canned_tuna"];
+        const breakfasts = state.breakfast.length ? state.breakfast : ["eggs","oats","yoghurt_bowl"];
+        const starches = state.starches.length ? state.starches : ["rice","potato","sweet_potato","whole_wheat_wraps"];
+        const vegetables = state.vegetables.length ? state.vegetables : ["broccoli","carrots","baby_marrow","spinach","lettuce","tomato","cucumber"];
+        const fruits = state.fruits.length ? state.fruits : ["apple","banana","grapes","pineapple"];
+        const snacks = state.snackPreferences.length ? state.snackPreferences : ["low_fat_yoghurt","cottage_cheese","fruit","boiled_eggs"];
+        const plan = [];
+        for(let i=0;i<7;i++){
+          const protein = pick(proteins, i);
+          const dinnerProtein = pick(proteins, i+2);
+          const vegA = pick(vegetables, i);
+          const vegB = pick(vegetables, i+3);
+          const starch = pick(starches, i+1);
+          plan.push({
+            day: dayNames[i],
+            breakfast: breakfastText(pick(breakfasts, i), pick(fruits, i), vegetables),
+            lunch: lunchText(protein, vegA, vegB, pick(starches, i)),
+            snack: snackText(pick(snacks, i), pick(fruits, i+1)),
+            dinner: dinnerText(dinnerProtein, vegA, vegB, starch)
+          });
+        }
+        return plan;
+      }
+      function pick(list, index){ return list[index % list.length]; }
+      function localYoghurt(){ return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt"; }
+      function vegLabel(id){
+        const map = { broccoli:"broccoli", cauliflower:"cauliflower", carrots:"carrots", spinach:"spinach", mushrooms:"mushrooms", peppers:"peppers", green_beans:"green beans", corn:"corn", butternut:"butternut", cabbage:"cabbage", lettuce:"salad greens", cucumber:"cucumber", tomato:"tomato", onion:"onion", peas:"peas", mixed_veg:"mixed vegetables" };
+        if(id === "baby_marrow") return state.country === "UK" ? "courgette" : (state.country === "ZA" ? "baby marrow" : "zucchini");
+        return map[id] || id.replaceAll("_"," ");
+      }
+      function starchLabel(id){
+        const map = { rice:"rice", potato:"potato", sweet_potato:"sweet potato", couscous:"couscous", whole_wheat_pasta:"whole wheat pasta", whole_wheat_wraps: state.country === "UK" || state.country === "AU" ? "wholemeal wrap" : "whole wheat wrap", whole_wheat_bread: state.country === "UK" || state.country === "AU" ? "wholemeal toast" : "whole wheat toast" };
+        return map[id] || id.replaceAll("_"," ");
+      }
+      function proteinLabel(id){
+        const map = { chicken:"skinless chicken breast", beef: state.country === "US" || state.country === "CA" ? "lean ground beef" : "lean beef mince or strips", pork:"lean pork strips", fish:"white fish", seafood:"prawns or seafood", canned_tuna:"canned tuna in water", eggs:"2 x eggs", turkey:"turkey breast" };
+        return map[id] || id.replaceAll("_"," ");
+      }
+      function breakfastText(id, fruit, vegetables){
+        const yoghurt = localYoghurt().toLowerCase();
+        const fruitText = fruitLabel(fruit);
+        const greens = vegetables.includes("spinach") ? "spinach" : vegLabel(pick(vegetables, 0));
+        const mushroom = vegetables.includes("mushrooms") ? "mushrooms" : vegLabel(pick(vegetables, 1));
+        const map = {
+          eggs: `2 x eggs scrambled with ${greens} or ${mushroom}.`,
+          all_bran: `A bowl of All Bran / Bran Flakes with low-fat milk and ${fruitText}.`,
+          oats: `A bowl of cooked oats with low-fat milk and ${fruitText}.`,
+          overnight_oats: `Overnight oats made with low-fat milk, ${yoghurt} and ${fruitText}.`,
+          yoghurt_bowl: `A bowl of ${yoghurt} with ${fruitText} and 1 portion oats.`
+        };
+        return map[id] || map.oats;
+      }
+      function lunchText(protein, vegA, vegB, starch){
+        if(protein === "canned_tuna") return `Tuna salad (${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(protein === "eggs") return `Egg salad plate (2 x eggs, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(starch === "whole_wheat_wraps") return `${capitalizeProtein(protein)} wrap (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and low-calorie dressing) in a ${starchLabel(starch)}.`;
+        return `${capitalizeProtein(protein)} salad (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+      }
+      function dinnerText(protein, vegA, vegB, starch){
+        if(protein === "eggs") return `2 x eggs with ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+        return `Grilled ${proteinLabel(protein)} with 1-2 portions ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+      }
+      function snackText(id, fruit){
+        const jerky = state.country === "ZA" ? "biltong" : (state.country === "US" || state.country === "CA" ? "beef jerky" : "biltong / beef jerky");
+        const map = {
+          low_fat_yoghurt: `1 cup ${localYoghurt().toLowerCase()}.`,
+          cottage_cheese: "Cottage cheese on 2 x rice cakes or crackerbread.",
+          fruit: `${fruitLabel(fruit)} or a fruit of your choice.`,
+          biltong: `A small portion of ${jerky} with water or tea.`,
+          nuts_seeds: "A small portion of nuts and seeds.",
+          peanut_butter: "1 tablespoon peanut butter on rice cakes.",
+          rice_cakes: "2 x rice cakes with cottage cheese or peanut butter.",
+          wholegrain_crackers: "Wholegrain crackers with cottage cheese.",
+          boiled_eggs: "1-2 boiled eggs.",
+          tuna_rice_cakes: "Tuna on 2 x rice cakes."
+        };
+        return map[id] || map.fruit;
+      }
+      function fruitLabel(id){ return ({ pawpaw:"pawpaw / papaya", kiwi:"kiwi fruit" }[id] || id || "apple").replaceAll("_"," "); }
+      function capitalizeProtein(id){ return ({ canned_tuna:"Tuna", seafood:"Seafood" }[id] || id.charAt(0).toUpperCase()+id.slice(1)); }
+
+      function renderPlan(plan){
+        const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
+        document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
+        document.getElementById("resultSubtitle").textContent = `${countryLabels[state.country] || "Your country"} • ${state.proteins.length} protein choice${state.proteins.length === 1 ? "" : "s"} • ${state.breakfast.length} breakfast choice${state.breakfast.length === 1 ? "" : "s"}`;
+        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast)}${mealRow("Lunch", day.lunch)}${mealRow("Snack", day.snack)}${mealRow("Dinner", day.dinner)}</article>`).join("");
+      }
+      function mealRow(label, text){ return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}</div></div>`; }
+      function makePlanText(plan){
+        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, ``, `This is general lifestyle support, not medical advice.`, ``];
+        plan.forEach(day => { lines.push(day.day, `Breakfast: ${day.breakfast}`, `Lunch: ${day.lunch}`, `Snack: ${day.snack}`, `Dinner: ${day.dinner}`, ``); });
+        lines.push(`Continue with Hearty: ${state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL}`);
+        return lines.join("\n");
+      }
+
+      document.getElementById("copyPlan").addEventListener("click", async () => { try { await navigator.clipboard.writeText(latestPlanText); showToast("Plan copied"); } catch(e) { showToast("Copy failed"); } });
+      document.getElementById("downloadPlan").addEventListener("click", () => {
+        const blob = new Blob([latestPlanText], { type:"text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `hearty-7-day-glp1-meal-plan.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+      document.getElementById("printPlan").addEventListener("click", () => window.print());
+      function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 1800); }
+
+      async function saveLead(generatedPlan){
+        if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+        const payload = {
+          first_name: state.firstName,
+          email: state.email,
+          whatsapp: state.whatsapp,
+          medication: state.medication,
+          country: countryLabels[state.country] || "Other",
+          market: state.country === "ZA" ? "ZA" : "INT",
+          proteins: state.proteins,
+          breakfasts: state.breakfast,
+          starches: state.starches,
+          vegetables: state.vegetables,
+          fruits: state.fruits,
+          snacks: state.snackPreferences,
+          generated_plan: generatedPlan,
+          checkout_url: state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL,
+          ref: tracking.ref,
+          utm_source: tracking.utm_source,
+          utm_medium: tracking.utm_medium,
+          utm_campaign: tracking.utm_campaign,
+          utm_content: tracking.utm_content,
+          lead_status: "New"
+        };
+        try {
+          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}`, {
+            method:"POST",
+            headers:{ "Content-Type":"application/json", "apikey":SUPABASE_ANON_KEY, "Authorization":`Bearer ${SUPABASE_ANON_KEY}` },
+            body: JSON.stringify(payload)
+          });
+        } catch(err) { console.warn("Lead capture failed", err); }
+      }
+
+      function listLabels(values){
+        if(!values || !values.length) return "Skipped";
+        const labels = [];
+        values.forEach(value => {
+          const all = [].concat(getVegetableOptions(), getSnackOptions(), ...steps.filter(s => Array.isArray(s.options)).map(s => s.options));
+          const found = all.find(item => item[0] === value);
+          labels.push(found ? found[1] : value.replaceAll("_"," "));
+        });
+        return labels.join(", ");
+      }
+      function escapeHtml(value){ return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+      function escapeAttr(value){ return escapeHtml(value).replaceAll("`","&#096;"); }
+
+      updateSalesLinks();
+      render();
+    })();
+  </script>
+</body>
+</html>
