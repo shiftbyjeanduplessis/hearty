@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Aesthetics Institute GLP-1 Support App — Marketing Concept</title>
+<meta name="description" content="A marketing concept for a The Aesthetics Institute branded GLP-1 support app focused on daily structure, meals, movement, symptoms and patient relationship-building." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#050505;
+  --ink:#171717;
+  --charcoal:#24211f;
+  --taupe:#8b8175;
+  --muted:#6f675f;
+  --cream:#f6f1ea;
+  --cream2:#ebe3d8;
+  --stone:#c9beb1;
+  --line:rgba(45,38,31,.14);
+  --white:#fff;
+  --gold:#bda47a;
+  --gold2:#d8c6a7;
+  --green:#879c87;
+  --max:1180px;
+  --shadow:0 28px 80px rgba(20,17,14,.16);
+  --shadow-soft:0 12px 34px rgba(20,17,14,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.topbar{background:var(--black);color:#f8f4ee;text-align:center;padding:10px 18px;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+nav{position:sticky;top:0;z-index:60;background:rgba(246,241,234,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(45,38,31,.10)}
+.nav-inner{max-width:var(--max);height:88px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.brand{display:flex;align-items:center;gap:16px;min-width:300px}
+.logo-tile{background:#050505;border-radius:2px;padding:12px 15px;box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.logo-tile img{width:210px;height:auto;object-fit:contain}
+.concept-pill{font-size:.68rem;text-transform:uppercase;font-weight:850;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.48);white-space:nowrap}
+.nav-links{display:flex;list-style:none;gap:26px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:850;color:#423d38}.nav-links a:hover{color:var(--black)}
+.nav-cta{background:var(--black);color:#fff;border-radius:999px;padding:12px 19px;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;font-weight:900;box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#f7f2ea 0%,#ebe3d8 58%,#d8cfc2 100%);border-bottom:1px solid var(--line)}
+.hero:before{content:"";position:absolute;inset:0;background:url('https://aestheticsinstitute.co.za/wp-content/uploads/2025/09/waiting-area-caption2.jpg') right center/58% auto no-repeat;opacity:.42;mix-blend-mode:multiply;filter:saturate(.86);pointer-events:none}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(246,241,234,.98) 0%,rgba(246,241,234,.88) 47%,rgba(246,241,234,.42) 100%);pointer-events:none}
+.hero-inner{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:84px 24px 90px;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.75);border:1px solid rgba(45,38,31,.13);border-radius:999px;padding:8px 14px;font-size:.73rem;text-transform:uppercase;letter-spacing:.12em;font-weight:900;color:#4a4036;box-shadow:var(--shadow-soft);margin-bottom:26px}.eyebrow span{width:8px;height:8px;border-radius:999px;background:var(--gold);box-shadow:0 0 0 6px rgba(189,164,122,.13)}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(3.1rem,6.4vw,6.2rem);line-height:.92;letter-spacing:-.055em;color:var(--black);max-width:760px}.accent{color:#79664b;font-style:italic}.caps{font-family:Inter,Arial,sans-serif;text-transform:uppercase;font-weight:950;letter-spacing:-.06em;font-style:normal;color:var(--charcoal)}
+.hero-sub{font-size:1.06rem;line-height:1.8;color:#453e37;max-width:650px;margin-top:28px}.hero-sub strong{color:#111;font-weight:850}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:15px 22px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:950;transition:.18s}.btn-primary{background:var(--black);color:#fff;box-shadow:0 16px 34px rgba(0,0,0,.20)}.btn-primary:hover{transform:translateY(-2px)}.btn-secondary{background:rgba(255,255,255,.72);border:1px solid var(--line);color:#1b1816;box-shadow:var(--shadow-soft)}.hero-note{font-size:.78rem;color:var(--muted);margin-top:18px;font-weight:650;max-width:640px}
+.device-wrap{display:flex;justify-content:center;position:relative}.phone{width:294px;border:10px solid #090909;border-radius:46px;background:#f3eee7;box-shadow:0 38px 86px rgba(20,17,14,.29),0 10px 22px rgba(0,0,0,.18);overflow:hidden;position:relative}.phone:before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:24px;background:#090909;border-radius:999px;z-index:5}.screen{padding:44px 15px 16px}.app-top{background:#111;color:#fff;border-radius:24px;padding:18px 16px 16px;position:relative;overflow:hidden}.app-top:before{content:"";position:absolute;right:-28px;top:-36px;width:110px;height:110px;border-radius:999px;background:rgba(189,164,122,.28)}.app-brand{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;font-weight:950;text-transform:uppercase;letter-spacing:.08em}.mini-mark{background:#fff;color:#111;border-radius:999px;padding:5px 8px;font-size:.66rem}.app-title{position:relative;z-index:1;font-size:1.02rem;line-height:1.12;margin-top:15px;font-weight:900;text-transform:uppercase}.app-sub{position:relative;z-index:1;font-size:.68rem;color:rgba(255,255,255,.72);font-weight:750;margin-top:5px}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.metric{background:#fff;border:1px solid rgba(45,38,31,.10);border-radius:18px;padding:12px;box-shadow:0 6px 16px rgba(0,0,0,.035)}.metric small{display:block;color:#80766a;font-size:.58rem;text-transform:uppercase;font-weight:950;letter-spacing:.05em}.metric strong{display:block;color:#141210;font-size:1.02rem;margin-top:3px}.metric em{display:block;color:#7b684d;font-style:normal;font-size:.62rem;font-weight:900;margin-top:3px}.task{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid rgba(45,38,31,.10);border-radius:16px;padding:11px 12px;margin-top:8px}.tick{width:20px;height:20px;border-radius:7px;background:#eee8dc;color:#5d4d36;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:950}.task div{font-size:.72rem;color:#28231e;font-weight:850;line-height:1.25}.support{background:#f7efe2;border-color:#dac7a8}.support .tick{background:#111;color:#fff}.dose{background:#fff;border-radius:19px;padding:13px;margin-top:9px;border:1px solid rgba(45,38,31,.10)}.dose small{color:var(--muted);font-size:.6rem;text-transform:uppercase;font-weight:950}.dose strong{display:block;color:#121212;font-size:.84rem;margin-top:2px}.image-card{position:absolute;right:-14px;bottom:20px;width:218px;background:#fff;border-radius:24px;padding:10px;box-shadow:var(--shadow);border:1px solid rgba(45,38,31,.12);transform:rotate(2deg)}.image-card img{height:128px;width:100%;object-fit:cover;border-radius:18px;filter:saturate(.86)}.image-card strong{font-size:.78rem;color:#151515;text-transform:uppercase;letter-spacing:.05em;line-height:1.1;display:block;margin:10px 8px 2px}.image-card span{font-size:.66rem;color:var(--muted);font-weight:800;display:block;margin:0 8px 6px}.strip{background:#111;color:#fff}.strip-inner{max-width:var(--max);margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}.strip strong{font-size:.86rem;text-transform:uppercase;letter-spacing:.1em}.strip-pills{display:flex;gap:10px;flex-wrap:wrap}.strip-pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:999px;font-size:.73rem;font-weight:850;text-transform:uppercase;letter-spacing:.06em;color:#f5eee4}
+section{padding:84px 24px}.section-inner{max-width:var(--max);margin:0 auto}.kicker{font-size:.77rem;text-transform:uppercase;letter-spacing:.14em;color:#806943;font-weight:950;margin-bottom:16px}h2{font-size:clamp(2.2rem,4.6vw,4.3rem);font-family:'Playfair Display',Georgia,serif;line-height:1.02;letter-spacing:-.045em;color:#111;max-width:960px}.lead{font-size:1.02rem;line-height:1.78;color:#514940;max-width:780px;margin-top:21px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}.card{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}.card:before{content:"";position:absolute;left:28px;right:28px;top:0;height:4px;background:linear-gradient(90deg,#111,var(--gold));border-radius:0 0 999px 999px}.icon{width:48px;height:48px;border-radius:16px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.92rem;font-weight:950;margin-bottom:18px}.card h3{font-size:1.03rem;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;color:#151515;margin-bottom:10px}.card p{font-size:.9rem;color:#5d554e;line-height:1.7}.dark-section{background:radial-gradient(circle at 85% 6%,rgba(189,164,122,.20),transparent 34%),radial-gradient(circle at 12% 92%,rgba(255,255,255,.08),transparent 34%),linear-gradient(145deg,#050505 0%,#181512 55%,#080807 100%);color:#fff;position:relative;overflow:hidden}.dark-section:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.06),transparent 30%,rgba(255,255,255,.045) 62%,transparent);pointer-events:none}.dark-section .section-inner{position:relative;z-index:1}.dark-section h2{color:#fff}.dark-section .lead{color:rgba(255,255,255,.74)}.dark-section .kicker{color:var(--gold2)}.system-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:36px;margin-top:48px;align-items:center}.module-list{display:grid;gap:14px}.module{display:grid;grid-template-columns:58px 1fr;gap:15px;align-items:start;background:rgba(255,255,255,.095);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:18px;backdrop-filter:blur(16px);box-shadow:0 20px 56px rgba(0,0,0,.22)}.module .icon{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);color:#fff;margin:0}.module h3{font-size:1rem;text-transform:uppercase;letter-spacing:.04em;line-height:1.15;margin-bottom:6px;color:#fff}.module p{font-size:.86rem;color:rgba(255,255,255,.74);line-height:1.65}.mock-large{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:34px;padding:28px;box-shadow:0 28px 90px rgba(0,0,0,.30);backdrop-filter:blur(18px)}.mock-head{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.30);border-radius:22px;padding:18px}.mock-head strong{font-family:'Playfair Display',Georgia,serif;font-size:1.9rem}.mock-head span{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.62);font-weight:850}.mock-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.mock-card{background:#f7f2ea;color:#151515;border-radius:22px;padding:18px}.mock-card small{display:block;color:#7b7065;text-transform:uppercase;font-size:.64rem;font-weight:950;letter-spacing:.06em}.mock-card strong{display:block;font-size:1.35rem;margin-top:4px}.mock-card span{display:block;color:#5c5148;font-size:.76rem;font-weight:750;margin-top:3px}.mock-wide{display:flex;gap:14px;align-items:center;background:#fff;color:#151515;border-radius:22px;padding:17px;margin-top:12px}.mock-wide .icon{margin:0;background:#111}.mock-wide strong{display:block;text-transform:uppercase;font-size:.9rem;letter-spacing:.04em}.mock-wide span{font-size:.78rem;color:#60584e;font-weight:700}.image-band{background:var(--cream2)}.image-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:44px}.image-feature,.image-stack figure{position:relative;overflow:hidden;border-radius:30px;border:1px solid rgba(45,38,31,.12);box-shadow:var(--shadow-soft);background:#fff}.image-feature img{height:536px;width:100%;object-fit:cover;filter:saturate(.84)}.image-stack{display:grid;gap:18px}.image-stack img{height:259px;width:100%;object-fit:cover;filter:saturate(.84)}figcaption{position:absolute;left:18px;right:18px;bottom:18px;background:rgba(8,8,8,.72);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:13px 14px;backdrop-filter:blur(12px)}figcaption strong{display:block;font-size:.88rem;text-transform:uppercase;letter-spacing:.06em}figcaption span{display:block;font-size:.74rem;color:rgba(255,255,255,.72);font-weight:650;margin-top:3px}.marketing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px}.marketing-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow-soft)}.marketing-card strong{display:block;font-size:.86rem;text-transform:uppercase;letter-spacing:.06em;line-height:1.18;color:#111;margin-bottom:7px}.marketing-card span{font-size:.8rem;color:#5c554e;font-weight:650;line-height:1.55}.cta{background:#111;color:#fff;text-align:center;padding:76px 24px}.cta h2{color:#fff;margin:0 auto}.cta p{color:rgba(255,255,255,.70);max-width:690px;margin:20px auto 0;font-size:1rem;line-height:1.8}.cta .btn{margin-top:30px;background:#f7f2ea;color:#111}.legal{font-size:.75rem;color:rgba(255,255,255,.45);margin-top:18px}footer{background:#050505;color:#fff;padding:44px 24px}.footer-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer-logo{background:#050505}.footer-logo img{width:210px}.footer-copy{font-size:.75rem;color:rgba(255,255,255,.42);font-weight:700}.sticky{display:none;position:fixed;left:0;right:0;bottom:0;background:rgba(246,241,234,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:70;padding:12px 16px}.sticky-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}.sticky strong{display:block;font-size:.87rem}.sticky span{font-size:.72rem;color:var(--muted);font-weight:700}.sticky .btn{padding:11px 15px;background:#111;color:#fff;font-size:.68rem}
+@media(max-width:980px){.nav-links{display:none}.brand{min-width:0}.hero-inner,.system-grid,.image-grid{grid-template-columns:1fr}.hero:before{background-size:cover;background-position:center;opacity:.18}.image-card{right:8px}.cards{grid-template-columns:1fr 1fr}.marketing-grid{grid-template-columns:1fr 1fr}.logo-tile img{width:170px}.concept-pill{display:none}}
+@media(max-width:620px){.topbar{font-size:.64rem}.nav-inner{height:76px;padding:0 16px}.logo-tile{padding:10px 12px}.logo-tile img{width:145px}.nav-cta{padding:11px 14px;font-size:.66rem}.hero-inner{padding:58px 18px 70px}h1{font-size:3.2rem}.phone{width:274px}.image-card{display:none}.cards,.marketing-grid,.mock-row{grid-template-columns:1fr}section{padding:62px 18px}.image-feature img,.image-stack img{height:280px}.sticky{display:block}body{padding-bottom:72px}}
+</style>
+</head>
+<body>
+<div class="topbar">Marketing concept — a The Aesthetics Institute branded GLP-1 support layer</div>
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="The Aesthetics Institute GLP-1 marketing concept">
+      <span class="logo-tile"><img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/08/TAI-whitelogo.png" alt="The Aesthetics Institute" /></span>
+      <span class="concept-pill">GLP-1 marketing concept</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#fit">Strategic fit</a></li>
+      <li><a href="#app">App system</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#marketing">Marketing</a></li>
+    </ul>
+    <a href="#marketing" class="nav-cta">Marketing concept</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow"><span></span> A boutique digital layer for GLP-1 patients</div>
+      <h1>Extend the <span class="accent">clinic</span><br><span class="caps">between visits.</span></h1>
+      <p class="hero-sub"><strong>A The Aesthetics Institute branded app for GLP-1 clients who need daily structure around meals, hydration, symptoms, movement and progress.</strong><br><br>The medication may start the journey, but the relationship is built in the days between appointments. This concept turns The Aesthetics Institute into the client’s calm daily companion — not just the place they visit.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#marketing">View marketing angle</a>
+        <a class="btn btn-secondary" href="#app">See app experience</a>
+      </div>
+      <p class="hero-note">Positioned as lifestyle, nutrition and habit support. Not medical advice. Not a prescribing tool. Designed to support the practitioner-client relationship.</p>
+    </div>
+
+    <div class="device-wrap">
+      <div class="phone" aria-label="The Aesthetics Institute app mockup">
+        <div class="screen">
+          <div class="app-top">
+            <div class="app-brand"><span>TAI</span><span class="mini-mark">GLP-1</span></div>
+            <div class="app-title">Today’s clinic support plan</div>
+            <div class="app-sub">Week 6 · dose week · gentle nutrition focus</div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><small>Protein</small><strong>68g</strong><em>target: 90g</em></div>
+            <div class="metric"><small>Hydration</small><strong>1.9L</strong><em>sip plan active</em></div>
+          </div>
+          <div class="task"><div class="tick">✓</div><div>Low-appetite breakfast option selected</div></div>
+          <div class="task"><div class="tick">✓</div><div>20-minute movement plan adapted</div></div>
+          <div class="task support"><div class="tick">!</div><div>Support Mode: nausea-friendly day active</div></div>
+          <div class="dose"><small>Next appointment prep</small><strong>Symptoms, photos and progress summary ready for review.</strong></div>
+        </div>
+      </div>
+      <div class="image-card">
+        <img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/09/Sessional-room-caption2.jpg" alt="The Aesthetics Institute treatment room rendering" />
+        <strong>Clinic-to-app continuity</strong>
+        <span>The same premium experience, carried into daily support.</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="strip-inner">
+    <strong>Positioning territory</strong>
+    <div class="strip-pills">
+      <span class="strip-pill">Aesthetics</span>
+      <span class="strip-pill">Health</span>
+      <span class="strip-pill">Wellness</span>
+      <span class="strip-pill">Nutrition</span>
+      <span class="strip-pill">Progress</span>
+      <span class="strip-pill">Continuity</span>
+    </div>
+  </div>
+</div>
+
+<section id="fit">
+  <div class="section-inner">
+    <div class="kicker">Why this fits The Aesthetics Institute</div>
+    <h2>The site already promises integrated aesthetics, health and wellness. The app makes that promise daily.</h2>
+    <p class="lead">The Aesthetics Institute positions itself as a one-stop destination where science, artistry and holistic wellness meet. A GLP-1 support app gives that positioning a practical digital layer: clients get structure between appointments, while the clinic becomes more visible, more useful and more trusted every day.</p>
+    <div class="cards">
+      <div class="card"><div class="icon">01</div><h3>Own the between-visit relationship</h3><p>Most GLP-1 clients need help after they leave the clinic: eating enough, staying hydrated, tracking side effects and keeping momentum.</p></div>
+      <div class="card"><div class="icon">02</div><h3>Turn wellness into a system</h3><p>Not only treatments and appointments — the app supports the lifestyle layer around the transformation journey.</p></div>
+      <div class="card"><div class="icon">03</div><h3>Create a premium client experience</h3><p>A branded digital companion makes the clinic feel more complete, modern and relationship-led.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark-section" id="app">
+  <div class="section-inner">
+    <div class="kicker">The app system</div>
+    <h2>A boutique support companion for GLP-1 clients — branded around the clinic, not a generic tracker.</h2>
+    <p class="lead">The strongest version is not a logo slapped onto a meal app. It is a calm, premium daily support system that gives clients structure while reinforcing The Aesthetics Institute’s role as an integrated wellness destination.</p>
+    <div class="system-grid">
+      <div class="module-list">
+        <div class="module"><div class="icon">01</div><div><h3>GLP-1 friendly meals</h3><p>Simple meal plans, smaller portions, protein visibility and nausea-friendly options.</p></div></div>
+        <div class="module"><div class="icon">02</div><div><h3>Support Mode</h3><p>When nausea, fatigue or low appetite hits, meals and movement soften instead of the client feeling like they failed.</p></div></div>
+        <div class="module"><div class="icon">03</div><div><h3>Progress tracking</h3><p>Weight, photos and trends presented in a way that supports clinical conversations and client confidence.</p></div></div>
+        <div class="module"><div class="icon">04</div><div><h3>Appointment prep</h3><p>Symptom and progress summaries help clients arrive prepared and practitioners get a clearer picture.</p></div></div>
+      </div>
+      <div class="mock-large">
+        <div class="mock-head"><strong>TAI Daily</strong><span>GLP-1 support</span></div>
+        <div class="mock-row">
+          <div class="mock-card"><small>Meal focus</small><strong>Gentle</strong><span>smaller meals · higher protein</span></div>
+          <div class="mock-card"><small>Movement</small><strong>20 min</strong><span>soft strength session</span></div>
+          <div class="mock-card"><small>Progress</small><strong>Photos</strong><span>every 3 weeks</span></div>
+          <div class="mock-card"><small>Education</small><strong>2 min</strong><span>daily guidance card</span></div>
+        </div>
+        <div class="mock-wide"><div class="icon">!</div><div><strong>Support Mode active</strong><span>Meal plan softened, hydration prioritised, exercise reduced for today.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="image-band" id="experience">
+  <div class="section-inner">
+    <div class="kicker">Visual direction</div>
+    <h2>Match the clinic: calm, premium, architectural and personal.</h2>
+    <p class="lead">The app should feel like an extension of the physical space — warm neutrals, black accents, soft lighting, simple language, and a calm sense of control.</p>
+    <div class="image-grid">
+      <figure class="image-feature">
+        <img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/09/WAITING-ROOM-caption2.jpg" alt="The Aesthetics Institute waiting room rendering" />
+        <figcaption><strong>Boutique experience</strong><span>Quiet, premium, relationship-led support.</span></figcaption>
+      </figure>
+      <div class="image-stack">
+        <figure><img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/09/IV-LOUNG-2-caption2.jpg" alt="The Aesthetics Institute IV lounge rendering" /><figcaption><strong>Wellness services</strong><span>IV therapy, recovery and daily care pathways.</span></figcaption></figure>
+        <figure><img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/09/waiting-area-caption2.jpg" alt="The Aesthetics Institute waiting area rendering" /><figcaption><strong>Retail and lifestyle</strong><span>Digital education can support product and service discovery.</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="marketing">
+  <div class="section-inner">
+    <div class="kicker">Marketing angle</div>
+    <h2>Not another app. A premium continuity tool for clients on a medical weight-loss journey.</h2>
+    <p class="lead">This can be marketed as part of a more complete client journey: consultation, treatment, wellness retail, education and daily support — all under The Aesthetics Institute umbrella.</p>
+    <div class="marketing-grid">
+      <div class="marketing-card"><strong>Lead magnet</strong><span>“Join our GLP-1 support list” or “get the app with your programme” as a softer acquisition angle.</span></div>
+      <div class="marketing-card"><strong>Client retention</strong><span>Daily support keeps the clinic present between visits and helps clients feel cared for.</span></div>
+      <div class="marketing-card"><strong>Service bridge</strong><span>Contextual education can point clients toward consultations, IV therapy, wellness retail and follow-ups.</span></div>
+      <div class="marketing-card"><strong>Premium positioning</strong><span>Turns the clinic into an integrated lifestyle hub, not just a treatment destination.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>One clinic. Every aesthetic need. One digital companion between appointments.</h2>
+  <p>A The Aesthetics Institute branded GLP-1 support app could make the client journey feel more complete, more personal and more premium — while giving the clinic a daily touchpoint that competitors do not have.</p>
+  <a class="btn" href="#top">Back to top</a>
+  <div class="legal">Concept only. Not medical advice. All GLP-1 medication and treatment decisions remain with qualified medical practitioners.</div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo"><img src="https://aestheticsinstitute.co.za/wp-content/uploads/2025/08/TAI-whitelogo.png" alt="The Aesthetics Institute" /></div>
+    <div class="footer-copy">GLP-1 support app marketing concept · Prepared as a visual partnership idea</div>
+  </div>
+</footer>
+
+<div class="sticky">
+  <div class="sticky-inner">
+    <div><strong>TAI GLP-1 support app</strong><span>Marketing concept</span></div>
+    <a class="btn" href="#marketing">View angle</a>
+  </div>
+</div>
+</body>
+</html>
