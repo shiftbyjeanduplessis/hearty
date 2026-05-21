@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
-  <!-- HEARTY_LEAD_MAGNET_FINAL_2026_05_21: checkout direct + isolated lead magnet meal engine -->
+  <!-- HEARTY_LEAD_MAGNET_FINAL_2026_05_21_NO_MEDICATION_SELECTION_V2: checkout direct + isolated lead magnet meal engine -->
 <meta content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." name="description"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
@@ -308,9 +308,10 @@
     }
     .option-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(14,31,53,.07); }
     .option-btn.selected { border-color: rgba(47,109,246,.42); background: linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96)); box-shadow: 0 0 0 4px rgba(47,109,246,.07), 0 12px 24px rgba(14,31,53,.06); }
-    .option-title { font-weight: 850; letter-spacing: -.02em; }
-    .option-sub { color: var(--muted); font-size: .86rem; line-height: 1.35; margin-top: 3px; }
+    .option-title { display:block; font-weight: 850; letter-spacing: -.02em; line-height:1.22; margin-bottom:4px; }
+    .option-sub { display:block; color: var(--muted); font-size: .86rem; line-height: 1.35; margin-top: 0; }
     .option-sub:empty { display: none; }
+    .option-main { display:block; min-width:0; }
     .selector-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(143,163,184,.32); flex: 0 0 auto; }
     .option-btn.selected .selector-dot { border-color: transparent; background: radial-gradient(circle at 50% 50%, #fff 0 26%, transparent 27%), var(--blue); }
 
@@ -758,7 +759,7 @@
 
       const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
       const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
-      const state = { step:0, firstName:"", email:"", whatsapp:"", medication:"", country:"", countrySelected:false, proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"", countrySelected:false, proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
       let latestPlanText = "";
       let latestPlan = [];
       let currentLeadId = "";
@@ -819,7 +820,7 @@
         const selected = Array.isArray(state[step.key]) ? state[step.key] : [state[step.key]];
         return `<div class="option-grid two">${options.map(([value,title,sub]) => `
           <button class="option-btn ${selected.includes(value) ? "selected" : ""}" type="button" data-action="select" data-key="${step.key}" data-value="${value}">
-            <span><span class="option-title">${escapeHtml(title)}</span><span class="option-sub">${escapeHtml(sub)}</span></span>
+            <span class="option-main"><span class="option-title">${escapeHtml(title)}</span><span class="option-sub">${escapeHtml(sub)}</span></span>
             <span class="selector-dot" aria-hidden="true"></span>
           </button>`).join("")}</div>${step.allowSkip ? `<button class="btn btn-secondary btn-small" type="button" data-action="skip">Skip this step</button>` : ""}`;
       }
@@ -828,8 +829,7 @@
         return `<div class="lead-grid">
           <div class="field"><label for="firstName">First name</label><input id="firstName" value="${escapeAttr(state.firstName)}" autocomplete="given-name" required placeholder="Jean" /></div>
           <div class="field"><label for="email">Email</label><input id="email" type="email" value="${escapeAttr(state.email)}" autocomplete="email" required placeholder="you@example.com" /></div>
-          <div class="field"><label for="whatsapp">WhatsApp number <span style="color:#7b8998;font-weight:750;">optional</span></label><input id="whatsapp" type="tel" value="${escapeAttr(state.whatsapp)}" autocomplete="tel" placeholder="082 000 0000" /></div>
-          <div class="field"><label for="medication">Medication</label><select id="medication"><option value="">Select one</option>${["Ozempic / Wegovy / semaglutide","Mounjaro / Zepbound / tirzepatide","Saxenda / liraglutide","Retatrutide","Other GLP-1 medication","Not using medication yet"].map(v => `<option value="${escapeAttr(v)}" ${state.medication === v ? "selected" : ""}>${escapeHtml(v)}</option>`).join("")}</select></div>
+          <div class="field" style="grid-column:1/-1;"><label for="whatsapp">WhatsApp number <span style="color:#7b8998;font-weight:750;">optional</span></label><input id="whatsapp" type="tel" value="${escapeAttr(state.whatsapp)}" autocomplete="tel" placeholder="082 000 0000" /></div>
           <p class="form-note" style="grid-column:1/-1;">Your plan appears instantly. Email lets us send meal-plan follow-up tips. WhatsApp is optional.</p>
         </div>`;
       }
@@ -849,7 +849,7 @@
       function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
 
       function bind(){
-        ["firstName","email","whatsapp","medication"].forEach(id => {
+        ["firstName","email","whatsapp"].forEach(id => {
           const el = document.getElementById(id);
           if(el) el.addEventListener("input", () => { state[id] = el.value.trim(); updateNavButton(); });
         });
@@ -873,7 +873,7 @@
         root.querySelector("[data-action='skip']")?.addEventListener("click", () => { const step = steps[state.step]; state[step.key] = []; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
         root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
       }
-      function saveLeadInputs(){ ["firstName","email","whatsapp","medication"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
+      function saveLeadInputs(){ ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
       function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
       function canContinue(step){
         if(step.type === "lead") return state.firstName.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim());
@@ -1285,7 +1285,6 @@
           first_name: state.firstName,
           email: state.email,
           whatsapp: state.whatsapp,
-          medication: state.medication,
           country: countryLabels[state.country] || "Other",
           market: state.country === "ZA" ? "ZA" : "INT",
           proteins: state.proteins,
