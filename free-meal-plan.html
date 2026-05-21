@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
-  <!-- HEARTY_LEAD_MAGNET_CHECKOUT_DIRECT_V4: buy CTAs open checkout, not sales pages -->
+  <!-- HEARTY_LEAD_MAGNET_CHECKOUT_DIRECT_V5: PayFast copied from SA page; Paddle config auto-loaded from homepage if needed -->
 <meta content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." name="description"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
@@ -727,7 +727,9 @@
       const INT_SALES_URL = "https://hearty.health";
 
       // Direct checkout configuration.
-      // South Africa uses the same PayFast direct checkout as the SA sales page. International uses Paddle when configured.
+      // SA checkout uses the exact PayFast pattern from the South African sales page.
+      // International checkout uses the Paddle pattern from the international sales page.
+      // If the live Paddle token/price are on the homepage, this page can load them from / at click time.
       const HEARTY_SA_PAYFAST = {
         receiver: "30731969",
         amount: "200",
@@ -738,13 +740,9 @@
       };
 
       const HEARTY_PADDLE = {
-        clientToken: "PASTE_YOUR_PADDLE_CLIENT_SIDE_TOKEN_HERE",
-        priceId: "PASTE_YOUR_PADDLE_PRICE_ID_HERE"
+        clientToken: window.HEARTY_PADDLE?.clientToken || "PASTE_YOUR_CLIENT_SIDE_TOKEN_HERE",
+        priceId: window.HEARTY_PADDLE?.priceId || "PASTE_YOUR_PRICE_ID_HERE"
       };
-
-      // Optional: paste a hosted Paddle checkout/payment link here if you prefer not to use Paddle overlay.
-      // Leave blank if you are using clientToken + priceId above.
-      const HEARTY_INT_HOSTED_CHECKOUT_URL = "";
 
       const SUPABASE_URL = "";
       const SUPABASE_ANON_KEY = "";
@@ -934,9 +932,55 @@
         return Boolean(
           HEARTY_PADDLE.clientToken &&
           HEARTY_PADDLE.priceId &&
-          !HEARTY_PADDLE.clientToken.includes("PASTE_") &&
-          !HEARTY_PADDLE.priceId.includes("PASTE_")
+          !String(HEARTY_PADDLE.clientToken).includes("PASTE_") &&
+          !String(HEARTY_PADDLE.priceId).includes("PASTE_")
         );
+      }
+
+      function absorbPaddleConfigFromHtml(html){
+        if(!html) return false;
+        const tokenMatch = html.match(/clientToken\s*:\s*["']([^"']+)["']/i);
+        const priceMatch = html.match(/priceId\s*:\s*["']([^"']+)["']/i);
+        const token = tokenMatch ? tokenMatch[1] : "";
+        const price = priceMatch ? priceMatch[1] : "";
+
+        if(token && price && !token.includes("PASTE_") && !price.includes("PASTE_")){
+          HEARTY_PADDLE.clientToken = token;
+          HEARTY_PADDLE.priceId = price;
+          return true;
+        }
+
+        return false;
+      }
+
+      async function loadPaddleConfigFromHomepage(){
+        if(hasLivePaddleConfig()) return true;
+
+        try {
+          const response = await fetch("/?heartyCheckoutConfig=" + Date.now(), { cache: "no-store", credentials: "same-origin" });
+          if(!response.ok) return false;
+          const html = await response.text();
+          return absorbPaddleConfigFromHtml(html);
+        } catch(error){
+          console.warn("Could not load Paddle config from homepage", error);
+          return false;
+        }
+      }
+
+      function waitForPaddle(timeoutMs){
+        return new Promise(resolve => {
+          if(window.Paddle) return resolve(true);
+          const started = Date.now();
+          const timer = setInterval(() => {
+            if(window.Paddle){
+              clearInterval(timer);
+              resolve(true);
+            } else if(Date.now() - started > timeoutMs){
+              clearInterval(timer);
+              resolve(false);
+            }
+          }, 80);
+        });
       }
 
       let paddleInitialized = false;
@@ -953,26 +997,37 @@
         }
       }
 
-      function openHeartyInternationalCheckout(){
+      async function openHeartyInternationalCheckout(){
+        const paddleReady = await waitForPaddle(5000);
+        if(!paddleReady){
+          alert("Checkout is still loading. Please try again.");
+          salesNavigationStarted = false;
+          checkoutOpened = false;
+          return;
+        }
+
+        if(!hasLivePaddleConfig()){
+          await loadPaddleConfigFromHomepage();
+        }
+
         if(initHeartyPaddle()){
-          Paddle.Checkout.open({
-            items: [{ priceId: HEARTY_PADDLE.priceId, quantity: 1 }],
-            settings: {
-              displayMode: "overlay",
-              theme: "light",
-              variant: "one-page",
-              successUrl: "https://hearty.health/login"
-            }
-          });
-          return;
+          try {
+            Paddle.Checkout.open({
+              items: [{ priceId: HEARTY_PADDLE.priceId, quantity: 1 }],
+              settings: {
+                displayMode: "overlay",
+                theme: "light",
+                variant: "one-page",
+                successUrl: "https://hearty.health/login"
+              }
+            });
+            return;
+          } catch(error){
+            console.error("Paddle checkout failed", error);
+          }
         }
 
-        if(HEARTY_INT_HOSTED_CHECKOUT_URL){
-          window.location.href = HEARTY_INT_HOSTED_CHECKOUT_URL;
-          return;
-        }
-
-        alert("International checkout is not connected yet. Add the Paddle client-side token + price ID, or paste a hosted checkout link into HEARTY_INT_HOSTED_CHECKOUT_URL.");
+        alert("International checkout could not open because the live Paddle token/price ID were not found on this page or the homepage. Paste the same live HEARTY_PADDLE clientToken and priceId from your international page into this lead magnet page.");
         salesNavigationStarted = false;
         checkoutOpened = false;
       }
