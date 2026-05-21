@@ -1048,6 +1048,26 @@
         resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
       }
 
+
+      // BUTTON_FIX_ONLY_V1: these helpers are the only generator-button patch.
+      function getHeartyEngine(){
+        return window.HeartyMealsEngineV6 || null;
+      }
+
+      function buildEngineProfile(){
+        return {
+          country: state.country || "ZA",
+          allowedProteins: Array.isArray(state.proteins) ? state.proteins.slice() : [],
+          allowedBreakfastFamilies: Array.isArray(state.breakfast) ? state.breakfast.slice() : [],
+          allowedStarches: Array.isArray(state.starches) ? state.starches.slice() : [],
+          allowedVegetables: Array.isArray(state.vegetables) ? state.vegetables.slice() : [],
+          allowedFruits: Array.isArray(state.fruits) ? state.fruits.slice() : [],
+          allowedSnacks: Array.isArray(state.snackPreferences) ? state.snackPreferences.slice() : [],
+          snackEnabled: true,
+          seafoodAllowed: !Array.isArray(state.proteins) || state.proteins.length === 0 || state.proteins.includes("fish") || state.proteins.includes("seafood") || state.proteins.includes("canned_tuna")
+        };
+      }
+
       function buildPlan(){
         const engine = getHeartyEngine();
         if(!engine || typeof engine.generateWeekPlan !== "function"){
