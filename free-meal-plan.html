@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
-  <!-- HEARTY_LEAD_MAGNET_CHECKOUT_DIRECT_V5: PayFast copied from SA page; Paddle config auto-loaded from homepage if needed -->
+  <!-- HEARTY_LEAD_MAGNET_FINAL_2026_05_21: checkout direct + isolated lead magnet meal engine -->
 <meta content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." name="description"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
@@ -719,7 +719,7 @@
 </div>
 </div>
 </div>
-<script src="meals-engine.js"></script>
+<script src="lead-magnet-meals-engine.js"></script>
 <script>
     (function(){
       "use strict";
@@ -1049,6 +1049,40 @@
       }
 
       function buildPlan(){
+        const engine = getHeartyEngine();
+        if(!engine || typeof engine.generateWeekPlan !== "function"){
+          console.warn("Hearty meal engine unavailable. Using fallback generator.");
+          return buildFallbackPlan();
+        }
+
+        const profile = buildEngineProfile();
+        const week = engine.generateWeekPlan({
+          profile,
+          adjustments: { supportMode: null },
+          weekState: null
+        });
+
+        const days = Array.isArray(week?.days) ? week.days.slice(0, 7) : [];
+        if(!days.length) return buildFallbackPlan();
+
+        return days.map((day, index) => ({
+          day: `Day ${index + 1}`,
+          dayName: day.dayName || dayNames[index] || `Day ${index + 1}`,
+          breakfast: cleanMealTitle(day.breakfast?.title || "Breakfast"),
+          lunch: cleanMealTitle(day.lunch?.title || "Lunch"),
+          snack: cleanMealTitle(day.snack?.title || "Snack"),
+          dinner: cleanMealTitle(day.dinner?.title || "Dinner"),
+          protein: {
+            breakfast: Number(day.breakfast?.proteinEstimate || 0),
+            lunch: Number(day.lunch?.proteinEstimate || 0),
+            snack: Number(day.snack?.proteinEstimate || 0),
+            dinner: Number(day.dinner?.proteinEstimate || 0)
+          },
+          source: "HeartyMealsEngineV6"
+        }));
+      }
+
+      function buildFallbackPlan(){
         const proteins = state.proteins.length ? state.proteins : ["chicken","beef","fish","eggs","canned_tuna"];
         const breakfasts = state.breakfast.length ? state.breakfast : ["eggs","oats","yoghurt_bowl"];
         const starches = state.starches.length ? state.starches : ["rice","potato","sweet_potato","whole_wheat_wraps"];
@@ -1057,35 +1091,41 @@
         const snacks = state.snackPreferences.length ? state.snackPreferences : ["low_fat_yoghurt","cottage_cheese","fruit","boiled_eggs"];
         const plan = [];
         for(let i=0;i<7;i++){
-          const protein = pick(proteins, i);
-          const dinnerProtein = pick(proteins, i+2);
-          const vegA = pick(vegetables, i);
-          const vegB = pick(vegetables, i+3);
-          const starch = pick(starches, i+1);
           plan.push({
-            day: dayNames[i],
+            day: `Day ${i + 1}`,
+            dayName: dayNames[i] || `Day ${i + 1}`,
             breakfast: breakfastText(pick(breakfasts, i), pick(fruits, i), vegetables),
-            lunch: lunchText(protein, vegA, vegB, pick(starches, i)),
+            lunch: lunchText(pick(proteins, i), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i)),
             snack: snackText(pick(snacks, i), pick(fruits, i+1)),
-            dinner: dinnerText(dinnerProtein, vegA, vegB, starch)
+            dinner: dinnerText(pick(proteins, i+2), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i+1)),
+            protein: { breakfast: 0, lunch: 0, snack: 0, dinner: 0 },
+            source: "fallback"
           });
         }
         return plan;
       }
+
+      function cleanMealTitle(value){
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .replace(/\bsmall pasta\b/gi, "whole wheat pasta")
+          .trim();
+      }
+
       function pick(list, index){ return list[index % list.length]; }
       function localYoghurt(){ return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt"; }
       function vegLabel(id){
         const map = { broccoli:"broccoli", cauliflower:"cauliflower", carrots:"carrots", spinach:"spinach", mushrooms:"mushrooms", peppers:"peppers", green_beans:"green beans", corn:"corn", butternut:"butternut", cabbage:"cabbage", lettuce:"salad greens", cucumber:"cucumber", tomato:"tomato", onion:"onion", peas:"peas", mixed_veg:"mixed vegetables" };
         if(id === "baby_marrow") return state.country === "UK" ? "courgette" : (state.country === "ZA" ? "baby marrow" : "zucchini");
-        return map[id] || id.replaceAll("_"," ");
+        return map[id] || String(id || "vegetables").replaceAll("_"," ");
       }
       function starchLabel(id){
         const map = { rice:"rice", potato:"potato", sweet_potato:"sweet potato", couscous:"couscous", whole_wheat_pasta:"whole wheat pasta", whole_wheat_wraps: state.country === "UK" || state.country === "AU" ? "wholemeal wrap" : "whole wheat wrap", whole_wheat_bread: state.country === "UK" || state.country === "AU" ? "wholemeal toast" : "whole wheat toast" };
-        return map[id] || id.replaceAll("_"," ");
+        return map[id] || String(id || "starch").replaceAll("_"," ");
       }
       function proteinLabel(id){
         const map = { chicken:"skinless chicken breast", beef: state.country === "US" || state.country === "CA" ? "lean ground beef" : "lean beef mince or strips", pork:"lean pork strips", fish:"white fish", seafood:"prawns or seafood", canned_tuna:"canned tuna in water", eggs:"2 x eggs", turkey:"turkey breast" };
-        return map[id] || id.replaceAll("_"," ");
+        return map[id] || String(id || "protein").replaceAll("_"," ");
       }
       function breakfastText(id, fruit, vegetables){
         const yoghurt = localYoghurt().toLowerCase();
@@ -1128,19 +1168,22 @@
         return map[id] || map.fruit;
       }
       function fruitLabel(id){ return ({ pawpaw:"pawpaw / papaya", kiwi:"kiwi fruit" }[id] || id || "apple").replaceAll("_"," "); }
-      function capitalizeProtein(id){ return ({ canned_tuna:"Tuna", seafood:"Seafood" }[id] || id.charAt(0).toUpperCase()+id.slice(1)); }
+      function capitalizeProtein(id){ return ({ canned_tuna:"Tuna", seafood:"Seafood" }[id] || String(id || "Meal").charAt(0).toUpperCase()+String(id || "meal").slice(1)); }
 
       function renderPlan(plan){
         const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
         document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
-        document.getElementById("resultSubtitle").textContent = `${countryLabels[state.country] || "Your country"} • ${state.proteins.length} protein choice${state.proteins.length === 1 ? "" : "s"} • ${state.breakfast.length} breakfast choice${state.breakfast.length === 1 ? "" : "s"}`;
-        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast)}${mealRow("Lunch", day.lunch)}${mealRow("Snack", day.snack)}${mealRow("Dinner", day.dinner)}</article>`).join("");
+        document.getElementById("resultSubtitle").textContent = `${countryLabels[state.country] || "Your country"} • ${state.proteins.length || "default"} protein choice${state.proteins.length === 1 ? "" : "s"} • powered by the Hearty meal engine`;
+        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast)}${mealRow("Lunch", day.lunch, day.protein?.lunch)}${mealRow("Snack", day.snack, day.protein?.snack)}${mealRow("Dinner", day.dinner, day.protein?.dinner)}</article>`).join("");
       }
-      function mealRow(label, text){ return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}</div></div>`; }
+      function mealRow(label, text, protein){
+        const proteinText = Number(protein || 0) > 0 ? ` <span style="color:#7b8998;font-weight:800;">${Number(protein)}g protein estimate</span>` : "";
+        return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}${proteinText}</div></div>`;
+      }
       function makePlanText(plan){
-        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, ``, `This is general lifestyle support, not medical advice.`, ``];
+        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, `Generated with: Hearty meal engine`, ``, `This is general lifestyle support, not medical advice.`, ``];
         plan.forEach(day => { lines.push(day.day, `Breakfast: ${day.breakfast}`, `Lunch: ${day.lunch}`, `Snack: ${day.snack}`, `Dinner: ${day.dinner}`, ``); });
-        lines.push(`Continue with Hearty: ${state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL}`);
+        lines.push(`Continue with Hearty: ${getSalesUrl()}`);
         return lines.join("\n");
       }
 
