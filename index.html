@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script> 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hearty — Your GLP-1 Companion</title>
+<!-- Sales page only: keep this page as a normal browser page, not a full-screen PWA/app screen. -->
+<meta name="apple-mobile-web-app-capable" content="no">
+<meta name="mobile-web-app-capable" content="no">
+<meta name="apple-mobile-web-app-title" content="Hearty South Africa">
+<meta name="theme-color" content="#f8fbff">
+
+<title>Hearty South Africa — Your GLP-1 Companion</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700;1,800&display=swap" rel="stylesheet">
-<!-- Hearty icon preloads: prevents premium landing-page icons popping in while scrolling. -->
-<link rel="preload" as="image" href="assets/icon-nausea-block.png">
-<link rel="preload" as="image" href="assets/icon-muscle-loss-block.png">
-<link rel="preload" as="image" href="assets/icon-low-appetite-block.png">
-<link rel="preload" as="image" href="assets/icon-routine-collapse-block.png">
-<link rel="preload" as="image" href="assets/icon-guidance-block.png">
-<link rel="preload" as="image" href="assets/icon-appointment-alert-block.png">
-<link rel="preload" as="image" href="assets/icon-support-heart-block.png">
-<link rel="preload" as="image" href="assets/icon-meal-block.png">
-<link rel="preload" as="image" href="assets/icon-run-block.png">
-<link rel="preload" as="image" href="assets/icon-low-energy-block.png">
-<link rel="preload" as="image" href="assets/icon-progress-block.png">
-<link rel="preload" as="image" href="assets/icon-hydration-block.png">
-<link rel="preload" as="image" href="assets/icon-social-support-block.png">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -1136,91 +1127,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 @media(max-width:820px){.pain-grid{grid-template-columns:1fr 1fr!important}.pain-card:nth-child(n+4){opacity:.92}}
 @media(max-width:560px){.pain-grid{grid-template-columns:1fr!important}.hero-trust{width:100%;border-radius:20px}}
 
-
-
-/* ICON LOAD POLISH: icons are brand assets, so load them immediately and reserve stable space. */
-.asset-icon{
-  opacity:1 !important;
-  transition:none !important;
-  background:transparent !important;
-}
-.pain-icon,.spot-icon-wrap{
-  min-width:72px;
-  min-height:72px;
-}
-.feature-mini .spot-icon-wrap{
-  min-width:78px;
-  min-height:78px;
-}
-@media(max-width:600px){
-  .pain-icon,.spot-icon-wrap{min-width:62px;min-height:62px;}
-  .feature-mini .spot-icon-wrap{min-width:64px;min-height:64px;}
-}
-
-
-/* SPECIAL LAUNCH PRICE URGENCY PASS */
-.launch-note{
-  margin-top:12px;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  background:linear-gradient(135deg,rgba(255,247,237,.94),rgba(255,255,255,.86));
-  border:1px solid rgba(234,88,12,.22);
-  border-radius:999px;
-  padding:8px 13px;
-  color:#7c2d12;
-  font-size:.8rem;
-  font-weight:700;
-  box-shadow:0 12px 26px rgba(234,88,12,.08), inset 0 1px 0 rgba(255,255,255,.9);
-}
-.launch-note span{
-  background:linear-gradient(135deg,#f97316,#2f6df6);
-  color:#fff;
-  border-radius:999px;
-  padding:4px 10px;
-  font-size:.7rem;
-  line-height:1;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  box-shadow:0 8px 18px rgba(249,115,22,.18);
-}
-.pricing-card.launch-offer{
-  border-color:rgba(249,115,22,.24) !important;
-  box-shadow:0 32px 86px rgba(249,115,22,.12),0 22px 56px rgba(15,39,66,.10),inset 0 1px 0 rgba(255,255,255,.92) !important;
-}
-.pricing-card.launch-offer::before{
-  background:linear-gradient(90deg,#f97316,#13b8a6,#2f6df6) !important;
-}
-.launch-price-note{
-  margin:10px 0 18px;
-  background:rgba(255,247,237,.86);
-  border:1px solid rgba(249,115,22,.20);
-  color:#7c2d12;
-  border-radius:15px;
-  padding:11px 13px;
-  font-size:.8rem;
-  font-weight:700;
-  line-height:1.45;
-}
-.launch-price-note strong{color:#9a3412;}
-@media(max-width:560px){
-  .launch-note{border-radius:18px;align-items:flex-start;line-height:1.45;}
-}
-
 </style>
-<!-- PartneroJS -->
-<script>
-    (function(p,t,n,e,r,o){ p['__partnerObject']=r;function f(){
-    var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
-    f.q=f.q||[];p[r]=p[r]||f.bind(f.q);p[r].q=p[r].q||f.q;o=t.createElement(n);
-    var _=t.getElementsByTagName(n)[0];o.async=1;o.src=e+'?v'+(~~(new Date().getTime()/1e6));
-    _.parentNode.insertBefore(o,_);})(window, document, 'script', 'https://app.partnero.com/js/universal.js', 'po');
-    po('settings', 'assets_host', 'https://assets.partnero.com');
-    po('program', 'SWUCSJAD', 'load');
-</script>
-<!-- End PartneroJS -->
 </head>
 <body>
 
@@ -1246,13 +1153,12 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     <h1>The injection changes your appetite.<br><em>Hearty gives you</em><br>the system around it.</h1>
     <p class="hero-sub">Meal plans that match your taste. Home and gym movement to help protect muscle. Support for nausea, fatigue and low-appetite days. Private progress tracking beyond the scale.<br><br><strong>No guesswork. No guilt. A daily system built for real GLP-1 life.</strong></p>
     <div class="hero-acts">
-      <a href="#" class="btn-primary" data-paddle-checkout>Get the $29 special launch price</a>
+      <a href="#" class="btn-primary" data-payfast-checkout>Get Hearty — R200 forever</a>
       <a href="#features" class="btn-ghost">See what you get</a>
     </div>
-    <div class="launch-note"><span>Special launch price</span> $29 lifetime access for launch users.</div>
     <div class="hero-trust">
       <span class="stars">★★★★★</span>
-      <span>Practitioner-built · GLP-1 friendly meals · muscle-protective movement · special $29 launch price · no monthly subscription</span>
+      <span>Practitioner-built · GLP-1 friendly meals · muscle-protective movement · R200 once-off, no monthly subscription</span>
     </div>
   </div>
   <div class="phone-col">
@@ -1325,6 +1231,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   <div class="cred-pills">
     <span class="cpill">Ozempic</span><span class="cpill">Wegovy</span><span class="cpill">Mounjaro</span>
     <span class="cpill">Zepbound</span><span class="cpill">Saxenda</span><span class="cpill">Rybelsus</span>
+    <span class="cpill">Retatrutide</span><span class="cpill">Other GLP-1s</span>
   </div>
   <div class="cdiv"></div>
   <span class="cred-note"><strong>One calm system</strong> · meals · movement · symptoms · progress · support</span>
@@ -1364,42 +1271,42 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   <div class="pain-grid">
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon" src="assets/icon-nausea-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon" src="assets/icon-nausea-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>The nausea is real — and nobody prepares you for it</h3>
       <p>Tuesday to Thursday you feel awful. You cancel plans. You eat nothing. Then you feel guilty for falling off your routine.</p>
       <p class="honest" style="color:var(--icon-orange)">Hearty tracks it, adapts to it, and keeps your streak alive anyhow.</p>
     </div>
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon muscle-color-correct" src="assets/icon-muscle-loss-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon muscle-color-correct" src="assets/icon-muscle-loss-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>"Am I losing muscle, not fat?"</h3>
       <p>GLP-1 suppresses appetite hard. Without regular movement and balanced nutrition, weight loss can come at the cost of muscle.</p>
       <p class="honest" style="color:var(--icon-purple)">Hearty protects movement and nutrition habits — adapted to how you feel today.</p>
     </div>
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon low-appetite-color-correct" src="assets/icon-low-appetite-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon low-appetite-color-correct" src="assets/icon-low-appetite-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>"I barely ate today. Is that okay?"</h3>
       <p>The appetite suppression is strong. Sometimes a handful of crackers is all you manage. But under-eating has real consequences.</p>
       <p class="honest" style="color:var(--icon-amber)">Hearty suggests gentle, protein-forward options for low-appetite days.</p>
     </div>
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon routine-color-correct" src="assets/icon-routine-collapse-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon routine-color-correct" src="assets/icon-routine-collapse-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>Bad weeks feel like failure</h3>
       <p>One rough week and the whole routine collapses. Most apps make you feel guilty for missing days. That's not how this works.</p>
       <p class="honest" style="color:var(--icon-red)">Hearty has Support Mode — a one-tap switch for the days when you just need to survive, not perform.</p>
     </div>
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon" src="assets/icon-guidance-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon" src="assets/icon-guidance-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>"I don't know if I'm doing this right"</h3>
       <p>Your doctor started you on the medication. But between appointments, you're largely on your own. That gap is huge.</p>
       <p class="honest" style="color:var(--icon-teal)">Hearty bridges it with daily structure, doctor-useful symptom logs, and guidance that adapts to you.</p>
     </div>
 
     <div class="pain-card">
-      <div class="pain-icon"><img class="asset-icon" src="assets/icon-appointment-alert-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+      <div class="pain-icon"><img class="asset-icon" src="assets/icon-appointment-alert-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
       <h3>You have no data for your next appointment</h3>
       <p>"How have you been feeling?" You try to remember six weeks of side effects, energy levels, and weight changes on the spot.</p>
       <p class="honest" style="color:var(--icon-rose)">Hearty logs everything automatically so your next appointment is actually useful.</p>
@@ -1419,7 +1326,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
   <div class="feature-system-grid">
     <div class="feature-hero-card">
       <div class="feature-hero-head">
-        <div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-support-heart-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div>
+        <div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-support-heart-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
         <h3>On the days you feel terrible — Hearty adjusts.<br><span style="color:var(--icon-orange)">One tap lowers the pressure.</span></h3>
       </div>
       <p>When nausea hits or appetite drops, Hearty changes the plan instead of making you feel like you failed. Meals become gentler, workouts scale down, and expectations reset for the day.</p>
@@ -1436,21 +1343,21 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     </div>
 
     <div class="feature-stack">
-      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-meal-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><div><h3>GLP-1 friendly meals</h3><p>Generate simple meal plans around your taste, appetite and protein needs.</p></div></div>
-      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-run-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><div><h3>Home + gym exercise</h3><p>Beginner-friendly routines designed to support strength and protect muscle.</p></div></div>
-      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-low-energy-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><div><h3>Side-effect tracking</h3><p>See patterns in nausea, fatigue and appetite instead of relying on memory.</p></div></div>
-      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-progress-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><div><h3>Progress beyond the scale</h3><p>Weigh-ins, private photos, symptoms and habit markers in one place.</p></div></div>
+      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-meal-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><div><h3>GLP-1 friendly meals</h3><p>Generate simple meal plans around your taste, appetite and protein needs.</p></div></div>
+      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-run-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><div><h3>Home + gym exercise</h3><p>Beginner-friendly routines designed to support strength and protect muscle.</p></div></div>
+      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-low-energy-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><div><h3>Side-effect tracking</h3><p>See patterns in nausea, fatigue and appetite instead of relying on memory.</p></div></div>
+      <div class="feature-mini"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-progress-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><div><h3>Progress beyond the scale</h3><p>Weigh-ins, private photos, symptoms and habit markers in one place.</p></div></div>
     </div>
   </div>
 
   <div class="feature-detail-row">
     <div class="feature-detail">
-      <div class="feature-detail-head"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-hydration-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><h3>Hydration stays simple</h3></div>
+      <div class="feature-detail-head"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-hydration-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><h3>Hydration stays simple</h3></div>
       <p>Tap to log a glass, undo mistakes, and keep water visible without turning it into another complicated tracker.</p>
       <div class="spot-pills"><span class="spot-pill" style="background:var(--teal-soft);color:var(--icon-teal);border:1px solid rgba(13,148,136,.2)">250ml tap</span><span class="spot-pill" style="background:var(--teal-soft);color:var(--icon-teal);border:1px solid rgba(13,148,136,.2)">Undo</span><span class="spot-pill" style="background:var(--teal-soft);color:var(--icon-teal);border:1px solid rgba(13,148,136,.2)">Daily target</span></div>
     </div>
     <div class="feature-detail">
-      <div class="feature-detail-head"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-social-support-block.png" alt="" aria-hidden="true" loading="eager" decoding="async"></div><h3>Social stays optional</h3></div>
+      <div class="feature-detail-head"><div class="spot-icon-wrap"><img class="asset-icon" src="assets/icon-social-support-block.png" alt="" aria-hidden="true" loading="lazy" decoding="async"></div><h3>Social stays optional</h3></div>
       <p>Use Hearty privately, or share quick moments with your circle. Reactions only, no noisy comment threads, and no public feed pressure.</p>
       <div class="spot-pills"><span class="spot-pill" style="background:rgba(225,29,72,.10);color:var(--icon-rose);border:1px solid rgba(225,29,72,.2)">Optional</span><span class="spot-pill" style="background:rgba(225,29,72,.10);color:var(--icon-rose);border:1px solid rgba(225,29,72,.2)">Private-first</span><span class="spot-pill" style="background:rgba(225,29,72,.10);color:var(--icon-rose);border:1px solid rgba(225,29,72,.2)">No ads</span></div>
     </div>
@@ -1545,17 +1452,16 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <div class="section-inner">
   <div class="section-tag">Simple pricing</div>
   <h2>Buy once.<br>Use Hearty forever.</h2>
-  <p class="lead">A full GLP-1 support system for less than many people spend on one takeaway. No monthly billing. No confusing upgrade ladder.</p>
+  <p class="lead">A full GLP-1 support system at a South African limited launch price. Pay once, use Hearty forever. No monthly billing. No confusing upgrade ladder.</p>
 
   <div class="pricing-wrap">
-    <div class="pricing-card launch-offer">
-      <div class="pricing-badge">Special Launch Price</div>
-      <div class="pricing-name">Hearty Lifetime Access</div>
+    <div class="pricing-card">
+      <div class="pricing-badge">Limited Launch Offer</div>
+      <div class="pricing-name">Hearty App</div>
       <p class="pricing-desc">The full GLP-1 companion system: taste-based meals, home and gym movement, Support Mode, weigh-ins, private photos and symptom tracking.</p>
-      <div class="pricing-amount"><sup>$</sup>29</div>
-      <div class="pricing-per">one-time payment · lifetime access</div>
-      <div class="pricing-highlight">Special launch price. No monthly subscription.</div>
-      <div class="launch-price-note"><strong>$29 special launch price</strong> for lifetime access. One payment. No monthly billing.</div>
+      <div class="pricing-amount"><sup>R</sup>200</div>
+      <div class="pricing-per">once-off payment · lifetime access</div>
+      <div class="pricing-highlight">Limited Launch Offer: R200 once-off. Lifetime access. No monthly subscription.</div>
       <ul class="pricing-list">
         <li>GLP-1 meal planner</li>
         <li>Low-appetite support</li>
@@ -1566,8 +1472,8 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
         <li>Private photo tracking</li>
         <li>Side-effect tracking</li>
       </ul>
-      <div class="price-reassurance"><div>7-day refund</div><div>One payment</div><div>Private by default</div></div>
-      <a href="#" class="btn-pricing" data-paddle-checkout>Claim the $29 special launch price</a>
+      <div class="price-reassurance"><div>Limited launch price</div><div>One payment</div><div>Private by default</div></div>
+      <a href="#" class="btn-pricing" data-payfast-checkout>Get Hearty for R200 forever</a>
       <div class="pricing-trust">Private by default · lifetime access · built for GLP-1 life</div>
     </div>
 
@@ -1600,7 +1506,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     </div>
     <div class="faq-item">
       <div class="faq-q">Does Hearty work for all GLP-1 medications?</div>
-      <div class="faq-a">Yes. Whether you're on Ozempic, Wegovy, Mounjaro, Zepbound, Saxenda or Rybelsus — the principles are the same. Hearty is built around the biology of GLP-1, not a specific brand.</div>
+      <div class="faq-a">Yes. Whether you're on Ozempic, Wegovy, Mounjaro, Zepbound, Saxenda, Rybelsus, RETA/retatrutide or another GLP-1 — the principles are the same. Hearty is built around the biology of GLP-1, not a specific brand.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Is my health data private?</div>
@@ -1618,8 +1524,8 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <section class="cta-section" style="padding-top:56px;padding-bottom:58px;background:linear-gradient(135deg,#0b2442,#123b68)">
 <h2>Start your GLP-1 journey properly.</h2>
 <p>No subscriptions. No noise. Just meals, movement, support and tracking built for the reality of GLP-1 life.</p>
-<a href="#" class="btn-white" data-paddle-checkout>Get the $29 special launch price</a>
-<div class="cta-note">7-day refund · private by default · lifetime access</div>
+<a href="#" class="btn-white" data-payfast-checkout>Get Hearty — R200 forever</a>
+<div class="cta-note">Limited Launch Offer · private by default · lifetime access</div>
 </section>
 
 <!-- FOOTER -->
@@ -1640,163 +1546,64 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 <!-- STICKY BAR (mobile) -->
 <div class="sticky">
 <div class="sticky-inner">
-  <div class="sticky-text"><strong>Hearty — $29 launch price</strong>One payment. Lifetime access</div>
-  <a href="#" class="sticky-btn" data-paddle-checkout>Get Hearty</a>
+  <div class="sticky-text"><strong>Hearty — R200 forever</strong>Limited Launch Offer · lifetime access</div>
+  <a href="#" class="sticky-btn" data-payfast-checkout>Get Hearty</a>
 </div>
 </div>
-
-<!-- Paddle checkout: Hearty special launch offer -->
 <script>
-  // =========================================================
-  // HEARTY PADDLE CHECKOUT CONFIG — LIVE
-  // =========================================================
-  const HEARTY_PADDLE = {
-    environment: "production",
-    clientToken: "live_516a138666d2aaaca6729c439ba",
-    priceId: "pri_01krrpc5hxx3dnak7bxjetm8qp",
-    successUrl: "https://hearty.health/login"
+  // ==============================
+  // HEARTY SOUTH AFRICA PAYFAST CHECKOUT
+  // ==============================
+  // Uses the PayFast Pay Now configuration generated in the PayFast dashboard.
+  // All visible CTA buttons with data-payfast-checkout submit this same checkout.
+
+  const HEARTY_SA_PAYFAST = {
+    receiver: "30731969",
+    amount: "200",
+    itemName: "Hearty Lifetime License",
+    itemDescription: "Hearty Lifetime License",
+    returnUrl: "https://hearty.health/login",
+    cancelUrl: "https://hearty.health/sa"
   };
 
-  // Partnero affiliate tracking. Keeps ?aff= links and Partnero cookies attached
-  // to the Paddle transaction via customData.customer_key.
-  const HEARTY_PARTNERO = {
-    queryParam: "aff",
-    cookieName: "partnero_partner"
-  };
+  function addHiddenField(form, name, value) {
+    if (value === undefined || value === null || value === "") return;
 
-  let heartyPaddleInitialized = false;
-
-  function getCookie(name) {
-    const cookies = document.cookie ? document.cookie.split(";") : [];
-    for (const cookie of cookies) {
-      const [cookieName, ...cookieValueParts] = cookie.trim().split("=");
-      if (cookieName === name) {
-        return decodeURIComponent(cookieValueParts.join("="));
-      }
-    }
-    return null;
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
   }
 
-  function getPartneroCustomerKey() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(HEARTY_PARTNERO.queryParam) || getCookie(HEARTY_PARTNERO.cookieName);
-  }
+  function openHeartySACheckout() {
+    const form = document.createElement("form");
+    form.name = "PayFastPayNowForm";
+    form.method = "post";
+    form.action = "https://payment.payfast.io/eng/process";
+    form.style.display = "none";
 
-  function getPaddleConfigProblems() {
-    const problems = [];
-    const token = HEARTY_PADDLE.clientToken || "";
-    const priceId = HEARTY_PADDLE.priceId || "";
+    addHiddenField(form, "cmd", "_paynow");
+    addHiddenField(form, "receiver", HEARTY_SA_PAYFAST.receiver);
+    addHiddenField(form, "return_url", HEARTY_SA_PAYFAST.returnUrl);
+    addHiddenField(form, "cancel_url", HEARTY_SA_PAYFAST.cancelUrl);
+    addHiddenField(form, "amount", HEARTY_SA_PAYFAST.amount);
+    addHiddenField(form, "item_name", HEARTY_SA_PAYFAST.itemName);
+    addHiddenField(form, "item_description", HEARTY_SA_PAYFAST.itemDescription);
 
-    if (!/^(test|live)_[A-Za-z0-9]+$/.test(token)) {
-      problems.push("Client-side token should start with test_ or live_");
-    }
-
-    if (!/^pri_[A-Za-z0-9]+$/.test(priceId)) {
-      problems.push("Price ID should start with pri_");
-    }
-
-    if (HEARTY_PADDLE.environment === "production" && token.startsWith("test_")) {
-      problems.push("Production mode cannot use a test_ token");
-    }
-
-    if (HEARTY_PADDLE.environment === "sandbox" && token.startsWith("live_")) {
-      problems.push("Sandbox mode should use a test_ token");
-    }
-
-    return problems;
-  }
-
-  function initHeartyPaddle() {
-    if (heartyPaddleInitialized) return true;
-
-    if (!window.Paddle) {
-      console.warn("Paddle.js did not load. Check the Paddle script tag or browser/ad-blocker settings.");
-      return false;
-    }
-
-    const problems = getPaddleConfigProblems();
-    if (problems.length) {
-      console.warn("Paddle configuration problem:", problems.join("; "));
-      return false;
-    }
-
-    try {
-      if (HEARTY_PADDLE.environment === "sandbox") {
-        Paddle.Environment.set("sandbox");
-      }
-
-      Paddle.Initialize({
-        token: HEARTY_PADDLE.clientToken,
-        eventCallback: function (event) {
-          console.log("Paddle event:", event.name, event);
-
-          if (event.name === "checkout.completed") {
-            console.log("Hearty checkout completed. Customer should be redirected to:", HEARTY_PADDLE.successUrl);
-          }
-        }
-      });
-
-      heartyPaddleInitialized = true;
-      console.log("Hearty Paddle checkout ready.");
-      return true;
-    } catch (error) {
-      console.error("Paddle initialization failed:", error);
-      return false;
-    }
-  }
-
-  function openHeartyPaddleCheckout() {
-    if (!initHeartyPaddle()) {
-      alert("Checkout could not initialize. Please refresh and try again.");
-      return;
-    }
-
-    const partneroCustomerKey = getPartneroCustomerKey();
-
-    const checkoutOptions = {
-      items: [
-        {
-          priceId: HEARTY_PADDLE.priceId,
-          quantity: 1
-        }
-      ],
-      settings: {
-        displayMode: "overlay",
-        theme: "light",
-        variant: "multi-page",
-        successUrl: HEARTY_PADDLE.successUrl
-      },
-      customData: {
-        product: "hearty",
-        offer: "special_launch_price_29",
-        source_path: window.location.pathname
-      }
-    };
-
-    if (partneroCustomerKey) {
-      checkoutOptions.customData.customer_key = partneroCustomerKey;
-    }
-
-    try {
-      Paddle.Checkout.open(checkoutOptions);
-    } catch (error) {
-      console.error("Paddle checkout failed:", error);
-      alert("Checkout could not open. Please refresh and try again.");
-    }
+    document.body.appendChild(form);
+    form.submit();
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    const checkoutButtons = document.querySelectorAll("[data-paddle-checkout]");
+    const checkoutButtons = document.querySelectorAll("[data-payfast-checkout]");
 
     checkoutButtons.forEach(function (button) {
       button.addEventListener("click", function (event) {
         event.preventDefault();
-        openHeartyPaddleCheckout();
+        openHeartySACheckout();
       });
     });
-
-    // Warm-initialize Paddle after the page has loaded.
-    initHeartyPaddle();
   });
 </script>
 </body>
