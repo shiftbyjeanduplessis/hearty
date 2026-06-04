@@ -1,381 +1,1386 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="clean_blue">
+
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Hearty — Exercise</title>
-<meta name="theme-color" content="#0057ff" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Hearty" />
-<link rel="manifest" href="/manifest.json" />
-<link rel="apple-touch-icon" href="/icons/hearty-icon-192.png" />
-<script>
-(function(){
-  const VALID = ['clean_blue','sunlit','midnight','rose_aurora'];
-  const DEFAULT = 'clean_blue';
-  function valid(t){ return VALID.includes(t) ? t : DEFAULT; }
-  function readTheme(){
-    try { return valid(localStorage.getItem('heartyTheme') || localStorage.getItem('hearty-theme') || document.documentElement.getAttribute('data-theme') || DEFAULT); }
-    catch(e){ return DEFAULT; }
-  }
-  function applyTheme(t, userSelected){
-    t = valid(t);
-    document.documentElement.setAttribute('data-theme', t);
-    if(document.body) document.body.setAttribute('data-theme', t);
-    try {
-      localStorage.setItem('heartyTheme', t);
-      localStorage.setItem('hearty-theme', t);
-      if(userSelected) localStorage.setItem('heartyThemeUserSelected', 'true');
-    } catch(e) {}
-    try {
-      document.querySelectorAll('[data-theme], [data-theme-choice]').forEach(el => {
-        const choice = el.getAttribute('data-theme') || el.getAttribute('data-theme-choice');
-        if(!VALID.includes(choice)) return;
-        const on = choice === t;
-        el.classList.toggle('active', on);
-        el.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-    } catch(e) {}
-  }
-  window.heartyApplyTheme = t => applyTheme(t, true);
-  window.heartyReadTheme = readTheme;
-  applyTheme(readTheme(), false);
-  document.addEventListener('DOMContentLoaded', () => applyTheme(readTheme(), false));
-  window.addEventListener('storage', e => {
-    if(['heartyTheme','hearty-theme','heartyThemeUserSelected'].includes(e.key)) applyTheme(readTheme(), false);
-  });
-})();
-</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Free 7-Day GLP-1 Meal Plan Generator | Hearty</title>
+  <!-- HEARTY_LEAD_MAGNET_FINAL_2026_05_21_NO_MEDICATION_SELECTION_V2: checkout direct + isolated lead magnet meal engine -->
+<meta content="Generate a free 7-day GLP-1 friendly meal plan with country-aware food wording and simple protein-focused meals." name="description"/>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
-:root,html[data-theme="clean_blue"]{color-scheme:light;--bg-base:#f6f9fe;--bg-1:#eef4fb;--bg-2:#fbfdff;--ink:#132235;--muted:#6f7c8d;--line:rgba(143,163,184,.22);--card:rgba(255,255,255,.94);--surface-top:rgba(255,255,255,.84);--surface-bottom:rgba(255,255,255,.68);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,255,255,.92);--surface-inner:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.94));--shadow:0 18px 44px rgba(14,31,53,.08);--shadow-soft:0 8px 22px rgba(14,31,53,.055);--accent:#2f6df6;--accent-2:#18b8a6;--success:#16a36a;--warning:#d99522;--danger:#ef5d7a;--nav-active-bg:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));--nav-active-ink:#1f4ec0}
-html[data-theme="sunlit"]{color-scheme:light;--bg-base:#fbfaf6;--bg-1:#f5efe3;--bg-2:#fffdf8;--ink:#1f2a2d;--muted:#68766f;--line:rgba(168,150,111,.24);--card:rgba(255,255,255,.93);--surface-top:rgba(255,255,255,.88);--surface-bottom:rgba(255,250,240,.74);--surface-button:rgba(255,255,255,.95);--surface-chip:rgba(255,252,246,.92);--surface-inner:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,250,240,.94));--shadow:0 20px 48px rgba(73,59,31,.095);--shadow-soft:0 9px 24px rgba(73,59,31,.065);--accent:#a66f25;--accent-2:#6f9f7b;--success:#608f6d;--warning:#bd7f22;--danger:#b86577;--nav-active-bg:linear-gradient(180deg,rgba(255,248,236,.98),rgba(255,255,255,.94));--nav-active-ink:#9a6418}
-html[data-theme="midnight"]{color-scheme:dark;--bg-base:#08111c;--bg-1:#0b1522;--bg-2:#111d2c;--ink:#edf4fb;--muted:#a7b6c8;--line:rgba(145,168,200,.18);--card:rgba(16,27,42,.84);--surface-top:rgba(22,34,50,.88);--surface-bottom:rgba(13,24,38,.74);--surface-button:rgba(24,37,55,.92);--surface-chip:rgba(22,34,50,.90);--surface-inner:linear-gradient(180deg,rgba(24,35,50,.94),rgba(15,23,36,.90));--shadow:0 24px 58px rgba(1,7,18,.46);--shadow-soft:0 12px 30px rgba(1,7,18,.34);--accent:#8fb2ff;--accent-2:#46d5c5;--success:#53d69a;--warning:#d7ad5c;--danger:#e49ab0;--nav-active-bg:linear-gradient(180deg,rgba(42,58,84,.96),rgba(21,30,43,.94));--nav-active-ink:#b8c9ff}
-html[data-theme="rose_aurora"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d18;--bg-2:#201322;--ink:#fbf2f7;--muted:#c4aebb;--line:rgba(211,158,184,.18);--card:rgba(28,18,32,.85);--surface-top:rgba(37,24,43,.90);--surface-bottom:rgba(24,16,30,.76);--surface-button:rgba(42,29,48,.92);--surface-chip:rgba(40,27,46,.92);--surface-inner:linear-gradient(180deg,rgba(34,24,40,.94),rgba(22,16,28,.90));--shadow:0 26px 64px rgba(7,2,10,.52);--shadow-soft:0 12px 32px rgba(7,2,10,.36);--accent:#d0a66d;--accent-2:#d989a9;--success:#c9b07a;--warning:#d0a66d;--danger:#d989a9;--nav-active-bg:linear-gradient(180deg,rgba(55,38,60,.96),rgba(34,24,40,.94));--nav-active-ink:#e3b97d}
-*{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100%}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(1200px 500px at 0% -10%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 50%),radial-gradient(1000px 450px at 100% 0%,color-mix(in srgb,var(--accent-2) 9%,transparent),transparent 45%),linear-gradient(180deg,var(--bg-2),var(--bg-1));overflow-x:hidden}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:88px;margin-bottom:18px;padding:0 18px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow-soft)}.brand{display:flex;align-items:center;gap:8px;min-width:0;padding-left:8px}.brand-logo{display:block;height:48px;width:auto;object-fit:contain;object-position:left center;max-width:min(72vw,300px)}.icon-btn{width:44px;height:44px;border-radius:16px;border:1px solid var(--line);background:var(--surface-button);display:grid;place-items:center;box-shadow:var(--shadow-soft);color:var(--muted);text-decoration:none;cursor:pointer}.icon-btn svg,.nav-item svg,.wo-close svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.status-strip{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:4px 0 20px;padding:24px;border-radius:28px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}.eyebrow,.section-label{font-size:.74rem;font-weight:800;letter-spacing:.17em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}.headline{margin:0;font-size:clamp(1.72rem,3vw,2.5rem);line-height:1.04;letter-spacing:-.045em;font-weight:760;color:var(--ink)}.subline{margin:10px 0 0;max-width:56rem;color:var(--muted);font-size:1rem;line-height:1.55;font-weight:500}.stack{display:grid;gap:16px}.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden}.hero{padding:24px;background:var(--card)}.hero-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}.hero-title{font-size:1.45rem;letter-spacing:-.03em;line-height:1.02;margin:0 0 8px;font-weight:800;color:var(--ink)}p,.compact-copy{color:var(--muted);font-size:.95rem;line-height:1.45}.pill-row,.status-mini-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.soft-pill,.status-mini-pill,.weight-pill,.ladder-tag,.set-pill{padding:8px 11px;border-radius:999px;background:var(--surface-chip);border:1px solid var(--line);color:var(--ink);font-size:.8rem;font-weight:800;box-shadow:var(--shadow-soft)}.status-mini-pill.support{background:color-mix(in srgb,var(--warning) 16%,var(--surface-chip));color:var(--warning)}.status-mini-pill.walk{background:color-mix(in srgb,var(--success) 14%,var(--surface-chip));color:var(--success)}.location-toggle{display:inline-flex;border-radius:999px;background:color-mix(in srgb,var(--muted) 10%,transparent);border:1px solid var(--line);overflow:hidden}.loc-btn{min-width:104px;padding:9px 16px;border:none;background:transparent;color:var(--muted);font-size:.86rem;font-weight:800;cursor:pointer;border-radius:999px}.loc-btn.active{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff}.start-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 0 6px}.start-btn{width:168px;height:168px;border:none;border-radius:50%;cursor:pointer;color:#fff;background:linear-gradient(135deg,#ff8a3d 0%,#ff4f7a 38%,#8b5cf6 70%,var(--accent) 100%);box-shadow:0 24px 58px rgba(120,90,220,.28),0 12px 26px rgba(255,95,120,.20),0 0 0 10px rgba(255,255,255,.32),inset 0 1px 0 rgba(255,255,255,.30);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:900;letter-spacing:.06em;transition:transform .18s ease}.start-btn:hover{transform:translateY(-2px)}.start-btn.disabled{background:linear-gradient(145deg,#9aaccc,#bccae3);box-shadow:none;cursor:not-allowed}.start-btn svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.start-hint,.last-session-inline{font-size:.87rem;color:var(--muted);text-align:center;font-weight:700}.mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.compact-title{font-size:1.04rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}.count-big{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;margin-top:2px}.week-dots{display:flex;gap:10px;margin-top:12px}.week-dot{width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,var(--muted) 10%,transparent);border:2px solid var(--line);display:flex;align-items:center;justify-content:center}.week-dot.done{background:linear-gradient(145deg,var(--success),color-mix(in srgb,var(--success) 75%,white));border-color:var(--success)}.week-dot.done svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.indicator{display:flex;align-items:flex-start;gap:12px}.led{width:12px;height:12px;border-radius:50%;background:color-mix(in srgb,var(--muted) 35%,transparent);box-shadow:0 0 0 5px color-mix(in srgb,var(--muted) 12%,transparent);margin-top:5px;flex:0 0 auto}.led.on.warning{background:var(--warning);box-shadow:0 0 0 5px color-mix(in srgb,var(--warning) 16%,transparent),0 0 18px color-mix(in srgb,var(--warning) 38%,transparent)}.led.on.success{background:var(--success);box-shadow:0 0 0 5px color-mix(in srgb,var(--success) 14%,transparent),0 0 18px color-mix(in srgb,var(--success) 34%,transparent)}.support-card.active{background:linear-gradient(180deg,color-mix(in srgb,var(--warning) 16%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--warning) 30%,var(--line))}.walk-complete-card.complete{background:linear-gradient(180deg,color-mix(in srgb,var(--success) 14%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--success) 28%,var(--line))}.ladder-card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;background:none;border:none;width:100%;padding:0;text-align:left;color:inherit}.ladder-toggle-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);transition:transform .2s ease}.ladder-toggle-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ladder-card.collapsed .ladder-toggle-icon{transform:rotate(-180deg)}.ladder-body{margin-top:14px}.ladder-body[hidden]{display:none}.ladder-row{padding:14px;border-radius:20px;border:1px solid var(--line);background:var(--surface-inner)}.ladder-row+.ladder-row{margin-top:10px}.ladder-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}.ladder-name{font-size:.96rem;font-weight:800}.steps{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.step{padding:8px 10px;border-radius:999px;background:color-mix(in srgb,var(--muted) 8%,transparent);color:var(--muted);font-size:.79rem;font-weight:800;border:1px solid var(--line)}.step.current{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}.step.done{background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success)}.arrow{color:var(--muted);font-size:.9rem;font-weight:900}.ladder-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}.meta-note{font-size:.84rem;color:var(--muted)}.ladder-row-v2{display:grid;gap:12px}.ladder-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ladder-current{font-size:1.04rem;font-weight:900;letter-spacing:-.03em;color:var(--ink);margin-top:3px}.ladder-detail-pill{flex:0 0 auto;padding:8px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line));color:var(--accent);font-size:.76rem;font-weight:900;white-space:nowrap}.ladder-next-box{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:18px;background:color-mix(in srgb,var(--muted) 6%,transparent);border:1px solid var(--line)}.ladder-small-label{font-size:.64rem;font-weight:900;letter-spacing:.14em;color:var(--muted);margin-bottom:3px}.ladder-next-name{font-size:.9rem;font-weight:900;color:var(--ink);line-height:1.2}.ladder-percent{font-size:.82rem;font-weight:900;color:var(--accent);padding:7px 9px;border-radius:999px;background:var(--surface-chip);border:1px solid var(--line)}.ladder-rail{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;align-items:center}.ladder-mini-step{height:8px;border-radius:999px;background:color-mix(in srgb,var(--muted) 12%,transparent);border:1px solid var(--line)}.ladder-mini-step.done{background:color-mix(in srgb,var(--success) 48%,transparent);border-color:color-mix(in srgb,var(--success) 42%,var(--line))}.ladder-mini-step.current{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%,var(--accent-2)));border-color:transparent;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent)}.ladder-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;color:var(--muted);font-size:.72rem;font-weight:800}.ladder-bottom span:nth-child(2){text-align:center;color:var(--ink)}.ladder-bottom span:nth-child(3){text-align:right}.bottom-nav{margin-top:18px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;padding:8px;border-radius:24px;background:color-mix(in srgb,var(--surface-chip) 78%,transparent);border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;bottom:12px;z-index:40}.nav-item{display:grid;gap:4px;justify-items:center;align-items:center;align-content:center;min-height:54px;padding:9px 4px 7px;border-radius:16px;color:var(--muted);text-align:center;font-size:.72rem;font-weight:700;text-decoration:none}.nav-item.active,.nav-item[aria-current="page"]{color:var(--nav-active-ink);background:var(--nav-active-bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 16px color-mix(in srgb,var(--accent) 12%,transparent)}#workoutOverlay[hidden],#recoveryOverlay[hidden]{display:none!important}#workoutOverlay,#recoveryOverlay{position:fixed;inset:0;z-index:100;background:linear-gradient(180deg,var(--bg-2),var(--bg-1));overflow-y:auto}.wo-shell{max-width:520px;margin:0 auto;padding:20px 16px 36px}.wo-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface-top);border-radius:22px;border:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:var(--shadow-soft);margin-bottom:14px}.wo-close{width:40px;height:40px;border-radius:14px;border:1px solid var(--line);background:var(--surface-button);display:grid;place-items:center;cursor:pointer;color:var(--muted)}.wo-title{text-align:center}.wo-session-title{font-size:.72rem;font-weight:800;letter-spacing:.15em;color:var(--muted)}.wo-ex-progress{font-size:.88rem;font-weight:800;color:var(--ink)}.ex-card,.complete-card,.walk-box{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:22px;backdrop-filter:blur(10px)}.ex-movement{font-size:.72rem;font-weight:800;letter-spacing:.18em;color:var(--accent);margin-bottom:6px}.ex-name{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin-bottom:12px}.overlay-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 16%,var(--surface-chip));color:var(--warning);font-size:.78rem;font-weight:800;margin-bottom:12px;border:1px solid color-mix(in srgb,var(--warning) 24%,var(--line))}.ex-image{width:100%;min-height:220px;border-radius:18px;background:var(--surface-inner);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:16px;overflow:hidden}.ex-image img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;border-radius:16px}.image-fallback{padding:20px;text-align:center;color:var(--muted);font-size:.86rem;font-weight:800}.ex-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.ex-meta-item{background:var(--surface-inner);border:1px solid var(--line);border-radius:15px;padding:10px 12px}.ex-meta-label{font-size:.68rem;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:3px}.ex-meta-val{font-size:.98rem;font-weight:800;color:var(--ink)}.set-dots{display:flex;gap:8px;justify-content:center;margin-bottom:14px}.set-dot{width:12px;height:12px;border-radius:50%;background:color-mix(in srgb,var(--muted) 12%,transparent);border:2px solid var(--line)}.set-dot.done{background:var(--success);border-color:var(--success)}.set-dot.active{background:color-mix(in srgb,var(--accent) 26%,transparent);border-color:var(--accent);transform:scale(1.12)}.technique{border-top:1px solid var(--line);padding-top:14px}.technique-title{font-size:.9rem;font-weight:900;color:var(--ink);margin-bottom:10px}.technique-body{display:grid;gap:8px}.technique-bullet{font-size:.9rem;line-height:1.42;color:var(--muted);display:flex;gap:8px}.technique-bullet::before{content:"·";color:var(--accent);font-size:1.15rem;line-height:1}.action-area{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 0 8px}.action-btn{width:100%;max-width:340px;min-height:58px;border-radius:18px;font-size:1rem;font-weight:900;letter-spacing:.04em;cursor:pointer;border:1px solid var(--line);background:var(--surface-button);color:var(--ink);box-shadow:var(--shadow-soft)}.action-btn.primary{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent;box-shadow:0 14px 28px color-mix(in srgb,var(--accent) 22%,transparent)}.rep-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:360px}.rep-extra{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:360px;margin-top:8px}.rep-btn{height:56px;border-radius:14px;border:1px solid var(--line);background:var(--surface-button);color:var(--ink);font-size:1.08rem;font-weight:900;cursor:pointer;box-shadow:var(--shadow-soft)}.rep-btn.selected{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}.rest-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}.rest-count{font-size:3rem;font-weight:900;color:var(--ink);letter-spacing:-.06em}.rest-box{width:190px;height:190px;border-radius:50%;background:var(--surface-button);border:1px solid var(--line);box-shadow:var(--shadow-soft);display:grid;place-items:center}.rest-flash{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:.04em;display:none}.complete-card{text-align:center}.complete-check{width:66px;height:66px;border-radius:50%;background:color-mix(in srgb,var(--success) 14%,transparent);display:grid;place-items:center;margin:0 auto 14px;border:2px solid color-mix(in srgb,var(--success) 24%,transparent)}.complete-check svg{width:28px;height:28px;stroke:var(--success);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.sets-result{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.progress-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:color-mix(in srgb,var(--success) 12%,transparent);border:1px solid color-mix(in srgb,var(--success) 18%,transparent);border-radius:14px;margin-top:12px;color:var(--success);font-size:.82rem;font-weight:800}.wo-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.wo-stat{background:var(--surface-inner);border:1px solid var(--line);border-radius:16px;padding:14px 10px}.wo-stat-val{font-size:1.4rem;font-weight:900;color:var(--ink);letter-spacing:-.03em}.wo-stat-label{font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--muted);margin-top:2px}.wo-mv-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:.9rem}.wo-mv-row:not(:last-child){border-bottom:1px solid var(--line)}.wo-mv-name{font-weight:800}.wo-mv-tag{font-size:.78rem;font-weight:900;padding:4px 10px;border-radius:999px}.wo-mv-tag.up{background:color-mix(in srgb,var(--success) 12%,transparent);color:var(--success)}.wo-mv-tag.hold{background:color-mix(in srgb,var(--muted) 8%,transparent);color:var(--muted)}.exit-overlay{display:none;position:fixed;inset:0;z-index:120;background:rgba(10,22,40,.5);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}.exit-overlay.active{display:flex}.exit-box{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;max-width:340px;width:100%;box-shadow:0 32px 72px rgba(10,22,40,.22);text-align:center}.walk-title{font-size:1.36rem;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}.walk-copy{font-size:.9rem;color:var(--muted);margin-bottom:16px}.walk-timer{font-size:3rem;font-weight:900;letter-spacing:-.06em;color:var(--ink);line-height:1;margin-bottom:6px}.walk-sub{font-size:.86rem;color:var(--muted);margin-bottom:18px}.recovery-list{display:grid;gap:10px}.recovery-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface-inner)}.recovery-name{font-size:.92rem;font-weight:900}.recovery-sub{font-size:.82rem;color:var(--muted);margin-top:3px}.recovery-btn{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-button);color:var(--accent);font-size:.78rem;font-weight:900;cursor:pointer;white-space:nowrap}.recovery-btn.primary{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}@media(max-width:900px){.mini-grid{grid-template-columns:1fr}}@media(max-width:760px){.shell{padding:14px 14px 104px}.topbar{min-height:78px;padding:0 14px;border-radius:20px}.brand-logo{height:40px}.status-strip{padding:18px;border-radius:22px;flex-direction:column}.hero{padding:18px;border-radius:22px}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.nav-item svg{width:18px;height:18px}.ex-meta{grid-template-columns:1fr 1fr}.ex-meta-item:last-child{grid-column:1/-1}.start-btn{width:148px;height:148px}.rep-grid{grid-template-columns:repeat(4,1fr)}}
-
-.support-status-controls{align-items:center}
-.support-top-action{
-  min-height:36px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 13px;
-  border-radius:999px;
-  border:1px solid rgba(47,109,246,.16);
-  background:linear-gradient(180deg,#3f82ff,#1550b3);
-  color:#fff;
-  font-size:.78rem;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:0 10px 22px rgba(21,80,179,.16);
-  white-space:nowrap;
-}
-.support-top-action.off{
-  background:#fff;
-  color:#5f7084;
-  border-color:rgba(143,163,184,.24);
-  box-shadow:var(--shadow-soft);
-}
-.status-mini-pill.support{
-  border-color:rgba(245,158,11,.28);
-  background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96));
-  color:#a15c00;
-}
-.support-card{display:none!important}
-
-
-.exercise-guide-btn{
-  min-height:36px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 13px;
-  border-radius:999px;
-  border:1px solid rgba(47,109,246,.16);
-  background:var(--surface-button);
-  color:var(--accent);
-  font-size:.78rem;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:var(--shadow-soft);
-  white-space:nowrap;
-  cursor:pointer;
-}
-.exercise-guide-modal[hidden]{display:none!important}
-.exercise-guide-modal{
-  position:fixed;
-  inset:0;
-  z-index:130;
-  display:grid;
-  place-items:center;
-  padding:18px;
-  background:rgba(12,24,40,.46);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-.exercise-guide-panel{
-  width:min(680px,100%);
-  max-height:min(82vh,760px);
-  overflow:auto;
-  border-radius:28px;
-  border:1px solid var(--line);
-  background:var(--card);
-  box-shadow:0 28px 72px rgba(14,31,53,.22);
-  padding:22px;
-}
-.exercise-guide-head{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  align-items:flex-start;
-  margin-bottom:14px;
-}
-.exercise-guide-title{
-  margin:0;
-  font-size:1.35rem;
-  line-height:1.05;
-  letter-spacing:-.035em;
-  color:var(--ink);
-}
-.exercise-guide-close{
-  width:40px;
-  height:40px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:var(--surface-button);
-  color:var(--muted);
-  font-size:1.45rem;
-  line-height:1;
-  cursor:pointer;
-  box-shadow:var(--shadow-soft);
-}
-.exercise-guide-section{
-  padding:13px 0;
-  border-top:1px solid var(--line);
-}
-.exercise-guide-section:first-of-type{border-top:none}
-.exercise-guide-section h3{
-  margin:0 0 6px;
-  font-size:.96rem;
-  letter-spacing:-.015em;
-  color:var(--ink);
-}
-.exercise-guide-section p,
-.exercise-guide-section li{
-  margin:0;
-  color:var(--muted);
-  font-size:.9rem;
-  line-height:1.5;
-}
-.exercise-guide-section ul{
-  margin:7px 0 0;
-  padding-left:18px;
-  display:grid;
-  gap:4px;
-}
-
-</style>
-
-<!-- Shared Hearty theme system -->
-<link rel="stylesheet" href="/css/hearty-theme.css">
-<script src="/js/hearty-theme.js"></script>
-
-<style id="exercise-topbar-logo-lock">
-/* Exercise page topbar/logo lock — prevents page edits or shared CSS from distorting the frozen header */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:88px;margin-bottom:18px;padding:0 18px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow-soft)}
-.brand{display:flex;align-items:center;gap:8px;min-width:0;padding-left:8px}
-.brand-logo{display:block!important;height:48px!important;width:auto!important;max-width:min(72vw,300px)!important;object-fit:contain!important;object-position:left center!important}
-@media(max-width:760px){.topbar{min-height:78px;padding:0 14px;border-radius:20px}.brand-logo{height:40px!important}}
-</style>
-<script id="exercise-logo-src-lock">
-(function(){
-  function fixLogo(){
-    var img=document.querySelector('.topbar .brand-logo');
-    if(!img) return;
-    if(!img.getAttribute('src') || img.getAttribute('src') === 'hearty-logo.png') img.setAttribute('src','/hearty-logo.png');
-    img.setAttribute('data-default-logo','/hearty-logo.png');
-    img.setAttribute('data-rose-aurora-logo','/hearty-logo-gold.png');
-  }
-  fixLogo();
-  document.addEventListener('DOMContentLoaded', fixLogo);
-})();
-</script>
-
-<style id="hearty-page-selector-safe-lock">
-/* Safe local page selector lock — no shared JS, no nav rebuild. */
-.bottom-nav .nav-item svg,
-#bottomNav .nav-item svg{
-  width:20px!important;
-  height:20px!important;
-  max-width:22px!important;
-  max-height:22px!important;
-  display:block!important;
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  overflow:visible!important;
-}
-.bottom-nav .nav-item svg *,
-#bottomNav .nav-item svg *{
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  vector-effect:non-scaling-stroke!important;
-}
-.bottom-nav .nav-item,
-#bottomNav .nav-item{
-  overflow:hidden!important;
-}
-</style>
-
-</head>
-<body data-page="exercise">
-<div class="shell">
-  <header class="topbar">
-    <div class="brand"><img data-default-logo="/hearty-logo.png" data-rose-aurora-logo="/hearty-logo-gold.png" class="brand-logo" src="hearty-logo.png" alt="Hearty logo" / loading="lazy" decoding="async"></div>
-    <a class="icon-btn" href="settings.html" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg></a>
-  </header>
-  <section class="status-strip" aria-label="Page intro"><div><div class="eyebrow">EXERCISE</div><h1 class="headline">Training</h1><div class="subline">Choose home or gym and start the right session for today.</div></div></section>
-  <main class="stack">
-    <section class="card hero">
-      <div class="hero-top"><div><div class="section-label">STRENGTH</div><h2 class="hero-title">Start your session</h2><p>One clear starting point. Choose home or gym, then get straight into your session.</p><div class="pill-row support-status-controls"><div class="soft-pill" id="heroModePill">Home workout</div><div class="soft-pill" id="heroSessionsPill">0 of 3 this week</div><button class="exercise-guide-btn" id="openExerciseGuideBtn" type="button">How Exercise Works</button><div class="status-mini-pill support" id="heroSupportMiniPill" hidden>Support active</div><a class="support-top-action" id="exerciseSupportAction" href="support.html">I need support</a><button class="support-top-action off" id="exerciseSupportOff" type="button" hidden>Support Off</button></div></div><div class="location-toggle" aria-label="Workout location"><button class="loc-btn active" id="locHome" type="button">Home</button><button class="loc-btn" id="locGym" type="button">Gym</button></div></div>
-      <div class="start-wrap"><button class="start-btn" id="startBtn" type="button"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 5 7 7-7 7"></path></svg><span id="startBtnLabel">START</span></button><div class="start-hint" id="startHint">Tap start when you're ready.</div><div class="last-session-inline" id="lastSessionInline">Last session: —</div></div>
-    </section>
-    <section class="mini-grid">
-      <section class="card"><div class="section-label">WEEKLY PROGRESS</div><div class="compact-title">Keep the rhythm.</div><div class="count-big" id="weekLabel">0 of 3</div><div class="compact-copy" id="weekSub">Your first session is ready.</div><div class="week-dots"><div class="week-dot" id="wd0"></div><div class="week-dot" id="wd1"></div><div class="week-dot" id="wd2"></div></div></section>
-      <section class="card"><div class="section-label">TOTAL WORKOUTS</div><div class="compact-title">All strength sessions.</div><div class="count-big" id="totalWorkoutLabel">0</div><div class="compact-copy" id="totalWorkoutSub">No workouts completed yet.</div></section>
-      <section class="card"><div class="section-label">3-WEEK STREAK</div><div class="compact-title">Three workouts per week.</div><div class="count-big" id="streakLabel">0 weeks</div><div class="compact-copy" id="streakSub">Complete 3 workouts this week to start the streak.</div><div class="week-dots"><div class="week-dot" id="sd0"></div><div class="week-dot" id="sd1"></div><div class="week-dot" id="sd2"></div></div></section>
-      <section class="card support-card" id="supportCard"><div class="section-label">SUPPORT MODE</div><div class="indicator"><div class="led warning" id="supportLed"></div><div><div class="compact-title" id="supportTitle">Support mode off</div><div class="compact-copy" id="supportCopy">No automatic exercise changes are active right now.</div></div></div></section>
-    </section>
-    <section class="card ladder-card collapsed" id="ladderCard"><button class="ladder-card-head" id="ladderToggleBtn" type="button" aria-expanded="false" aria-controls="ladderBody"><div><div class="section-label">PROGRESSION LADDER</div><div class="compact-title" style="margin-bottom:4px">See exactly where you are.</div><div class="compact-copy">A cleaner mobile view of your current step, next step, and overall ladder position.</div></div><div class="ladder-toggle-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div></button><div class="ladder-body" id="ladderBody" hidden><div id="ladderRows"></div></div></section>
-  </main>
-  <nav class="bottom-nav" aria-label="Page selector" id="bottomNav"></nav>
-</div>
-
-<section class="exercise-guide-modal" id="exerciseGuideModal" hidden aria-hidden="true">
-  <div class="exercise-guide-panel" role="dialog" aria-modal="true" aria-labelledby="exerciseGuideTitle">
-    <div class="exercise-guide-head">
-      <div>
-        <div class="section-label">EXERCISE GUIDE</div>
-        <h2 class="exercise-guide-title" id="exerciseGuideTitle">How Exercise Works</h2>
-        <p class="compact-copy">Exercise in Hearty is built to protect strength, keep progression simple, and reduce pressure on hard GLP-1 days.</p>
-      </div>
-      <button class="exercise-guide-close" id="closeExerciseGuideBtn" type="button" aria-label="Close">×</button>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>Why strength matters</h3>
-      <p>During weight loss, the goal is not only to lose weight. The goal is to protect muscle, strength, and daily function as much as possible.</p>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>How often to train</h3>
-      <p>Aim for three strength sessions per week. The app tracks your weekly rhythm and your three-workout streak.</p>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>Home or gym</h3>
-      <p>Choose Home or Gym before starting. Home uses bodyweight and band progressions. Gym uses machine-based progressions.</p>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>How progression works</h3>
-      <ul>
-        <li>Complete your sets with control.</li>
-        <li>When you hit the top of the rep range often enough, Hearty moves you toward the next step.</li>
-        <li>The progression ladder shows your current step and the next step.</li>
-      </ul>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>What counts as a workout</h3>
-      <p>A workout counts when you complete the strength session and tap Finish. Daily walking or general movement is handled separately from strength workouts.</p>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>Support Mode</h3>
-      <p>Support Mode is for harder GLP-1 days. When it is active, exercise difficulty is reduced by about 25%. It helps you keep the rhythm without forcing a full-intensity session.</p>
-    </div>
-
-    <div class="exercise-guide-section">
-      <h3>Low-energy days</h3>
-      <p>If energy is low, use Support Mode, choose the easier version, move slowly, and stop if you feel unwell. The goal is consistency, not punishment.</p>
-    </div>
-  </div>
-</section>
-
-<div id="workoutOverlay" hidden><div class="wo-shell"><div class="wo-header"><button class="wo-close" id="closeWorkoutBtn" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><div class="wo-title"><div class="wo-session-title">STRENGTH SESSION</div><div class="wo-ex-progress" id="woProgress">Exercise 1 of 5</div></div><div style="width:40px"></div></div><div id="screenActive"><div class="ex-card"><div class="ex-movement" id="exMovement">LOWER BODY</div><div class="ex-name" id="exName">Assisted Sit-to-Stand</div><div class="overlay-badge" id="overlaySupportBadge" hidden>Support mode activated — exercise reduced by 25%</div><div class="ex-image" id="exImage"></div><div class="ex-meta"><div class="ex-meta-item"><div class="ex-meta-label">TARGET</div><div class="ex-meta-val" id="exTarget">8–12 reps</div></div><div class="ex-meta-item"><div class="ex-meta-label">WEIGHT</div><div class="ex-meta-val" id="exWeight">Bodyweight</div></div><div class="ex-meta-item"><div class="ex-meta-label">SET</div><div class="ex-meta-val" id="exSetOf">1 of 3</div></div></div><div class="set-dots" id="setDots"></div><div class="technique"><div class="technique-title">How to do it</div><div class="technique-body" id="techniqueBullets"></div></div></div><div class="action-area"><button class="action-btn primary" id="setActionBtn" type="button">START SET</button></div></div><div id="screenReps" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:16px"><div class="section-label">HOW MANY REPS DID YOU COMPLETE?</div><div style="font-size:.88rem;color:var(--muted)" id="repSetLabel">Set 1 of 3</div></div><div style="display:flex;flex-direction:column;align-items:center"><div class="rep-grid" id="repGrid"></div><div class="rep-extra" id="repExtra"></div></div></div><div class="action-area" id="repConfirmArea" style="display:none"><button class="action-btn primary" id="confirmSetBtn" type="button">CONFIRM SET</button></div></div><div id="screenRest" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:12px"><div class="section-label">REST</div><div style="font-size:.88rem;color:var(--muted)" id="restNextLabel">Set 2 starts soon</div></div><div class="rest-wrap"><div class="rest-box"><div><div class="rest-count" id="restCount">75</div><div style="font-size:.72rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-align:center">SECONDS</div></div></div><div class="rest-flash" id="restFlash">Ready — let's go!</div></div></div><div class="action-area"><button class="action-btn primary" id="nextSetBtn" type="button">START NEXT SET</button></div></div><div id="screenExComplete" style="display:none"><div class="complete-card"><div class="complete-check"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div style="font-size:1.32rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px" id="exCompleteTitle">EXERCISE COMPLETE</div><div style="font-size:.86rem;color:var(--muted);margin-bottom:12px" id="exCompleteSub">Sets logged</div><div class="sets-result" id="setsResult"></div><div id="progressReadyBadge" style="display:none" class="progress-badge">Progress building — ready to advance next session</div></div><div class="action-area"><button class="action-btn primary" id="nextExerciseBtn" type="button">NEXT EXERCISE →</button></div></div><div id="screenWoComplete" style="display:none"><div class="complete-card"><div style="font-size:2.4rem;margin-bottom:10px;color:var(--success)">✓</div><div style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">WORKOUT COMPLETE</div><div style="font-size:.86rem;color:var(--muted);margin-bottom:4px">Consistency builds strength.</div><div class="wo-stat-row"><div class="wo-stat"><div class="wo-stat-val" id="wStatEx">5</div><div class="wo-stat-label">EXERCISES</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatSets">15</div><div class="wo-stat-label">SETS</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatTime">—</div><div class="wo-stat-label">MINUTES</div></div></div><div id="mvFeedbackRows"></div></div><div class="action-area"><button class="action-btn primary" id="finishWorkoutBtn" type="button">FINISH</button></div></div></div></div>
-<div class="exit-overlay" id="exitOverlay"><div class="exit-box"><div style="font-size:1.1rem;font-weight:900;margin-bottom:6px">Exit workout?</div><div style="font-size:.88rem;color:var(--muted);line-height:1.5">Your in-progress session will be discarded.</div><div class="action-area"><button class="action-btn primary" id="continueWorkoutBtn" type="button">CONTINUE WORKOUT</button><button class="action-btn" id="exitWorkoutBtn" type="button">EXIT SESSION</button></div></div></div>
-<script>
-const NAV_PAGES=[['home.html','Home','<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'],['meals.html','Meals','<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8h-4.5"></path>'],['exercise.html','Exercise','<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>'],['progress.html','Progress','<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>'],['support.html','Support','<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>'],['social.html','Social','<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'],['settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']];
-const MOVEMENTS={squat:{title:'Lower Body',homeChain:['Assisted Sit-to-Stand','Sit-to-Stand','Chair Squat Hover','Bodyweight Squat'],gymChain:['Leg Press'],homeImages:['images/exercises/home/squat/sit_to_stand_assisted.webp','images/exercises/home/squat/sit_to_stand.webp','images/exercises/home/squat/chair_squat_hover.webp','images/exercises/home/squat/bodyweight_squat.webp'],gymImages:['images/exercises/gym/leg_press.webp'],tips:{'Assisted Sit-to-Stand':['Sit on a stable chair with feet flat.','Use your hands lightly for support.','Stand up slowly, then sit down with control.'],'Sit-to-Stand':['Sit tall with feet flat.','Lean slightly forward.','Stand without using your hands, then lower slowly.'],'Chair Squat Hover':['Stand in front of the chair.','Push hips back and hover just above the chair.','Stand back up without sitting fully.'],'Bodyweight Squat':['Stand tall with feet comfortable.','Push hips back and bend knees naturally.','Lower to a controlled depth, then stand smoothly.'],'Leg Press':['Set your back firmly against the pad.','Place both feet flat on the platform.','Push without locking your knees, then return slowly.']}},push:{title:'Upper Body Push',homeChain:['Wall Push-Up — Close','Wall Push-Up — Medium','Wall Push-Up — Far','Incline Push-Up — High','Incline Push-Up — Low','Floor Push-Up'],gymChain:['Chest Press Machine'],homeImages:['images/exercises/home/push/wall_pushup_close.webp','images/exercises/home/push/wall_pushup_medium.webp','images/exercises/home/push/wall_pushup_far.webp','images/exercises/home/push/incline_pushup_high.webp','images/exercises/home/push/incline_pushup_low.webp','images/exercises/home/push/floor_pushup.webp'],gymImages:['images/exercises/gym/chest_press.webp'],tips:{'Wall Push-Up — Close':['Stand close to the wall with hands at chest height.','Keep your body long from shoulders to heels.','Bend elbows slightly, then press back to standing tall.'],'Wall Push-Up — Medium':['Step a little further from the wall.','Keep ribs down and shoulders relaxed.','Lower toward the wall with control, then press back.'],'Wall Push-Up — Far':['Stand further from the wall so the body angle is harder.','Keep the body straight.','Lower slowly, then press back without shrugging.'],'Incline Push-Up — High':['Place hands on a sturdy high surface.','Keep shoulders-to-heels in a straight line.','Lower with control, then press back up.'],'Incline Push-Up — Low':['Place hands on a lower sturdy surface.','Keep hips from sagging.','Lower and press back up smoothly.'],'Floor Push-Up':['Start in a straight plank position.','Lower with control.','Press back up without letting hips sag.'],'Chest Press Machine':['Sit tall with back supported.','Hold handles close to chest with shoulders relaxed.','Press forward without locking elbows, then return slowly.']}},pull:{title:'Upper Body Pull',homeChain:['Band Row — Close Stance','Band Row — Step Back','Band Row — Further Back','Band Row — 1-Second Pause'],gymChain:['Seated Row'],homeImages:['images/exercises/home/pull/band_row_level1.webp','images/exercises/home/pull/band_row_level2.webp','images/exercises/home/pull/band_row_level3.webp','images/exercises/home/pull/band_row_level4.webp'],gymImages:['images/exercises/gym/seated_row.webp'],tips:{'Band Row — Close Stance':['Attach the band securely to a door handle.','Stand close enough that the tension feels light.','Pull elbows back toward your sides, then return slowly.'],'Band Row — Step Back':['Attach the band securely to a door handle.','Take a small step back to increase tension.','Pull to the ribs and control the return.'],'Band Row — Further Back':['Step further back until the band feels moderately challenging.','Keep chest open and shoulders relaxed.','Pull elbows back, pause briefly, and return slowly.'],'Band Row — 1-Second Pause':['Use a strong but controlled band position.','Pull elbows back and pause for one second.','Return slowly without letting the band snap forward.'],'Seated Row':['Sit tall with feet braced.','Start with arms extended and shoulders relaxed.','Pull handles toward lower chest or upper stomach, then return slowly.']}},hinge:{title:'Hinge / Posterior Chain',homeChain:['Glute Bridge','Long Lever Glute Bridge','Bridge March'],gymChain:['Lat Pulldown'],homeImages:['images/exercises/home/hinge/glute_bridge.webp','images/exercises/home/hinge/long_lever_bridge.webp','images/exercises/home/hinge/bridge_march.webp'],gymImages:['images/exercises/gym/lat_pulldown.webp'],tips:{'Glute Bridge':['Lie on your back with knees bent and feet flat.','Press through heels and lift hips smoothly.','Lower back down with control.'],'Long Lever Glute Bridge':['Lie on your back with feet further from your body.','Lift hips while keeping ribs controlled.','Lower slowly without over-arching.'],'Bridge March':['Lift into a bridge with hips level.','Raise one bent knee slightly toward your chest.','Place it down and alternate sides with control.'],'Lat Pulldown':['Sit under the bar and hold it wide.','Keep chest lifted with a slight natural lean back.','Pull the bar to upper chest, then return slowly overhead.']}},core:{title:'Core / Shoulder Press',homeChain:['Seated Core Brace','Incline Plank','Floor Plank'],gymChain:['Shoulder Press Machine'],homeImages:['images/exercises/home/core/core_brace.webp','images/exercises/home/core/incline_plank.webp','images/exercises/home/core/plank.webp'],gymImages:['images/exercises/gym/shoulder_press.webp'],tips:{'Seated Core Brace':['Sit tall with feet flat and shoulders relaxed.','Gently tighten your midsection as if preparing for a cough.','Breathe normally and hold the brace without straining.'],'Incline Plank':['Place hands on a bench or sturdy surface.','Step feet back until your body forms a straight line.','Hold with hips steady and breathe normally.'],'Floor Plank':['Place hands on the floor under shoulders.','Step feet back into a straight line from shoulders to heels.','Hold without sagging hips or over-arching.'],'Shoulder Press Machine':['Sit tall with back supported.','Start with handles at shoulder height and elbows slightly forward.','Press upward without locking elbows, then lower with control.']}}};
-const ORDER=['squat','push','pull','hinge','core'];
-const DEFAULT_STATE={location:'home',movementProgress:{squat:{homeLevel:1,gymLevel:0,gymWeight:40,recentTopWins:0,eligibleCount:0,readyToProgress:false},push:{homeLevel:1,gymLevel:0,gymWeight:15,recentTopWins:0,eligibleCount:0,readyToProgress:false},pull:{homeLevel:1,gymLevel:0,gymWeight:20,recentTopWins:0,eligibleCount:0,readyToProgress:false},hinge:{homeLevel:1,gymLevel:0,gymWeight:20,recentTopWins:0,eligibleCount:0,readyToProgress:false},core:{homeLevel:1,gymLevel:0,gymWeight:10,recentTopWins:0,eligibleCount:0,readyToProgress:false}},sessions:[]};
-function clone(x){return JSON.parse(JSON.stringify(x))}function readJSON(k,f){try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch(e){return f}}function writeJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}function mergeState(base,stored){const out=clone(base);if(stored&&typeof stored==='object'){Object.assign(out,stored);out.movementProgress=Object.assign({},base.movementProgress,stored.movementProgress||{});ORDER.forEach(k=>out.movementProgress[k]=Object.assign({},base.movementProgress[k],(stored.movementProgress||{})[k]||{}));out.sessions=Array.isArray(stored.sessions)?stored.sessions:[]}return out}let ST=mergeState(DEFAULT_STATE,readJSON('hearty_exercise',null));function saveState(){writeJSON('hearty_exercise',ST)}
-let supportMode='';let SESSION={workout:[],exIndex:0,currentSet:1,selectedReps:null,restTimer:null,restRemaining:75,startTime:null};
-function buildNav(){const cur=(location.pathname.split('/').pop()||'exercise.html').toLowerCase();document.getElementById('bottomNav').innerHTML=NAV_PAGES.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}" data-nav-target="${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('')}
-function getSupportMode(){
-  try{
-    const authoritative=readJSON('hearty_support_mode_v1',null);
-    if(authoritative){
-      if(authoritative.active===true||authoritative.isActive===true)return String(authoritative.reason||authoritative.mode||authoritative.primarySymptom||'support');
-      return '';
+    :root {
+      --ink: #102033;
+      --muted: #617389;
+      --muted-2: #8292a7;
+      --line: rgba(126, 148, 174, 0.22);
+      --card: rgba(255,255,255,0.88);
+      --white: #ffffff;
+      --bg: #f6fbff;
+      --blue: #2f6df6;
+      --blue-dark: #1550b3;
+      --teal: #22b8a7;
+      --teal-dark: #148b7f;
+      --mint: #e7fbf7;
+      --soft-blue: #eaf4ff;
+      --shadow: 0 22px 70px rgba(14, 31, 53, 0.12);
+      --shadow-soft: 0 10px 30px rgba(14, 31, 53, 0.08);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --max: 1120px;
     }
-    const objs=[readJSON('heartySupportState',null),readJSON('hearty_support_state',null)].filter(Boolean);
-    for(const o of objs){if(o&&(o.active===true||o.isActive===true)){return String(o.reason||o.primarySymptom||o.mode||'support')}}
-    const raw=localStorage.getItem('heartySupportMode')||'';
-    if(raw&&raw.charAt(0)==='{'){const parsed=JSON.parse(raw);if(parsed&&(parsed.isActive===true||parsed.active===true))return String(parsed.reason||parsed.primarySymptom||'support');return '';}
-    const vals=['meals_support_mode','hearty_support_mode','supportMode','heartySupportActive'].map(k=>localStorage.getItem(k)).filter(Boolean);
-    return vals.find(v=>!['off','false','0','none'].includes(String(v).toLowerCase()))||'';
-  }catch(e){return ''}
-}
-function clearExerciseSupport(){try{const now=new Date().toISOString();const d=now.slice(0,10);writeJSON('hearty_support_mode_v1',{active:false,isActive:false,reason:null,mode:null,sourcePage:'exercise',logDate:d,updatedAt:now});writeJSON('heartySupportState',{active:false,reason:null,logDate:d,updatedAt:Date.now()});writeJSON('hearty_support_state',{active:false,reason:null,logDate:d,updatedAt:Date.now()});localStorage.setItem('heartySupportMode',JSON.stringify({isActive:false,active:false,reason:null,sourcePage:'exercise',logDate:d,updatedAt:now}));localStorage.setItem('heartySupportActive','false');localStorage.setItem('hearty_support_mode','off');localStorage.removeItem('meals_support_mode');const canonical=readJSON('hearty:data:v1',{});canonical.support=Object.assign({},canonical.support||{},{active_state:'',active_date:'',active:false,reason:null,updated_at:now});writeJSON('hearty:data:v1',canonical);supportMode='';try{window.dispatchEvent(new CustomEvent('hearty:support-mode-changed',{detail:{active:false,source:'exercise'}}))}catch(_e){}refresh()}catch(e){location.reload()}}
-function getWeekStart(){const now=new Date();const d=new Date(now);d.setDate(d.getDate()-((d.getDay()+6)%7));d.setHours(0,0,0,0);return d.toISOString().slice(0,10)}function getThisWeekCount(){const ws=getWeekStart();return (ST.sessions||[]).filter(s=>(s.date||'').slice(0,10)>=ws&&s.completed&&['train','support','workout',undefined,null].includes(s.type)).length}
-function isWorkoutSession(s){return !!(s&&s.completed&&['train','support','workout',undefined,null].includes(s.type))}
-function getTotalWorkoutCount(){return (ST.sessions||[]).filter(isWorkoutSession).length}
-function shiftISODate(iso,days){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
-function getWeekWorkoutCount(weekStartISO){const weekEnd=shiftISODate(weekStartISO,7);return (ST.sessions||[]).filter(s=>isWorkoutSession(s)&&(s.date||'').slice(0,10)>=weekStartISO&&(s.date||'').slice(0,10)<weekEnd).length}
-function getThreeWorkoutWeekStreak(){let streak=0;let ws=getWeekStart();for(let i=0;i<52;i++){if(getWeekWorkoutCount(ws)>=3){streak++;ws=shiftISODate(ws,-7)}else break}return streak}
-function renderWorkoutCounters(){const total=getTotalWorkoutCount();const streak=getThreeWorkoutWeekStreak();document.getElementById('totalWorkoutLabel').textContent=String(total);document.getElementById('totalWorkoutSub').textContent=total===0?'No workouts completed yet.':total===1?'1 strength workout completed.':`${total} strength workouts completed.`;document.getElementById('streakLabel').textContent=`${streak} ${streak===1?'week':'weeks'}`;document.getElementById('streakSub').textContent=streak>=3?'3-week streak complete. Keep it rolling.':streak===0?'Complete 3 workouts this week to start the streak.':`${Math.max(0,3-streak)} more full ${Math.max(0,3-streak)===1?'week':'weeks'} to reach a 3-week streak.`;for(let i=0;i<3;i++){const el=document.getElementById('sd'+i);if(!el)continue;if(i<Math.min(streak,3)){el.classList.add('done');el.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>'}else{el.classList.remove('done');el.innerHTML=''}}}
 
-function setLocation(loc){ST.location=loc;saveState();document.getElementById('locHome').classList.toggle('active',loc==='home');document.getElementById('locGym').classList.toggle('active',loc==='gym');document.getElementById('heroModePill').textContent=loc==='gym'?'Gym workout':'Home workout';renderLadder()}
-function renderWeekly(){const count=getThisWeekCount();document.getElementById('heroSessionsPill').textContent=`${count} of 3 this week`;document.getElementById('weekLabel').textContent=`${count} of 3`;document.getElementById('weekSub').textContent=count===0?'Your first session is ready.':count===1?'Good start. Two more this week.':count===2?'One more session completes the week.':'Week complete. Recover well.';const done=count>=3;document.getElementById('startBtn').classList.toggle('disabled',done);document.getElementById('startBtnLabel').textContent=done?'WEEK DONE':'START';document.getElementById('startHint').textContent=done?'Rest and recover.':'Tap start when you\'re ready.';for(let i=0;i<3;i++){const el=document.getElementById('wd'+i);if(i<count){el.classList.add('done');el.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>'}else{el.classList.remove('done');el.innerHTML=''}}}
-function renderSupport(){supportMode=getSupportMode();const active=!!supportMode;document.getElementById('supportCard')?.classList.toggle('active',active);document.getElementById('supportLed')?.classList.toggle('on',active);if(document.getElementById('supportTitle'))document.getElementById('supportTitle').textContent=active?'Support mode activated':'Support mode off';if(document.getElementById('supportCopy'))document.getElementById('supportCopy').textContent=active?'Exercise difficulty is reduced by about 25% today.':'No automatic exercise changes are active right now.';const pill=document.getElementById('heroSupportMiniPill');if(pill){pill.hidden=!active;pill.textContent=active?'Support active — reduced 25%':'Support active'}const action=document.getElementById('exerciseSupportAction');if(action)action.textContent=active?'Change support':'I need support';const off=document.getElementById('exerciseSupportOff');if(off)off.hidden=!active}
-function renderLastSession(){const target=document.getElementById('lastSessionInline');const last=(ST.sessions||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date))[0];if(!last){target.textContent='Last session: —';return}const ex=last.exercises&&last.exercises[0];target.textContent=ex?`Last session: ${ex.name} — ${(ex.sets||[]).join(' / ')}`:'Last session: Strength session complete'}
-function homeIndex(key){const prog=ST.movementProgress[key]||{};const base=Math.max(0,Number(prog.homeLevel||1)-1);return supportMode?Math.max(0,base-1):base}function currentStepName(key,loc){const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{};if(loc==='gym')return def.gymChain[Math.max(0,Math.min(def.gymChain.length-1,Number(prog.gymLevel||0)))];return def.homeChain[Math.max(0,Math.min(def.homeChain.length-1,homeIndex(key)))]}function currentImage(key,loc){const def=MOVEMENTS[key];if(loc==='gym')return def.gymImages[0]||'';return def.homeImages[Math.max(0,Math.min(def.homeImages.length-1,homeIndex(key)))]||''}
-function renderLadder(){const loc=ST.location||'home',wrap=document.getElementById('ladderRows');wrap.innerHTML='';ORDER.forEach(key=>{const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{},chain=loc==='gym'?def.gymChain:def.homeChain,current=loc==='gym'?Math.max(0,Math.min(chain.length-1,Number(prog.gymLevel||0))):Math.max(0,Math.min(chain.length-1,homeIndex(key)));const currentName=chain[current]||chain[0]||'Current step';const nextName=chain[current+1]||'Maintain this step';const prevName=current>0?chain[current-1]:'Start';const pct=chain.length>1?Math.round((current/(chain.length-1))*100):100;const rail=chain.map((label,idx)=>`<span class="ladder-mini-step ${idx<current?'done':idx===current?'current':''}" title="${label}"></span>`).join('');const detail=loc==='gym'?`<div class="ladder-detail-pill">${Number(prog.gymWeight||0)>0?`${supportMode?roundWeight(Number(prog.gymWeight)*.75):prog.gymWeight} kg working weight`:'Start light'}</div>`:`<div class="ladder-detail-pill">Home progression</div>`;wrap.insertAdjacentHTML('beforeend',`<div class="ladder-row ladder-row-v2"><div class="ladder-topline"><div><div class="ladder-name">${def.title}</div><div class="ladder-current">${currentName}</div></div>${detail}</div><div class="ladder-next-box"><div><div class="ladder-small-label">NEXT STEP</div><div class="ladder-next-name">${nextName}</div></div><div class="ladder-percent">${pct}%</div></div><div class="ladder-rail" aria-label="${def.title} progression">${rail}</div><div class="ladder-bottom"><span>${prevName}</span><span>${currentName}</span><span>${nextName}</span></div></div>`)})}
-function roundWeight(n){return Math.max(0,Math.round(n/2.5)*2.5)}function buildWorkout(loc){supportMode=getSupportMode();return ORDER.map(key=>{const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{},name=currentStepName(key,loc);let totalSets=supportMode?2:3,target=supportMode?'6–9 reps':'8–12 reps',weight='Bodyweight';if(loc==='gym'){const raw=Number(prog.gymWeight||0);const w=supportMode?roundWeight(raw*.75):raw;weight=w>0?`${w} kg`:'Start light'}let tips=(def.tips[name]||[]).slice();if(supportMode)tips.unshift('Support mode is active: use about 25% less difficulty today.');return{key,movement:def.title.toUpperCase(),name,totalSets,target,weight,img:currentImage(key,loc),tips,sets:[]}})}
-function showScreen(id){['screenActive','screenReps','screenRest','screenExComplete','screenWoComplete'].forEach(x=>document.getElementById(x).style.display=x===id?'':'none')}function startWorkout(){if(getThisWeekCount()>=3)return;SESSION={workout:buildWorkout(ST.location||'home'),exIndex:0,currentSet:1,selectedReps:null,restTimer:null,restRemaining:supportMode?90:75,startTime:Date.now()};document.getElementById('workoutOverlay').hidden=false;renderExercise();showScreen('screenActive')}
-function requestExit(){document.getElementById('exitOverlay').classList.add('active')}function closeExitDialog(){document.getElementById('exitOverlay').classList.remove('active')}function confirmExit(){clearInterval(SESSION.restTimer);document.getElementById('workoutOverlay').hidden=true;document.getElementById('exitOverlay').classList.remove('active')}
-function renderExercise(){const ex=SESSION.workout[SESSION.exIndex];document.getElementById('woProgress').textContent=`Exercise ${SESSION.exIndex+1} of ${SESSION.workout.length}`;document.getElementById('exMovement').textContent=ex.movement;document.getElementById('exName').textContent=ex.name;document.getElementById('exTarget').textContent=ex.target;document.getElementById('exWeight').textContent=ex.weight;document.getElementById('exSetOf').textContent=`${SESSION.currentSet} of ${ex.totalSets}`;document.getElementById('overlaySupportBadge').hidden=!supportMode;const img=document.getElementById('exImage');img.innerHTML=ex.img?`<img src="${ex.img}" alt="${ex.name}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=&quot;image-fallback&quot;>Exercise image not found:<br>${ex.img}</div>'">`:`<div class="image-fallback">Exercise image not configured</div>`;const dots=document.getElementById('setDots');dots.innerHTML='';for(let i=1;i<=ex.totalSets;i++)dots.insertAdjacentHTML('beforeend',`<div class="${i<SESSION.currentSet?'set-dot done':i===SESSION.currentSet?'set-dot active':'set-dot'}"></div>`);document.getElementById('techniqueBullets').innerHTML=ex.tips.map(t=>`<div class="technique-bullet">${t}</div>`).join('')}
-function handleSetAction(){SESSION.selectedReps=null;document.getElementById('repConfirmArea').style.display='none';document.getElementById('repSetLabel').textContent=`Set ${SESSION.currentSet} of ${SESSION.workout[SESSION.exIndex].totalSets}`;buildRepButtons();showScreen('screenReps')}function buildRepButtons(){const grid=document.getElementById('repGrid'),extra=document.getElementById('repExtra');grid.innerHTML='';extra.innerHTML='';[6,7,8,9,10,11,12,13].forEach((n,i)=>{const html=`<button class="rep-btn" type="button" data-reps="${n}">${n}</button>`;(i<5?grid:extra).insertAdjacentHTML('beforeend',html)});document.querySelectorAll('.rep-btn').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.rep-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');SESSION.selectedReps=btn.dataset.reps;document.getElementById('repConfirmArea').style.display='flex'})}
-function confirmReps(){const ex=SESSION.workout[SESSION.exIndex];if(!SESSION.selectedReps)return;ex.sets.push(String(SESSION.selectedReps));if(SESSION.currentSet<ex.totalSets){SESSION.currentSet++;startRest()}else renderExerciseComplete()}function startRest(){showScreen('screenRest');document.getElementById('restNextLabel').textContent=`Set ${SESSION.currentSet} starts soon`;const total=supportMode?90:75;SESSION.restRemaining=total;document.getElementById('restFlash').style.display='none';clearInterval(SESSION.restTimer);const tick=()=>{document.getElementById('restCount').textContent=SESSION.restRemaining;if(SESSION.restRemaining<=0){clearInterval(SESSION.restTimer);document.getElementById('restFlash').style.display='block'}else SESSION.restRemaining--};tick();SESSION.restTimer=setInterval(tick,1000)}function advanceAfterRest(){clearInterval(SESSION.restTimer);showScreen('screenActive');renderExercise()}
-function renderExerciseComplete(){const ex=SESSION.workout[SESSION.exIndex];document.getElementById('exCompleteTitle').textContent=`${ex.name.toUpperCase()} COMPLETE`;document.getElementById('exCompleteSub').textContent=`${ex.totalSets} sets logged`;document.getElementById('setsResult').innerHTML=ex.sets.map(s=>`<div class="set-pill">${s} reps</div>`).join('');document.getElementById('progressReadyBadge').style.display=ex.sets.some(s=>parseInt(s,10)>=12)?'inline-flex':'none';showScreen('screenExComplete')}function nextExercise(){if(SESSION.exIndex<SESSION.workout.length-1){SESSION.exIndex++;SESSION.currentSet=1;renderExercise();showScreen('screenActive')}else renderWorkoutComplete()}function renderWorkoutComplete(){const minutes=Math.max(1,Math.round((Date.now()-SESSION.startTime)/60000));document.getElementById('wStatEx').textContent=String(SESSION.workout.length);document.getElementById('wStatSets').textContent=String(SESSION.workout.reduce((n,ex)=>n+ex.sets.length,0));document.getElementById('wStatTime').textContent=String(minutes);const rows=document.getElementById('mvFeedbackRows');rows.innerHTML='';SESSION.workout.forEach(ex=>{const hitTop=ex.sets.some(s=>parseInt(s,10)>=12);rows.insertAdjacentHTML('beforeend',`<div class="wo-mv-row"><div class="wo-mv-name">${ex.name}</div><div class="wo-mv-tag ${hitTop?'up':'hold'}">${hitTop?'Progressing':'Hold'}</div></div>`)});showScreen('screenWoComplete')}
-function updateProgressFromWorkout(){const loc=ST.location||'home';if(supportMode)return;SESSION.workout.forEach(ex=>{const prog=ST.movementProgress[ex.key];prog.eligibleCount=Number(prog.eligibleCount||0)+1;const hitTop=ex.sets.some(s=>parseInt(s,10)>=12);if(hitTop)prog.recentTopWins=Number(prog.recentTopWins||0)+1;if(loc==='home'){if(prog.recentTopWins>=2&&prog.eligibleCount>=2){prog.homeLevel=Math.min(MOVEMENTS[ex.key].homeChain.length,Number(prog.homeLevel||1)+1);prog.readyToProgress=true;prog.recentTopWins=0;prog.eligibleCount=0}else prog.readyToProgress=false}else{if(hitTop){prog.gymWeight=roundWeight(Number(prog.gymWeight||0)+(ex.key==='squat'?5:2.5));prog.readyToProgress=true}else prog.readyToProgress=false}})}
-function finishWorkout(){updateProgressFromWorkout();const session={date:new Date().toISOString(),completed:true,type:supportMode?'support':'train',location:ST.location||'home',support_mode_active:!!supportMode,exercises:SESSION.workout.map(ex=>({key:ex.key,name:ex.name,sets:ex.sets,weight:ex.weight,target:ex.target}))};ST.sessions.push(session);saveState();queueExerciseSync(session);renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession();document.getElementById('workoutOverlay').hidden=true}
-async function queueExerciseSync(session){try{const mod=await import('./frontend/exercise_sync_adapter.js');const client=await import('./supabase-client.js');const id=session.client_session_id||`exercise_${Date.now()}_${Math.random().toString(36).slice(2)}`;session.client_session_id=id;mod.queueExerciseSyncEvent({client_event_id:`${id}_completed`,event_type:'exercise_session_completed',payload:{source:'exercise.html',mode:session.location||ST.location||'home',support_mode_active:!!session.support_mode_active,completed_at:session.date||new Date().toISOString(),session,progress:ST.movementProgress||{}}});mod.flushExerciseSyncQueue(client.supabase)}catch(e){}}
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at -8% -12%, rgba(47,109,246,0.13), transparent 58%),
+        radial-gradient(900px 460px at 108% 0%, rgba(34,184,167,0.12), transparent 55%),
+        radial-gradient(660px 440px at 50% 12%, rgba(255,228,140,0.16), transparent 58%),
+        linear-gradient(180deg, #fbfdff 0%, #f3f8fe 46%, #ffffff 100%);
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    .page { overflow: hidden; }
+    .shell { width: min(var(--max), calc(100% - 34px)); margin: 0 auto; }
 
-function openExerciseGuide(){
-  const modal=document.getElementById('exerciseGuideModal');
-  if(!modal)return;
-  modal.hidden=false;
-  modal.setAttribute('aria-hidden','false');
-  try{localStorage.setItem('heartyExerciseGuideSeen','true')}catch(e){}
-}
-function closeExerciseGuide(){
-  const modal=document.getElementById('exerciseGuideModal');
-  if(!modal)return;
-  modal.hidden=true;
-  modal.setAttribute('aria-hidden','true');
-}
-function bind(){const guideBtn=document.getElementById('openExerciseGuideBtn');if(guideBtn)guideBtn.onclick=openExerciseGuide;const guideClose=document.getElementById('closeExerciseGuideBtn');if(guideClose)guideClose.onclick=closeExerciseGuide;const guideModal=document.getElementById('exerciseGuideModal');if(guideModal)guideModal.addEventListener('click',e=>{if(e.target===guideModal)closeExerciseGuide()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeExerciseGuide()});document.getElementById('locHome').onclick=()=>setLocation('home');document.getElementById('locGym').onclick=()=>setLocation('gym');document.getElementById('startBtn').onclick=startWorkout;const supportOffBtn=document.getElementById('exerciseSupportOff');if(supportOffBtn)supportOffBtn.onclick=clearExerciseSupport;document.getElementById('ladderToggleBtn').onclick=()=>{const card=document.getElementById('ladderCard'),body=document.getElementById('ladderBody'),btn=document.getElementById('ladderToggleBtn'),open=body.hasAttribute('hidden');if(open){body.removeAttribute('hidden');card.classList.remove('collapsed');btn.setAttribute('aria-expanded','true')}else{body.setAttribute('hidden','');card.classList.add('collapsed');btn.setAttribute('aria-expanded','false')}};document.getElementById('setActionBtn').onclick=handleSetAction;document.getElementById('confirmSetBtn').onclick=confirmReps;document.getElementById('nextSetBtn').onclick=advanceAfterRest;document.getElementById('nextExerciseBtn').onclick=nextExercise;document.getElementById('finishWorkoutBtn').onclick=finishWorkout;document.getElementById('closeWorkoutBtn').onclick=requestExit;document.getElementById('continueWorkoutBtn').onclick=closeExitDialog;document.getElementById('exitWorkoutBtn').onclick=confirmExit}
-function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{buildNav();bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
-</script>
-<script src="/js/hearty-updater.js?v=2026.06.04.1"></script>
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: 100%;
+      padding: 0;
+      background: rgba(255,255,255,0.82);
+      border-bottom: 1px solid rgba(126,148,174,0.14);
+      box-shadow: 0 8px 26px rgba(14,31,53,0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .topbar::before {
+      content: none;
+    }
+    .brand { display: inline-flex; align-items: center; text-decoration: none; min-width: 0; }
+    .brand img { display: block; height: 46px; width: auto; max-width: min(270px, 42vw); object-fit: contain; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .mini-link {
+      text-decoration: none;
+      color: #4f637b;
+      font-weight: 750;
+      font-size: .92rem;
+      padding: 10px 13px;
+      border-radius: 999px;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 21px;
+      border-radius: 999px;
+      font-weight: 900;
+      text-decoration: none;
+      font-size: .98rem;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: #fff; background: linear-gradient(135deg, var(--teal), var(--blue)); box-shadow: 0 14px 28px rgba(47,109,246,0.20); }
+    .btn-secondary { color: #193550; background: rgba(255,255,255,0.78); border: 1px solid rgba(126,148,174,0.18); box-shadow: 0 10px 24px rgba(14,31,53,0.06); }
+    .btn-small { min-height: 44px; padding: 0 16px; font-size: .9rem; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 30px;
+      align-items: center;
+      padding: 42px 0 22px;
+    }
+    .eyebrow,
+    .setup-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      color: var(--teal-dark);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(34,184,167,0.22);
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .78rem;
+      box-shadow: 0 10px 24px rgba(14,31,53,0.06);
+    }
+    .eyebrow::before,
+    .setup-capsule::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--teal); }
+    h1 {
+      margin: 18px 0 16px;
+      max-width: 780px;
+      font-size: clamp(2.65rem, 5.75vw, 5.45rem);
+      line-height: 1.05;
+      letter-spacing: -0.07em;
+    }
+    .gradient-text { background: linear-gradient(135deg, var(--blue), #20a9e7 46%, var(--teal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-copy { max-width: 650px; margin: 0; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.22rem); line-height: 1.62; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .micro-proof { margin-top: 18px; color: var(--muted-2); font-size: .93rem; }
+
+    .phone-stage { position: relative; min-height: 475px; display: grid; place-items: center; }
+    .phone-glow { position:absolute; width: 92%; height: 70%; border-radius: 44px; background: radial-gradient(circle at 50% 35%, rgba(47,109,246,0.18), transparent 55%), radial-gradient(circle at 58% 84%, rgba(34,184,167,0.16), transparent 56%); filter: blur(2px); }
+    .phone {
+      position: relative;
+      width: min(310px, 80vw);
+      min-height: 610px;
+      padding: 14px;
+      border-radius: 44px;
+      background: linear-gradient(145deg, #171b21, #050607);
+      box-shadow: 0 36px 74px rgba(14,31,53,0.24), inset 0 0 0 2px rgba(255,255,255,0.10);
+    }
+    .phone::before { content: ""; position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 84px; height: 24px; border-radius: 999px; background: #050607; z-index: 2; }
+    .screen {
+      min-height: 582px;
+      border-radius: 32px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f7fbff, #edf6ff);
+      padding: 48px 16px 18px;
+    }
+    .screen-title { font-weight: 950; letter-spacing: -0.04em; font-size: 1.08rem; margin-bottom: 5px; }
+    .screen-sub { color: #7c8ea4; font-size: .74rem; font-weight: 800; margin-bottom: 14px; }
+    .screen-banner { padding: 15px; border-radius: 20px; background: linear-gradient(135deg, #2f6df6, #2055c7); color: #fff; box-shadow: 0 12px 22px rgba(47,109,246,.22); margin-bottom: 12px; }
+    .screen-banner small { display: block; opacity: .76; font-weight: 900; font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .screen-banner strong { display: block; font-size: .94rem; }
+    .meal-mini { padding: 14px; border-radius: 18px; background: rgba(255,255,255,.9); border: 1px solid rgba(126,148,174,.13); box-shadow: 0 10px 18px rgba(14,31,53,.04); margin-bottom: 10px; }
+    .meal-mini span { display: block; color: #6d7b8c; font-size: .76rem; line-height: 1.35; margin-top: 3px; }
+
+    .lead-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(300px, .94fr);
+      gap: 18px;
+      align-items: stretch;
+      padding: 6px 0 0;
+    }
+    .lead-block {
+      border-radius: 28px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(126,148,174,.16);
+      box-shadow: 0 14px 34px rgba(14,31,53,.07);
+      padding: 24px;
+    }
+    .lead-block h2,
+    .lead-block h3 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      letter-spacing: -.04em;
+      line-height: 1.12;
+    }
+    .lead-block h2 { font-size: clamp(1.7rem, 3vw, 2.35rem); }
+    .lead-block h3 { font-size: 1.45rem; }
+    .lead-block p { margin: 0; color: var(--muted); line-height: 1.58; }
+    .clean-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+    .clean-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #40566f;
+      line-height: 1.48;
+      font-weight: 650;
+    }
+    .clean-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .64em;
+      width: 7px;
+      height: 7px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+    }
+    .lead-cta {
+      background: linear-gradient(135deg, rgba(34,184,167,.14), rgba(47,109,246,.12));
+    }
+    .lead-cta .btn { margin-top: 18px; }
+    .companion-card {
+      background:
+        linear-gradient(135deg, rgba(34,184,167,.14), rgba(47,109,246,.12)),
+        rgba(255,255,255,.84);
+    }
+    .companion-card p { margin-bottom: 16px; }
+    .companion-card .btn { margin-top: 18px; }
+    .companion-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .companion-list li {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      min-width: 0;
+      color: #40566f;
+      line-height: 1.35;
+      font-size: .88rem;
+      font-weight: 720;
+    }
+    .mini-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      box-shadow: 0 8px 16px rgba(47,109,246,.14);
+      font-size: .84rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .section { padding: 34px 0; }
+    .generator-section { padding-top: 28px; }
+    .generator-head { margin-bottom: 24px; }
+    .generator-head h2 { margin: 12px 0 8px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.04; letter-spacing: -.055em; }
+    .generator-head p { margin: 0; max-width: 730px; color: var(--muted); line-height: 1.58; font-size: 1.03rem; }
+    .setup-capsule { margin-top: 0; }
+
+    .setup-card {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(126,148,174,.18);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .progress-wrap { display: grid; gap: 10px; margin-bottom: 18px; }
+    .progress-meta { display: flex; justify-content: space-between; gap: 12px; color: #7b8998; font-size: .76rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    .progress-track { height: 9px; border-radius: 999px; overflow: hidden; background: #e8eef7; border: 1px solid rgba(160,178,201,.20); }
+    .progress-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width .25s ease; }
+    .question { display: grid; align-content: start; gap: 14px; }
+    .kicker { color: #7b8998; font-size: .75rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .question h3 { margin: 0; font-size: clamp(1.65rem, 3.2vw, 2.35rem); letter-spacing: -.05em; line-height: 1.08; }
+    .question-copy { margin: -4px 0 0; color: var(--muted); line-height: 1.54; max-width: 700px; }
+    .option-grid { display: grid; gap: 10px; margin-top: 2px; }
+    .option-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .option-btn {
+      width: 100%;
+      min-height: 58px;
+      text-align: left;
+      border-radius: 18px;
+      border: 1px solid rgba(143,163,184,.22);
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,255,.94));
+      color: var(--ink);
+      box-shadow: 0 8px 18px rgba(14,31,53,.04);
+      padding: 14px 16px;
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .option-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(14,31,53,.07); }
+    .option-btn.selected { border-color: rgba(47,109,246,.42); background: linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96)); box-shadow: 0 0 0 4px rgba(47,109,246,.07), 0 12px 24px rgba(14,31,53,.06); }
+    .option-title { display:block; font-weight: 850; letter-spacing: -.02em; line-height:1.22; margin-bottom:4px; }
+    .option-sub { display:block; color: var(--muted); font-size: .86rem; line-height: 1.35; margin-top: 0; }
+    .option-sub:empty { display: none; }
+    .option-main { display:block; min-width:0; }
+    .selector-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(143,163,184,.32); flex: 0 0 auto; }
+    .option-btn.selected .selector-dot { border-color: transparent; background: radial-gradient(circle at 50% 50%, #fff 0 26%, transparent 27%), var(--blue); }
+
+    .lead-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .field { display: grid; gap: 7px; }
+    .field label { font-weight: 850; color: #173653; font-size: .92rem; }
+    .field input, .field select {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(126,148,174,.26);
+      border-radius: 16px;
+      background: rgba(255,255,255,.82);
+      padding: 0 15px;
+      font: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+    .field input:focus, .field select:focus { border-color: rgba(34,184,167,.56); box-shadow: 0 0 0 4px rgba(34,184,167,.11); }
+    .form-note { margin: 0; color: var(--muted-2); font-size: .9rem; line-height: 1.45; }
+
+    .summary-grid { display: grid; gap: 10px; }
+    .summary-row { display: flex; justify-content: space-between; gap: 14px; padding: 13px 14px; border-radius: 16px; background: rgba(247,250,255,.92); border: 1px solid rgba(143,163,184,.16); }
+    .summary-row span:first-child { color: var(--muted); font-weight: 800; }
+    .summary-row span:last-child { text-align: right; font-weight: 850; }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(14,31,53,.08);
+    }
+
+    .result-panel {
+      display: none;
+      max-width: 980px;
+      margin: 26px auto 0;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(126,148,174,.18);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+    .result-panel.show { display: block; }
+    .result-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+    .result-head h2 { margin: 0 0 7px; font-size: clamp(1.8rem, 3.2vw, 2.55rem); line-height: 1.05; letter-spacing: -.05em; }
+    .result-head p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .market-tag { border-radius: 999px; padding: 8px 12px; background: var(--mint); color: var(--teal-dark); font-weight: 900; font-size: .82rem; white-space: nowrap; }
+    .days-grid { display: grid; gap: 14px; }
+    .day-card { border-radius: 22px; background: linear-gradient(180deg, rgba(247,251,255,.98), rgba(255,255,255,.96)); border: 1px solid rgba(126,148,174,.15); padding: 18px; }
+    .day-card h3 { margin: 0 0 12px; font-size: 1.15rem; letter-spacing: -.03em; }
+    .meal-row { display: grid; grid-template-columns: 104px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(126,148,174,.12); }
+    .meal-row:first-of-type { border-top: 0; }
+    .meal-label { color: #6f8095; font-weight: 900; font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; }
+    .meal-text { color: #183650; line-height: 1.44; }
+    .result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .upsell { margin-top: 20px; border-radius: 24px; padding: 22px; background: linear-gradient(135deg, rgba(47,109,246,.10), rgba(34,184,167,.12)); border: 1px solid rgba(47,109,246,.14); }
+    .upsell h3 { margin: 0 0 8px; font-size: 1.35rem; letter-spacing: -.035em; }
+    .upsell p { margin: 0 0 15px; color: var(--muted); line-height: 1.55; max-width: 760px; }
+
+    .info-panel {
+      border-radius: 32px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(126,148,174,.16);
+      box-shadow: var(--shadow-soft);
+      padding: clamp(24px, 4vw, 42px);
+    }
+    .info-layout { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(22px, 4vw, 46px); align-items: start; }
+    .info-panel h2 { margin: 0 0 13px; font-size: clamp(2rem, 4vw, 3.05rem); line-height: 1.06; letter-spacing: -.06em; }
+    .info-panel p { color: var(--muted); line-height: 1.65; margin: 0; }
+    .info-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--teal-dark);
+      font-size: .78rem;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .info-kicker::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--teal); }
+    .info-body { display: grid; gap: 18px; }
+    .info-body h3 { margin: 0 0 8px; font-size: 1.16rem; letter-spacing: -.03em; }
+    .info-body section { padding-top: 16px; border-top: 1px solid rgba(126,148,174,.16); }
+    .info-body section:first-child { padding-top: 0; border-top: 0; }
+    .info-cta { margin-top: 20px; }
+    .info-bullets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .info-bullets li {
+      position: relative;
+      padding: 13px 14px 13px 34px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(126,148,174,.14);
+      color: #40566f;
+      line-height: 1.46;
+      font-size: .94rem;
+    }
+    .info-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 20px;
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+    }
+    .info-bullets strong { color: var(--ink); }
+    .care-banner {
+      margin-top: 6px;
+      margin-bottom: 34px;
+      padding: 18px 22px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(47,109,246,.09), rgba(34,184,167,.10));
+      border: 1px solid rgba(126,148,174,.18);
+      color: #40566f;
+      line-height: 1.58;
+      box-shadow: 0 12px 30px rgba(14,31,53,.06);
+      font-size: .94rem;
+    }
+    .care-banner strong { color: var(--ink); }
+
+    .footer {
+      width: min(760px, calc(100% - 34px));
+      margin: 0 auto 30px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #102033;
+      color: rgba(255,255,255,.84);
+      text-align: center;
+      font-size: .86rem;
+      font-weight: 800;
+      line-height: 1.35;
+      box-shadow: 0 12px 30px rgba(14,31,53,.12);
+    }
+    .footer strong { color: #fff; }
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(120%); background: #102033; color: #fff; padding: 12px 16px; border-radius: 999px; box-shadow: var(--shadow-soft); opacity: 0; transition: all .22s ease; z-index: 100; font-weight: 850; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .country-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(16, 32, 51, 0.38);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .country-gate.show { display: flex; }
+    .country-gate-card {
+      width: min(480px, 100%);
+      border-radius: 30px;
+      background:
+        radial-gradient(420px 220px at 10% 0%, rgba(47,109,246,0.12), transparent 56%),
+        radial-gradient(420px 220px at 90% 10%, rgba(34,184,167,0.14), transparent 54%),
+        rgba(255,255,255,0.96);
+      border: 1px solid rgba(126,148,174,.20);
+      box-shadow: 0 28px 80px rgba(14,31,53,.22);
+      padding: 26px;
+      position: relative;
+    }
+    .country-gate-card h3 {
+      margin: 0 34px 8px 0;
+      font-size: clamp(1.65rem, 4vw, 2.2rem);
+      letter-spacing: -.05em;
+      line-height: 1.08;
+    }
+    .country-gate-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .country-gate-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .country-choice {
+      width: 100%;
+      min-height: 54px;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 900;
+      color: #fff;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      box-shadow: 0 14px 28px rgba(47,109,246,0.18);
+    }
+    .country-choice.secondary {
+      color: #193550;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(126,148,174,.22);
+      box-shadow: 0 10px 24px rgba(14,31,53,.07);
+    }
+    .country-gate-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid rgba(126,148,174,.18);
+      background: rgba(255,255,255,.74);
+      color: #40566f;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 26px; }
+      .phone-stage { min-height: auto; }
+      .phone { width: min(300px, 88vw); min-height: 520px; }
+      .screen { min-height: 492px; }
+      .lead-panel { grid-template-columns: 1fr; }
+      .info-layout { grid-template-columns: 1fr; }
+      .info-bullets { grid-template-columns: 1fr; }
+      .mini-link:not(.buy-link) { display: none; }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 24px, var(--max)); }
+      .brand img { height: 40px; max-width: 210px; }
+      .hero { gap: 18px; }
+      h1 { font-size: clamp(2.35rem, 12vw, 3.55rem); }
+      .hero-actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .setup-card, .result-panel { border-radius: 24px; padding: 18px; }
+      .option-grid.two, .lead-grid { grid-template-columns: 1fr; }
+      .nav-row { position: static; }
+      .result-head { display: block; }
+      .market-tag { display: inline-flex; margin-top: 12px; }
+      .meal-row { grid-template-columns: 1fr; gap: 4px; }
+      .companion-list { grid-template-columns: 1fr; }
+      .footer { width: min(100% - 24px, 760px); border-radius: 18px; }
+    }
+    @media print {
+      .topbar, .hero, .lead-panel, .generator-head, .setup-card, .info-panel, .footer, .result-actions, .upsell { display: none !important; }
+      body { background: #fff; }
+      .result-panel { display: block !important; width: 100% !important; max-width: none !important; box-shadow: none !important; border: 0 !important; padding: 0 !important; }
+      .day-card { break-inside: avoid; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+<header class="topbar">
+<div class="shell topbar-inner">
+<a aria-label="Hearty home" class="brand" href="https://hearty.health">
+<img alt="Hearty" src="hearty-logo.png"/>
+</a>
+<nav aria-label="Page navigation" class="nav-actions">
+<a class="mini-link" href="#generator">Free plan</a>
+<a class="mini-link" href="#full-app">Why Hearty</a>
+<button class="btn btn-primary btn-small buy-link" data-hearty-checkout="" type="button">Get Hearty</button>
+</nav>
+</div>
+</header>
+<main>
+<section class="shell hero">
+<div>
+<div class="eyebrow">Free GLP-1 meal plan generator</div>
+<h1>Get a 7-day <span class="gradient-text">GLP-1 friendly</span> meal plan.</h1>
+<p class="hero-copy">Choose the foods you enjoy and Hearty will build a simple, protein-focused starter plan for Ozempic, Mounjaro, Wegovy, Saxenda, Retatrutide or similar medication.</p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="#generator">Generate my free plan</a>
+<button class="btn btn-secondary" data-hearty-checkout="" type="button">Buy the full Hearty app</button>
+</div>
+<p class="micro-proof">Built by nutrition coaches for real GLP-1 life: smaller meals, lower appetite days and practical food choices.</p>
+</div>
+<div aria-hidden="true" class="phone-stage">
+<div class="phone-glow"></div>
+<div class="phone">
+<div class="screen">
+<div class="screen-title">Your 7-day plan</div>
+<div class="screen-sub">Generated from your country + food preferences</div>
+<div class="screen-banner"><small>Free starter plan</small><strong>Protein first. Simple meals. Easy portions.</strong></div>
+<div class="meal-mini"><strong>Breakfast</strong><span>Low-fat yoghurt bowl with fruit and oats.</span></div>
+<div class="meal-mini"><strong>Lunch</strong><span>Chicken salad wrap with familiar local food wording.</span></div>
+<div class="meal-mini"><strong>Dinner</strong><span>Fish, vegetables and one sensible starch portion.</span></div>
+<div class="meal-mini"><strong>After day 7</strong><span>Continue inside Hearty for ongoing meals, tracking and support.</span></div>
+</div>
+</div>
+</div>
+</section>
+<section aria-label="Why this free plan works" class="shell lead-panel">
+<div class="lead-block">
+<h2>A starter plan that feels realistic, not random.</h2>
+<p>The free generator asks for the food choices that actually matter: your country, proteins, breakfasts, starches, vegetables, fruits and snacks. The result is a first-week plan that is easier to follow because it starts with foods you already accept.</p>
+<ul class="clean-list">
+<li>Country-aware wording so the plan uses familiar food names.</li>
+<li>Simple GLP-1 friendly meals instead of complicated recipes.</li>
+<li>Downloadable 7-day output you can save, print or reuse.</li>
+</ul>
+</div>
+<div class="lead-block companion-card">
+<h3>Hearty is the full GLP-1 companion app</h3>
+<p>Your free 7-day meal plan gets you started. Hearty is built to support the full GLP-1 journey after that: meals, tracking, rough days, progress and daily structure.</p>
+<ul class="companion-list">
+<li><span class="mini-icon">🍽</span><span>Ongoing meal generation based on your food preferences, country and routine</span></li>
+<li><span class="mini-icon">P</span><span>Protein visibility so you can see whether meals are helping you reach the right targets</span></li>
+<li><span class="mini-icon">💧</span><span>Hydration goals based on your body and daily needs</span></li>
+<li><span class="mini-icon">⚖</span><span>Daily weigh-ins to keep progress visible without overcomplicating it</span></li>
+<li><span class="mini-icon">📷</span><span>Progress photo reminders so changes are not only measured by the scale</span></li>
+<li><span class="mini-icon">💉</span><span>Medication rhythm support for injection days and weekly routines</span></li>
+<li><span class="mini-icon">+</span><span>Support Mode for rough days when appetite, nausea or side effects make eating harder</span></li>
+<li><span class="mini-icon">🏋</span><span>Home and gym exercise guidance built for people losing weight on GLP-1s</span></li>
+<li><span class="mini-icon">📚</span><span>Short daily lessons so users understand the journey without information overload</span></li>
+</ul>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty</button>
+</div>
+</section>
+<section class="shell section generator-section" id="generator">
+<div class="generator-head">
+<div class="setup-capsule">Free meal plan setup</div>
+<h2>Build your free 7-day plan</h2>
+<p>Add your details, choose the foods you enjoy, and Hearty will generate a simple GLP-1 friendly starter plan using familiar food wording for your country.</p>
+</div>
+<section class="setup-card" data-wizard-root=""></section>
+<section aria-live="polite" class="result-panel" id="resultPanel">
+<div class="result-head">
+<div>
+<h2 id="resultTitle">Your 7-day GLP-1 meal plan</h2>
+<p id="resultSubtitle">A simple starter plan based on your selected food preferences.</p>
+</div>
+<span class="market-tag" id="marketTag">Free starter plan</span>
+</div>
+<div class="days-grid" id="daysGrid"></div>
+<div class="result-actions">
+<button class="btn btn-secondary btn-small" id="copyPlan" type="button">Copy plan</button>
+<button class="btn btn-secondary btn-small" id="downloadPlan" type="button">Download plan</button>
+<button class="btn btn-secondary btn-small" id="printPlan" type="button">Print</button>
+</div>
+<div class="upsell">
+<h3>Need your next plan after day 7?</h3>
+<p>Hearty gives you ongoing GLP-1 meal generation, protein tracking, hydration goals, progress tracking, Support Mode for rough side-effect days and short daily guidance.</p>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Continue with Hearty</button>
+</div>
+</section>
+</section>
+<section class="shell section" id="full-app">
+<div class="info-panel">
+<div class="info-layout">
+<div>
+<div class="info-kicker">Nutrition basics</div>
+<h2>What a good GLP-1 meal plan should do</h2>
+<p>GLP-1 medication can reduce appetite and slow digestion, so the meal plan has to protect nutrition while keeping meals small, familiar and easy to repeat.</p>
+<div class="info-cta"><button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty</button></div>
+</div>
+<div class="info-body">
+<section>
+<ul class="info-bullets">
+<li><strong>Protein at every meal.</strong> Prioritise lean protein first so smaller meals still support muscle retention while weight is dropping.</li>
+<li><strong>Do not skip nutrition when appetite is low.</strong> A light yoghurt bowl, eggs, tuna, chicken, beans or a protein drink is better than an empty day.</li>
+<li><strong>Build plates in order.</strong> Start with protein, add vegetables or fruit, then add a sensible starch if it helps energy and satisfaction.</li>
+<li><strong>Use slow, useful carbohydrates.</strong> Oats, potatoes, rice, whole wheat wraps, beans and fruit can support energy without turning the plan into a sugar-heavy diet.</li>
+<li><strong>Keep fibre steady.</strong> Vegetables, fruit, oats, legumes and whole grains help gut regularity, especially when food volume is lower.</li>
+<li><strong>Increase fibre with fluids.</strong> More fibre without enough liquid can make constipation worse, so hydration has to rise with it.</li>
+<li><strong>Plan hydration deliberately.</strong> Smaller appetite often means less drinking too, so the plan should keep water, soups or water-rich foods visible.</li>
+<li><strong>Manage nausea with meal size.</strong> Smaller, plainer meals are often easier than large, rich or greasy meals on rough days.</li>
+<li><strong>Protect micronutrients.</strong> Fruit, vegetables, dairy or fortified alternatives, legumes and varied proteins help cover vitamins and minerals when portions shrink.</li>
+<li><strong>Include calcium and vitamin D sources.</strong> Yoghurt, milk, fortified alternatives, tinned fish with bones or appropriate supplements may matter when intake is low.</li>
+<li><strong>Keep healthy fats measured.</strong> Avocado, olive oil, nuts and seeds are useful, but large high-fat meals can feel heavy during delayed digestion.</li>
+<li><strong>Use simple snacks strategically.</strong> Protein yoghurt, cottage cheese, boiled eggs, tuna, fruit or a small handful of nuts can close nutrition gaps.</li>
+<li><strong>Avoid extreme restriction.</strong> The goal is consistent nourishment, not starving, skipping meals or cutting out whole food groups unnecessarily.</li>
+<li><strong>Match food to injection rhythm.</strong> Some people need gentler meals around injection days and more complete meals when appetite improves.</li>
+<li><strong>Make the plan repeatable.</strong> Familiar foods and realistic portions beat complicated recipes that disappear after one motivated week.</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</section>
+</main>
+<section aria-label="Important note" class="shell care-banner">
+<strong>Important note:</strong> Hearty is a GLP-1 companion app and does not replace medical care. This free meal plan is general education and lifestyle support only. Please follow your healthcare provider’s advice, especially if you have medical conditions or prescribed dietary instructions.
+    </section>
+<footer class="footer">
+<strong>Hearty</strong> GLP-1 meal planning, tracking and daily support
+    </footer>
+</div>
+<div class="toast" id="toast">Copied</div>
+<div aria-hidden="true" aria-labelledby="countryGateTitle" aria-modal="true" class="country-gate" id="countryGate" role="dialog">
+<div class="country-gate-card">
+<button aria-label="Close" class="country-gate-close" data-country-gate-close="" type="button">×</button>
+<h3 id="countryGateTitle">Where are you based?</h3>
+<p>Choose once and Hearty will open the correct checkout directly.</p>
+<div class="country-gate-actions">
+<button class="country-choice" data-country-choice="ZA" type="button">South Africa checkout</button>
+<button class="country-choice secondary" data-country-choice="INT" type="button">International checkout</button>
+</div>
+</div>
+</div>
+<script src="lead-magnet-meals-engine.js"></script>
+<script>
+    (function(){
+      "use strict";
+      const SA_SALES_URL = "https://hearty.health/sa.html";
+      const INT_SALES_URL = "https://hearty.health";
+
+      // Direct checkout configuration.
+      // SA checkout uses the exact PayFast pattern from the South African sales page.
+      // International checkout uses the Paddle pattern from the international sales page.
+      // If the live Paddle token/price are on the homepage, this page can load them from / at click time.
+      const HEARTY_SA_PAYFAST = {
+        receiver: "30731969",
+        amount: "200",
+        itemName: "Hearty Lifetime License",
+        itemDescription: "Hearty Lifetime License",
+        returnUrl: "https://hearty.health/welcome.html?from=payfast",
+        cancelUrl: "https://hearty.health/sa"
+      };
+
+      const HEARTY_PADDLE = {
+        clientToken: window.HEARTY_PADDLE?.clientToken || "PASTE_YOUR_CLIENT_SIDE_TOKEN_HERE",
+        priceId: window.HEARTY_PADDLE?.priceId || "PASTE_YOUR_PRICE_ID_HERE"
+      };
+
+      const SUPABASE_URL = "";
+      const SUPABASE_ANON_KEY = "";
+      const LEADS_TABLE = "meal_plan_leads";
+      const urlParams = new URLSearchParams(window.location.search);
+      const tracking = {
+        ref: urlParams.get("ref") || "",
+        utm_source: urlParams.get("utm_source") || "",
+        utm_medium: urlParams.get("utm_medium") || "",
+        utm_campaign: urlParams.get("utm_campaign") || "",
+        utm_content: urlParams.get("utm_content") || ""
+      };
+
+      const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
+      const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
+      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"", countrySelected:false, proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      let latestPlanText = "";
+      let latestPlan = [];
+      let currentLeadId = "";
+
+      const root = document.querySelector("[data-wizard-root]");
+      const resultPanel = document.getElementById("resultPanel");
+      const daysGrid = document.getElementById("daysGrid");
+      const marketTag = document.getElementById("marketTag");
+      const toast = document.getElementById("toast");
+      const countryGate = document.getElementById("countryGate");
+
+      const steps = [
+        { id:"lead", kicker:"Start", title:"First, where should we send your plan?", copy:"Your plan appears instantly on this page. We use your email for the meal-plan follow-up and your WhatsApp number only if you add it.", type:"lead" },
+        { id:"country", kicker:"Step 1", title:"Select your country", copy:"This helps Hearty use familiar food names and open the correct checkout if you decide to buy.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
+        { id:"proteins", kicker:"Step 2", title:"Which proteins do you enjoy?", copy:"Choose the main proteins you want your plan to use. If you do not eat something, do not select it.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""],["turkey","Turkey",""]] },
+        { id:"breakfast", kicker:"Step 3", title:"Which breakfasts do you enjoy?", copy:"Breakfast options stay simple and protein-aware.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""]] },
+        { id:"starches", kicker:"Step 4", title:"Which starches do you enjoy?", copy:"Hearty uses sensible starch portions where the meal needs it.", type:"multi", key:"starches", options:[["rice","Rice",""],["potato","Potato",""],["sweet_potato","Sweet potato",""],["couscous","Couscous",""],["whole_wheat_pasta","Whole wheat pasta",""],["whole_wheat_wraps","Whole wheat wraps",""],["whole_wheat_bread","Whole wheat bread / toast",""]] },
+        { id:"vegetables", kicker:"Step 5", title:"Which vegetables do you enjoy?", copy:"Choose enough options so the plan can rotate realistic vegetable combinations.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
+        { id:"fruits", kicker:"Step 6", title:"Which fruits do you like?", copy:"Used for breakfast bowls and snack suggestions. You can skip this if you prefer.", type:"multi", key:"fruits", allowSkip:true, options:[["apple","Apple",""],["banana","Banana",""],["orange","Orange",""],["grapes","Grapes",""],["peach","Peach",""],["strawberries","Strawberries",""],["blueberries","Blueberries",""],["raspberries","Raspberries",""],["pineapple","Pineapple",""],["pawpaw","Pawpaw / papaya",""],["kiwi","Kiwi fruit",""],["grapefruit","Grapefruit",""]] },
+        { id:"snackPreferences", kicker:"Step 7", title:"Which snacks do you prefer?", copy:"Choose snacks you would be happy to see in your 7-day plan. You can skip this if you prefer.", type:"multi", key:"snackPreferences", allowSkip:true, dynamicOptions:getSnackOptions },
+        { id:"summary", kicker:"Final step", title:"Your meal setup is ready", copy:"Hearty will now generate a 7-day GLP-1 friendly starter plan around your preferences.", type:"summary" }
+      ];
+
+      function getVegetableOptions(){
+        const marrow = state.country === "UK" ? "Courgette" : (state.country === "ZA" ? "Baby marrow" : "Zucchini");
+        return [["broccoli","Broccoli",""],["cauliflower","Cauliflower",""],["carrots","Carrots",""],["baby_marrow",marrow,""],["spinach","Spinach",""],["mushrooms","Mushrooms",""],["peppers","Peppers",""],["green_beans","Green beans",""],["corn","Corn",""],["butternut","Butternut",""],["cabbage","Cabbage",""],["lettuce","Lettuce / salad greens",""],["cucumber","Cucumber",""],["tomato","Tomato",""],["onion","Onion",""],["peas","Peas",""],["mixed_veg","Mixed vegetables",""]];
+      }
+      function getSnackOptions(){
+        const jerky = state.country === "ZA" ? "Biltong" : (state.country === "US" || state.country === "CA" ? "Beef jerky" : "Biltong / beef jerky");
+        return [["low_fat_yoghurt", localYoghurt(), ""],["cottage_cheese","Cottage cheese",""],["fruit","Fruit",""],["biltong", jerky, ""],["nuts_seeds","Nuts and seeds",""],["peanut_butter","Peanut butter",""],["rice_cakes","Rice cakes",""],["wholegrain_crackers","Wholegrain crackers",""],["boiled_eggs","Boiled eggs",""],["tuna_rice_cakes","Tuna on rice cakes",""]];
+      }
+
+      function render(){
+        const step = steps[state.step];
+        const progress = Math.round(((state.step + 1) / steps.length) * 100);
+        root.innerHTML = `
+          <div class="progress-wrap">
+            <div class="progress-meta"><span>${escapeHtml(step.kicker)}</span><span>${state.step + 1} / ${steps.length}</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+          </div>
+          <div class="question">
+            <div class="kicker">${escapeHtml(step.kicker)}</div>
+            <h3>${escapeHtml(step.title)}</h3>
+            <p class="question-copy">${escapeHtml(step.copy)}</p>
+            ${renderStepBody(step)}
+          </div>
+          <div class="nav-row">
+            <button class="btn btn-secondary" type="button" data-action="back" ${state.step === 0 ? "disabled" : ""}>Back</button>
+            <button class="btn btn-primary" type="button" data-action="${step.type === "summary" ? "finish" : "next"}" ${canContinue(step) ? "" : "disabled"}>${step.type === "summary" ? "Generate my free 7-day plan" : "Next"}</button>
+          </div>`;
+        bind();
+      }
+
+      function renderStepBody(step){
+        if(step.type === "lead") return renderLeadStep();
+        if(step.type === "summary") return renderSummary();
+        const options = typeof step.dynamicOptions === "function" ? step.dynamicOptions() : step.options;
+        const selected = Array.isArray(state[step.key]) ? state[step.key] : [state[step.key]];
+        return `<div class="option-grid two">${options.map(([value,title,sub]) => `
+          <button class="option-btn ${selected.includes(value) ? "selected" : ""}" type="button" data-action="select" data-key="${step.key}" data-value="${value}">
+            <span class="option-main"><span class="option-title">${escapeHtml(title)}</span><span class="option-sub">${escapeHtml(sub)}</span></span>
+            <span class="selector-dot" aria-hidden="true"></span>
+          </button>`).join("")}</div>${step.allowSkip ? `<button class="btn btn-secondary btn-small" type="button" data-action="skip">Skip this step</button>` : ""}`;
+      }
+
+      function renderLeadStep(){
+        return `<div class="lead-grid">
+          <div class="field"><label for="firstName">First name</label><input id="firstName" value="${escapeAttr(state.firstName)}" autocomplete="given-name" required placeholder="Jean" /></div>
+          <div class="field"><label for="email">Email</label><input id="email" type="email" value="${escapeAttr(state.email)}" autocomplete="email" required placeholder="you@example.com" /></div>
+          <div class="field" style="grid-column:1/-1;"><label for="whatsapp">WhatsApp number <span style="color:#7b8998;font-weight:750;">optional</span></label><input id="whatsapp" type="tel" value="${escapeAttr(state.whatsapp)}" autocomplete="tel" placeholder="082 000 0000" /></div>
+          <p class="form-note" style="grid-column:1/-1;">Your plan appears instantly. Email lets us send meal-plan follow-up tips. WhatsApp is optional.</p>
+        </div>`;
+      }
+
+      function renderSummary(){
+        return `<div class="summary-grid">
+          ${summaryRow("Name", state.firstName || "Not added")}
+          ${summaryRow("Country", countryLabels[state.country] || "Other")}
+          ${summaryRow("Proteins", listLabels(state.proteins))}
+          ${summaryRow("Breakfasts", listLabels(state.breakfast))}
+          ${summaryRow("Starches", listLabels(state.starches))}
+          ${summaryRow("Vegetables", listLabels(state.vegetables))}
+          ${summaryRow("Fruit", listLabels(state.fruits))}
+          ${summaryRow("Snacks", listLabels(state.snackPreferences))}
+        </div>`;
+      }
+      function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
+
+      function bind(){
+        ["firstName","email","whatsapp"].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.addEventListener("input", () => { state[id] = el.value.trim(); updateNavButton(); });
+        });
+        root.querySelectorAll("[data-action='select']").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-key");
+            const value = btn.getAttribute("data-value");
+            const step = steps[state.step];
+            if(step.type === "multi"){
+              state[key] = Array.isArray(state[key]) ? state[key] : [];
+              state[key] = state[key].includes(value) ? state[key].filter(v => v !== value) : state[key].concat(value);
+            } else {
+              state[key] = value;
+              if(key === "country"){ state.countrySelected = true; updateSalesLinks(); }
+            }
+            render();
+          });
+        });
+        root.querySelector("[data-action='back']")?.addEventListener("click", () => { if(state.step > 0){ state.step -= 1; render(); } });
+        root.querySelector("[data-action='next']")?.addEventListener("click", () => { saveLeadInputs(); const step = steps[state.step]; if(!canContinue(step)) return; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='skip']")?.addEventListener("click", () => { const step = steps[state.step]; state[step.key] = []; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
+      }
+      function saveLeadInputs(){ ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
+      function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
+      function canContinue(step){
+        if(step.type === "lead") return state.firstName.trim().length > 1 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim());
+        if(step.type === "summary" || step.allowSkip) return true;
+        const value = state[step.key];
+        return Array.isArray(value) ? value.length > 0 : Boolean(value);
+      }
+
+      function getSalesUrl(){
+        // Used for downloaded plan text and lead records.
+        // The live CTA opens checkout directly instead of sending buyers back to the sales page.
+        return state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL;
+      }
+
+      function getCheckoutMarket(){
+        return state.country === "ZA" ? "ZA" : "INT";
+      }
+
+      function updateSalesLinks(){
+        document.querySelectorAll("[data-hearty-checkout]").forEach(button => {
+          button.setAttribute("type", "button");
+          button.setAttribute("aria-label", "Open Hearty checkout");
+          if(button.textContent.includes("Hearty") && button.classList.contains("btn-primary")) button.textContent = "Get Hearty";
+        });
+      }
+
+      function addHiddenField(form, name, value){
+        if(value === undefined || value === null || value === "") return;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      }
+
+      function openHeartySACheckout(){
+        const form = document.createElement("form");
+        form.name = "PayFastPayNowForm";
+        form.method = "post";
+        form.action = "https://payment.payfast.io/eng/process";
+        form.style.display = "none";
+
+        addHiddenField(form, "cmd", "_paynow");
+        addHiddenField(form, "receiver", HEARTY_SA_PAYFAST.receiver);
+        addHiddenField(form, "return_url", HEARTY_SA_PAYFAST.returnUrl);
+        addHiddenField(form, "cancel_url", HEARTY_SA_PAYFAST.cancelUrl);
+        addHiddenField(form, "amount", HEARTY_SA_PAYFAST.amount);
+        addHiddenField(form, "item_name", HEARTY_SA_PAYFAST.itemName);
+        addHiddenField(form, "item_description", HEARTY_SA_PAYFAST.itemDescription);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+
+      function hasLivePaddleConfig(){
+        return Boolean(
+          HEARTY_PADDLE.clientToken &&
+          HEARTY_PADDLE.priceId &&
+          !String(HEARTY_PADDLE.clientToken).includes("PASTE_") &&
+          !String(HEARTY_PADDLE.priceId).includes("PASTE_")
+        );
+      }
+
+      function absorbPaddleConfigFromHtml(html){
+        if(!html) return false;
+        const tokenMatch = html.match(/clientToken\s*:\s*["']([^"']+)["']/i);
+        const priceMatch = html.match(/priceId\s*:\s*["']([^"']+)["']/i);
+        const token = tokenMatch ? tokenMatch[1] : "";
+        const price = priceMatch ? priceMatch[1] : "";
+
+        if(token && price && !token.includes("PASTE_") && !price.includes("PASTE_")){
+          HEARTY_PADDLE.clientToken = token;
+          HEARTY_PADDLE.priceId = price;
+          return true;
+        }
+
+        return false;
+      }
+
+      async function loadPaddleConfigFromHomepage(){
+        if(hasLivePaddleConfig()) return true;
+
+        try {
+          const response = await fetch("/?heartyCheckoutConfig=" + Date.now(), { cache: "no-store", credentials: "same-origin" });
+          if(!response.ok) return false;
+          const html = await response.text();
+          return absorbPaddleConfigFromHtml(html);
+        } catch(error){
+          console.warn("Could not load Paddle config from homepage", error);
+          return false;
+        }
+      }
+
+      function waitForPaddle(timeoutMs){
+        return new Promise(resolve => {
+          if(window.Paddle) return resolve(true);
+          const started = Date.now();
+          const timer = setInterval(() => {
+            if(window.Paddle){
+              clearInterval(timer);
+              resolve(true);
+            } else if(Date.now() - started > timeoutMs){
+              clearInterval(timer);
+              resolve(false);
+            }
+          }, 80);
+        });
+      }
+
+      let paddleInitialized = false;
+      function initHeartyPaddle(){
+        if(paddleInitialized) return true;
+        if(!window.Paddle || !hasLivePaddleConfig()) return false;
+        try {
+          Paddle.Initialize({ token: HEARTY_PADDLE.clientToken });
+          paddleInitialized = true;
+          return true;
+        } catch(error){
+          console.error("Paddle initialization failed", error);
+          return false;
+        }
+      }
+
+      async function openHeartyInternationalCheckout(){
+        const paddleReady = await waitForPaddle(5000);
+        if(!paddleReady){
+          alert("Checkout is still loading. Please try again.");
+          salesNavigationStarted = false;
+          checkoutOpened = false;
+          return;
+        }
+
+        if(!hasLivePaddleConfig()){
+          await loadPaddleConfigFromHomepage();
+        }
+
+        if(initHeartyPaddle()){
+          try {
+            Paddle.Checkout.open({
+              items: [{ priceId: HEARTY_PADDLE.priceId, quantity: 1 }],
+              settings: {
+                displayMode: "overlay",
+                theme: "light",
+                variant: "one-page",
+                successUrl: "https://hearty.health/welcome.html?from=paddle"
+              }
+            });
+            return;
+          } catch(error){
+            console.error("Paddle checkout failed", error);
+          }
+        }
+
+        alert("International checkout could not open because the live Paddle token/price ID were not found on this page or the homepage. Paste the same live HEARTY_PADDLE clientToken and priceId from your international page into this lead magnet page.");
+        salesNavigationStarted = false;
+        checkoutOpened = false;
+      }
+
+      function openCorrectCheckout(){
+        if(getCheckoutMarket() === "ZA") openHeartySACheckout();
+        else openHeartyInternationalCheckout();
+      }
+
+      function generateAndShowPlan(){
+        latestPlan = buildPlan();
+        latestPlanText = makePlanText(latestPlan);
+        renderPlan(latestPlan);
+        saveLead(latestPlanText);
+        resultPanel.classList.add("show");
+        marketTag.textContent = "Free starter plan";
+        updateSalesLinks();
+        resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+
+
+      // BUTTON_FIX_ONLY_V1: these helpers are the only generator-button patch.
+      function getHeartyEngine(){
+        return window.HeartyMealsEngineV6 || null;
+      }
+
+      function buildEngineProfile(){
+        return {
+          country: state.country || "ZA",
+          allowedProteins: Array.isArray(state.proteins) ? state.proteins.slice() : [],
+          allowedBreakfastFamilies: Array.isArray(state.breakfast) ? state.breakfast.slice() : [],
+          allowedStarches: Array.isArray(state.starches) ? state.starches.slice() : [],
+          allowedVegetables: Array.isArray(state.vegetables) ? state.vegetables.slice() : [],
+          allowedFruits: Array.isArray(state.fruits) ? state.fruits.slice() : [],
+          allowedSnacks: Array.isArray(state.snackPreferences) ? state.snackPreferences.slice() : [],
+          snackEnabled: true,
+          seafoodAllowed: !Array.isArray(state.proteins) || state.proteins.length === 0 || state.proteins.includes("fish") || state.proteins.includes("seafood") || state.proteins.includes("canned_tuna")
+        };
+      }
+
+      function buildPlan(){
+        const engine = getHeartyEngine();
+        if(!engine || typeof engine.generateWeekPlan !== "function"){
+          console.warn("Hearty meal engine unavailable. Using fallback generator.");
+          return buildFallbackPlan();
+        }
+
+        const profile = buildEngineProfile();
+        const week = engine.generateWeekPlan({
+          profile,
+          adjustments: { supportMode: null },
+          weekState: null
+        });
+
+        const days = Array.isArray(week?.days) ? week.days.slice(0, 7) : [];
+        if(!days.length) return buildFallbackPlan();
+
+        return days.map((day, index) => ({
+          day: `Day ${index + 1}`,
+          dayName: day.dayName || dayNames[index] || `Day ${index + 1}`,
+          breakfast: cleanMealTitle(day.breakfast?.title || "Breakfast"),
+          lunch: cleanMealTitle(day.lunch?.title || "Lunch"),
+          snack: cleanMealTitle(day.snack?.title || "Snack"),
+          dinner: cleanMealTitle(day.dinner?.title || "Dinner"),
+          protein: {
+            breakfast: Number(day.breakfast?.proteinEstimate || 0),
+            lunch: Number(day.lunch?.proteinEstimate || 0),
+            snack: Number(day.snack?.proteinEstimate || 0),
+            dinner: Number(day.dinner?.proteinEstimate || 0)
+          },
+          source: "HeartyMealsEngineV6"
+        }));
+      }
+
+      function buildFallbackPlan(){
+        const proteins = state.proteins.length ? state.proteins : ["chicken","beef","fish","eggs","canned_tuna"];
+        const breakfasts = state.breakfast.length ? state.breakfast : ["eggs","oats","yoghurt_bowl"];
+        const starches = state.starches.length ? state.starches : ["rice","potato","sweet_potato","whole_wheat_wraps"];
+        const vegetables = state.vegetables.length ? state.vegetables : ["broccoli","carrots","baby_marrow","spinach","lettuce","tomato","cucumber"];
+        const fruits = state.fruits.length ? state.fruits : ["apple","banana","grapes","pineapple"];
+        const snacks = state.snackPreferences.length ? state.snackPreferences : ["low_fat_yoghurt","cottage_cheese","fruit","boiled_eggs"];
+        const plan = [];
+        for(let i=0;i<7;i++){
+          plan.push({
+            day: `Day ${i + 1}`,
+            dayName: dayNames[i] || `Day ${i + 1}`,
+            breakfast: breakfastText(pick(breakfasts, i), pick(fruits, i), vegetables),
+            lunch: lunchText(pick(proteins, i), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i)),
+            snack: snackText(pick(snacks, i), pick(fruits, i+1)),
+            dinner: dinnerText(pick(proteins, i+2), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i+1)),
+            protein: { breakfast: 0, lunch: 0, snack: 0, dinner: 0 },
+            source: "fallback"
+          });
+        }
+        return plan;
+      }
+
+      function cleanMealTitle(value){
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .replace(/\bsmall pasta\b/gi, "whole wheat pasta")
+          .trim();
+      }
+
+      function pick(list, index){ return list[index % list.length]; }
+      function localYoghurt(){ return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt"; }
+      function vegLabel(id){
+        const map = { broccoli:"broccoli", cauliflower:"cauliflower", carrots:"carrots", spinach:"spinach", mushrooms:"mushrooms", peppers:"peppers", green_beans:"green beans", corn:"corn", butternut:"butternut", cabbage:"cabbage", lettuce:"salad greens", cucumber:"cucumber", tomato:"tomato", onion:"onion", peas:"peas", mixed_veg:"mixed vegetables" };
+        if(id === "baby_marrow") return state.country === "UK" ? "courgette" : (state.country === "ZA" ? "baby marrow" : "zucchini");
+        return map[id] || String(id || "vegetables").replaceAll("_"," ");
+      }
+      function starchLabel(id){
+        const map = { rice:"rice", potato:"potato", sweet_potato:"sweet potato", couscous:"couscous", whole_wheat_pasta:"whole wheat pasta", whole_wheat_wraps: state.country === "UK" || state.country === "AU" ? "wholemeal wrap" : "whole wheat wrap", whole_wheat_bread: state.country === "UK" || state.country === "AU" ? "wholemeal toast" : "whole wheat toast" };
+        return map[id] || String(id || "starch").replaceAll("_"," ");
+      }
+      function proteinLabel(id){
+        const map = { chicken:"skinless chicken breast", beef: state.country === "US" || state.country === "CA" ? "lean ground beef" : "lean beef mince or strips", pork:"lean pork strips", fish:"white fish", seafood:"prawns or seafood", canned_tuna:"canned tuna in water", eggs:"2 x eggs", turkey:"turkey breast" };
+        return map[id] || String(id || "protein").replaceAll("_"," ");
+      }
+      function breakfastText(id, fruit, vegetables){
+        const yoghurt = localYoghurt().toLowerCase();
+        const fruitText = fruitLabel(fruit);
+        const greens = vegetables.includes("spinach") ? "spinach" : vegLabel(pick(vegetables, 0));
+        const mushroom = vegetables.includes("mushrooms") ? "mushrooms" : vegLabel(pick(vegetables, 1));
+        const map = {
+          eggs: `2 x eggs scrambled with ${greens} or ${mushroom}.`,
+          all_bran: `A bowl of All Bran / Bran Flakes with low-fat milk and ${fruitText}.`,
+          oats: `A bowl of cooked oats with low-fat milk and ${fruitText}.`,
+          overnight_oats: `Overnight oats made with low-fat milk, ${yoghurt} and ${fruitText}.`,
+          yoghurt_bowl: `A bowl of ${yoghurt} with ${fruitText} and 1 portion oats.`
+        };
+        return map[id] || map.oats;
+      }
+      function lunchText(protein, vegA, vegB, starch){
+        if(protein === "canned_tuna") return `Tuna salad (${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(protein === "eggs") return `Egg salad plate (2 x eggs, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(starch === "whole_wheat_wraps") return `${capitalizeProtein(protein)} wrap (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and low-calorie dressing) in a ${starchLabel(starch)}.`;
+        return `${capitalizeProtein(protein)} salad (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+      }
+      function dinnerText(protein, vegA, vegB, starch){
+        if(protein === "eggs") return `2 x eggs with ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+        return `Grilled ${proteinLabel(protein)} with 1-2 portions ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+      }
+      function snackText(id, fruit){
+        const jerky = state.country === "ZA" ? "biltong" : (state.country === "US" || state.country === "CA" ? "beef jerky" : "biltong / beef jerky");
+        const map = {
+          low_fat_yoghurt: `1 cup ${localYoghurt().toLowerCase()}.`,
+          cottage_cheese: "Cottage cheese on 2 x rice cakes or crackerbread.",
+          fruit: `${fruitLabel(fruit)} or a fruit of your choice.`,
+          biltong: `A small portion of ${jerky} with water or tea.`,
+          nuts_seeds: "A small portion of nuts and seeds.",
+          peanut_butter: "1 tablespoon peanut butter on rice cakes.",
+          rice_cakes: "2 x rice cakes with cottage cheese or peanut butter.",
+          wholegrain_crackers: "Wholegrain crackers with cottage cheese.",
+          boiled_eggs: "1-2 boiled eggs.",
+          tuna_rice_cakes: "Tuna on 2 x rice cakes."
+        };
+        return map[id] || map.fruit;
+      }
+      function fruitLabel(id){ return ({ pawpaw:"pawpaw / papaya", kiwi:"kiwi fruit" }[id] || id || "apple").replaceAll("_"," "); }
+      function capitalizeProtein(id){ return ({ canned_tuna:"Tuna", seafood:"Seafood" }[id] || String(id || "Meal").charAt(0).toUpperCase()+String(id || "meal").slice(1)); }
+
+      function renderPlan(plan){
+        const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
+        document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
+        document.getElementById("resultSubtitle").textContent = `${countryLabels[state.country] || "Your country"} • ${state.proteins.length || "default"} protein choice${state.proteins.length === 1 ? "" : "s"} • powered by the Hearty meal engine`;
+        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast)}${mealRow("Lunch", day.lunch, day.protein?.lunch)}${mealRow("Snack", day.snack, day.protein?.snack)}${mealRow("Dinner", day.dinner, day.protein?.dinner)}</article>`).join("");
+      }
+      function mealRow(label, text, protein){
+        const proteinText = Number(protein || 0) > 0 ? ` <span style="color:#7b8998;font-weight:800;">${Number(protein)}g protein estimate</span>` : "";
+        return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}${proteinText}</div></div>`;
+      }
+      function makePlanText(plan){
+        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, `Generated with: Hearty meal engine`, ``, `This is general lifestyle support, not medical advice.`, ``];
+        plan.forEach(day => { lines.push(day.day, `Breakfast: ${day.breakfast}`, `Lunch: ${day.lunch}`, `Snack: ${day.snack}`, `Dinner: ${day.dinner}`, ``); });
+        lines.push(`Continue with Hearty: ${getSalesUrl()}`);
+        return lines.join("\n");
+      }
+
+      document.getElementById("copyPlan").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(latestPlanText);
+          updateLeadEvent({ copied_plan: true, copied_at: new Date().toISOString() });
+          showToast("Plan copied");
+        } catch(e) { showToast("Copy failed"); }
+      });
+
+      document.getElementById("downloadPlan").addEventListener("click", () => {
+        const blob = new Blob([latestPlanText], { type:"text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `hearty-7-day-glp1-meal-plan.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        updateLeadEvent({ downloaded_plan: true, downloaded_at: new Date().toISOString() });
+      });
+
+      document.getElementById("printPlan").addEventListener("click", () => {
+        updateLeadEvent({ printed_plan: true, printed_at: new Date().toISOString() });
+        window.print();
+      });
+
+      let salesNavigationStarted = false;
+      let checkoutOpened = false;
+
+      function openCheckoutOnce(){
+        if(checkoutOpened) return;
+        checkoutOpened = true;
+        openCorrectCheckout();
+      }
+
+      function goToSales(){
+        if(salesNavigationStarted) return;
+        salesNavigationStarted = true;
+        updateLeadEvent({ clicked_hearty: true, clicked_hearty_at: new Date().toISOString() })
+          .finally(openCheckoutOnce);
+        setTimeout(openCheckoutOnce, 450);
+      }
+
+      document.addEventListener("click", (event) => {
+        const checkoutButton = event.target.closest("[data-hearty-checkout]");
+        if(!checkoutButton) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if(!state.countrySelected){
+          openCountryGate();
+          return;
+        }
+
+        goToSales();
+      }, true);
+
+      function openCountryGate(){
+        if(!countryGate) return;
+        countryGate.classList.add("show");
+        countryGate.setAttribute("aria-hidden", "false");
+      }
+
+      function closeCountryGate(){
+        if(!countryGate) return;
+        countryGate.classList.remove("show");
+        countryGate.setAttribute("aria-hidden", "true");
+      }
+
+      document.querySelectorAll("[data-country-choice]").forEach(button => {
+        button.addEventListener("click", () => {
+          const choice = button.getAttribute("data-country-choice");
+          state.country = choice === "ZA" ? "ZA" : "OTHER";
+          state.countrySelected = true;
+          updateSalesLinks();
+          closeCountryGate();
+          if(steps[state.step]?.id === "country") render();
+          goToSales();
+        });
+      });
+
+      document.querySelector("[data-country-gate-close]")?.addEventListener("click", closeCountryGate);
+      countryGate?.addEventListener("click", (event) => {
+        if(event.target === countryGate) closeCountryGate();
+      });
+      document.addEventListener("keydown", (event) => {
+        if(event.key === "Escape") closeCountryGate();
+      });
+
+      function showToast(message){ toast.textContent = message; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 1800); }
+
+      async function saveLead(generatedPlan){
+        if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+        const payload = {
+          first_name: state.firstName,
+          email: state.email,
+          whatsapp: state.whatsapp,
+          country: countryLabels[state.country] || "Other",
+          market: state.country === "ZA" ? "ZA" : "INT",
+          proteins: state.proteins,
+          breakfasts: state.breakfast,
+          starches: state.starches,
+          vegetables: state.vegetables,
+          fruits: state.fruits,
+          snacks: state.snackPreferences,
+          generated_plan: generatedPlan,
+          checkout_url: state.country === "ZA" ? SA_SALES_URL : INT_SALES_URL,
+          ref: tracking.ref,
+          utm_source: tracking.utm_source,
+          utm_medium: tracking.utm_medium,
+          utm_campaign: tracking.utm_campaign,
+          utm_content: tracking.utm_content,
+          lead_status: "New"
+        };
+        try {
+          const response = await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?select=id`, {
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json",
+              "apikey":SUPABASE_ANON_KEY,
+              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`,
+              "Prefer":"return=representation"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if(response.ok){
+            const data = await response.json();
+            currentLeadId = data?.[0]?.id || "";
+          }
+        } catch(err) { console.warn("Lead capture failed", err); }
+      }
+
+      async function updateLeadEvent(fields){
+        if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !currentLeadId) return;
+
+        try {
+          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?id=eq.${currentLeadId}`, {
+            method:"PATCH",
+            headers:{
+              "Content-Type":"application/json",
+              "apikey":SUPABASE_ANON_KEY,
+              "Authorization":`Bearer ${SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify(fields)
+          });
+        } catch(err) { console.warn("Lead event update failed", err); }
+      }
+
+      function listLabels(values){
+        if(!values || !values.length) return "Skipped";
+        const labels = [];
+        values.forEach(value => {
+          const all = [].concat(getVegetableOptions(), getSnackOptions(), ...steps.filter(s => Array.isArray(s.options)).map(s => s.options));
+          const found = all.find(item => item[0] === value);
+          labels.push(found ? found[1] : value.replaceAll("_"," "));
+        });
+        return labels.join(", ");
+      }
+      function escapeHtml(value){ return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+      function escapeAttr(value){ return escapeHtml(value).replaceAll("`","&#096;"); }
+
+
+      // Checkout safety lock: these CTAs must never fall through to the standard sales page.
+      document.querySelectorAll("[data-hearty-checkout]").forEach((button) => {
+        button.removeAttribute("href");
+        button.setAttribute("type", "button");
+        button.setAttribute("role", "button");
+      });
+
+      updateSalesLinks();
+      render();
+    })();
+  </script>
 </body>
 </html>
