@@ -1,569 +1,108 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="clean_blue">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Hearty — Home</title>
-  <meta name="theme-color" content="#f6f9fe">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Hearty">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
-  <link rel="preload" href="css/hearty-home-v15-refactor-aesthetic.css" as="style">
-  <link rel="stylesheet" href="css/hearty-home-v15-refactor-aesthetic.css">
-  <script src="js/hearty-data-layer.v1.js"></script>
-  <script defer src="js/hearty-home-v15-refactor-aesthetic.js"></script>
-  <meta name="mobile-web-app-capable" content="yes">
-  <style id="hearty-medication-day-picker-css">
-    .day-toggle-grid{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:8px;
-      margin-top:10px;
+/* Hearty PWA service worker — emergency customer repair release.
+   Canonical worker URL: /sw.js
+   Purpose: provide a valid installable app shell and reliable update path.
+*/
+const CACHE_NAME = 'hearty-shell-v2026.06.04-pwa-repair-1';
+const CACHE_PREFIX = 'hearty-';
+const OFFLINE_URL = '/offline.html';
+const APP_SHELL = [
+  '/home.html',
+  '/meals.html',
+  '/exercise.html',
+  '/progress.html',
+  '/support.html',
+  '/settings.html',
+  '/social.html',
+  '/help.html',
+  '/welcome.html',
+  '/privacy.html',
+  '/terms.html',
+  '/refunds.html',
+  '/login.html',
+  OFFLINE_URL,
+  '/manifest.json',
+  '/hearty-logo.png',
+  '/icons/hearty-icon-192.png',
+  '/icons/hearty-icon-512.png',
+  '/icons/hearty-icon-maskable-512.png',
+  '/icons/home-weight.png',
+  '/icons/home-movement.png',
+  '/icons/home-photo.png',
+  '/icons/home-lesson.png',
+  '/css/hearty-home-v15-refactor-aesthetic.css',
+  '/css/hearty-theme.css',
+  '/js/hearty-home-v15-refactor-aesthetic.js',
+  '/js/hearty-theme.js',
+  '/js/hearty-data-layer.v1.js',
+  '/js/hearty-updater.js'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache =>
+      Promise.all(APP_SHELL.map(url =>
+        cache.add(new Request(url, { cache: 'reload' })).catch(error => {
+          console.warn('[Hearty SW] optional precache failed:', url, error);
+        })
+      ))
+    )
+  );
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys
+        .filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+        .map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+function isAppDocument(pathname) {
+  return /^\/(home|meals|exercise|progress|support|settings|social|login|help)\.html$/.test(pathname) || pathname === '/';
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok && response.type === 'basic') {
+      cache.put(request, response.clone());
     }
-    .day-toggle-grid button{
-      min-height:44px;
-      border-radius:14px;
-      border:1px solid var(--line, rgba(143,163,184,.24));
-      background:var(--surface-button, rgba(255,255,255,.9));
-      color:var(--muted, #6d7b8c);
-      font:inherit;
-      font-weight:800;
-      cursor:pointer;
-      box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06));
-    }
-    .day-toggle-grid button.active{
-      background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));
-      color:var(--theme-accent, #2f6df6);
-      border-color:rgba(47,109,246,.26);
-    }
-    @media(max-width:520px){
-      .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-    }
-  </style>
-</head>
-<body>
-  <div class="shell" id="app">
-    <header class="topbar" aria-label="Hearty header">
-      <a class="brand" href="home.html" aria-label="Hearty Home">
-        <img class="brand-logo" src="hearty-logo.png" data-default-logo="hearty-logo.png" data-rose-aurora-logo="hearty-logo-gold.png" alt="Hearty" onerror="this.closest('.brand').classList.add('logo-fallback'); this.remove();">
-        <span class="brand-fallback-mark" aria-hidden="true">♥</span><strong class="brand-text">Hearty</strong>
-      </a>
-      <a class="icon-btn" href="settings.html" aria-label="Settings">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z" fill="none"></path></svg>
-      </a>
-    </header>
-
-    <section class="status-strip">
-      <div>
-        <div class="eyebrow">Daily rhythm</div>
-        <h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
-        <p class="subline" id="dailyStatusLine">Your plan for today is ready.</p>
-      </div>
-      <div class="day-pill" id="homeDayPill">Today</div>
-    </section>
-
-    <main class="home-grid">
-      <section class="main-stack">
-        <section class="card hero-card" aria-label="Progress summary">
-          <div class="rings">
-            <article class="ring-block">
-              <div class="ring-wrap" data-ring="adherence" aria-hidden="true">
-                <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><circle class="ring-track" cx="66" cy="66" r="54" fill="none"></circle><circle class="ring-progress ring-orange" id="adherenceRing" cx="66" cy="66" r="54" fill="none"></circle></svg>
-                <div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
-              </div>
-              <h2 class="ring-title">Daily protocol</h2>
-              <p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
-            </article>
-            <article class="ring-block">
-              <div class="ring-wrap" data-ring="water" aria-hidden="true">
-                <svg width="132" height="132" viewBox="0 0 132 132" fill="none"><circle class="ring-track" cx="66" cy="66" r="54" fill="none"></circle><circle class="ring-progress ring-teal" id="waterRing" cx="66" cy="66" r="54" fill="none"></circle></svg>
-                <div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">GLASSES</div></div></div>
-              </div>
-              <h2 class="ring-title">Hydration</h2>
-              <p class="ring-caption" id="waterCaption">Tap the water card to log.</p>
-            </article>
-          </div>
-
-          <div class="progress-band" aria-label="Weight progress">
-            <div class="progress-top">
-              <div>
-                <div class="section-label">Weight progress</div>
-                <div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
-              </div>
-              <div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
-            </div>
-            <div class="goalbar" aria-hidden="true"><div class="goalbar-fill" id="goalbarFill"></div><div class="goal-marker" id="goalMarker"></div></div>
-            <div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
-          </div>
-        </section>
-
-        <section class="card rhythm-card" id="todaysRhythmCard" aria-label="Today's protocol">
-          <div class="protocol-head">
-            <div><div class="section-label">Today’s protocol</div><h2 class="card-title">Small actions, repeated.</h2></div>
-            <div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
-          </div>
-          <div class="next-action" id="nextAction"><div><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div></div>
-          <div class="protocol-list" id="protocolList">
-            <article class="protocol-item" id="weighInTask">
-              <div class="task-main"><div class="task-title">Daily weigh-in</div><div class="task-sub">Weigh yourself first thing in the morning, before eating or drinking.</div></div>
-              <button class="task-icon-btn" id="openWeightBtn" type="button" aria-label="Open daily weigh-in"><img class="icon-main-img" src="icons/home-weight.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
-            </article>
-            <article class="protocol-item" id="walkTask">
-              <div class="task-main"><div class="task-title">Movement baseline</div><div class="task-sub">Complete your 20–30 minute movement target.</div></div>
-              <button class="task-icon-btn" id="toggleWalkBtn" type="button" aria-label="Mark movement done"><img class="icon-main-img" src="icons/home-movement.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
-            </article>
-            <article class="protocol-item" id="photoTask">
-              <div class="task-main"><div class="task-title">Progress photos</div><div class="task-sub" id="photoTaskSub">Due every 3 weeks.</div></div>
-              <button class="task-icon-btn" id="openPhotoBtn" type="button" aria-label="Open photo check-in"><img class="icon-main-img" src="icons/home-photo.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
-            </article>
-            <article class="protocol-item lesson-task-item" id="lessonTaskItem">
-              <div class="task-main">
-                <div class="lesson-card-bar" id="lessonCardCounter"><span class="lesson-mini-icon">📘</span> Lesson 1/10</div>
-                <div class="task-title">Today’s lesson</div>
-                <div class="task-sub" id="lessonSub">A 2–3 minute practical read.</div>
-              </div>
-              <button class="task-icon-btn" id="openLessonBtn" type="button" aria-label="Open today's lesson"><img class="icon-main-img" src="icons/home-lesson.png" alt="" aria-hidden="true"><span class="task-check">✓</span></button>
-            </article>
-          </div>
-          <div class="protocol-complete" id="protocolComplete">✓ Today’s protocol complete</div>
-        </section>
-      </section>
-
-      <aside class="side-stack">
-        <section class="card support-card" id="supportCard" aria-label="Support mode">
-          <span class="led" id="supportLed" aria-hidden="true"></span>
-          <div class="section-label">Support mode</div>
-          <h2 class="card-title">Do you need some support?</h2>
-          <p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
-          <div class="support-actions-row"><a class="soft-btn" id="supportPrimary" href="support.html">I need support</a><button class="ghost-btn" id="supportOff" type="button">Turn off</button></div>
-        </section>
-
-        <section class="card hydration-card" aria-label="Hydration logger">
-          <div class="compact-head hydration-head"><div><div class="section-label">Hydration</div></div></div>
-          <div class="hydration-logger-clean">
-            <button class="hydration-drop-btn" id="waterGlass" type="button" aria-label="Log one glass of water">
-              <span class="hydration-drop-wrap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" fill="none"></path></svg></span>
-              <span class="hydration-add-label">+250ml</span>
-            </button>
-            <div class="hydration-main">
-              <div class="hydration-progress" aria-hidden="true"><span id="waterProgressBar"></span></div>
-              <div class="hydration-count-chip" id="waterCountChip">
-                <strong id="waterCountValue">0</strong>
-                <span id="waterCountHint">Tap once for each glass</span>
-              </div>
-            </div>
-            <button class="water-undo-clean" id="waterUndo" type="button" aria-label="Undo water glass"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none"></path><path d="M4 9h10a6 6 0 0 1 0 12h-1" fill="none"></path></svg></button>
-          </div>
-        </section>
-
-        <section class="card medication-card" id="injectionCard" aria-label="Medication reminder">
-          <div class="section-label">Medication</div>
-          <h2 class="card-title" id="medicationTitle">Dose reminder</h2>
-          <p class="card-copy" id="nextInjectionDateText">Set your medication schedule during setup.</p>
-          <div class="injection-actions"><button class="dose-icon-btn" id="logDoseBtn" type="button" aria-label="Mark dose logged">✓</button></div>
-        </section>
-      </aside>
-    </main>
-
-    <nav class="bottom-nav" aria-label="Hearty navigation">
-      <a class="nav-item active" aria-current="page" href="home.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5" fill="none"></path><path d="M5.5 10.5V20h13v-9.5" fill="none"></path><path d="M9.5 20v-6h5v6" fill="none"></path></svg><span>Home</span></a>
-      <a class="nav-item" href="meals.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v8" fill="none"></path><path d="M8 3v8" fill="none"></path><path d="M6 3v18" fill="none"></path><path d="M15 3v18" fill="none"></path><path d="M15 3c3 2 4.5 5 4.5 8H15" fill="none"></path></svg><span>Meals</span></a>
-      <a class="nav-item" href="exercise.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10" fill="none"></path><path d="M18 7v10" fill="none"></path><path d="M3 10v4" fill="none"></path><path d="M21 10v4" fill="none"></path><path d="M6 12h12" fill="none"></path></svg><span>Exercise</span></a>
-      <a class="nav-item" href="progress.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5" fill="none"></path><path d="M4 19h16" fill="none"></path><path d="M7 15l3-3 3 2 5-7" fill="none"></path></svg><span>Progress</span></a>
-      <a class="nav-item" href="support.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z" fill="none"></path></svg><span>Support</span></a>
-      <a class="nav-item" href="social.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" fill="none"></path><circle cx="10" cy="7" r="4" fill="none"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87" fill="none"></path><path d="M16 3.13a4 4 0 0 1 0 7.75" fill="none"></path></svg><span>Social</span></a>
-      <a class="nav-item" href="settings.html"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z" fill="none"></path></svg><span>Settings</span></a>
-    </nav>
-  </div>
-
-  <section class="sheet-overlay" id="weightSheet" hidden aria-hidden="true">
-    <div class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="weightSheetTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Daily weigh-in</h2><p class="sheet-copy">Weigh yourself first thing in the morning, before eating or drinking.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <div class="weight-readout"><input class="weight-input" id="weightValueInput" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="0.0"><div class="weight-unit" id="weightUnitLabel">KG</div></div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
-    </div>
-  </section>
-
-  <section class="sheet-overlay" id="photoSheet" hidden aria-hidden="true">
-    <div class="task-sheet photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photoSheetTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photo check-in</h2><p class="sheet-copy">Front photo required. Side and back are optional.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <div class="photo-action-list" id="photoSlots">
-        <button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img alt="Front preview" hidden></button>
-        <button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img alt="Side preview" hidden></button>
-        <button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img alt="Back preview" hidden></button>
-      </div>
-      <input id="photoInput" type="file" accept="image/*" capture="environment" class="sr-only">
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="completePhotoBtn" type="button" disabled>Add front photo to complete</button></div>
-    </div>
-  </section>
-
-  <section class="sheet-overlay" id="lessonSheet" hidden aria-hidden="true">
-    <div class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><div class="lesson-counter" id="lessonCounter">Lesson 1/10</div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">One short practical lesson each day.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <div class="lesson-copy" id="lessonBody"></div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
-    </div>
-  </section>
-
-  <section class="sheet-overlay" id="coreSetupSheet" hidden aria-hidden="true">
-    <div class="task-sheet setup-sheet" role="dialog" aria-modal="true" aria-labelledby="coreSetupTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</h2><p class="sheet-copy" id="coreSetupCopy">A few details help Home show the right daily rhythm.</p></div></div>
-      <div class="setup-step" data-step="0"><label class="field-label" for="coreSetupName">What shall we call you?</label><input class="field-input" id="coreSetupName" autocomplete="given-name" placeholder="First name"><div class="unit-toggle" role="group" aria-label="Unit preference"><button type="button" data-unit="metric">kg</button><button type="button" data-unit="imperial">lb</button></div></div>
-      <div class="setup-step" data-step="1" hidden><label class="field-label" for="coreSetupStartingWeight">Starting weight</label><input class="field-input" id="coreSetupStartingWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Your baseline weight"><p class="sheet-copy">This gives Hearty your baseline. Your daily weigh-in still happens from Home.</p></div>
-      <div class="setup-step" data-step="2" hidden><label class="field-label" for="coreSetupTargetWeight">Doctor target weight</label><input class="field-input" id="coreSetupTargetWeight" type="number" min="20" max="400" step="0.1" inputmode="decimal" placeholder="Optional"><p class="sheet-copy">Optional. Target weight should be provided by your doctor.</p></div>
-      <div class="setup-step" data-step="3" hidden><label class="field-label" for="coreSetupMedication">Medication type</label><select class="field-input" id="coreSetupMedication"><option value="">Not set yet</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Saxenda</option><option>Trulicity</option><option>Victoza</option><option>Rybelsus</option><option>Other GLP-1</option><option>Not sure yet</option><option>Not using medication yet</option></select></div>
-      <div class="setup-step" data-step="4" hidden><label class="field-label" for="coreSetupFrequency">How often do you take your medication?</label><select class="field-input" id="coreSetupFrequency"><option value="daily">Daily</option><option value="weekly" selected>Weekly</option><option value="twice_weekly">Twice weekly</option><option value="custom_days">Custom days</option><option value="not_sure">Not sure yet</option><option value="not_using">I’m not using medication yet</option></select><p class="sheet-copy">Choose the rhythm you follow. Hearty will remind you on the days you select.</p></div>
-      <div class="setup-step" data-step="5" hidden><label class="field-label" id="coreSetupDaysTitle">Medication day(s)</label><div class="unit-toggle day-toggle-grid" id="coreSetupDaysField" role="group" aria-label="Medication days"><button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button></div><p class="sheet-copy" id="coreSetupDaysHint">Choose the day or days you take your medication.</p><p class="sheet-copy" id="coreSetupDaysError" style="display:none;color:#b45309;font-weight:800;margin-top:8px">Please select the required medication days.</p></div>
-      <div class="setup-step" data-step="6" hidden><label class="field-label" for="coreSetupReminder">Medication reminder</label><select class="field-input" id="coreSetupReminder"><option value="true" selected>Remind me on selected days</option><option value="false">No reminder for now</option></select></div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
-    </div>
-  </section>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script id="hearty-core-onboarding-expanded-fields">
-  (function(){
-    function $(id){ return document.getElementById(id); }
-    function set(key, value){
-      try { localStorage.setItem(key, String(value == null ? '' : value)); } catch(e) {}
-    }
-    function setJSON(key, value){
-      try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
-    }
-    function readVal(id){
-      var el = $(id);
-      return el ? String(el.value || '').trim() : '';
-    }
-    function dayNameFromValue(value){
-      var names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      if(value === '') return '';
-      var n = Number(value);
-      return Number.isFinite(n) && n >= 0 && n <= 6 ? names[n] : String(value || '');
-    }
-    function syncExpandedCoreOnboarding(){
-      var name = readVal('coreSetupName');
-      var startingWeight = readVal('coreSetupStartingWeight');
-      var targetWeight = readVal('coreSetupTargetWeight');
-      var medication = readVal('coreSetupMedication');
-      var frequency = readVal('coreSetupFrequency');
-      var dayButtons = Array.prototype.slice.call(document.querySelectorAll('[data-med-day].active'));
-      var selectedDays = dayButtons.map(function(btn){ return String(btn.getAttribute('data-med-day')); });
-      var dayValue = selectedDays[0] || '';
-      var nextDoseDate = '';
-      var reminder = readVal('coreSetupReminder') !== 'false';
-      var dayName = dayNameFromValue(dayValue);
-      var now = new Date().toISOString();
-
-      if(name){
-        set('heartyUserName', name);
-        set('heartyFirstName', name);
-      }
-
-      if(startingWeight){
-        set('heartyStartingWeightKg', startingWeight);
-        set('heartyCurrentWeightKg', startingWeight);
-        set('heartyWeightStartingKg', startingWeight);
-        set('heartyWeightCurrentKg', startingWeight);
-      }
-
-      if(targetWeight){
-        set('heartyTargetWeightKg', targetWeight);
-        set('heartyWeightTargetKg', targetWeight);
-        set('heartyProgressTargetWeightKg', targetWeight);
-      }
-
-      set('heartyMedicationType', medication);
-      set('heartyInjectionName', medication);
-      set('heartyMedicationFrequency', frequency);
-      set('heartyInjectionFrequency', frequency);
-      set('heartyMedicationDays', selectedDays.join(','));
-      set('heartyMedicationNextDate', '');
-      set('heartyNextDoseDate', '');
-      set('heartyInjectionReminderEnabled', reminder ? 'true' : 'false');
-
-      if(dayValue !== ''){
-        set('heartyInjectionDay', dayValue);
-        set('heartyInjectionDayName', dayName);
-      }
-      set('heartyInjectionDays', selectedDays.join(','));
-
-      setJSON('heartyInjectionSchedule', {
-        medication: medication,
-        frequency: frequency,
-        day: dayValue,
-        days: selectedDays,
-        dayName: dayName,
-        nextDoseDate: '',
-        reminderEnabled: reminder,
-        source: 'home-onboarding',
-        updatedAt: now
-      });
-
-      var medicationState = {
-        type: medication,
-        frequency: frequency,
-        day: dayValue,
-        days: selectedDays,
-        dayName: dayName,
-        nextDoseDate: '',
-        reminderEnabled: reminder,
-        updatedAt: now
-      };
-      setJSON('heartyMedication', medicationState);
-      setJSON('heartyMedicationSetupV1', medicationState);
-
-      try {
-        window.dispatchEvent(new CustomEvent('hearty:medicationSetupUpdated', { detail: medicationState }));
-        window.dispatchEvent(new CustomEvent('hearty:bodyMetricsUpdated', { detail: {
-          startingWeightKg: startingWeight,
-          currentWeightKg: startingWeight,
-          targetWeightKg: targetWeight,
-          updatedAt: now
-        }}));
-      } catch(e) {}
-    }
-
-    // Medication day button clicks are handled by the external Home JS only.
-
-    document.addEventListener('change', function(event){
-      if(event.target && event.target.closest && event.target.closest('#coreSetupSheet')){
-        syncExpandedCoreOnboarding();
-      }
-    }, true);
-
-    document.addEventListener('click', function(event){
-      var nextBtn = event.target && event.target.closest && event.target.closest('#coreSetupNextBtn');
-      if(nextBtn) setTimeout(syncExpandedCoreOnboarding, 0);
-    }, true);
-
-    window.HeartyCoreOnboarding = window.HeartyCoreOnboarding || {};
-    window.HeartyCoreOnboarding.syncExpandedFields = syncExpandedCoreOnboarding;
-  })();
-  </script>
-
-  <script>
-  (function(){
-    "use strict";
-
-    const SUPPORT_STORAGE_KEY = "hearty_support_mode_v1";
-    const LEGACY_SUPPORT_KEY = "heartySupportState";
-    const LEGACY_MEALS_KEY = "meals_support_mode";
-
-    const SUPPORT_MODE_MAP = {
-      nausea: "nausea",
-      bloating: "bloating",
-      constipation: "bloating",
-      fatigue: "exhaustion",
-      exhaustion: "exhaustion",
-      low_energy: "exhaustion",
-      "low energy": "exhaustion",
-      low_appetite: "low_appetite",
-      "low appetite": "low_appetite"
-    };
-
-    const HOME_LABELS = {
-      nausea: "Nausea support is on",
-      bloating: "Bloating support is on",
-      exhaustion: "Low energy support is on",
-      low_appetite: "Low appetite support is on"
-    };
-
-    function normaliseSupportMode(value){
-      if(!value) return null;
-      const cleaned = String(value).trim().toLowerCase().replace(/-/g, "_");
-      return SUPPORT_MODE_MAP[cleaned] || SUPPORT_MODE_MAP[cleaned.replace(/_/g, " ")] || null;
-    }
-
-    function readJSON(key, fallback){
-      try{
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-      }catch{
-        return fallback;
-      }
-    }
-
-    function writeJSON(key, value){
-      try{
-        localStorage.setItem(key, JSON.stringify(value));
-      }catch{}
-    }
-
-    function readSupportState(){
-      const shared = readJSON(SUPPORT_STORAGE_KEY, null);
-      if(shared && shared.active){
-        const reason = normaliseSupportMode(shared.reason || shared.mode || shared.type);
-        if(reason) return { active:true, reason, source:shared.source || "shared", updatedAt:shared.updatedAt || null };
-      }
-
-      const legacy = readJSON(LEGACY_SUPPORT_KEY, null);
-      if(legacy && legacy.active){
-        const reason = normaliseSupportMode(legacy.reason || legacy.mode || legacy.type);
-        if(reason) return { active:true, reason, source:"legacy-home", updatedAt:legacy.updatedAt || null };
-      }
-
-      const mealsOnly = normaliseSupportMode(localStorage.getItem(LEGACY_MEALS_KEY));
-      if(mealsOnly) return { active:true, reason:mealsOnly, source:"legacy-meals", updatedAt:null };
-
-      return { active:false, reason:null, source:"home", updatedAt:null };
-    }
-
-    function writeSupportState(reason, source){
-      const mode = normaliseSupportMode(reason);
-      const now = new Date().toISOString();
-
-      if(!mode){
-        writeJSON(SUPPORT_STORAGE_KEY, { active:false, reason:null, source:source || "home", updatedAt:now });
-        writeJSON(LEGACY_SUPPORT_KEY, { active:false, reason:null, updatedAt:Date.now() });
-        try{ localStorage.removeItem(LEGACY_MEALS_KEY); }catch{}
-        window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:false, reason:null } }));
-        return { active:false, reason:null, source:source || "home", updatedAt:now };
-      }
-
-      writeJSON(SUPPORT_STORAGE_KEY, { active:true, reason:mode, source:source || "home", updatedAt:now });
-      writeJSON(LEGACY_SUPPORT_KEY, { active:true, reason:mode, updatedAt:Date.now() });
-      try{ localStorage.setItem(LEGACY_MEALS_KEY, mode); }catch{}
-      window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:true, reason:mode } }));
-      return { active:true, reason:mode, source:source || "home", updatedAt:now };
-    }
-
-    function mirrorLegacySupportIfNeeded(){
-      const current = readSupportState();
-      if(current.active){
-        const shared = readJSON(SUPPORT_STORAGE_KEY, null);
-        if(!shared || !shared.active || normaliseSupportMode(shared.reason) !== current.reason){
-          writeSupportState(current.reason, "home-sync");
-        }
-      }
-      return current;
-    }
-
-    function renderHomeSupportCard(){
-      const state = mirrorLegacySupportIfNeeded();
-      const card = document.getElementById("supportCard");
-      const led = document.getElementById("supportLed");
-      const subtext = document.getElementById("supportSubtext");
-      const primary = document.getElementById("supportPrimary");
-      const offBtn = document.getElementById("supportOff");
-
-      const isOn = !!state.active && !!state.reason;
-      const label = HOME_LABELS[state.reason] || "Support mode is on";
-
-      if(card){
-        card.classList.toggle("is-support-on", isOn);
-        card.classList.toggle("support-mode-active", isOn);
-        card.setAttribute("data-support-active", isOn ? "true" : "false");
-        if(isOn) card.setAttribute("data-support-mode", state.reason);
-        else card.removeAttribute("data-support-mode");
-      }
-
-      if(led){
-        led.classList.toggle("active", isOn);
-        led.classList.toggle("is-active", isOn);
-      }
-
-      if(subtext){
-        subtext.textContent = isOn
-          ? label + ". Meals and exercise will use a softer support plan today."
-          : "If side effects are getting in the way, switch to a softer day from the Support page.";
-      }
-
-      if(primary){
-        primary.textContent = isOn ? "Change support" : "I need support";
-        primary.setAttribute("href", "support.html");
-      }
-
-      if(offBtn){
-        offBtn.hidden = false;
-        offBtn.disabled = !isOn;
-        offBtn.textContent = isOn ? "Turn off" : "Support off";
-        offBtn.classList.toggle("is-active", isOn);
-        offBtn.classList.toggle("active", isOn);
-        offBtn.setAttribute("aria-pressed", isOn ? "true" : "false");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", function(){
-      renderHomeSupportCard();
-
-      const offBtn = document.getElementById("supportOff");
-      if(offBtn && !offBtn.__heartySupportBound){
-        offBtn.__heartySupportBound = true;
-        offBtn.addEventListener("click", function(event){
-          event.preventDefault();
-          writeSupportState(null, "home-off-button");
-          renderHomeSupportCard();
-        });
-      }
-    });
-
-    window.addEventListener("storage", function(event){
-      if([SUPPORT_STORAGE_KEY, LEGACY_SUPPORT_KEY, LEGACY_MEALS_KEY].includes(event.key)){
-        renderHomeSupportCard();
-      }
-    });
-
-    window.addEventListener("hearty:support-change", renderHomeSupportCard);
-
-    window.HeartySupportMode = window.HeartySupportMode || {};
-    window.HeartySupportMode.read = readSupportState;
-    window.HeartySupportMode.set = function(reason){ return writeSupportState(reason, "home-api"); };
-    window.HeartySupportMode.off = function(){ return writeSupportState(null, "home-api"); };
-  })();
-  </script>
-
-  <script id="hearty-home-first-load-stability">
-  (function(){
-    function markHomeStable(){
-      try {
-        localStorage.setItem('heartyHomeFirstLoadComplete', 'true');
-        localStorage.setItem('heartyHomeLastStableAt', new Date().toISOString());
-      } catch(e) {}
-      window.dispatchEvent(new CustomEvent('hearty:home-stable'));
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function(){
-        requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
-      });
-    } else {
-      requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
-    }
-  })();
-  </script>
-
-  <script>
-  if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
-    window.addEventListener('load', () => {
-      const registerServiceWorker = () =>
-        navigator.serviceWorker.register('/sw.js').catch(() =>
-          navigator.serviceWorker.register('/service-worker.js')
-        );
-
-      registerServiceWorker().then(reg => {
-        reg.update();
-        reg.addEventListener('updatefound', () => {
-          const nw = reg.installing;
-          nw.addEventListener('statechange', () => {
-            if(nw.state === 'installed' && navigator.serviceWorker.controller){
-              const bar = document.createElement('div');
-              bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1550b3;color:white;padding:12px 20px;border-radius:12px;z-index:9999;box-shadow:0 14px 34px rgba(21,80,179,.24);font:700 14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-              bar.textContent = 'Update ready — tap to reload';
-              bar.onclick = () => location.reload();
-              document.body.appendChild(bar);
-            }
-          });
-        });
-      });
-    });
-    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+    return response;
+  } catch (error) {
+    return (await cache.match(request)) || (await cache.match(OFFLINE_URL));
   }
-  </script>
+}
 
-</body>
-</html>
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  const networkPromise = fetch(request).then(response => {
+    if (response && response.ok && response.type === 'basic') cache.put(request, response.clone());
+    return response;
+  }).catch(() => null);
+  return cached || (await networkPromise) || Response.error();
+}
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (request.mode === 'navigate' || isAppDocument(url.pathname)) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (['style', 'script', 'image', 'font', 'manifest'].includes(request.destination)) {
+    event.respondWith(staleWhileRevalidate(request));
+  }
+});

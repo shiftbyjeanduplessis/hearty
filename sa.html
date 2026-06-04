@@ -1112,6 +1112,12 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
 }
 .privacy-bar .priv-ico{display:none !important}
 
+
+/* Public customer help link — visible before and after purchase */
+.customer-help-note{margin:16px 0 0;padding:13px 15px;background:rgba(234,249,246,.75);border:1px solid rgba(19,184,166,.17);border-radius:14px;color:#3f6077;font-size:.84rem;line-height:1.55;text-align:center;}
+.customer-help-note a{color:#1767c7;font-weight:800;text-decoration:none;}
+.customer-help-note a:hover{text-decoration:underline;}
+
 </style>
 <style>
 /* Final icon insertion: use the new colourful block icons as the icon art, with no extra wrapper tile fighting them. */
@@ -1160,6 +1166,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     <li><a href="#testimonials">Stories</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#faq">FAQ</a></li>
+    <li><a href="/help.html">Help</a></li>
   </ul>
   <a href="#pricing" class="nav-cta">Get Hearty</a>
 </div>
@@ -1494,6 +1501,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
       </ul>
       <div class="price-reassurance"><div>Limited launch price</div><div>One payment</div><div>Private by default</div></div>
       <a href="#" class="btn-pricing" data-payfast-checkout>Get Hearty for R200 once-off</a>
+      <p class="customer-help-note"><strong>Need help before or after purchase?</strong><br><a href="/help.html">Visit the Help Centre</a> or <a href="https://wa.me/27823976575?text=Hi%20Jean%2C%20I%20need%20help%20with%20Hearty." target="_blank" rel="noopener">WhatsApp support</a>.</p>
       <div class="pricing-trust">Private by default · once-off payment · built for GLP-1 life</div>
     </div>
 
@@ -1556,8 +1564,10 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     <li><a href="#">How it helps</a></li>
     <li><a href="#">Pricing</a></li>
     <li><a href="#faq">FAQ</a></li>
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms</a></li>
+    <li><a href="/help.html">Help Centre</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="/terms.html">Terms</a></li>
+    <li><a href="/refunds.html">Refunds</a></li>
   </ul>
   <div class="foot-copy">© 2026 Hearty. Not medical advice.</div>
 </div>
@@ -1582,7 +1592,7 @@ a:focus-visible, button:focus-visible, .nav-cta:focus-visible, .btn-primary:focu
     amount: "200",
     itemName: "Hearty Lifetime License",
     itemDescription: "Hearty Lifetime License",
-    returnUrl: "https://hearty.health/login",
+    returnUrl: "https://hearty.health/welcome.html?from=payfast",
     cancelUrl: "https://hearty.health/sa"
   };
 
