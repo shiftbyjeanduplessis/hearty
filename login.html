@@ -57,6 +57,12 @@
     .reset-copy{font-size:14px;line-height:1.45;color:var(--login-muted);margin:0 0 14px}
     .reset-panel .primary,.reset-panel .ghost{width:100%}
 
+    .customer-help{margin-top:20px;padding:16px 15px;border-radius:16px;background:#f4fbfa;border:1px solid rgba(19,184,166,.2);text-align:left}
+    .customer-help strong{display:block;color:var(--login-ink);font-size:.9rem;margin-bottom:6px}
+    .customer-help p{margin:0 0 12px;color:var(--login-muted);font-size:13px;line-height:1.48}
+    .customer-help-links{display:flex;gap:9px;flex-wrap:wrap}
+    .customer-help-links a{display:inline-flex;text-decoration:none;border-radius:11px;padding:9px 11px;background:white;border:1px solid #d7e2ec;font-size:12px;font-weight:800;color:var(--login-blue)}
+
   </style>
 </head>
 <body>
@@ -93,6 +99,15 @@
 
     <div class="message" id="message"></div>
     <div class="debug" id="debug"></div>
+    <aside class="customer-help" aria-label="Customer support">
+      <strong>Paid for Hearty but cannot get access?</strong>
+      <p>You can get help without signing in.</p>
+      <div class="customer-help-links">
+        <a href="/help.html">Help Centre</a>
+        <a href="https://wa.me/27823976575?text=Hi%20Jean%2C%20I%20need%20help%20with%20Hearty." target="_blank" rel="noopener">WhatsApp</a>
+        <a href="mailto:support@hearty.health?subject=Hearty%20access%20help">Email</a>
+      </div>
+    </aside>
   </main>
 
   <div class="login-splash" id="loginSplash" aria-live="polite" aria-hidden="true"></div>
