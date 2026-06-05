@@ -426,24 +426,11 @@
       }catch{}
     }
 
-    function todayKey(){
-      const d = new Date();
-      const p = n => String(n).padStart(2, "0");
-      return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate());
-    }
-
     function readSupportState(){
       const shared = readJSON(SUPPORT_STORAGE_KEY, null);
-      if(shared){
-        if(shared.active && shared.logDate && shared.logDate !== todayKey()){
-          return writeSupportState(null, "home-daily-reset");
-        }
-        if(shared.active){
-          const reason = normaliseSupportMode(shared.reason || shared.mode || shared.type);
-          if(reason) return { active:true, reason, source:shared.source || shared.sourcePage || "shared", updatedAt:shared.updatedAt || null, logDate:shared.logDate || null };
-        }
-        // An explicit off value on the canonical key must block stale legacy values.
-        return { active:false, reason:null, source:"shared-off", updatedAt:shared.updatedAt || null };
+      if(shared && shared.active){
+        const reason = normaliseSupportMode(shared.reason || shared.mode || shared.type);
+        if(reason) return { active:true, reason, source:shared.source || "shared", updatedAt:shared.updatedAt || null };
       }
 
       const legacy = readJSON(LEGACY_SUPPORT_KEY, null);
@@ -461,23 +448,20 @@
     function writeSupportState(reason, source){
       const mode = normaliseSupportMode(reason);
       const now = new Date().toISOString();
-      const active = !!mode;
-      const state = { active, isActive:active, reason:mode, mode:mode, source:source || "home", sourcePage:source || "home", logDate:todayKey(), updatedAt:now };
 
-      writeJSON(SUPPORT_STORAGE_KEY, state);
-      writeJSON(LEGACY_SUPPORT_KEY, { active, reason:mode, logDate:todayKey(), updatedAt:Date.now() });
-      writeJSON("hearty_support_state", { active, reason:mode, logDate:todayKey(), updatedAt:Date.now() });
-      writeJSON("heartySupportMode", state);
-      try{
-        localStorage.setItem("heartySupportActive", String(active));
-        localStorage.setItem("hearty_support_mode", active ? mode : "off");
-        if(active) localStorage.setItem(LEGACY_MEALS_KEY, mode); else localStorage.removeItem(LEGACY_MEALS_KEY);
-        const canonical = readJSON("hearty:data:v1", {});
-        canonical.support = Object.assign({}, canonical.support || {}, { active_state: active ? state : "", active_date: active ? todayKey() : "" });
-        writeJSON("hearty:data:v1", canonical);
-      }catch{}
-      window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active, reason:mode } }));
-      return state;
+      if(!mode){
+        writeJSON(SUPPORT_STORAGE_KEY, { active:false, reason:null, source:source || "home", updatedAt:now });
+        writeJSON(LEGACY_SUPPORT_KEY, { active:false, reason:null, updatedAt:Date.now() });
+        try{ localStorage.removeItem(LEGACY_MEALS_KEY); }catch{}
+        window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:false, reason:null } }));
+        return { active:false, reason:null, source:source || "home", updatedAt:now };
+      }
+
+      writeJSON(SUPPORT_STORAGE_KEY, { active:true, reason:mode, source:source || "home", updatedAt:now });
+      writeJSON(LEGACY_SUPPORT_KEY, { active:true, reason:mode, updatedAt:Date.now() });
+      try{ localStorage.setItem(LEGACY_MEALS_KEY, mode); }catch{}
+      window.dispatchEvent(new CustomEvent("hearty:support-change", { detail:{ active:true, reason:mode } }));
+      return { active:true, reason:mode, source:source || "home", updatedAt:now };
     }
 
     function mirrorLegacySupportIfNeeded(){
@@ -585,6 +569,32 @@
   })();
   </script>
 
-<script src="/js/hearty-updater.js?v=2026.06.04.1"></script>
+  <script>
+  if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      const registerServiceWorker = () =>
+        navigator.serviceWorker.register('/sw.js').catch(() =>
+          navigator.serviceWorker.register('/service-worker.js')
+        );
+
+      registerServiceWorker().then(reg => {
+        reg.update();
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          nw.addEventListener('statechange', () => {
+            if(nw.state === 'installed' && navigator.serviceWorker.controller){
+              const bar = document.createElement('div');
+              bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1550b3;color:white;padding:12px 20px;border-radius:12px;z-index:9999;box-shadow:0 14px 34px rgba(21,80,179,.24);font:700 14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+              bar.textContent = 'Update ready — tap to reload';
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          });
+        });
+      });
+    });
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+  }
+  </script>
 </body>
 </html>
