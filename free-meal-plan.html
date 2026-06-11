@@ -1238,7 +1238,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-free-meal-engine-v24.js"></script>
+<script src="hearty-meal-engine-final.js?v=3-final-gated"></script>
 <script>
     (function(){
       "use strict";
@@ -1300,10 +1300,10 @@ font-weight:850;
         { id:"lead", kicker:"Start", title:"First, let's set up your Hearty plan", copy:"Your free 7-day meal plan is the starting point inside Hearty. Add your name and email if you want to save it or receive follow-up support — both are optional.", type:"lead" },
         { id:"country", kicker:"Step 1", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
         { id:"struggleMode", kicker:"Step 2", title:"What are you struggling with most right now?", copy:"Tell Hearty what feels hardest right now so the plan starts with your real problem, not a generic diet template.", type:"single", key:"struggleMode", options:[["low_appetite","Low appetite","Smaller meals and easy top-ups"],["protein_hard","Protein is hard","More protein anchors and backup ideas"],["nausea_food_aversion","Nausea / food aversion","Plainer, gentler meal ideas"],["no_breakfast","I’m not a breakfast person","Lighter first-meal options"],["not_sure_what_to_eat","I’m not sure what to eat","Simple starter structure"],["simple_structure","I just want simple structure","Straightforward repeatable meals"]] },
-        { id:"proteins", kicker:"Step 3", title:"Which proteins do you actually eat?", copy:"Choose the proteins you would realistically use. The best plan is the one you can follow on an ordinary week.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""],["turkey","Turkey",""]] },
+        { id:"proteins", kicker:"Step 3", title:"Which proteins do you actually eat?", copy:"Choose at least 2 main-meal proteins you would realistically use. The best plan is the one you can follow on an ordinary week.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""]] },
         { id:"breakfast", kicker:"Step 4", title:"What kind of breakfast works for you?", copy:"Mornings can be tricky on GLP-1s. Pick what feels doable, even if that means something light.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["egg_toast","Egg on toast / wrap","More filling but still simple"],["protein_shake","Whey protein shake","Easy protein when breakfast is hard"],["smoothie","Protein smoothie","Light option with fruit"],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""],["protein_yoghurt","Protein yoghurt bowl","Higher-protein yoghurt option"],["cottage_cheese_bowl","Cottage cheese fruit bowl","Soft, simple and not too heavy"]] },
         { id:"starches", kicker:"Step 5", title:"Which starches do you like?", copy:"You do not have to remove every carb. Sensible portions can help meals feel normal and support energy.", type:"multi", key:"starches", options:[["rice","Rice",""],["potato","Potato",""],["sweet_potato","Sweet potato",""],["couscous","Couscous",""],["whole_wheat_pasta","Whole wheat pasta",""],["whole_wheat_wraps","Whole wheat wraps",""],["whole_wheat_bread","Whole wheat bread / toast",""]] },
-        { id:"vegetables", kicker:"Step 6", title:"Which vegetables are you happy to eat?", copy:"Choose the vegetables you are happy to eat. Hearty will try to keep the plan familiar, not random.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
+        { id:"vegetables", kicker:"Step 6", title:"Which vegetables are you happy to eat?", copy:"Choose at least 5 vegetables. Hearty will keep the plan familiar, not random.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
         { id:"fruits", kicker:"Step 7", title:"Which fruits do you like?", copy:"Fruit can be useful for lighter meals, snacks and yoghurt bowls when appetite is low.", type:"multi", key:"fruits", allowSkip:true, options:[["apple","Apple",""],["banana","Banana",""],["orange","Orange",""],["grapes","Grapes",""],["peach","Peach",""],["strawberries","Strawberries",""],["blueberries","Blueberries",""],["raspberries","Raspberries",""],["pineapple","Pineapple",""],["pawpaw","Pawpaw / papaya",""],["kiwi","Kiwi fruit",""],["grapefruit","Grapefruit",""]] },
         { id:"snackPreferences", kicker:"Step 8", title:"Which protein snacks sound useful?", copy:"Protein snacks can be the difference between “I barely ate today” and “I got something useful in.”", type:"multi", key:"snackPreferences", allowSkip:true, dynamicOptions:getSnackOptions },
         { id:"summary", kicker:"Final step", title:"Your free plan is ready to generate", copy:"Hearty will now build your 7-day starter plan with simple meals, snack ideas and approximate protein estimates.", type:"summary" }
@@ -1419,6 +1419,8 @@ font-weight:850;
       function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
       function canContinue(step){
         if(step.type === "lead") return !state.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email.trim());
+        if(step.key === "proteins") return Array.isArray(state.proteins) && state.proteins.filter(p => p !== "turkey").length >= 2;
+        if(step.key === "vegetables") return Array.isArray(state.vegetables) && state.vegetables.length >= 5;
         if(step.type === "summary" || step.allowSkip) return true;
         const value = state[step.key];
         return Array.isArray(value) ? value.length > 0 : Boolean(value);
@@ -1828,7 +1830,7 @@ font-weight:850;
       function dailySnackIdeasRow(day){
         const ideas = (day && Array.isArray(day.proteinSnackIdeas) && day.proteinSnackIdeas.length) ? day.proteinSnackIdeas : fallbackDailyProteinSnackIdeas();
         const items = ideas.slice(0, 5).map(item => `<li><strong>${escapeHtml(item.title || item)}</strong>${item.protein ? ` <span>${escapeHtml(item.protein)}</span>` : ""}${item.note ? `<br><small>${escapeHtml(item.note)}</small>` : ""}</li>`).join("");
-        return `<div class="daily-snack-ideas"><h4>5 high-protein snack ideas for this day</h4><ul>${items}</ul></div>`;
+        return "";
       }
 
       function proteinSnackPanel(plan){
@@ -1873,7 +1875,7 @@ font-weight:850;
             day.recipe?.dinner ? `  Method: ${day.recipe.dinner}` : "",
             day.estimatedProteinTotal ? `Estimated daily protein: approx. ${day.estimatedProteinTotal}g` : "",
             day.proteinBooster || "",
-            `5 high-protein snack ideas:`,
+            `Extra protein snack ideas:`,
             ...(day.proteinSnackIdeas || fallbackDailyProteinSnackIdeas()).slice(0,5).map(item => `  - ${item.title || item}${item.protein ? " (" + item.protein + ")" : ""}`),
             ``);
         });
@@ -1882,6 +1884,297 @@ font-weight:850;
         snackList.forEach(item => lines.push(`- ${item.title || item}${item.protein ? " (" + item.protein + ")" : ""}`));
         lines.push("", `Continue with Hearty: ${getSalesUrl()}`);
         return lines.join("\n");
+      }
+
+
+
+      // HEARTY_FINAL_FUNNEL_PATCH_V1
+      // This override forces the funnel page to use the final gated meal engine only.
+      function generateAndShowPlan(){
+        latestPlan = buildPlan();
+        if(!latestPlan || !latestPlan.length) return;
+        latestPlanText = makePlanText(latestPlan);
+        renderPlan(latestPlan);
+        saveLead(latestPlanText);
+        resultPanel.classList.add("show");
+        marketTag.textContent = "Free starter plan";
+        updateSalesLinks();
+        primePostLeadFields();
+        switchStickyCtaToCheckout();
+        scheduleSavePrompt();
+        closeWizardModal();
+        resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+
+      function getHeartyEngine(){
+        return window.HeartyMealEngine || null;
+      }
+
+      function buildPlan(){
+        const engine = getHeartyEngine();
+        if(!engine || typeof engine.generatePlan !== "function"){
+          console.error("Final HeartyMealEngine unavailable.");
+          showGateMessages(["The meal generator did not load correctly. Please refresh and try again."]);
+          return null;
+        }
+
+        const finalInput = buildFinalEngineInput();
+        const result = engine.generatePlan(finalInput);
+
+        window.__HEARTY_LAST_ENGINE_RESULT__ = result;
+        window.__HEARTY_LAST_ENGINE_INPUT__ = finalInput;
+
+        if(!result || result.status === "BLOCKED" || result.ok === false){
+          const messages = result?.messages || result?.gate?.messages || ["Please add a few more selections so Hearty can build a useful 7-day plan."];
+          showGateMessages(messages);
+          return null;
+        }
+
+        return mapFinalEngineDays(result);
+      }
+
+      function buildFinalEngineInput(){
+        const region = mapFinalRegion(state.country);
+        const proteins = mapFinalProteins();
+        const breakfastItems = mapFinalBreakfastItems(region);
+        const snackProteins = mapFinalSnackProteins(region);
+        const starches = mapFinalStarches();
+        const vegetables = mapFinalVegetables(region);
+        const noBreakfast = state.struggleMode === "no_breakfast" || breakfastItems.length === 0 && Array.isArray(state.breakfast) && state.breakfast.length === 0;
+
+        return {
+          region,
+          diet: "omnivore",
+          proteins,
+          vegetables,
+          breakfastItems,
+          snackProteins,
+          starches,
+          exclusions: [],
+          lowerStarch: false,
+          noBreakfast
+        };
+      }
+
+      function mapFinalRegion(country){
+        if(country === "ZA") return "SA";
+        if(["US","UK","AU","CA"].includes(country)) return country;
+        return "US";
+      }
+
+      function mapFinalProteins(){
+        const out = [];
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const selected = Array.isArray(state.proteins) ? state.proteins : [];
+        const breakfasts = Array.isArray(state.breakfast) ? state.breakfast : [];
+        const snacks = Array.isArray(state.snackPreferences) ? state.snackPreferences : [];
+
+        selected.forEach(p => {
+          if(p === "chicken") add("chicken");
+          if(p === "beef") add("beef");
+          if(p === "pork") add("pork");
+          if(["fish","seafood","canned_tuna"].includes(p)) add("fish");
+          if(p === "eggs") add("eggs");
+          // Turkey is intentionally not mapped. It belongs to the old removed template set.
+        });
+
+        breakfasts.forEach(b => {
+          if(["eggs","egg_toast"].includes(b)) add("eggs");
+          if(["protein_shake","smoothie"].includes(b)) add("protein_powder");
+          if(["all_bran","oats","overnight_oats","yoghurt_bowl","protein_yoghurt","cottage_cheese_bowl"].includes(b)) add("dairy");
+        });
+
+        snacks.forEach(s => {
+          if(["low_fat_yoghurt","cottage_cheese"].includes(s)) add("dairy");
+          if(s === "boiled_eggs") add("eggs");
+          if(s === "biltong") add("beef");
+          if(["tuna_rice_cakes","salmon_crackers"].includes(s)) add("fish");
+          if(s === "protein_shake") add("protein_powder");
+        });
+
+        return out;
+      }
+
+      function mapFinalBreakfastItems(region){
+        const yog = region === "US" || region === "CA" ? "yogurt" : "yoghurt";
+        const out = [];
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const breakfasts = Array.isArray(state.breakfast) ? state.breakfast : [];
+
+        breakfasts.forEach(b => {
+          if(["eggs","egg_toast"].includes(b)) add("eggs");
+          if(["protein_shake","smoothie"].includes(b)) add("protein_shake");
+          if(["all_bran","oats","overnight_oats"].includes(b)) add("oats");
+          if(["yoghurt_bowl","protein_yoghurt"].includes(b)) add(yog);
+          if(b === "cottage_cheese_bowl") add("cottage_cheese");
+        });
+
+        return out;
+      }
+
+      function mapFinalSnackProteins(region){
+        const yog = region === "US" || region === "CA" ? "yogurt" : "yoghurt";
+        const out = [];
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const snacks = Array.isArray(state.snackPreferences) ? state.snackPreferences : [];
+
+        snacks.forEach(s => {
+          if(s === "low_fat_yoghurt") add(yog);
+          if(s === "cottage_cheese") add("cottage_cheese");
+          if(s === "boiled_eggs") add("boiled_eggs");
+          if(s === "biltong") add(region === "SA" ? "biltong" : "jerky");
+          if(["tuna_rice_cakes","salmon_crackers"].includes(s)) add("tuna");
+          if(s === "protein_shake") add("protein_shake");
+        });
+
+        // If the user has chosen chicken as a protein, cooked chicken strips are a valid snack support.
+        if(Array.isArray(state.proteins) && state.proteins.includes("chicken")) add("chicken_strips");
+
+        return out;
+      }
+
+      function mapFinalStarches(){
+        const out = [];
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const starches = Array.isArray(state.starches) ? state.starches : [];
+        starches.forEach(s => {
+          if(s === "rice") add("rice");
+          if(s === "potato") add("potato");
+          if(s === "sweet_potato") add("sweet_potato");
+          if(s === "couscous") add("couscous");
+          if(s === "whole_wheat_pasta") add("pasta");
+          if(s === "whole_wheat_wraps" || s === "whole_wheat_bread") add("wrap");
+        });
+        return out;
+      }
+
+      function mapFinalVegetables(region){
+        const out = [];
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const vegetables = Array.isArray(state.vegetables) ? state.vegetables : [];
+
+        vegetables.forEach(v => {
+          if(v === "carrots") add("carrot");
+          else if(v === "green_beans") add("green beans");
+          else if(v === "baby_marrow") add(region === "UK" ? "courgette" : (region === "SA" ? "baby marrow" : "zucchini"));
+          else if(v === "mixed_veg") add("mixed vegetables");
+          else if(v === "lettuce") add("lettuce");
+          else add(String(v || "").replaceAll("_", " "));
+        });
+
+        return out;
+      }
+
+      function mapFinalEngineDays(result){
+        const snackList = buildFinalSnackList(result.days || []);
+        return (result.days || []).slice(0, 7).map(day => {
+          const b = day.breakfast;
+          const ms = day.morningSnack;
+          const l = day.lunch;
+          const as = day.afternoonSnack;
+          const d = day.dinner;
+          const protein = {
+            breakfast: proteinNumber(b?.protein),
+            morningSnack: proteinNumber(ms?.protein),
+            lunch: proteinNumber(l?.protein),
+            afternoonSnack: proteinNumber(as?.protein),
+            dinner: proteinNumber(d?.protein)
+          };
+          return {
+            day: `Day ${day.day}`,
+            dayName: dayNames[(day.day || 1) - 1] || `Day ${day.day}`,
+            breakfast: b?.name || "Breakfast",
+            morningSnack: ms?.name || "Morning snack",
+            lunch: l?.name || "Lunch",
+            afternoonSnack: as?.name || "Afternoon snack",
+            dinner: d?.name || "Dinner",
+            protein,
+            recipe: {
+              breakfast: b?.detail || "",
+              morningSnack: ms?.detail || "",
+              lunch: l?.detail || "",
+              afternoonSnack: as?.detail || "",
+              dinner: d?.detail || ""
+            },
+            estimatedProteinTotal: protein.breakfast + protein.morningSnack + protein.lunch + protein.afternoonSnack + protein.dinner,
+            proteinBooster: "",
+            proteinSnackList: snackList,
+            source: result.version || "HeartyMealEngineFinal"
+          };
+        });
+      }
+
+      function proteinNumber(value){
+        const txt = String(value || "");
+        const nums = txt.match(/\d+/g)?.map(Number) || [];
+        if(!nums.length) return 0;
+        if(nums.length >= 2) return Math.round((nums[0] + nums[1]) / 2);
+        return nums[0];
+      }
+
+      function buildFinalSnackList(days){
+        const seen = new Set();
+        const list = [];
+        (days || []).forEach(day => {
+          [day.morningSnack, day.afternoonSnack].forEach(item => {
+            if(!item || !item.name || seen.has(item.name)) return;
+            seen.add(item.name);
+            list.push({ title:item.name, protein:`Approx. ${item.protein} protein`, note:item.detail || "" });
+          });
+        });
+        return list.slice(0, 6);
+      }
+
+      function showGateMessages(messages){
+        const clean = (messages || []).filter(Boolean);
+        const text = clean.length ? clean.join("\n\n") : "Please add a few more selections so Hearty can build a useful 7-day plan.";
+        alert(text);
+        showToast("Please add more choices");
+        if(wizardOverlay && !wizardOverlay.classList.contains("show")) openWizardModal();
+      }
+
+      function renderPlan(plan){
+        const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
+        document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
+        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • generated with the final Hearty meal engine • approximate protein shown`;
+        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast)}${mealRow("Morning snack", day.morningSnack, day.protein?.morningSnack, day.recipe?.morningSnack)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch)}${mealRow("Afternoon snack", day.afternoonSnack, day.protein?.afternoonSnack, day.recipe?.afternoonSnack)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner)}${dayTotalRow(day)}</article>`).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>`;
+      }
+
+      function proteinSnackPanel(plan){
+        const list = (plan && plan[0] && Array.isArray(plan[0].proteinSnackList) && plan[0].proteinSnackList.length) ? plan[0].proteinSnackList : [];
+        if(!list.length) return "";
+        const items = list.slice(0, 6).map(item => `<div class="protein-snack-item"><strong>${escapeHtml(item.title || item)}</strong>${item.protein ? `<span>${escapeHtml(item.protein)}</span>` : ""}${item.note ? `<br>${escapeHtml(item.note)}` : ""}</div>`).join("");
+        return `<div class="protein-snack-panel"><h3>Easy protein snack list</h3><p>For low-appetite days, choose one small protein option rather than skipping food completely.</p><div class="protein-snack-grid">${items}</div></div>`;
+      }
+
+      function proteinDisclaimer(){
+        return "Protein estimates are approximate and based on standard serving assumptions. Actual values vary by brand, portion size and preparation.";
+      }
+
+      function makePlanText(plan){
+        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, `Generated with: Hearty final gated meal engine`, ``, `This is general lifestyle support, not medical advice. Protein estimates are approximate.`, ``];
+        plan.forEach(day => {
+          lines.push(day.day,
+            `Breakfast: ${day.breakfast}`,
+            day.recipe?.breakfast ? `  Method: ${day.recipe.breakfast}` : "",
+            `Morning snack: ${day.morningSnack}`,
+            day.recipe?.morningSnack ? `  Method: ${day.recipe.morningSnack}` : "",
+            `Lunch: ${day.lunch}`,
+            day.recipe?.lunch ? `  Method: ${day.recipe.lunch}` : "",
+            `Afternoon snack: ${day.afternoonSnack}`,
+            day.recipe?.afternoonSnack ? `  Method: ${day.recipe.afternoonSnack}` : "",
+            `Dinner: ${day.dinner}`,
+            day.recipe?.dinner ? `  Method: ${day.recipe.dinner}` : "",
+            day.estimatedProteinTotal ? `Estimated daily protein: approx. ${day.estimatedProteinTotal}g` : "",
+            ``);
+        });
+        const snackList = (plan[0]?.proteinSnackList || []).slice(0,6);
+        if(snackList.length){
+          lines.push("Easy protein snack list:");
+          snackList.forEach(item => lines.push(`- ${item.title || item}${item.protein ? " (" + item.protein + ")" : ""}`));
+        }
+        lines.push("", `Continue with Hearty: ${getSalesUrl()}`);
+        return lines.filter(line => line !== "").join("\n");
       }
 
       document.getElementById("copyPlan").addEventListener("click", async () => {

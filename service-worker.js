@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-v2026-05-08-1";
+const CACHE_NAME = "hearty-v2026-06-11-final-meal-engine-1";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
