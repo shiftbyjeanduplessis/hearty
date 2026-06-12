@@ -1017,6 +1017,7 @@ font-weight:850;
 </style>
 <!-- Hearty free funnel patched to v3.3.5: clean final engine only, no old V6 block. -->
 <!-- Hearty v3.3.6 button helper fix -->
+<!-- Hearty v3.3.7 nav fixed: event-delegated wizard buttons -->
 </head>
 <body>
 <div class="page">
@@ -1239,7 +1240,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3.3.6-button-helper-fix"></script>
+<script src="hearty-meal-engine-final.js?v=3.3.7-nav-fixed"></script>
 <script>
     (function(){
       "use strict";
@@ -1361,6 +1362,7 @@ font-weight:850;
             <button class="btn btn-primary" type="button" data-action="${step.type === "summary" ? "finish" : "next"}" ${canContinue(step) ? "" : "disabled"}>${step.type === "summary" ? "Generate my free plan" : "Next"}</button>
           </div>`;
         bind();
+        console.log("HEARTY_WIZARD_RENDER", { step: state.step, stepId: step.id });
       }
 
       function renderStepBody(step){
@@ -1400,60 +1402,94 @@ font-weight:850;
       function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
 
       function bind(){
+        // Event delegation keeps wizard buttons working after every render.
+        // This avoids losing Back/Next handlers when the step HTML is replaced.
+        root.onclick = function(event){
+          const btn = event.target.closest("[data-action]");
+          if(!btn || !root.contains(btn)) return;
+
+          const action = btn.getAttribute("data-action");
+          const key = btn.getAttribute("data-key");
+          const value = btn.getAttribute("data-value");
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          try {
+            if(action === "select") {
+              const step = steps[state.step];
+              if(step.type === "multi"){
+                state[key] = Array.isArray(state[key]) ? state[key] : [];
+                state[key] = state[key].includes(value)
+                  ? state[key].filter(v => v !== value)
+                  : state[key].concat(value);
+              } else {
+                state[key] = value;
+                if(key === "country"){
+                  state.countrySelected = true;
+                  updateSalesLinks();
+                }
+              }
+              render();
+              return;
+            }
+
+            if(action === "back") {
+              if(state.step > 0){
+                state.step -= 1;
+                render();
+                scrollWizardTop();
+              }
+              return;
+            }
+
+            if(action === "next") {
+              saveLeadInputs();
+              const step = steps[state.step];
+              if(!canContinue(step)) {
+                console.warn("HEARTY_WIZARD_CANNOT_CONTINUE", { step: state.step, stepId: step?.id, state: JSON.parse(JSON.stringify(state)) });
+                return;
+              }
+              state.step = Math.min(steps.length - 1, state.step + 1);
+              render();
+              scrollWizardTop();
+              return;
+            }
+
+            if(action === "skip") {
+              const step = steps[state.step];
+              if(step && step.key) state[step.key] = [];
+              state.step = Math.min(steps.length - 1, state.step + 1);
+              render();
+              scrollWizardTop();
+              return;
+            }
+
+            if(action === "finish") {
+              saveLeadInputs();
+              if(canContinue(steps[state.step])) generateAndShowPlan();
+              return;
+            }
+          } catch(error) {
+            console.error("HEARTY_WIZARD_NAV_ERROR", error, { action, step: state.step, state });
+            alert("Something went wrong in the wizard. Please refresh and try again.");
+          }
+        };
+
         ["firstName","email","whatsapp"].forEach(id => {
           const el = document.getElementById(id);
-          if(el) el.addEventListener("input", () => { state[id] = el.value.trim(); updateNavButton(); });
-        });
-        root.querySelectorAll("[data-action='select']").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const key = btn.getAttribute("data-key");
-            const value = btn.getAttribute("data-value");
-            const step = steps[state.step];
-            if(step.type === "multi"){
-              state[key] = Array.isArray(state[key]) ? state[key] : [];
-              state[key] = state[key].includes(value) ? state[key].filter(v => v !== value) : state[key].concat(value);
-            } else {
-              state[key] = value;
-              if(key === "country"){ state.countrySelected = true; updateSalesLinks(); }
-            }
-            render();
+          if(el) el.addEventListener("input", () => {
+            state[id] = el.value.trim();
+            updateNavButton();
           });
         });
-        root.querySelector("[data-action='back']")?.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          if(state.step > 0){
-            state.step -= 1;
-            render();
-            document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
-          }
-        });
-        root.querySelector("[data-action='next']")?.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          try {
-            saveLeadInputs();
-            const step = steps[state.step];
-            if(!canContinue(step)) return;
-            state.step = Math.min(steps.length - 1, state.step + 1);
-            render();
-            document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
-          } catch(error) {
-            console.error("HEARTY_WIZARD_NEXT_ERROR", error);
-            alert("Something went wrong moving to the next step. Please refresh and try again.");
-          }
-        });
-        root.querySelector("[data-action='skip']")?.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          const step = steps[state.step];
-          state[step.key] = [];
-          state.step = Math.min(steps.length - 1, state.step + 1);
-          render();
-          document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
-        });
-        root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
       }
+
+      function scrollWizardTop(){
+        const wrap = document.querySelector(".wizard-modal-wrap");
+        if(wrap) wrap.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
       function saveLeadInputs(){ ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
       function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
       function canContinue(step){
@@ -1618,22 +1654,7 @@ font-weight:850;
         openHeartyInternationalCheckout();
       }
 
-      function generateAndShowPlan(){
-        latestPlan = buildPlan();
-        if(!latestPlan || !latestPlan.length) return;
-        latestPlanText = makePlanText(latestPlan);
-        renderPlan(latestPlan);
-        saveLead(latestPlanText);
-        resultPanel.classList.add("show");
-        marketTag.textContent = "Free starter plan";
-        updateSalesLinks();
-        primePostLeadFields();
-        switchStickyCtaToCheckout();
-        scheduleSavePrompt();
-        closeWizardModal();
-        resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
-      }
-
+      
       function primePostLeadFields(){
         const nameEl = document.getElementById("postFirstName");
         const emailEl = document.getElementById("postEmail");

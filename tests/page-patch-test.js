@@ -1,7 +1,7 @@
 const fs = require("fs");
 const html = fs.readFileSync("free-meal-plan.html", "utf8");
 const checks = [
-  ["loads v3.3.6 engine", html.includes("hearty-meal-engine-final.js?v=3.3.6-button-helper-fix")],
+  ["loads v3.3.7 engine", html.includes("hearty-meal-engine-final.js?v=3.3.7-nav-fixed")],
   ["US is first country option", html.includes('options:[["US","United States",""],["ZA","South Africa",""]')],
   ["state defaults to US", html.includes('country:"US", countrySelected:true')],
   ["old ZA fallback removed", !html.includes('country: state.country || "ZA"')],
