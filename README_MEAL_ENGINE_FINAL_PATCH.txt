@@ -1,4 +1,4 @@
-Hearty meal-engine patch v3.3.3
+Hearty meal-engine patch v3.3.4
 
 Changed files:
 - free-meal-plan.html
@@ -7,14 +7,12 @@ Changed files:
 - service-worker.js
 
 Fixes:
-- United States is first in the wizard.
-- Wizard defaults to United States and forces US if blank.
-- Removed old state.country || "ZA" fallback.
-- Generate button no longer rejects valid plans based on result.ok.
-- It blocks only engine BLOCKED or QA FAIL.
-- Hardened wizard-to-engine mapping so visible selections are translated into valid engine selections.
-- Non-protein snack options no longer cause false snack-gate failures.
+- No chicken unless selected.
+- No default chicken fallback in the funnel page.
+- Breakfast vegetables now use a breakfast-friendly whitelist.
+- Better title casing and vegetable grammar.
+- Engine QA catches unselected chicken and non-breakfast vegetables.
 - Service worker cache bumped.
 
 Deploy note:
-Open /free-meal-plan.html?v=333 in a private window after deploy to avoid old cached JS.
+Open /free-meal-plan.html?v=334 in a private window after deploy.

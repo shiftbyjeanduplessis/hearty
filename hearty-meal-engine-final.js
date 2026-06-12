@@ -17,7 +17,7 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
-  const VERSION = "3.3.3-final-funnel-fix";
+  const VERSION = "3.3.4-output-cleanup";
 
   const REGION = {
     US: { label:"United States", yoghurt:"yogurt", stock:"broth", fish:"white fish", mince:"lean ground beef", dried:"beef jerky",
@@ -176,18 +176,61 @@
     };
   }
 
-  function pickVeg(input, start, count, exclude) {
-    const banned = new Set((exclude || []).map(x => x.toLowerCase()));
-    const pool = input.vegetables.filter(v => !banned.has(v.toLowerCase()));
-    const source = pool.length ? pool : input.vegetables;
+  function sentenceList(items) {
+    const clean = unique(items).filter(Boolean);
+    if (!clean.length) return "";
+    if (clean.length === 1) return clean[0];
+    return clean.slice(0, -1).join(", ") + " and " + clean[clean.length - 1];
+  }
+
+  function normalizeMealName(name) {
+    return String(name || "")
+      .replace(/\bLean Ground Beef\b/g, "Lean ground beef")
+      .replace(/\bWhite Fish\b/g, "White fish")
+      .replace(/\bLean Beef Mince\b/g, "Lean beef mince")
+      .replace(/^beef jerky/g, "Beef jerky")
+      .replace(/^lean beef jerky/g, "Lean beef jerky")
+      .replace(/^biltong/g, "Biltong")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function pickVegItems(input, start, count, exclude) {
+    const banned = new Set((exclude || []).map(x => String(x).toLowerCase()));
+    const pool = (input.vegetables || []).filter(v => !banned.has(String(v).toLowerCase()));
+    const source = pool.length ? pool : (input.vegetables || []);
     const out = [];
     let i = 0;
-    while (out.length < count && i < source.length * 2) {
+    while (source.length && out.length < count && i < source.length * 3) {
       const v = source[(start + i) % source.length];
-      if (!out.includes(v)) out.push(v);
+      if (v && !out.includes(v)) out.push(v);
       i++;
     }
-    return out.join(", ");
+    return out;
+  }
+
+  function pickVeg(input, start, count, exclude) {
+    return sentenceList(pickVegItems(input, start, count, exclude));
+  }
+
+  function breakfastVegPool(input) {
+    const allowed = new Set(["tomato", "spinach", "mushrooms", "peppers", "onion", "zucchini", "courgette", "baby marrow"]);
+    const chosen = (input.vegetables || []).filter(v => allowed.has(v));
+    const regionFallback = ((REGION[input.region] && REGION[input.region].veg) || []).filter(v => allowed.has(v));
+    const globalFallback = ["tomato", "spinach", "mushrooms", "peppers", "onion", "zucchini"];
+    return unique(chosen.concat(regionFallback, globalFallback));
+  }
+
+  function pickBreakfastVeg(input, start, count) {
+    const source = breakfastVegPool(input);
+    const out = [];
+    let i = 0;
+    while (source.length && out.length < count && i < source.length * 3) {
+      const v = source[(start + i) % source.length];
+      if (v && !out.includes(v)) out.push(v);
+      i++;
+    }
+    return sentenceList(out);
   }
 
   function starchAmount(starch) {
@@ -318,7 +361,7 @@
 
     if (main.has("chicken")) {
       add("chicken","Chicken vegetable soup bowl","30–35g", i => `120–150g cooked chicken simmered with ${pickVeg(input,i,5)} and ${r.stock}. No added starch.`);
-      add("chicken","Chicken cucumber plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("chicken","Chicken vegetable plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
     }
     if (main.has("beef")) {
       add("beef",`${titleCase(r.mince)} vegetable bowl`,"30–35g", i => `120–150g ${r.mince} cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
@@ -355,12 +398,12 @@
 
     const allowed = new Set(gate.allowed);
     const opts = [];
-    const add = (type, name, protein, detail) => opts.push({type, name, protein, detail});
+    const add = (type, name, protein, detail) => opts.push({type, name: normalizeMealName(name), protein, detail});
 
     input.breakfastItems.forEach(item => {
       if (item === "eggs" && allowed.has("eggs")) {
-        add("eggs","Vegetable scrambled eggs","18g",`2 eggs scrambled with ${pickVeg(input,0,4)}.`);
-        add("eggs","Vegetable omelette","18–22g",`2 eggs cooked with ${pickVeg(input,1,4)}.`);
+        add("eggs","Vegetable scrambled eggs","18g",`2 eggs scrambled with ${pickBreakfastVeg(input,0,4)}.`);
+        add("eggs","Vegetable omelette","18–22g",`2 eggs cooked with ${pickBreakfastVeg(input,1,4)}.`);
       } else if (["yoghurt","yogurt","greek_yoghurt","greek_yogurt"].includes(item) && allowed.has("dairy")) {
         add("dairy",`High-protein ${r.yoghurt} bowl`,"18–22g",`1 cup Greek-style ${r.yoghurt} with berries or fruit and cinnamon.`);
       } else if (item === "cottage_cheese" && allowed.has("dairy")) {
@@ -370,7 +413,7 @@
       } else if (item === "protein_shake" && allowed.has("protein_powder")) {
         add("protein_powder","Protein shake breakfast","20–25g","Protein shake prepared with water, plus fruit if desired.");
       } else if (item === "tofu_scramble" && allowed.has("tofu")) {
-        add("tofu","Tofu scramble","18–24g",`Tofu-style protein cooked with ${pickVeg(input,2,4)} and mild spices.`);
+        add("tofu","Tofu scramble","18–24g",`Tofu-style protein cooked with ${pickBreakfastVeg(input,2,4)} and mild spices.`);
       } else if (item === "hummus_plate" && (allowed.has("lentils") || allowed.has("beans") || allowed.has("chickpeas"))) {
         add("hummus","Hummus breakfast plate","5–10g","2–3 tablespoons hummus with cucumber, tomato and carrot sticks.");
       }
@@ -492,7 +535,7 @@
       const template = t[day % t.length];
       const st = chooseStarch(input, template.pref, day);
       return {
-        name: template.name.replace("{starch}", STARCH[st] || "no added starch"),
+        name: normalizeMealName(template.name.replace("{starch}", STARCH[st] || "no added starch")),
         protein: template.protein,
         detail: template.detail(st, day),
         cat: template.cat,
@@ -506,7 +549,7 @@
     return Array.from({length:7}, (_, day) => {
       const template = t[day % t.length];
       return {
-        name: template.name,
+        name: normalizeMealName(template.name),
         protein: template.protein,
         detail: template.detail(day),
         cat: template.cat
@@ -516,7 +559,7 @@
 
   function makeLeftoverLunches(input, dinners) {
     return dinners.map((d, idx) => ({
-      name: `${d.catLabel || titleCase(d.cat)} vegetable lunch bowl`,
+      name: normalizeMealName(`${d.catLabel || titleCase(d.cat)} vegetable lunch bowl`),
       protein: d.protein,
       cat: d.cat,
       detail: `Use extra ${humanProtein(d.cat)} with sauce and vegetables from a previous meal. Serve with extra vegetables such as ${pickVeg(input, idx, 5)}. No added starch.`
@@ -529,8 +572,15 @@
     const warn = [];
     const text = JSON.stringify(days).toLowerCase();
 
+    if (!input.proteins.includes("chicken") && hasWord(text, "chicken")) {
+      hard.push("Chicken appears despite chicken not being selected.");
+    }
+
     days.forEach(day => {
       const b = mealText(day.breakfast);
+      if (/\b(butternut|green beans|cauliflower|broccoli|cabbage|lettuce)\b/.test(b)) {
+        hard.push(`Day ${day.day} breakfast uses non-breakfast vegetables.`);
+      }
       const am = mealText(day.morningSnack);
       const pm = mealText(day.afternoonSnack);
       const l = mealText(day.lunch);
@@ -621,7 +671,13 @@
 
   function mealText(meal) { return `${meal?.name || ""} ${meal?.detail || ""}`.toLowerCase(); }
   function stripType(x) { const y = {...x}; delete y.type; return y; }
-  function titleCase(s) { return String(s).replace(/\b\w/g, c => c.toUpperCase()); }
+  function titleCase(s) {
+    const text = String(s || "");
+    if (text === "white fish") return "White fish";
+    if (text === "lean ground beef") return "Lean ground beef";
+    if (text === "lean beef mince") return "Lean beef mince";
+    return text.replace(/\b\w/g, c => c.toUpperCase());
+  }
   function humanProtein(cat) {
     return ({chicken:"chicken", beef:"lean beef", fish:"fish", eggs:"eggs", tofu:"tofu-style protein", lentils:"lentils", beans:"beans", chickpeas:"chickpeas", pork:"lean pork"})[cat] || cat;
   }

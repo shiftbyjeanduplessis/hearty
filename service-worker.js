@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-v2026-06-12-meal-engine-v333-final-funnel-fix";
+const CACHE_NAME = "hearty-v2026-06-12-meal-engine-v334-output-cleanup";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

@@ -13,8 +13,6 @@ function harden(input){
   if(input.breakfastItems.includes("protein_shake")) add(input.proteins, "protein_powder");
   if(input.breakfastItems.includes("eggs")) add(input.proteins, "eggs");
   if(input.breakfastItems.includes(yog) || input.breakfastItems.includes("cottage_cheese") || input.breakfastItems.includes("oats")) add(input.proteins, "dairy");
-  const bannedCoreVeg = new Set(["corn", "peas", "mixed vegetables", "mixed veg"]);
-  input.vegetables = (input.vegetables || []).filter(v => !bannedCoreVeg.has(String(v || "").toLowerCase()));
   const defaultVeg = {
     US: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"]
   };

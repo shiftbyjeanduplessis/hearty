@@ -1015,7 +1015,7 @@ font-weight:850;
 }
 
 </style>
-<!-- Hearty free funnel patched to v3.3.3: final funnel fix, US-first default, hardened wizard-to-engine mapping. -->
+<!-- Hearty free funnel patched to v3.3.4: no unselected chicken, breakfast veg whitelist, cleaner output. -->
 </head>
 <body>
 <div class="page">
@@ -1238,7 +1238,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3.3.3-final-funnel-fix"></script>
+<script src="hearty-meal-engine-final.js?v=3.3.4-output-cleanup"></script>
 <script>
     (function(){
       "use strict";
@@ -1719,7 +1719,7 @@ font-weight:850;
       }
 
       function buildFallbackPlan(){
-        const proteins = state.proteins.length ? state.proteins : ["chicken","beef","fish","eggs"];
+        const proteins = state.proteins.length ? state.proteins : ["beef","fish","eggs"];
         const breakfasts = state.breakfast.length ? state.breakfast : ["eggs","oats","yoghurt_bowl"];
         const starches = state.starches.length ? state.starches : ["rice","potato","sweet_potato","whole_wheat_wraps"];
         const vegetables = state.vegetables.length ? state.vegetables : ["broccoli","carrots","baby_marrow","spinach","lettuce","tomato","cucumber"];
@@ -1997,8 +1997,6 @@ font-weight:850;
 
         // If a user reaches the summary with too few real vegetables after corn/peas/mixed veg are removed,
         // top up with country-normal vegetables instead of throwing a confusing alert.
-        const bannedCoreVeg = new Set(["corn", "peas", "mixed vegetables", "mixed veg"]);
-        input.vegetables = (input.vegetables || []).filter(v => !bannedCoreVeg.has(String(v || "").toLowerCase()));
         const defaultVeg = {
           SA: ["spinach","tomato","onion","carrot","baby marrow","green beans","mushrooms","peppers","broccoli","cucumber"],
           US: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"],
