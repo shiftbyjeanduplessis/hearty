@@ -1,14 +1,14 @@
 /*!
  * Hearty free meal engine compatibility shim
- * Keeps old cached HTML from loading old templates.
- * Actual engine: hearty-meal-engine-final.js v3.3.7-nav-fixed
+ * Actual engine: hearty-meal-engine-final.js v3.4.6-rebuilt-funnel-reset
+ * Old generateWeekPlan() is intentionally disabled.
  */
 (function(root){
   "use strict";
   root.HeartyMealsEngineV6 = {
-    VERSION: "compat-shim-to-3.3.7-nav-fixed",
+    VERSION: "compat-shim-disabled-v3.4.6",
     generateWeekPlan: function(){
-      throw new Error("Old generateWeekPlan() is disabled. free-meal-plan.html must use HeartyMealEngine.generatePlan().");
+      throw new Error("Old generateWeekPlan() is disabled. Use HeartyMealEngine.generatePlan().");
     }
   };
 })(typeof self !== "undefined" ? self : this);

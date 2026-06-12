@@ -17,7 +17,8 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
-  const VERSION = "3.3.7-nav-fixed";
+  const VERSION = "3.4.6-strict-snack-gate-quality-fix";
+  const ENGINE_SOURCE = "rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed";
 
   const REGION = {
     US: { label:"United States", yoghurt:"yogurt", stock:"broth", fish:"white fish", mince:"lean ground beef", dried:"beef jerky",
@@ -47,7 +48,7 @@
     yoghurt:"dairy", yogurt:"dairy", cottage_cheese:"dairy", boiled_eggs:"eggs",
     biltong:"beef", jerky:"beef", dried_meat:"beef", chicken_strips:"chicken",
     tuna:"fish", fish:"fish", hummus:"legumes", roasted_chickpeas:"legumes",
-    tofu_bites:"tofu", protein_shake:"protein_powder"
+    tofu_bites:"tofu", tofu:"tofu", protein_shake:"protein_powder"
   };
 
   function unique(xs) {
@@ -152,10 +153,24 @@
       failures.push("starch_required");
       messages.push("Please choose at least 1 starch option, or select the lower-starch plan option.");
     }
-    if (snCats.length < 2) {
+    if (snCats.length < 3) {
       failures.push("snack_protein_minimum");
-      messages.push("Please choose at least 2 protein snack options that match your selected foods.");
+      messages.push("Please choose at least 3 snack options so your 7-day plan does not repeat the same snack too often.");
     }
+
+    if (!input.noBreakfast) {
+      ["eggs","dairy","protein_powder"].forEach(cat => {
+        if (bfCats.includes(cat)) {
+          const alternatives = snCats.filter(x => x !== cat);
+          if (alternatives.length < 2) {
+            failures.push(`snack_variety_for_${cat}_breakfast`);
+            const label = cat === "protein_powder" ? "protein shake" : cat === "dairy" ? "yoghurt/dairy" : "egg";
+            messages.push(`Because you selected a ${label} breakfast, please choose at least 2 snack options that are not ${label}-based.`);
+          }
+        }
+      });
+    }
+
     if (!input.noBreakfast && bfCats.length < 1) {
       failures.push("breakfast_protein_required");
       messages.push("Please select at least one breakfast option such as eggs, yoghurt/cottage cheese, protein shake, tofu scramble, or hummus plate — or choose “I don’t eat breakfast.”");
@@ -176,61 +191,37 @@
     };
   }
 
-  function sentenceList(items) {
-    const clean = unique(items).filter(Boolean);
-    if (!clean.length) return "";
-    if (clean.length === 1) return clean[0];
-    return clean.slice(0, -1).join(", ") + " and " + clean[clean.length - 1];
-  }
-
-  function normalizeMealName(name) {
-    return String(name || "")
-      .replace(/\bLean Ground Beef\b/g, "Lean ground beef")
-      .replace(/\bWhite Fish\b/g, "White fish")
-      .replace(/\bLean Beef Mince\b/g, "Lean beef mince")
-      .replace(/^beef jerky/g, "Beef jerky")
-      .replace(/^lean beef jerky/g, "Lean beef jerky")
-      .replace(/^biltong/g, "Biltong")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-
-  function pickVegItems(input, start, count, exclude) {
-    const banned = new Set((exclude || []).map(x => String(x).toLowerCase()));
-    const pool = (input.vegetables || []).filter(v => !banned.has(String(v).toLowerCase()));
-    const source = pool.length ? pool : (input.vegetables || []);
+  function pickVeg(input, start, count, exclude) {
+    const banned = new Set((exclude || []).map(x => x.toLowerCase()));
+    const pool = input.vegetables.filter(v => !banned.has(v.toLowerCase()));
+    const source = pool.length ? pool : input.vegetables;
     const out = [];
     let i = 0;
-    while (source.length && out.length < count && i < source.length * 3) {
+    while (out.length < count && i < source.length * 2) {
       const v = source[(start + i) % source.length];
-      if (v && !out.includes(v)) out.push(v);
+      if (!out.includes(v)) out.push(v);
       i++;
     }
-    return out;
-  }
-
-  function pickVeg(input, start, count, exclude) {
-    return sentenceList(pickVegItems(input, start, count, exclude));
-  }
-
-  function breakfastVegPool(input) {
-    const allowed = new Set(["tomato", "spinach", "mushrooms", "peppers", "onion", "zucchini", "courgette", "baby marrow"]);
-    const chosen = (input.vegetables || []).filter(v => allowed.has(v));
-    const regionFallback = ((REGION[input.region] && REGION[input.region].veg) || []).filter(v => allowed.has(v));
-    const globalFallback = ["tomato", "spinach", "mushrooms", "peppers", "onion", "zucchini"];
-    return unique(chosen.concat(regionFallback, globalFallback));
+    return out.join(", ");
   }
 
   function pickBreakfastVeg(input, start, count) {
-    const source = breakfastVegPool(input);
+    const friendly = new Set(["tomato","spinach","mushrooms","peppers","onion","zucchini","courgette","baby marrow"]);
+    const pool = input.vegetables.filter(v => friendly.has(String(v).toLowerCase()));
+    const fallback = input.region === "UK"
+      ? ["tomato","spinach","mushrooms","peppers","onion","courgette"]
+      : input.region === "SA"
+        ? ["tomato","spinach","mushrooms","peppers","onion","baby marrow"]
+        : ["tomato","spinach","mushrooms","peppers","onion","zucchini"];
+    const source = pool.length ? pool : fallback;
     const out = [];
     let i = 0;
-    while (source.length && out.length < count && i < source.length * 3) {
+    while (out.length < count && i < source.length * 2) {
       const v = source[(start + i) % source.length];
-      if (v && !out.includes(v)) out.push(v);
+      if (!out.includes(v)) out.push(v);
       i++;
     }
-    return sentenceList(out);
+    return out.join(", ");
   }
 
   function starchAmount(starch) {
@@ -271,7 +262,7 @@
     }
 
     if (main.has("beef")) {
-      add("beef",`${titleCase(r.mince)} bolognese with {starch}`,"32–38g","pasta",
+      add("beef",`${capFirst(r.mince)} bolognese with {starch}`,"32–38g","pasta",
         (st,i) => st !== "none"
           ? `120–150g ${r.mince} cooked with onion, garlic, chopped tomato, grated carrot, mushrooms and Italian herbs. Serve with ${starchAmount(st)} and ${pickVeg(input,i,3,["onion","tomato","carrot","mushrooms"])}.`
           : `120–150g ${r.mince} cooked with onion, garlic, tomato, carrot, mushrooms and herbs. Serve with ${pickVeg(input,i,5,["onion","tomato","carrot","mushrooms"])}. No added starch.`);
@@ -289,7 +280,7 @@
     }
 
     if (main.has("fish")) {
-      add("fish",`${titleCase(r.fish)} lemon-herb plate with {starch}`,"30–36g","rice",
+      add("fish",`${capFirst(r.fish)} lemon-herb plate with {starch}`,"30–36g","rice",
         (st,i) => st !== "none"
           ? `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${pickVeg(input,i,5)} and ${starchAmount(st)}.`
           : `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${pickVeg(input,i,5)}. No added starch.`);
@@ -361,17 +352,23 @@
 
     if (main.has("chicken")) {
       add("chicken","Chicken vegetable soup bowl","30–35g", i => `120–150g cooked chicken simmered with ${pickVeg(input,i,5)} and ${r.stock}. No added starch.`);
-      add("chicken","Chicken vegetable plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("chicken","Chicken cucumber plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
     }
     if (main.has("beef")) {
-      add("beef",`${titleCase(r.mince)} vegetable bowl`,"30–35g", i => `120–150g ${r.mince} cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
+      add("beef",`${capFirst(r.mince)} vegetable bowl`,"30–35g", i => `120–150g ${r.mince} cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
+    }
+    if (main.has("pork")) {
+      add("pork","Lean pork vegetable bowl","25–35g", i => `120–150g lean pork strips cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
     }
     if (main.has("fish")) {
       add("fish","Tuna cucumber bowl","20–30g", i => `Tuna with cucumber, tomato, lettuce, lemon, herbs and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
-      add("fish",`${titleCase(r.fish)} vegetable plate`,"25–35g", i => `${titleCase(r.fish)} with lemon-herb dressing and ${pickVeg(input,i,5)}. No added starch.`);
+      add("fish",`${capFirst(r.fish)} vegetable plate`,"25–35g", i => `${capFirst(r.fish)} with lemon-herb dressing and ${pickVeg(input,i,5)}. No added starch.`);
     }
     if (main.has("eggs")) {
       add("eggs","Boiled egg vegetable plate","14–22g", i => `2 boiled eggs with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+    }
+    if (gate.allowed.includes("dairy")) {
+      add("dairy","Cottage cheese protein plate","18–25g", i => `Cottage cheese served with cucumber, tomato, lettuce, herbs and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
     }
     if (main.has("tofu")) {
       add("tofu","Tofu vegetable bowl","20–30g", i => `Tofu-style protein with cucumber, tomato, lettuce, lemon-herb dressing and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
@@ -398,7 +395,7 @@
 
     const allowed = new Set(gate.allowed);
     const opts = [];
-    const add = (type, name, protein, detail) => opts.push({type, name: normalizeMealName(name), protein, detail});
+    const add = (type, name, protein, detail) => opts.push({type, name, protein, detail});
 
     input.breakfastItems.forEach(item => {
       if (item === "eggs" && allowed.has("eggs")) {
@@ -444,17 +441,16 @@
     const opts = [];
     const seen = new Set();
     const add = (type, name, protein, detail) => {
-      const cleanName = normalizeMealName(name);
-      if (!seen.has(cleanName)) { opts.push({type, name: cleanName, protein, detail}); seen.add(cleanName); }
+      if (!seen.has(name)) { opts.push({type, name, protein, detail}); seen.add(name); }
     };
 
     input.snackProteins.forEach(item => {
       const cat = SN[item];
       if (cat === "dairy" && allowed.has("dairy")) add("dairy",`Plain ${r.yoghurt} with berries`,"10–18g",`¾–1 cup plain ${r.yoghurt} with berries or fruit.`);
       else if (cat === "eggs" && allowed.has("eggs")) add("eggs","Boiled egg with cucumber","6–8g","1 boiled egg with cucumber and tomato.");
-      else if (cat === "chicken" && allowed.has("chicken")) add("chicken","Cooked chicken strips with cucumber","15–20g","Small portion cooked chicken strips with cucumber and lemon.");
-      else if (cat === "fish" && allowed.has("fish")) add("fish","Tuna cucumber bites","15–20g","Tuna with cucumber, lemon and herbs.");
-      else if (cat === "beef" && allowed.has("beef")) add("beef",`${r.dried} with cucumber sticks`,"12–15g",`25–30g ${r.dried} with cucumber sticks.`);
+      else if (cat === "chicken" && allowed.has("chicken")) add("chicken","Cooked chicken strips with cucumber","12–15g","Small portion cooked chicken strips with cucumber and lemon.");
+      else if (cat === "fish" && allowed.has("fish")) add("fish","Tuna cucumber bites","12–18g","Small portion tuna with cucumber, lemon and herbs.");
+      else if (cat === "beef" && allowed.has("beef")) add("beef",`${capFirst(r.dried)} with cucumber sticks`,"12–15g",`25–30g ${r.dried} with cucumber sticks.`);
       else if (cat === "legumes" && (allowed.has("lentils") || allowed.has("beans") || allowed.has("chickpeas"))) add("legumes","Hummus with cucumber sticks","5–8g","2–3 tablespoons hummus with cucumber and carrot sticks.");
       else if (cat === "tofu" && allowed.has("tofu")) add("tofu","Tofu cucumber bites","10–16g","Small portion tofu-style protein with cucumber, tomato, lemon and herbs.");
       else if (cat === "protein_powder" && allowed.has("protein_powder")) add("protein_powder","Protein shake","20–25g","Use if protein is difficult to reach from meals.");
@@ -462,36 +458,101 @@
 
     return opts;
   }
+  function fruitSnackOption(input, day) {
+    const regionFruit = {
+      US: "mandarin",
+      SA: "naartjie",
+      UK: "clementine",
+      AU: "mandarin",
+      CA: "clementine"
+    };
+    const fruit = regionFruit[input.region] || "fruit";
+    const opts = [
+      { type:"fruit", name:`${capFirst(fruit)} or berries`, protein:"0–2g", detail:`1 small ${fruit} or a small handful of berries.` },
+      { type:"fruit", name:"Apple slices", protein:"0–2g", detail:"1 small apple sliced slowly if appetite is low." }
+    ];
+    return opts[day % opts.length];
+  }
 
-  function makeSnacks(input, gate, breakfasts) {
+
+
+  function makeSnacks(input, gate, breakfasts, lunches, dinners) {
     const opts = snackOptions(input, gate);
     const out = [];
     const typeCounts = {};
     const nameCounts = {};
+    let fruitUses = 0;
 
     for (let day=0; day<7; day++) {
-      const bfType = breakfasts[day]?.type || "none";
+      const bfType = familyCat(breakfasts[day]?.type || "none");
+      const mainCats = new Set([familyCat(lunches?.[day]?.cat), familyCat(dinners?.[day]?.cat)].filter(Boolean));
+      const baseProtein = proteinMidpoint(breakfasts[day]?.protein) + proteinMidpoint(lunches?.[day]?.protein) + proteinMidpoint(dinners?.[day]?.protein);
       const chosen = [];
 
       for (let slot=0; slot<2; slot++) {
+        const already = (o) => chosen.some(c => c.name === o.name);
+        const typeOf = (o) => familyCat(o.type);
+        const breakfastClash = (type) => ["eggs","dairy","protein_powder"].includes(type) && type === bfType;
+        const mainClash = (type) => mainCats.has(type);
+
+        const ideal = opts.filter(o => {
+          const type = typeOf(o);
+          return !already(o) && !breakfastClash(type) && !mainClash(type);
+        });
+
+        const breakfastSafe = opts.filter(o => {
+          const type = typeOf(o);
+          return !already(o) && !breakfastClash(type);
+        });
+
+        const anyUnused = opts.filter(o => !already(o));
+
+        let pool = ideal.length ? ideal : breakfastSafe.length ? breakfastSafe : anyUnused;
         let best = null;
         let bestScore = Infinity;
 
-        opts.forEach((o, idx) => {
-          if (chosen.some(c => c.name === o.name)) return;
-
-          let score = idx + (typeCounts[o.type] || 0)*5 + (nameCounts[o.name] || 0)*6;
-
-          // hard same-day clash avoidance when alternatives exist
-          const alternatives = opts.filter(x => x.type !== bfType && !chosen.some(c => c.name === x.name));
-          if (["eggs","dairy","protein_powder"].includes(bfType) && o.type === bfType && alternatives.length) score += 1000;
-
+        pool.forEach((o, idx) => {
+          const type = typeOf(o);
+          let score = idx * 0.01 + (typeCounts[type] || 0) * 12 + (nameCounts[o.name] || 0) * 9;
+          if (breakfastClash(type)) score += 2000;
+          if (mainClash(type)) score += ideal.length ? 1500 : 400;
+          if ((typeCounts[type] || 0) >= 2 && opts.some(x => typeOf(x) !== type)) score += 250;
           if (score < bestScore) { best = o; bestScore = score; }
         });
 
-        if (!best) best = opts[slot % opts.length];
+        // If no ideal protein snack exists, use fruit fallback before repeating the day's main protein.
+        // Limit fruit-only snacks to 2/week so the plan remains protein-centred.
+        const chosenProtein = chosen.reduce((sum, meal) => sum + proteinMidpoint(meal?.protein), 0);
+        const projectedProtein = baseProtein + chosenProtein + proteinMidpoint(best?.protein);
+
+        const shouldUseFruit =
+          fruitUses < 2 &&
+          (
+            (!ideal.length && slot === 1 && (best && mainClash(typeOf(best)))) ||
+            (slot === 1 && projectedProtein > 118 && best && typeOf(best) !== "fruit")
+          );
+
+        if (shouldUseFruit) {
+          best = fruitSnackOption(input, day);
+          fruitUses++;
+        }
+
+        // If breakfast repeat remains the best option, use fruit even in slot 0 if available.
+        const shouldAvoidBreakfastRepeat =
+          fruitUses < 2 &&
+          best &&
+          breakfastClash(typeOf(best));
+
+        if (shouldAvoidBreakfastRepeat) {
+          best = fruitSnackOption(input, day + 1);
+          fruitUses++;
+        }
+
+        if (!best) best = fruitUses < 2 ? fruitSnackOption(input, day) : opts[slot % opts.length];
+
         chosen.push(best);
-        typeCounts[best.type] = (typeCounts[best.type] || 0) + 1;
+        const type = typeOf(best);
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
         nameCounts[best.name] = (nameCounts[best.name] || 0) + 1;
       }
 
@@ -506,13 +567,13 @@
     const gate = gateCheck(input);
 
     if (gate.status === "BLOCKED") {
-      return { ok:false, status:"BLOCKED", version:VERSION, gate, messages:gate.messages, days:[] };
+      return { ok:false, status:"BLOCKED", version:VERSION, engineSource:ENGINE_SOURCE, gate, messages:gate.messages, days:[] };
     }
 
     const breakfastsRaw = makeBreakfasts(input, gate);
-    const snacks = makeSnacks(input, gate, breakfastsRaw);
     const dinners = makeDinners(input, gate);
     const lunches = input.leftoverLunches ? makeLeftoverLunches(input, dinners) : makeStandaloneLunches(input, gate, dinners);
+    const snacks = makeSnacks(input, gate, breakfastsRaw, lunches, dinners);
 
     const days = Array.from({length:7}, (_, i) => ({
       day: i+1,
@@ -527,58 +588,149 @@
     }));
 
     const qa = validatePlan(input, gate, days);
-    return { ok: qa.status === "PASS", status:"ALLOWED", version:VERSION, gate, qa, days, markdown: renderMarkdown(input, gate, days, qa) };
+    return { ok: qa.status === "PASS", status:"ALLOWED", version:VERSION, engineSource:ENGINE_SOURCE, gate, qa, days, markdown: renderMarkdown(input, gate, days, qa) };
   }
+
+
+  function proteinMidpoint(value) {
+    const nums = String(value || "").match(/\d+/g)?.map(Number) || [];
+    if (!nums.length) return 0;
+    return nums.length >= 2 ? Math.round((nums[0] + nums[1]) / 2) : nums[0];
+  }
+
+  function mealCat(meal) {
+    if (!meal) return "";
+    return meal.cat || meal.type || "";
+  }
+
+  function familyCat(cat) {
+    if (!cat) return "";
+    if (cat === "tuna" || cat === "salmon") return "fish";
+    if (cat === "jerky" || cat === "biltong") return "beef";
+    if (cat === "yogurt" || cat === "yoghurt" || cat === "cottage_cheese") return "dairy";
+    if (cat === "boiled_eggs") return "eggs";
+    if (cat === "chicken_strips") return "chicken";
+    return cat;
+  }
+
+  function maxWeeklyMainFor(cat, mainCount) {
+    if (mainCount >= 4) {
+      if (cat === "chicken") return 2;
+      if (cat === "beef") return 2;
+      if (cat === "fish") return 2;
+      if (cat === "pork") return 1;
+      if (cat === "eggs") return 2;
+      return 2;
+    }
+    if (mainCount === 3) {
+      if (cat === "chicken" || cat === "beef" || cat === "fish") return 3;
+      return 3;
+    }
+    return 4;
+  }
+
+  function chooseBalancedTemplate(templates, day, counts, avoidCats, maxMap) {
+    let best = null;
+    let bestScore = Infinity;
+
+    templates.forEach((template, idx) => {
+      const cat = template.cat;
+      const used = counts[cat] || 0;
+      let score = idx * 0.01 + used * 25;
+      if (avoidCats && avoidCats.has(cat) && templates.some(x => x.cat !== cat)) score += 500;
+      const max = maxMap[cat] || 7;
+      if (used >= max && templates.some(x => x.cat !== cat)) score += 1000 + used * 100;
+      if (counts.__last === cat && templates.some(x => x.cat !== cat)) score += 80;
+      score += ((idx + day) % templates.length) * 0.05;
+      if (score < bestScore) { best = template; bestScore = score; }
+    });
+
+    return best || templates[day % templates.length];
+  }
+
 
   function makeDinners(input, gate) {
     const t = dinnerTemplates(input, gate);
-    return Array.from({length:7}, (_, day) => {
-      const template = t[day % t.length];
+    const mainCount = new Set(t.map(x => x.cat)).size || 1;
+    const maxMap = {};
+    t.forEach(x => { maxMap[x.cat] = maxWeeklyMainFor(x.cat, mainCount); });
+
+    const counts = {};
+    const out = [];
+
+    for (let day=0; day<7; day++) {
+      const template = chooseBalancedTemplate(t, day, counts, new Set(), maxMap);
       const st = chooseStarch(input, template.pref, day);
-      return {
-        name: normalizeMealName(template.name.replace("{starch}", STARCH[st] || "no added starch")),
+      const mealName = st === "none"
+        ? template.name
+            .replace(" with {starch}", " bowl")
+            .replace(" and {starch}", "")
+            .replace("{starch}", "vegetables")
+        : template.name.replace("{starch}", STARCH[st] || "starch");
+
+      out.push({
+        name: mealName,
         protein: template.protein,
         detail: template.detail(st, day),
         cat: template.cat,
         starch: st
-      };
-    });
+      });
+      counts[template.cat] = (counts[template.cat] || 0) + 1;
+      counts.__last = template.cat;
+    }
+
+    return out;
   }
 
   function makeStandaloneLunches(input, gate, dinners) {
     const t = lunchTemplates(input, gate);
-    const catCounts = {};
+    const dinnerCounts = {};
+    (dinners || []).forEach(d => { dinnerCounts[d.cat] = (dinnerCounts[d.cat] || 0) + 1; });
 
-    return Array.from({length:7}, (_, day) => {
-      const dinnerCat = dinners && dinners[day] ? dinners[day].cat : null;
-      let candidates = t.slice();
+    const mainCount = new Set(t.map(x => x.cat)).size || 1;
+    const maxMap = {};
+    t.forEach(x => { maxMap[x.cat] = maxWeeklyMainFor(x.cat, mainCount); });
 
-      // Avoid lunch and dinner using the same main protein on the same day when alternatives exist.
-      const nonMatching = candidates.filter(x => x.cat !== dinnerCat);
-      if (nonMatching.length) candidates = nonMatching;
+    const counts = {};
+    const out = [];
 
-      candidates.sort((a, b) => {
-        const ac = catCounts[a.cat] || 0;
-        const bc = catCounts[b.cat] || 0;
-        if (ac !== bc) return ac - bc;
-        return t.indexOf(a) - t.indexOf(b);
+    for (let day=0; day<7; day++) {
+      const dinnerCat = dinners?.[day]?.cat;
+      let best = null;
+      let bestScore = Infinity;
+
+      t.forEach((template, idx) => {
+        const cat = template.cat;
+        const used = counts[cat] || 0;
+        const totalMainUsed = used + (dinnerCounts[cat] || 0);
+        let score = idx * 0.01 + used * 28 + totalMainUsed * 14;
+
+        if (dinnerCat === cat && t.some(x => x.cat !== cat)) score += 1000;
+        const weeklyMax = (maxMap[cat] || 7) + 1;
+        if (totalMainUsed >= weeklyMax && t.some(x => x.cat !== cat)) score += 900;
+        if (counts.__last === cat && t.some(x => x.cat !== cat)) score += 60;
+        score += ((idx + day) % t.length) * 0.05;
+
+        if (score < bestScore) { best = template; bestScore = score; }
       });
 
-      const template = candidates[0] || t[day % t.length];
-      catCounts[template.cat] = (catCounts[template.cat] || 0) + 1;
-
-      return {
-        name: normalizeMealName(template.name),
+      const template = best || t[day % t.length];
+      out.push({
+        name: template.name,
         protein: template.protein,
         detail: template.detail(day),
         cat: template.cat
-      };
-    });
+      });
+      counts[template.cat] = (counts[template.cat] || 0) + 1;
+      counts.__last = template.cat;
+    }
+
+    return out;
   }
 
   function makeLeftoverLunches(input, dinners) {
     return dinners.map((d, idx) => ({
-      name: normalizeMealName(`${d.catLabel || titleCase(d.cat)} vegetable lunch bowl`),
+      name: `${d.catLabel || titleCase(d.cat)} vegetable lunch bowl`,
       protein: d.protein,
       cat: d.cat,
       detail: `Use extra ${humanProtein(d.cat)} with sauce and vegetables from a previous meal. Serve with extra vegetables such as ${pickVeg(input, idx, 5)}. No added starch.`
@@ -591,15 +743,8 @@
     const warn = [];
     const text = JSON.stringify(days).toLowerCase();
 
-    if (!input.proteins.includes("chicken") && hasWord(text, "chicken")) {
-      hard.push("Chicken appears despite chicken not being selected.");
-    }
-
     days.forEach(day => {
       const b = mealText(day.breakfast);
-      if (/\b(butternut|green beans|cauliflower|broccoli|cabbage|lettuce)\b/.test(b)) {
-        hard.push(`Day ${day.day} breakfast uses non-breakfast vegetables.`);
-      }
       const am = mealText(day.morningSnack);
       const pm = mealText(day.afternoonSnack);
       const l = mealText(day.lunch);
@@ -655,6 +800,54 @@
     if (dinnerCats.size < 2) hard.push("Plan: fewer than 2 dinner protein categories.");
     if (snackCats.size < 2) hard.push("Plan: fewer than 2 snack protein categories.");
 
+
+    // v3.4 rendered-output quality gates: weekly balance and snack/main clashes.
+    const mainCatsAll = days.flatMap(d => [d.lunch.cat, d.dinner.cat].filter(Boolean));
+    const mainMix = count(mainCatsAll);
+    const strictMainMix = count(mainCatsAll.filter(cat => cat !== "dairy"));
+    const mainCategoryCount = Object.keys(strictMainMix).length;
+
+    if (mainCategoryCount >= 4) {
+      Object.entries(strictMainMix).forEach(([cat, n]) => {
+        const limit = cat === "pork" ? 3 : 4;
+        if (n > limit) hard.push(`Plan: ${cat} appears ${n} times across lunch/dinner; weekly rotation is too repetitive.`);
+      });
+      if ((strictMainMix.chicken || 0) > 4) hard.push("Plan: chicken dominates the week.");
+      if ((strictMainMix.beef || 0) > 4) hard.push("Plan: beef dominates the week.");
+    } else if (mainCategoryCount === 3) {
+      Object.entries(strictMainMix).forEach(([cat, n]) => {
+        if (n > 5) hard.push(`Plan: ${cat} appears ${n} times in a narrow plan; weekly rotation is too repetitive.`);
+      });
+    }
+
+    days.forEach(day => {
+      const lunchCat = familyCat(day.lunch?.cat);
+      const dinnerCat = familyCat(day.dinner?.cat);
+      const mainCats = new Set([lunchCat, dinnerCat].filter(Boolean));
+      const snackCats = [classifySnack(day.morningSnack), classifySnack(day.afternoonSnack)].map(familyCat);
+
+      if (lunchCat && dinnerCat && lunchCat === dinnerCat) {
+        hard.push(`Day ${day.day}: lunch and dinner repeat ${lunchCat}.`);
+      }
+
+      snackCats.forEach(sc => {
+        if (sc && mainCats.has(sc) && gate.snackCategories.some(x => !mainCats.has(familyCat(x)))) {
+          warn.push(`Day ${day.day}: ${sc} snack repeats lunch/dinner protein.`);
+        }
+      });
+
+      const approxTotal = [
+        day.breakfast,
+        day.morningSnack,
+        day.lunch,
+        day.afternoonSnack,
+        day.dinner
+      ].reduce((sum, meal) => sum + proteinMidpoint(meal?.protein), 0);
+
+      if (approxTotal > 122) warn.push(`Day ${day.day}: protein estimate is high at approximately ${approxTotal}g.`);
+    });
+
+
     return {
       status: hard.length ? "FAIL" : (warn.length ? "CONDITIONAL PASS" : "PASS"),
       hard,
@@ -690,13 +883,8 @@
 
   function mealText(meal) { return `${meal?.name || ""} ${meal?.detail || ""}`.toLowerCase(); }
   function stripType(x) { const y = {...x}; delete y.type; return y; }
-  function titleCase(s) {
-    const text = String(s || "");
-    if (text === "white fish") return "White fish";
-    if (text === "lean ground beef") return "Lean ground beef";
-    if (text === "lean beef mince") return "Lean beef mince";
-    return text.replace(/\b\w/g, c => c.toUpperCase());
-  }
+  function titleCase(s) { return String(s).replace(/\b\w/g, c => c.toUpperCase()); }
+  function capFirst(s) { s = String(s || ""); return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
   function humanProtein(cat) {
     return ({chicken:"chicken", beef:"lean beef", fish:"fish", eggs:"eggs", tofu:"tofu-style protein", lentils:"lentils", beans:"beans", chickpeas:"chickpeas", pork:"lean pork"})[cat] || cat;
   }
@@ -720,6 +908,7 @@
     if (t.includes("tofu")) return "tofu";
     if (t.includes("protein shake")) return "protein_powder";
     if (/biltong|jerky|meat strips/.test(t)) return "beef";
+    if (/apple|berries|mandarin|naartjie|clementine|fruit/.test(t)) return "fruit";
     return "other";
   }
   function hasWord(text, word) { return new RegExp("\\b" + String(word).replace(/[.*+?^${}()|[\\]\\\\]/g, "\\$&") + "\\b", "i").test(text); }
@@ -735,6 +924,7 @@
 
   return {
     VERSION,
+    ENGINE_SOURCE,
     REGION_OPTIONS,
     generatePlan,
     gateCheck,

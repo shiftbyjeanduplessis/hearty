@@ -1018,6 +1018,12 @@ font-weight:850;
 <!-- Hearty free funnel patched to v3.3.5: clean final engine only, no old V6 block. -->
 <!-- Hearty v3.3.6 button helper fix -->
 <!-- Hearty v3.3.7 nav fixed: event-delegated wizard buttons -->
+<meta name="hearty-engine-source" content="3.4.6-strict-snack-gate-quality-fix rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed">
+<!-- Hearty v3.4.6-strict-snack-gate-quality-fix release gate repair: clean UI shell + rebuilt engine + rendered-output QA -->
+<!-- Hearty v3.4.6-strict-snack-gate-quality-fix release gate repair -->
+<!-- Hearty v3.4.6-strict-snack-gate-quality-fix release gate repair -->
+<!-- Hearty v3.4.6-strict-snack-gate-quality-fix strict snack gate -->
+<!-- Hearty v3.4.6 strict snack gate quality fix -->
 </head>
 <body>
 <div class="page">
@@ -1240,7 +1246,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3.3.7-nav-fixed"></script>
+<script src="hearty-meal-engine-final.js?v=3.4.6-strict-snack-gate-quality-fix"></script>
 <script>
     (function(){
       "use strict";
@@ -1736,7 +1742,8 @@ font-weight:850;
 
         const finalInput = buildFinalEngineInput();
         const result = engine.generatePlan(finalInput);
-        console.log("HEARTY_ENGINE_DEBUG", { version: engine.VERSION, input: finalInput, resultStatus: result?.status, qa: result?.qa?.status });
+        console.log("HEARTY_ENGINE_DEBUG", { version: engine.VERSION, source: engine.ENGINE_SOURCE, input: finalInput, resultStatus: result?.status, qa: result?.qa?.status });
+        console.log("HEARTY_ENGINE_PROVENANCE", engine.VERSION, engine.ENGINE_SOURCE);
 
         window.__HEARTY_LAST_ENGINE_RESULT__ = result;
         window.__HEARTY_LAST_ENGINE_INPUT__ = finalInput;
@@ -2041,7 +2048,7 @@ font-weight:850;
       function renderPlan(plan){
         const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
         document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
-        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • generated with the final Hearty meal engine • approximate protein shown`;
+        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • generated with Hearty engine v3.4 rebuilt funnel reset • approximate protein shown`;
         daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast)}${mealRow("Morning snack", day.morningSnack, day.protein?.morningSnack, day.recipe?.morningSnack)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch)}${mealRow("Afternoon snack", day.afternoonSnack, day.protein?.afternoonSnack, day.recipe?.afternoonSnack)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner)}${dayTotalRow(day)}</article>`).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>`;
       }
 

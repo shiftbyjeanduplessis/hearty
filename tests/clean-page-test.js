@@ -1,7 +1,7 @@
 const fs = require("fs");
 const html = fs.readFileSync("free-meal-plan.html", "utf8");
 const checks = [
-  ["loads v3.3.7 engine", html.includes("hearty-meal-engine-final.js?v=3.3.7-nav-fixed")],
+  ["loads v3.4.6-strict-snack-gate-quality-fix engine", html.includes("hearty-meal-engine-final.js?v=3.4.6-strict-snack-gate-quality-fix")],
   ["old V6 block removed", !html.includes("BUTTON_FIX_ONLY_V1")],
   ["old V6 getter removed", !html.includes("return window.HeartyMealsEngineV6 || null")],
   ["final engine getter present", html.includes("return window.HeartyMealEngine || null")],

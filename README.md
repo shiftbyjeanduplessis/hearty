@@ -1,29 +1,34 @@
-# Hearty Free Meal Plan Funnel — v3.3.6
+# Hearty Free Meal Funnel — v3.4.0 Rebuilt Engine Clean Reset
 
-This patch fixes the broken wizard Next button after the clean-engine removal.
+This is a source-of-truth reset.
 
-## What was wrong
+## Source of truth
 
-The v3.3.5 clean package removed the old V6 engine block, but that block also contained helper functions the wizard still used:
+- Engine source: rebuilt funnel engine line from `hearty_meal_engine_v331_us_first.zip`
+- New engine version: `3.4.0-rebuilt-funnel-reset`
+- Engine source marker: `rebuilt-funnel-engine-v331-us-first-plus-v340-rotation-qa`
 
-- `localYoghurt()`
-- `mealRow()`
-- `dayTotalRow()`
+## What is NOT used
 
-The fruit step looked broken because clicking **Next** tries to render the snack step, and the snack step calls `localYoghurt()`.
+- Old app engine `3.0.0-final-gated`
+- Old `HeartyMealsEngineV6` generator
+- Old `generateWeekPlan()` path
+- Old page-contained meal templates
 
-## Fixes in v3.3.6
+## What changed
 
-- Restored `localYoghurt()` as a small standalone helper.
-- Restored `mealRow()` and `dayTotalRow()` for plan rendering.
-- Did **not** reintroduce the old V6 engine.
-- Added safer Next/Back/Skip handlers with console error logging.
-- Script cache-busted to `v=3.3.6-button-helper-fix`.
-- Service worker cache bumped.
+- The funnel page is UI only.
+- The page calls `HeartyMealEngine.generatePlan(input)` only.
+- Added engine provenance logging:
+  - `HEARTY_ENGINE_PROVENANCE`
+  - `HEARTY_ENGINE_DEBUG`
+- Added weekly protein balance logic.
+- Added snack-vs-lunch/dinner repeat avoidance.
+- Added rendered-output tests that catch chicken/beef dominance and snack/main clashes.
 
-## Upload these files
+## Deploy
 
-Replace/upload the whole folder contents, or at minimum:
+Upload/replace the whole folder, or at minimum:
 
 - `free-meal-plan.html`
 - `hearty-meal-engine-final.js`
@@ -35,7 +40,17 @@ Replace/upload the whole folder contents, or at minimum:
 Open in InPrivate:
 
 ```txt
-/free-meal-plan.html?v=336
+/free-meal-plan.html?v=340
 ```
 
-Go to the fruit step and click Next. It should move to the protein snack step.
+Then check the browser console for:
+
+```txt
+HEARTY_ENGINE_PROVENANCE 3.4.0-rebuilt-funnel-reset rebuilt-funnel-engine-v331-us-first-plus-v340-rotation-qa
+```
+
+## Local test
+
+```bash
+npm test
+```

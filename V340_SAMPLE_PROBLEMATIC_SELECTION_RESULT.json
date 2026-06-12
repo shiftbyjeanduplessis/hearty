@@ -1,0 +1,87 @@
+{
+  "version": "3.4.0-rebuilt-funnel-reset",
+  "source": "rebuilt-funnel-engine-v331-us-first-plus-v340-rotation-qa",
+  "qa": "CONDITIONAL PASS",
+  "hard": [],
+  "warn": [
+    "Day 3: protein estimate is high at approximately 124g."
+  ],
+  "mainCounts": {
+    "eggs": 3,
+    "chicken": 4,
+    "beef": 4,
+    "fish": 3
+  },
+  "days": [
+    {
+      "day": 1,
+      "breakfast": "Oats with yogurt",
+      "morningSnack": "Tuna cucumber bites",
+      "lunch": "Boiled egg vegetable plate",
+      "lunchCat": "eggs",
+      "afternoonSnack": "Beef jerky with cucumber sticks",
+      "dinner": "Chicken curry with rice",
+      "dinnerCat": "chicken"
+    },
+    {
+      "day": 2,
+      "breakfast": "Protein shake breakfast",
+      "morningSnack": "Plain yogurt with berries",
+      "lunch": "Chicken vegetable soup bowl",
+      "lunchCat": "chicken",
+      "afternoonSnack": "Tuna cucumber bites",
+      "dinner": "Egg and vegetable frittata with pasta",
+      "dinnerCat": "eggs"
+    },
+    {
+      "day": 3,
+      "breakfast": "Vegetable scrambled eggs",
+      "morningSnack": "Cooked chicken strips with cucumber",
+      "lunch": "Lean ground beef vegetable bowl",
+      "lunchCat": "beef",
+      "afternoonSnack": "Protein shake",
+      "dinner": "Homemade fish cakes with vegetables and rice",
+      "dinnerCat": "fish"
+    },
+    {
+      "day": 4,
+      "breakfast": "Vegetable omelette",
+      "morningSnack": "Cooked chicken strips with cucumber",
+      "lunch": "Tuna cucumber bowl",
+      "lunchCat": "fish",
+      "afternoonSnack": "Plain yogurt with berries",
+      "dinner": "Lean ground beef bolognese with pasta",
+      "dinnerCat": "beef"
+    },
+    {
+      "day": 5,
+      "breakfast": "High-protein yogurt bowl",
+      "morningSnack": "Beef jerky with cucumber sticks",
+      "lunch": "Boiled egg vegetable plate",
+      "lunchCat": "eggs",
+      "afternoonSnack": "Protein shake",
+      "dinner": "Grilled white fish plate with rice",
+      "dinnerCat": "fish"
+    },
+    {
+      "day": 6,
+      "breakfast": "Protein shake breakfast",
+      "morningSnack": "Boiled egg with cucumber",
+      "lunch": "Lean ground beef vegetable bowl",
+      "lunchCat": "beef",
+      "afternoonSnack": "Plain yogurt with berries",
+      "dinner": "Chicken curry with rice",
+      "dinnerCat": "chicken"
+    },
+    {
+      "day": 7,
+      "breakfast": "Oats with yogurt",
+      "morningSnack": "Boiled egg with cucumber",
+      "lunch": "Chicken vegetable soup bowl",
+      "lunchCat": "chicken",
+      "afternoonSnack": "Tuna cucumber bites",
+      "dinner": "Lean beef stew with rice",
+      "dinnerCat": "beef"
+    }
+  ]
+}
