@@ -1,48 +1,45 @@
-# Hearty Home Onboarding + Lessons Pack
+# Hearty Free Meal Plan Funnel — v3.3.1
 
-## Add files
+This package uses your uploaded `free-meal-plan.html` as the base and preserves the existing funnel design.
 
-1. Put `js/hearty-lessons.v1.js` into your repo at:
+## What changed
+
+- Replaced old meal engine with `hearty-meal-engine-final.js` v3.3.1.
+- Updated `free-meal-plan.html` to load `hearty-meal-engine-final.js?v=3.3.1-us-first`.
+- Changed the wizard country order so United States appears first.
+- Engine fallback/default region is United States.
+- Leftovers are not forced.
+- Lunches use `No added starch.`
+- Fish curry and fish stew are removed.
+- Country food wording is locked by region.
+- Service worker cache name bumped so old cached files are cleared.
+- Old `hearty-free-meal-engine-v24.js` is replaced by a compatibility shim so old templates do not silently run.
+
+## Files to upload
+
+Upload the whole folder to GitHub/Render, or replace these files in your existing repo:
+
+- `free-meal-plan.html`
+- `hearty-meal-engine-final.js`
+- `hearty-free-meal-engine-v24.js`
+- `service-worker.js`
+
+## Tests
+
+Run:
+
+```bash
+npm test
+```
+
+Expected:
 
 ```txt
-/js/hearty-lessons.v1.js
+smoke-test: allowed 7-day plan
+strict-50-test: PASS 50
+country-food-rules-test: PASS 50
 ```
 
-2. In `home.html`, near the bottom before `</body>`, add:
+## Important
 
-```html
-<script src="./js/hearty-lessons.v1.js"></script>
-```
-
-3. Then paste the contents of:
-
-```txt
-home-onboarding-and-lessons-patch.html
-```
-
-directly after that script include and still before `</body>`.
-
-## Includes
-
-- Name onboarding modal
-- Supabase profile save for name
-- Placeholder data removal
-- Badge box removal
-- Empty medication state
-- 10 daily lessons
-- Max one lesson completed per calendar day
-- Lesson card disappears after lesson 10
-
-## Home onboarding rules locked
-
-- “What should we call you?” is a modal, not a task.
-- Daily Rhythm becomes “Welcome to Hearty” during first setup.
-- Intro task list:
-  - Add today’s weight
-  - Take first progress photo
-  - Set medication schedule
-  - Complete a 15-minute walk
-- Front photo is required.
-- Side/back photos are optional.
-- Photos stay local/device-only.
-- Every task must survive interruption.
+This keeps your funnel page. It does not replace it with a demo page.
