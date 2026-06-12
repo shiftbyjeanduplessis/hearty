@@ -1,0 +1,18 @@
+{
+  "name": "hearty-free-meal-funnel",
+  "version": "3.3.3",
+  "private": true,
+  "description": "Hearty free meal plan funnel with v3.3.3 final funnel fix.",
+  "scripts": {
+    "test": "npm run test:smoke && npm run test:screenshot && npm run test:hardened && npm run test:strict && npm run test:country && npm run test:page-patch",
+    "test:smoke": "node tests/smoke-test.js",
+    "test:strict": "node tests/strict-50-test.js",
+    "test:country": "node tests/country-food-rules-test.js",
+    "test:page-patch": "node tests/page-patch-test.js",
+    "test:screenshot": "node tests/screenshot-selection-smoke-test.js",
+    "test:hardened": "node tests/hardened-funnel-input-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

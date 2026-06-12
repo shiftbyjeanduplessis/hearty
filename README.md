@@ -1,28 +1,42 @@
-# Hearty Free Meal Plan Funnel — v3.3.1
+# Hearty Free Meal Plan Funnel — v3.3.3
 
-This package uses your uploaded `free-meal-plan.html` as the base and preserves the existing funnel design.
+This is the final corrected package built from your real funnel page, not a demo page.
 
-## What changed
+## Fixes in v3.3.3
 
-- Replaced old meal engine with `hearty-meal-engine-final.js` v3.3.1.
-- Updated `free-meal-plan.html` to load `hearty-meal-engine-final.js?v=3.3.1-us-first`.
-- Changed the wizard country order so United States appears first.
-- Engine fallback/default region is United States.
-- Leftovers are not forced.
-- Lunches use `No added starch.`
-- Fish curry and fish stew are removed.
-- Country food wording is locked by region.
-- Service worker cache name bumped so old cached files are cleared.
-- Old `hearty-free-meal-engine-v24.js` is replaced by a compatibility shim so old templates do not silently run.
+- United States is first in the wizard country step.
+- Wizard state defaults to United States.
+- Opening the wizard forces US if state is blank.
+- Removed old `state.country || "ZA"` fallback.
+- The generate button does not block valid results because of `result.ok`.
+- The wizard-to-engine mapping is hardened:
+  - non-protein snack selections no longer cause a false snack failure
+  - country-normal vegetables top up if corn/peas/mixed veg were removed
+  - breakfast choices correctly add implied proteins
+- The generic misleading alert was removed.
+- Engine script cache-busted to `v=3.3.3-final-funnel-fix`.
+- Service worker cache bumped.
 
-## Files to upload
+## Upload these files
 
-Upload the whole folder to GitHub/Render, or replace these files in your existing repo:
+Replace/upload the whole folder contents, or at minimum:
 
 - `free-meal-plan.html`
 - `hearty-meal-engine-final.js`
 - `hearty-free-meal-engine-v24.js`
 - `service-worker.js`
+
+## Critical deploy test
+
+After deploy, open in InPrivate:
+
+```txt
+/free-meal-plan.html?v=333
+```
+
+The wizard must show **United States first**.
+
+The screenshot-like selection test passes in this package.
 
 ## Tests
 
@@ -34,12 +48,9 @@ npm test
 
 Expected:
 
-```txt
-smoke-test: allowed 7-day plan
-strict-50-test: PASS 50
-country-food-rules-test: PASS 50
-```
-
-## Important
-
-This keeps your funnel page. It does not replace it with a demo page.
+- smoke-test: PASS
+- screenshot-selection-smoke-test: PASS
+- hardened-funnel-input-test: PASS
+- strict-50-test: PASS 50
+- country-food-rules-test: PASS 50
+- page-patch-test: PASS

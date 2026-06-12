@@ -1,15 +1,20 @@
-Hearty final meal-engine patch
+Hearty meal-engine patch v3.3.3
 
 Changed files:
-- free-meal-plan.html now loads hearty-meal-engine-final.js?v=3-final-gated and uses HeartyMealEngine.generatePlan() only.
-- hearty-meal-engine-final.js added.
-- hearty-free-meal-engine-v24.js replaced with a final-engine compatibility shim so old templates cannot generate if stale HTML loads it.
-- service-worker.js cache name bumped.
+- free-meal-plan.html
+- hearty-meal-engine-final.js
+- hearty-free-meal-engine-v24.js
+- service-worker.js
 
-Old removed templates now bypassed:
-- apple-style pork plate
-- baked oats with yoghurt on the side
-- turkey burger / turkey shawarma
-- Friday night meal labels
-- Sunday roast-style labels
-- daily 5 high-protein snack ideas block
+Fixes:
+- United States is first in the wizard.
+- Wizard defaults to United States and forces US if blank.
+- Removed old state.country || "ZA" fallback.
+- Generate button no longer rejects valid plans based on result.ok.
+- It blocks only engine BLOCKED or QA FAIL.
+- Hardened wizard-to-engine mapping so visible selections are translated into valid engine selections.
+- Non-protein snack options no longer cause false snack-gate failures.
+- Service worker cache bumped.
+
+Deploy note:
+Open /free-meal-plan.html?v=333 in a private window after deploy to avoid old cached JS.

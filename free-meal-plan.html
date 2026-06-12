@@ -1015,7 +1015,7 @@ font-weight:850;
 }
 
 </style>
-<!-- Free-generator-only v24: uses isolated engine file so the app Meals page is not changed. -->
+<!-- Hearty free funnel patched to v3.3.3: final funnel fix, US-first default, hardened wizard-to-engine mapping. -->
 </head>
 <body>
 <div class="page">
@@ -1238,7 +1238,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3-final-gated"></script>
+<script src="hearty-meal-engine-final.js?v=3.3.3-final-funnel-fix"></script>
 <script>
     (function(){
       "use strict";
@@ -1278,7 +1278,7 @@ font-weight:850;
 
       const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
       const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
-      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"", countrySelected:false, struggleMode:"", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"US", countrySelected:true, struggleMode:"", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
       let latestPlanText = "";
       let latestPlan = [];
       let currentLeadId = "";
@@ -1298,7 +1298,7 @@ font-weight:850;
 
       const steps = [
         { id:"lead", kicker:"Start", title:"First, let's set up your Hearty plan", copy:"Your free 7-day meal plan is the starting point inside Hearty. Add your name and email if you want to save it or receive follow-up support — both are optional.", type:"lead" },
-        { id:"country", kicker:"Step 1", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
+        { id:"country", kicker:"Step 1", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["US","United States",""],["ZA","South Africa",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
         { id:"struggleMode", kicker:"Step 2", title:"What are you struggling with most right now?", copy:"Tell Hearty what feels hardest right now so the plan starts with your real problem, not a generic diet template.", type:"single", key:"struggleMode", options:[["low_appetite","Low appetite","Smaller meals and easy top-ups"],["protein_hard","Protein is hard","More protein anchors and backup ideas"],["nausea_food_aversion","Nausea / food aversion","Plainer, gentler meal ideas"],["no_breakfast","I’m not a breakfast person","Lighter first-meal options"],["not_sure_what_to_eat","I’m not sure what to eat","Simple starter structure"],["simple_structure","I just want simple structure","Straightforward repeatable meals"]] },
         { id:"proteins", kicker:"Step 3", title:"Which proteins do you actually eat?", copy:"Choose at least 2 main-meal proteins you would realistically use. The best plan is the one you can follow on an ordinary week.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""]] },
         { id:"breakfast", kicker:"Step 4", title:"What kind of breakfast works for you?", copy:"Mornings can be tricky on GLP-1s. Pick what feels doable, even if that means something light.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["egg_toast","Egg on toast / wrap","More filling but still simple"],["protein_shake","Whey protein shake","Easy protein when breakfast is hard"],["smoothie","Protein smoothie","Light option with fruit"],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""],["protein_yoghurt","Protein yoghurt bowl","Higher-protein yoghurt option"],["cottage_cheese_bowl","Cottage cheese fruit bowl","Soft, simple and not too heavy"]] },
@@ -1319,6 +1319,10 @@ font-weight:850;
 
       function openWizardModal(){
         if(!wizardOverlay) return;
+        if(!state.country) {
+          state.country = "US";
+          state.countrySelected = true;
+        }
         wizardOverlay.classList.add("show");
         wizardOverlay.setAttribute("aria-hidden", "false");
         document.body.classList.add("wizard-modal-open");
@@ -1650,7 +1654,7 @@ font-weight:850;
 
       function buildEngineProfile(){
         return {
-          country: state.country || "ZA",
+          country: state.country || "US",
           allowedProteins: Array.isArray(state.proteins) ? state.proteins.slice() : [],
           allowedBreakfastFamilies: Array.isArray(state.breakfast) ? state.breakfast.slice() : [],
           allowedStarches: Array.isArray(state.starches) ? state.starches.slice() : [],
@@ -1924,12 +1928,23 @@ font-weight:850;
         window.__HEARTY_LAST_ENGINE_RESULT__ = result;
         window.__HEARTY_LAST_ENGINE_INPUT__ = finalInput;
 
-        if(!result || result.status === "BLOCKED" || result.ok === false){
-          const messages = result?.messages || result?.gate?.messages || ["Please add a few more selections so Hearty can build a useful 7-day plan."];
+        const qaStatus = result?.qa?.status || "PASS";
+
+        if(!result || result.status === "BLOCKED"){
+          const messages = result?.messages || result?.gate?.messages || ["Please adjust your selections and try again."];
           showGateMessages(messages);
           return null;
         }
 
+        if(qaStatus === "FAIL"){
+          const messages = result?.qa?.hard?.length
+            ? result.qa.hard
+            : ["The plan generated, but failed one of the locked Hearty food rules. Please adjust your selections and try again."];
+          showGateMessages(messages);
+          return null;
+        }
+
+        // Allow PASS and CONDITIONAL PASS. Conditional warnings are not a user-facing gate failure.
         return mapFinalEngineDays(result);
       }
 
@@ -1942,7 +1957,7 @@ font-weight:850;
         const vegetables = mapFinalVegetables(region);
         const noBreakfast = state.struggleMode === "no_breakfast" || breakfastItems.length === 0 && Array.isArray(state.breakfast) && state.breakfast.length === 0;
 
-        return {
+        return hardenFinalEngineInput({
           region,
           diet: "omnivore",
           proteins,
@@ -1952,8 +1967,52 @@ font-weight:850;
           starches,
           exclusions: [],
           lowerStarch: false,
-          noBreakfast
+          noBreakfast,
+          leftoverLunches: false,
+          useLeftovers: false
+        });
+      }
+
+      function hardenFinalEngineInput(input){
+        const add = (arr, value) => {
+          if(value && Array.isArray(arr) && !arr.includes(value)) arr.push(value);
         };
+
+        const yog = input.region === "US" || input.region === "CA" ? "yogurt" : "yoghurt";
+
+        // The funnel offers some snack choices that are not protein snacks.
+        // The strict engine needs matching protein snack categories, so add safe snack supports
+        // from the foods the user already selected.
+        if(input.proteins.includes("dairy")) add(input.snackProteins, yog);
+        if(input.proteins.includes("eggs")) add(input.snackProteins, "boiled_eggs");
+        if(input.proteins.includes("fish")) add(input.snackProteins, "tuna");
+        if(input.proteins.includes("beef")) add(input.snackProteins, input.region === "SA" ? "biltong" : "jerky");
+        if(input.proteins.includes("protein_powder")) add(input.snackProteins, "protein_shake");
+        if(input.proteins.includes("chicken")) add(input.snackProteins, "chicken_strips");
+
+        // Breakfast options in the funnel imply proteins. Make sure engine sees them.
+        if(input.breakfastItems.includes("protein_shake")) add(input.proteins, "protein_powder");
+        if(input.breakfastItems.includes("eggs")) add(input.proteins, "eggs");
+        if(input.breakfastItems.includes(yog) || input.breakfastItems.includes("cottage_cheese") || input.breakfastItems.includes("oats")) add(input.proteins, "dairy");
+
+        // If a user reaches the summary with too few real vegetables after corn/peas/mixed veg are removed,
+        // top up with country-normal vegetables instead of throwing a confusing alert.
+        const bannedCoreVeg = new Set(["corn", "peas", "mixed vegetables", "mixed veg"]);
+        input.vegetables = (input.vegetables || []).filter(v => !bannedCoreVeg.has(String(v || "").toLowerCase()));
+        const defaultVeg = {
+          SA: ["spinach","tomato","onion","carrot","baby marrow","green beans","mushrooms","peppers","broccoli","cucumber"],
+          US: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"],
+          UK: ["spinach","tomato","onion","carrot","courgette","green beans","mushrooms","peppers","broccoli","cucumber"],
+          AU: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"],
+          CA: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"]
+        };
+        (defaultVeg[input.region] || defaultVeg.US).forEach(v => {
+          if(input.vegetables.length < 5) add(input.vegetables, v);
+        });
+
+        if(!input.starches.length) add(input.starches, "rice");
+
+        return input;
       }
 
       function mapFinalRegion(country){
@@ -2050,15 +2109,20 @@ font-weight:850;
 
       function mapFinalVegetables(region){
         const out = [];
-        const add = value => { if(value && !out.includes(value)) out.push(value); };
+        const add = value => {
+          const clean = String(value || "").trim();
+          if(!clean) return;
+          // Corn, peas and mixed vegetables are not core vegetables in the locked engine.
+          if(["corn", "peas", "mixed vegetables", "mixed veg"].includes(clean.toLowerCase())) return;
+          if(!out.includes(clean)) out.push(clean);
+        };
         const vegetables = Array.isArray(state.vegetables) ? state.vegetables : [];
 
         vegetables.forEach(v => {
           if(v === "carrots") add("carrot");
           else if(v === "green_beans") add("green beans");
           else if(v === "baby_marrow") add(region === "UK" ? "courgette" : (region === "SA" ? "baby marrow" : "zucchini"));
-          else if(v === "mixed_veg") add("mixed vegetables");
-          else if(v === "lettuce") add("lettuce");
+          else if(v === "mixed_veg") return;
           else add(String(v || "").replaceAll("_", " "));
         });
 
@@ -2127,9 +2191,14 @@ font-weight:850;
 
       function showGateMessages(messages){
         const clean = (messages || []).filter(Boolean);
-        const text = clean.length ? clean.join("\n\n") : "Please add a few more selections so Hearty can build a useful 7-day plan.";
+        const text = clean.length ? clean.join("\n\n") : "Please adjust your selections and try again.";
+        console.warn("Hearty meal-plan gate/QA message", {
+          messages: clean,
+          lastInput: window.__HEARTY_LAST_ENGINE_INPUT__,
+          lastResult: window.__HEARTY_LAST_ENGINE_RESULT__
+        });
         alert(text);
-        showToast("Please add more choices");
+        showToast(clean.length ? "Please adjust choices" : "Please try again");
         if(wizardOverlay && !wizardOverlay.classList.contains("show")) openWizardModal();
       }
 
