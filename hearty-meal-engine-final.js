@@ -17,7 +17,7 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
-  const VERSION = "3.3.4-output-cleanup";
+  const VERSION = "3.3.5-clean-engine";
 
   const REGION = {
     US: { label:"United States", yoghurt:"yogurt", stock:"broth", fish:"white fish", mince:"lean ground beef", dried:"beef jerky",
@@ -444,7 +444,8 @@
     const opts = [];
     const seen = new Set();
     const add = (type, name, protein, detail) => {
-      if (!seen.has(name)) { opts.push({type, name, protein, detail}); seen.add(name); }
+      const cleanName = normalizeMealName(name);
+      if (!seen.has(cleanName)) { opts.push({type, name: cleanName, protein, detail}); seen.add(cleanName); }
     };
 
     input.snackProteins.forEach(item => {
@@ -511,7 +512,7 @@
     const breakfastsRaw = makeBreakfasts(input, gate);
     const snacks = makeSnacks(input, gate, breakfastsRaw);
     const dinners = makeDinners(input, gate);
-    const lunches = input.leftoverLunches ? makeLeftoverLunches(input, dinners) : makeStandaloneLunches(input, gate);
+    const lunches = input.leftoverLunches ? makeLeftoverLunches(input, dinners) : makeStandaloneLunches(input, gate, dinners);
 
     const days = Array.from({length:7}, (_, i) => ({
       day: i+1,
@@ -544,10 +545,28 @@
     });
   }
 
-  function makeStandaloneLunches(input, gate) {
+  function makeStandaloneLunches(input, gate, dinners) {
     const t = lunchTemplates(input, gate);
+    const catCounts = {};
+
     return Array.from({length:7}, (_, day) => {
-      const template = t[day % t.length];
+      const dinnerCat = dinners && dinners[day] ? dinners[day].cat : null;
+      let candidates = t.slice();
+
+      // Avoid lunch and dinner using the same main protein on the same day when alternatives exist.
+      const nonMatching = candidates.filter(x => x.cat !== dinnerCat);
+      if (nonMatching.length) candidates = nonMatching;
+
+      candidates.sort((a, b) => {
+        const ac = catCounts[a.cat] || 0;
+        const bc = catCounts[b.cat] || 0;
+        if (ac !== bc) return ac - bc;
+        return t.indexOf(a) - t.indexOf(b);
+      });
+
+      const template = candidates[0] || t[day % t.length];
+      catCounts[template.cat] = (catCounts[template.cat] || 0) + 1;
+
       return {
         name: normalizeMealName(template.name),
         protein: template.protein,

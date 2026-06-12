@@ -1,8 +1,7 @@
 const fs = require("fs");
 const html = fs.readFileSync("free-meal-plan.html", "utf8");
-
 const checks = [
-  ["loads v3.3.4 engine", html.includes('hearty-meal-engine-final.js?v=3.3.4-output-cleanup')],
+  ["loads v3.3.5 engine", html.includes("hearty-meal-engine-final.js?v=3.3.5-clean-engine")],
   ["US is first country option", html.includes('options:[["US","United States",""],["ZA","South Africa",""]')],
   ["state defaults to US", html.includes('country:"US", countrySelected:true')],
   ["old ZA fallback removed", !html.includes('country: state.country || "ZA"')],
@@ -10,7 +9,6 @@ const checks = [
   ["no default chicken fallback", !html.includes('["chicken","beef","fish","eggs"]')],
   ["mapFinalProteins only adds chicken when selected", html.includes('if(p === "chicken") add("chicken")')]
 ];
-
 const failed = checks.filter(([, ok]) => !ok);
 console.log(JSON.stringify({ checks: Object.fromEntries(checks), failed }, null, 2));
 if (failed.length) process.exit(1);

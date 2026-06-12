@@ -1,29 +1,21 @@
-# Hearty Free Meal Plan Funnel — v3.3.4
+# Hearty Free Meal Plan Funnel — v3.3.5 CLEAN ENGINE
 
-This patch is built from your real funnel page.
+This package removes the contaminated old funnel-engine layer.
 
-## Fixes in v3.3.4
+## What changed
 
-- Chicken does not appear unless chicken was selected.
-- No default chicken fallback in the funnel page.
-- Breakfast egg/tofu meals now use breakfast-friendly vegetables only:
-  - tomato
-  - spinach
-  - mushrooms
-  - peppers
-  - onion
-  - zucchini / courgette / baby marrow
-- Breakfast no longer uses butternut, green beans, cauliflower, broccoli, cabbage or lettuce.
-- Cleaner title casing:
-  - Lean ground beef
-  - White fish
-  - Beef jerky
-- Vegetable lists now use cleaner “and” wording.
-- Engine QA catches unselected chicken and non-breakfast vegetables.
+- Removed the old `BUTTON_FIX_ONLY_V1` / `HeartyMealsEngineV6` page block from `free-meal-plan.html`.
+- The funnel now uses only `window.HeartyMealEngine.generatePlan()`.
+- Removed the old `generateWeekPlan()` path from the HTML.
+- Added a console debug line: `HEARTY_ENGINE_DEBUG` showing engine version and exact input sent to the engine.
+- Added a browser-side guard so chicken and chicken snacks cannot be sent unless chicken was selected.
+- Engine now avoids lunch and dinner using the same main protein category on the same day when alternatives exist.
+- Beef jerky / Lean ground beef / White fish casing remains cleaned.
+- Service worker cache bumped again.
 
 ## Upload these files
 
-Replace/upload the whole folder contents, or at minimum:
+Upload the whole folder, or at minimum replace:
 
 - `free-meal-plan.html`
 - `hearty-meal-engine-final.js`
@@ -35,7 +27,19 @@ Replace/upload the whole folder contents, or at minimum:
 Open in InPrivate:
 
 ```txt
-/free-meal-plan.html?v=334
+/free-meal-plan.html?v=335
 ```
 
-Use the same selections as your latest test. Chicken should not appear unless selected.
+Then open DevTools Console and look for:
+
+```txt
+HEARTY_ENGINE_DEBUG
+```
+
+It should show:
+
+```txt
+version: 3.3.5-clean-engine
+```
+
+and the exact `input.proteins` being sent to the engine.
