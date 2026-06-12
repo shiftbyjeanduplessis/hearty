@@ -1,21 +1,29 @@
-# Hearty Free Meal Plan Funnel — v3.3.5 CLEAN ENGINE
+# Hearty Free Meal Plan Funnel — v3.3.6
 
-This package removes the contaminated old funnel-engine layer.
+This patch fixes the broken wizard Next button after the clean-engine removal.
 
-## What changed
+## What was wrong
 
-- Removed the old `BUTTON_FIX_ONLY_V1` / `HeartyMealsEngineV6` page block from `free-meal-plan.html`.
-- The funnel now uses only `window.HeartyMealEngine.generatePlan()`.
-- Removed the old `generateWeekPlan()` path from the HTML.
-- Added a console debug line: `HEARTY_ENGINE_DEBUG` showing engine version and exact input sent to the engine.
-- Added a browser-side guard so chicken and chicken snacks cannot be sent unless chicken was selected.
-- Engine now avoids lunch and dinner using the same main protein category on the same day when alternatives exist.
-- Beef jerky / Lean ground beef / White fish casing remains cleaned.
-- Service worker cache bumped again.
+The v3.3.5 clean package removed the old V6 engine block, but that block also contained helper functions the wizard still used:
+
+- `localYoghurt()`
+- `mealRow()`
+- `dayTotalRow()`
+
+The fruit step looked broken because clicking **Next** tries to render the snack step, and the snack step calls `localYoghurt()`.
+
+## Fixes in v3.3.6
+
+- Restored `localYoghurt()` as a small standalone helper.
+- Restored `mealRow()` and `dayTotalRow()` for plan rendering.
+- Did **not** reintroduce the old V6 engine.
+- Added safer Next/Back/Skip handlers with console error logging.
+- Script cache-busted to `v=3.3.6-button-helper-fix`.
+- Service worker cache bumped.
 
 ## Upload these files
 
-Upload the whole folder, or at minimum replace:
+Replace/upload the whole folder contents, or at minimum:
 
 - `free-meal-plan.html`
 - `hearty-meal-engine-final.js`
@@ -27,19 +35,7 @@ Upload the whole folder, or at minimum replace:
 Open in InPrivate:
 
 ```txt
-/free-meal-plan.html?v=335
+/free-meal-plan.html?v=336
 ```
 
-Then open DevTools Console and look for:
-
-```txt
-HEARTY_ENGINE_DEBUG
-```
-
-It should show:
-
-```txt
-version: 3.3.5-clean-engine
-```
-
-and the exact `input.proteins` being sent to the engine.
+Go to the fruit step and click Next. It should move to the protein snack step.

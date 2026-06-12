@@ -17,7 +17,7 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
-  const VERSION = "3.3.5-clean-engine";
+  const VERSION = "3.3.6-button-helper-fix";
 
   const REGION = {
     US: { label:"United States", yoghurt:"yogurt", stock:"broth", fish:"white fish", mince:"lean ground beef", dried:"beef jerky",

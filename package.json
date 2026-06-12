@@ -1,10 +1,10 @@
 {
   "name": "hearty-free-meal-funnel",
-  "version": "3.3.5",
+  "version": "3.3.6",
   "private": true,
-  "description": "Hearty free meal plan funnel with clean final engine only.",
+  "description": "Hearty free meal plan funnel with button/helper fix.",
   "scripts": {
-    "test": "npm run test:smoke && npm run test:screenshot && npm run test:no-chicken && npm run test:no-repeat && npm run test:strict && npm run test:country && npm run test:page-patch && npm run test:clean-page",
+    "test": "npm run test:button-helpers && npm run test:smoke && npm run test:screenshot && npm run test:no-chicken && npm run test:repeat && npm run test:strict && npm run test:country && npm run test:page-patch && npm run test:clean-page",
     "test:smoke": "node tests/smoke-test.js",
     "test:strict": "node tests/strict-50-test.js",
     "test:country": "node tests/country-food-rules-test.js",
@@ -13,7 +13,9 @@
     "test:hardened": "node tests/hardened-funnel-input-test.js",
     "test:no-chicken": "node tests/no-unselected-chicken-output-test.js",
     "test:clean-page": "node tests/clean-page-test.js",
-    "test:no-repeat": "node tests/no-same-day-repeat-test.js"
+    "test:no-repeat": "node tests/no-same-day-repeat-test.js",
+    "test:button-helpers": "node tests/button-helper-test.js",
+    "test:repeat": "node tests/no-same-day-repeat-test.js"
   },
   "engines": {
     "node": ">=18"

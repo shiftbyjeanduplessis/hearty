@@ -1016,6 +1016,7 @@ font-weight:850;
 
 </style>
 <!-- Hearty free funnel patched to v3.3.5: clean final engine only, no old V6 block. -->
+<!-- Hearty v3.3.6 button helper fix -->
 </head>
 <body>
 <div class="page">
@@ -1238,7 +1239,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3.3.5-clean-engine"></script>
+<script src="hearty-meal-engine-final.js?v=3.3.6-button-helper-fix"></script>
 <script>
     (function(){
       "use strict";
@@ -1312,6 +1313,10 @@ font-weight:850;
         const marrow = state.country === "UK" ? "Courgette" : (state.country === "ZA" ? "Baby marrow" : "Zucchini");
         return [["broccoli","Broccoli",""],["cauliflower","Cauliflower",""],["carrots","Carrots",""],["baby_marrow",marrow,""],["spinach","Spinach",""],["mushrooms","Mushrooms",""],["peppers","Peppers",""],["green_beans","Green beans",""],["corn","Corn",""],["butternut","Butternut",""],["cabbage","Cabbage",""],["lettuce","Lettuce / salad greens",""],["cucumber","Cucumber",""],["tomato","Tomato",""],["onion","Onion",""],["peas","Peas",""],["mixed_veg","Mixed vegetables",""]];
       }
+      function localYoghurt(){
+        return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt";
+      }
+
       function getSnackOptions(){
         const jerky = state.country === "ZA" ? "Biltong" : (state.country === "US" || state.country === "CA" ? "Beef jerky" : "Biltong / beef jerky");
         return [["protein_shake","Whey protein shake","Easy 20–25g protein backup"],["low_fat_yoghurt", localYoghurt(), ""],["cottage_cheese","Cottage cheese",""],["fruit","Fruit",""],["biltong", jerky, ""],["nuts_seeds","Nuts and seeds",""],["peanut_butter","Peanut butter",""],["rice_cakes","Rice cakes",""],["wholegrain_crackers","Wholegrain crackers",""],["boiled_eggs","Boiled eggs",""],["tuna_rice_cakes","Tuna on rice cakes",""],["salmon_crackers","Salmon on crackers / rice cakes",""]];
@@ -1414,9 +1419,39 @@ font-weight:850;
             render();
           });
         });
-        root.querySelector("[data-action='back']")?.addEventListener("click", () => { if(state.step > 0){ state.step -= 1; render(); } });
-        root.querySelector("[data-action='next']")?.addEventListener("click", () => { saveLeadInputs(); const step = steps[state.step]; if(!canContinue(step)) return; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
-        root.querySelector("[data-action='skip']")?.addEventListener("click", () => { const step = steps[state.step]; state[step.key] = []; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='back']")?.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if(state.step > 0){
+            state.step -= 1;
+            render();
+            document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        });
+        root.querySelector("[data-action='next']")?.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          try {
+            saveLeadInputs();
+            const step = steps[state.step];
+            if(!canContinue(step)) return;
+            state.step = Math.min(steps.length - 1, state.step + 1);
+            render();
+            document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
+          } catch(error) {
+            console.error("HEARTY_WIZARD_NEXT_ERROR", error);
+            alert("Something went wrong moving to the next step. Please refresh and try again.");
+          }
+        });
+        root.querySelector("[data-action='skip']")?.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const step = steps[state.step];
+          state[step.key] = [];
+          state.step = Math.min(steps.length - 1, state.step + 1);
+          render();
+          document.querySelector(".wizard-modal-wrap")?.scrollTo({ top: 0, behavior: "smooth" });
+        });
         root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
       }
       function saveLeadInputs(){ ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
@@ -1585,6 +1620,7 @@ font-weight:850;
 
       function generateAndShowPlan(){
         latestPlan = buildPlan();
+        if(!latestPlan || !latestPlan.length) return;
         latestPlanText = makePlanText(latestPlan);
         renderPlan(latestPlan);
         saveLead(latestPlanText);
@@ -1961,6 +1997,24 @@ font-weight:850;
         alert(text);
         showToast(clean.length ? "Please adjust choices" : "Please try again");
         if(wizardOverlay && !wizardOverlay.classList.contains("show")) openWizardModal();
+      }
+
+      function mealRow(label, text, protein, recipeNote){
+        const numericProtein = Number(protein || 0);
+        const proteinText = numericProtein > 0
+          ? ` <span style="color:#7b8998;font-weight:800;">Approx. ${numericProtein}g protein</span>`
+          : "";
+        const methodText = recipeNote
+          ? `<div style="margin-top:6px;color:#617389;font-size:.9rem;line-height:1.45;"><strong>Basic method:</strong> ${escapeHtml(recipeNote).replace(/^Basic method:\s*/i, "")}</div>`
+          : "";
+        return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}${proteinText}${methodText}</div></div>`;
+      }
+
+      function dayTotalRow(day){
+        const total = Number(day.estimatedProteinTotal || 0);
+        const totalText = total > 0 ? `<div class="protein-total">Estimated daily protein: approx. ${total}g</div>` : "";
+        const booster = day.proteinBooster ? `<div class="protein-booster">${escapeHtml(day.proteinBooster)}</div>` : "";
+        return totalText + booster;
       }
 
       function renderPlan(plan){
