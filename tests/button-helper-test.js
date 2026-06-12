@@ -7,7 +7,7 @@ const checks = [
   ["dayTotalRow helper exists", html.includes("function dayTotalRow(")],
   ["snack step can call localYoghurt", html.includes("function getSnackOptions()") && html.includes("localYoghurt()")],
   ["nav handler has error logging", html.includes("HEARTY_WIZARD_NAV_ERROR")],
-  ["v3.4.6-strict-snack-gate-quality-fix engine script", html.includes("hearty-meal-engine-final.js?v=3.4.6-strict-snack-gate-quality-fix")],
+  ["v3.4.9-lunch-variety-polish engine script", html.includes("hearty-meal-engine-final.js?v=3.4.9-lunch-variety-polish")],
   ["old V6 getter not present", !html.includes("window.HeartyMealsEngineV6 || null")],
   ["old generateWeekPlan path not present", !html.includes("generateWeekPlan({")]
 ];

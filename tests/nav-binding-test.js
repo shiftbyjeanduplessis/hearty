@@ -9,7 +9,7 @@ const checks = [
   ["select action handled", html.includes('if(action === "select")')],
   ["nav error logging exists", html.includes("HEARTY_WIZARD_NAV_ERROR")],
   ["render logging exists", html.includes("HEARTY_WIZARD_RENDER")],
-  ["v3.4.6-strict-snack-gate-quality-fix engine script", html.includes("hearty-meal-engine-final.js?v=3.4.6-strict-snack-gate-quality-fix")],
+  ["v3.4.9-lunch-variety-polish engine script", html.includes("hearty-meal-engine-final.js?v=3.4.9-lunch-variety-polish")],
   ["localYoghurt helper exists", html.includes("function localYoghurt()")],
   ["mealRow helper exists", html.includes("function mealRow(")],
   ["no old V6 getter", !html.includes("window.HeartyMealsEngineV6 || null")],

@@ -1,10 +1,10 @@
 {
   "name": "hearty-free-meal-funnel",
-  "version": "3.4.6",
+  "version": "3.4.9",
   "private": true,
-  "description": "v3.4.6 strict snack gate quality fix: tofu snack alias and lower-starch title cleanup.",
+  "description": "v3.4.9 lunch variety polish: pescatarian lunch templates and template-name balancing.",
   "scripts": {
-    "test": "npm run test:provenance && npm run test:snack-gate && npm run test:clean-html && npm run test:balance && npm run test:nav && npm run test:button-helpers && npm run test:smoke && npm run test:screenshot && npm run test:no-chicken && npm run test:strict && npm run test:country && npm run test:page-patch && npm run test:clean-page",
+    "test": "npm run test:provenance && npm run test:snack-gate && npm run test:veg-context && npm run test:lunch-variety && npm run test:clean-html && npm run test:balance && npm run test:nav && npm run test:button-helpers && npm run test:smoke && npm run test:screenshot && npm run test:no-chicken && npm run test:strict && npm run test:country && npm run test:page-patch && npm run test:clean-page",
     "test:smoke": "node tests/smoke-test.js",
     "test:strict": "node tests/strict-50-test.js",
     "test:country": "node tests/country-food-rules-test.js",
@@ -20,7 +20,9 @@
     "test:provenance": "node tests/v340-provenance-test.js",
     "test:balance": "node tests/v340-rendered-output-balance-test.js",
     "test:clean-html": "node tests/v340-clean-html-test.js",
-    "test:snack-gate": "node tests/v345-strict-snack-gate-test.js"
+    "test:snack-gate": "node tests/v345-strict-snack-gate-test.js",
+    "test:veg-context": "node tests/v347-veg-context-test.js",
+    "test:lunch-variety": "node tests/v349-lunch-variety-test.js"
   },
   "engines": {
     "node": ">=18"

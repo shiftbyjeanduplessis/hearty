@@ -15,8 +15,8 @@ const goodEggBreakfast = engine.generatePlan({...base, breakfastItems:["eggs"], 
 const goodBroad = engine.generatePlan({...base, breakfastItems:["eggs"], snackProteins:["yogurt","tuna","jerky","protein_shake"]});
 
 const checks = [
-  ["version", engine.VERSION === "3.4.6-strict-snack-gate-quality-fix"],
-  ["source", engine.ENGINE_SOURCE === "rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed"],
+  ["version", engine.VERSION === "3.4.9-lunch-variety-polish"],
+  ["source", engine.ENGINE_SOURCE === "rebuilt-funnel-engine-v331-us-first-plus-v349-lunch-variety-polish"],
   ["blocks fewer than 3 snack families", badTooFew.status === "BLOCKED" && badTooFew.gate.failures.includes("snack_protein_minimum")],
   ["allows egg breakfast with 2 non-egg snack families", goodEggBreakfast.status === "ALLOWED" && goodEggBreakfast.days.length === 7],
   ["allows broad snack choice", goodBroad.status === "ALLOWED" && goodBroad.days.length === 7]

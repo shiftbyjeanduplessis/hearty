@@ -4,9 +4,9 @@ const engine = fs.readFileSync("hearty-meal-engine-final.js", "utf8");
 const loaded = require("../hearty-meal-engine-final.js");
 
 const checks = [
-  ["engine version exported", loaded.VERSION === "3.4.6-strict-snack-gate-quality-fix"],
-  ["engine source exported", loaded.ENGINE_SOURCE === "rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed"],
-  ["html cache busts v3.4", html.includes("hearty-meal-engine-final.js?v=3.4.6-strict-snack-gate-quality-fix")],
+  ["engine version exported", loaded.VERSION === "3.4.9-lunch-variety-polish"],
+  ["engine source exported", loaded.ENGINE_SOURCE === "rebuilt-funnel-engine-v331-us-first-plus-v349-lunch-variety-polish"],
+  ["html cache busts v3.4", html.includes("hearty-meal-engine-final.js?v=3.4.9-lunch-variety-polish")],
   ["html logs provenance", html.includes("HEARTY_ENGINE_PROVENANCE")],
   ["html does not use old getter", !html.includes("window.HeartyMealsEngineV6 || null")],
   ["html does not call generateWeekPlan", !html.includes("generateWeekPlan({")],

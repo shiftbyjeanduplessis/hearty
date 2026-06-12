@@ -49,8 +49,8 @@ const input = {
 const result = engine.generatePlan(input);
 const failures = [];
 
-if (result.version !== "3.4.6-strict-snack-gate-quality-fix") failures.push("wrong engine version");
-if (result.engineSource !== "rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed") failures.push("wrong engine source");
+if (result.version !== "3.4.9-lunch-variety-polish") failures.push("wrong engine version");
+if (result.engineSource !== "rebuilt-funnel-engine-v331-us-first-plus-v349-lunch-variety-polish") failures.push("wrong engine source");
 if (result.status !== "ALLOWED") failures.push("engine blocked unexpectedly");
 if (result.qa.status === "FAIL") failures.push("engine QA failed: " + JSON.stringify(result.qa.hard));
 

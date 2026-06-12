@@ -17,8 +17,8 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
-  const VERSION = "3.4.6-strict-snack-gate-quality-fix";
-  const ENGINE_SOURCE = "rebuilt-funnel-engine-v331-us-first-plus-v346-strict-snack-gate-quality-fixed";
+  const VERSION = "3.4.9-lunch-variety-polish";
+  const ENGINE_SOURCE = "rebuilt-funnel-engine-v331-us-first-plus-v349-lunch-variety-polish";
 
   const REGION = {
     US: { label:"United States", yoghurt:"yogurt", stock:"broth", fish:"white fish", mince:"lean ground beef", dried:"beef jerky",
@@ -205,6 +205,45 @@
     return out.join(", ");
   }
 
+  function vegContextSet(region, context) {
+    const z = region === "UK" ? "courgette" : region === "SA" ? "baby marrow" : "zucchini";
+    const common = {
+      cold: ["cucumber","tomato","lettuce","peppers","carrot","spinach"],
+      cooked: ["tomato","onion","carrot",z,"green beans","mushrooms","cauliflower","broccoli","cabbage","spinach","peppers","butternut"],
+      soup: ["tomato","onion","carrot",z,"green beans","mushrooms","cauliflower","broccoli","cabbage","spinach","peppers","butternut"],
+      stirfry: ["onion","carrot",z,"green beans","mushrooms","peppers","cabbage","spinach","broccoli"],
+      curry: ["onion","tomato","carrot",z,"green beans","mushrooms","cauliflower","spinach","peppers","butternut"],
+      side: ["carrot",z,"green beans","mushrooms","cauliflower","broccoli","cabbage","spinach","peppers","butternut"],
+      egg: ["tomato","spinach","mushrooms","peppers","onion",z]
+    };
+    return new Set(common[context] || common.cooked);
+  }
+
+  function pickVegContext(input, context, start, count, exclude) {
+    const allowed = vegContextSet(input.region, context);
+    const banned = new Set((exclude || []).map(x => String(x).toLowerCase()));
+    const selected = input.vegetables.filter(v => allowed.has(String(v).toLowerCase()) && !banned.has(String(v).toLowerCase()));
+    const fallback = Array.from(allowed).filter(v => !banned.has(String(v).toLowerCase()));
+    const source = selected.length ? selected : fallback;
+    const out = [];
+    let i = 0;
+    while (out.length < count && i < source.length * 2) {
+      const v = source[(start + i) % source.length];
+      if (!out.includes(v)) out.push(v);
+      i++;
+    }
+    return out.join(", ");
+  }
+
+  function sidePhrase(input, start, count) {
+    return `a side of ${pickVegContext(input, "side", start, count)}`;
+  }
+
+  function coldPlateVeg(input, start, count, exclude) {
+    const defaultExclude = ["cucumber","tomato","lettuce"];
+    return pickVegContext(input, "cold", start, count, exclude || defaultExclude);
+  }
+
   function pickBreakfastVeg(input, start, count) {
     const friendly = new Set(["tomato","spinach","mushrooms","peppers","onion","zucchini","courgette","baby marrow"]);
     const pool = input.vegetables.filter(v => friendly.has(String(v).toLowerCase()));
@@ -249,96 +288,96 @@
     if (main.has("chicken")) {
       add("chicken","Chicken curry with {starch}","32–38g","rice",
         (st,i) => st !== "none"
-          ? `120–150g chicken cooked with onion, garlic, ginger, tomato, curry spices, ${pickVeg(input,i,3,["onion","tomato"])} and ${r.stock}. Serve with ${starchAmount(st)}.`
-          : `120–150g chicken cooked with onion, garlic, ginger, tomato, curry spices and ${pickVeg(input,i,5,["onion","tomato"])}. No added starch.`);
+          ? `120–150g chicken cooked with onion, garlic, ginger, tomato, curry spices, ${pickVegContext(input,"curry",i,3,["onion","tomato"])} and ${r.stock}. Serve with ${starchAmount(st)}.`
+          : `120–150g chicken cooked with onion, garlic, ginger, tomato, curry spices and ${pickVegContext(input,"curry",i,5,["onion","tomato"])}. No added starch.`);
       add("chicken","Chicken stir-fry with low-calorie sauce and {starch}","32–38g","rice",
         (st,i) => st !== "none"
-          ? `120–150g chicken strips stir-fried with ${pickVeg(input,i,5)}. Sauce: garlic, lemon/vinegar, water and pepper. Serve with ${starchAmount(st)}.`
-          : `120–150g chicken strips stir-fried with ${pickVeg(input,i,5)} and garlic-lemon sauce. No added starch.`);
+          ? `120–150g chicken strips stir-fried with ${pickVegContext(input,"stirfry",i,5)}. Sauce: garlic, lemon/vinegar, water and pepper. Serve with ${starchAmount(st)}.`
+          : `120–150g chicken strips stir-fried with ${pickVegContext(input,"stirfry",i,5)} and garlic-lemon sauce. No added starch.`);
       add("chicken","Chicken tomato stew with {starch}","32–38g","rice",
         (st,i) => st !== "none"
-          ? `120–150g chicken simmered with tomato, onion, garlic, ${pickVeg(input,i,4,["onion","tomato"])}, herbs and ${r.stock} until saucy. Serve with ${starchAmount(st)}.`
-          : `120–150g chicken simmered with tomato, onion, garlic, ${pickVeg(input,i,5,["onion","tomato"])}, herbs and ${r.stock}. No added starch.`);
+          ? `120–150g chicken simmered with tomato, onion, garlic, ${pickVegContext(input,"soup",i,4,["onion","tomato"])}, herbs and ${r.stock} until saucy. Serve with ${starchAmount(st)}.`
+          : `120–150g chicken simmered with tomato, onion, garlic, ${pickVegContext(input,"soup",i,5,["onion","tomato"])}, herbs and ${r.stock}. No added starch.`);
     }
 
     if (main.has("beef")) {
       add("beef",`${capFirst(r.mince)} bolognese with {starch}`,"32–38g","pasta",
         (st,i) => st !== "none"
-          ? `120–150g ${r.mince} cooked with onion, garlic, chopped tomato, grated carrot, mushrooms and Italian herbs. Serve with ${starchAmount(st)} and ${pickVeg(input,i,3,["onion","tomato","carrot","mushrooms"])}.`
-          : `120–150g ${r.mince} cooked with onion, garlic, tomato, carrot, mushrooms and herbs. Serve with ${pickVeg(input,i,5,["onion","tomato","carrot","mushrooms"])}. No added starch.`);
+          ? `120–150g ${r.mince} cooked with onion, garlic, chopped tomato, grated carrot, mushrooms and Italian herbs. Serve with ${starchAmount(st)} and ${sidePhrase(input,i,3)}.`
+          : `120–150g ${r.mince} cooked with onion, garlic, tomato, carrot, mushrooms and herbs. Serve with ${sidePhrase(input,i,5)}. No added starch.`);
       add("beef","Lean beef stew with {starch}","32–38g","rice",
         (st,i) => st !== "none"
-          ? `120–150g lean beef cooked with tomato, onion, ${pickVeg(input,i,4,["onion","tomato"])}, ${r.stock}, herbs and pepper. Serve with ${starchAmount(st)}.`
-          : `120–150g lean beef cooked with tomato, onion, ${pickVeg(input,i,5,["onion","tomato"])}, ${r.stock}, herbs and pepper. No added starch.`);
+          ? `120–150g lean beef cooked with tomato, onion, ${pickVegContext(input,"soup",i,4,["onion","tomato"])}, ${r.stock}, herbs and pepper. Serve with ${starchAmount(st)}.`
+          : `120–150g lean beef cooked with tomato, onion, ${pickVegContext(input,"soup",i,5,["onion","tomato"])}, ${r.stock}, herbs and pepper. No added starch.`);
     }
 
     if (main.has("pork")) {
       add("pork","Lean pork stir-fry with sweet-and-sour sauce and {starch}","30–36g","rice",
         (st,i) => st !== "none"
-          ? `120–150g lean pork strips stir-fried with ${pickVeg(input,i,5)}. Sauce: garlic, ginger, vinegar/lemon, tomato paste, water and a small amount of sweetener. Serve with ${starchAmount(st)}.`
-          : `120–150g lean pork strips stir-fried with ${pickVeg(input,i,5)} and low-calorie sweet-and-sour sauce. No added starch.`);
+          ? `120–150g lean pork strips stir-fried with ${pickVegContext(input,"stirfry",i,5)}. Sauce: garlic, ginger, vinegar/lemon, tomato paste, water and a small amount of sweetener. Serve with ${starchAmount(st)}.`
+          : `120–150g lean pork strips stir-fried with ${pickVegContext(input,"stirfry",i,5)} and low-calorie sweet-and-sour sauce. No added starch.`);
     }
 
     if (main.has("fish")) {
       add("fish",`${capFirst(r.fish)} lemon-herb plate with {starch}`,"30–36g","rice",
         (st,i) => st !== "none"
-          ? `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${pickVeg(input,i,5)} and ${starchAmount(st)}.`
-          : `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${pickVeg(input,i,5)}. No added starch.`);
+          ? `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${sidePhrase(input,i,5)} and ${starchAmount(st)}.`
+          : `150g ${r.fish} cooked with lemon, herbs, garlic and pepper. Serve with ${sidePhrase(input,i,5)}. No added starch.`);
       add("fish",`Grilled ${r.fish} plate with {starch}`,"30–36g","rice",
         (st,i) => st !== "none"
-          ? `150g ${r.fish} grilled with lemon, herbs and pepper. Serve with ${pickVeg(input,i,5)} and ${starchAmount(st)}.`
-          : `150g ${r.fish} grilled with lemon, herbs and pepper. Serve with ${pickVeg(input,i,5)}. No added starch.`);
+          ? `150g ${r.fish} grilled with lemon, herbs and pepper. Serve with ${sidePhrase(input,i,5)} and ${starchAmount(st)}.`
+          : `150g ${r.fish} grilled with lemon, herbs and pepper. Serve with ${sidePhrase(input,i,5)}. No added starch.`);
       add("fish","Baked fish with vegetables and {starch}","30–36g","sweet_potato",
         (st,i) => st !== "none"
-          ? `150g ${r.fish} baked with lemon, herbs and black pepper. Serve with ${pickVeg(input,i,5)} and ${starchAmount(st)}.`
-          : `150g ${r.fish} baked with lemon, herbs and black pepper. Serve with ${pickVeg(input,i,5)}. No added starch.`);
+          ? `150g ${r.fish} baked with lemon, herbs and black pepper. Serve with ${sidePhrase(input,i,5)} and ${starchAmount(st)}.`
+          : `150g ${r.fish} baked with lemon, herbs and black pepper. Serve with ${sidePhrase(input,i,5)}. No added starch.`);
       add("fish","Homemade fish cakes with vegetables and {starch}","28–36g","sweet_potato",
         (st,i) => st !== "none"
-          ? `150g cooked ${r.fish} mixed with onion, herbs, lemon, pepper and a small amount of crumbs/oat flour to bind. Pan-sear and serve with ${pickVeg(input,i,4,["onion"])} and ${starchAmount(st)}.`
-          : `150g cooked ${r.fish} mixed with onion, herbs, lemon, pepper and a small amount of crumbs/oat flour to bind. Pan-sear and serve with ${pickVeg(input,i,5,["onion"])}. No added starch.`);
+          ? `150g cooked ${r.fish} mixed with onion, herbs, lemon, pepper and a small amount of crumbs/oat flour to bind. Pan-sear and serve with ${sidePhrase(input,i,4)} and ${starchAmount(st)}.`
+          : `150g cooked ${r.fish} mixed with onion, herbs, lemon, pepper and a small amount of crumbs/oat flour to bind. Pan-sear and serve with ${sidePhrase(input,i,5)}. No added starch.`);
     }
 
     if (main.has("eggs")) {
       add("eggs","Egg and vegetable frittata with {starch}","20–28g","sweet_potato",
         (st,i) => st !== "none"
-          ? `2–3 eggs cooked with ${pickVeg(input,i,5)} and herbs. Serve with ${starchAmount(st)}.`
-          : `2–3 eggs cooked with ${pickVeg(input,i,5)} and herbs. No added starch.`);
+          ? `2–3 eggs cooked with ${pickVegContext(input,"egg",i,5)} and herbs. Serve with ${starchAmount(st)}.`
+          : `2–3 eggs cooked with ${pickVegContext(input,"egg",i,5)} and herbs. No added starch.`);
     }
 
     if (main.has("tofu")) {
       add("tofu","Tofu-style stir-fry with {starch}","24–34g","rice",
         (st,i) => st !== "none"
-          ? `Tofu-style protein stir-fried with ${pickVeg(input,i,5)} and garlic-ginger sauce. Serve with ${starchAmount(st)}.`
-          : `Tofu-style protein stir-fried with ${pickVeg(input,i,5)} and garlic-ginger sauce. No added starch.`);
+          ? `Tofu-style protein stir-fried with ${pickVegContext(input,"stirfry",i,5)} and garlic-ginger sauce. Serve with ${starchAmount(st)}.`
+          : `Tofu-style protein stir-fried with ${pickVegContext(input,"stirfry",i,5)} and garlic-ginger sauce. No added starch.`);
       add("tofu","Tofu tomato bake with {starch}","24–34g","couscous",
         (st,i) => st !== "none"
-          ? `Tofu-style protein baked or simmered in tomato, onion, garlic, ${pickVeg(input,i,4,["onion","tomato"])} and herbs. Serve with ${starchAmount(st)}.`
-          : `Tofu-style protein baked or simmered in tomato, onion, garlic, ${pickVeg(input,i,5,["onion","tomato"])} and herbs. No added starch.`);
+          ? `Tofu-style protein baked or simmered in tomato, onion, garlic, ${pickVegContext(input,"cooked",i,4,["onion","tomato"])} and herbs. Serve with ${starchAmount(st)}.`
+          : `Tofu-style protein baked or simmered in tomato, onion, garlic, ${pickVegContext(input,"cooked",i,5,["onion","tomato"])} and herbs. No added starch.`);
     }
 
     if (main.has("lentils")) {
       add("lentils","Lentil bolognese with {starch}","18–28g","pasta",
         (st,i) => st !== "none"
-          ? `Lentils cooked with onion, garlic, chopped tomato, carrot, mushrooms and Italian herbs. Serve with ${starchAmount(st)} and ${pickVeg(input,i,3,["onion","tomato","carrot","mushrooms"])}.`
-          : `Lentils cooked with onion, garlic, tomato, carrot, mushrooms and herbs. Serve with ${pickVeg(input,i,5,["onion","tomato","carrot","mushrooms"])}. No added starch.`);
+          ? `Lentils cooked with onion, garlic, chopped tomato, carrot, mushrooms and Italian herbs. Serve with ${starchAmount(st)} and ${sidePhrase(input,i,3)}.`
+          : `Lentils cooked with onion, garlic, tomato, carrot, mushrooms and herbs. Serve with ${sidePhrase(input,i,5)}. No added starch.`);
       add("lentils","Lentil and vegetable stew with {starch}","18–28g","sweet_potato",
         (st,i) => st !== "none"
-          ? `Lentils simmered with tomato, onion, ${pickVeg(input,i,4,["onion","tomato"])}, herbs and ${r.stock}. Serve with ${starchAmount(st)}.`
-          : `Lentils simmered with tomato, onion, ${pickVeg(input,i,5,["onion","tomato"])}, herbs and ${r.stock}. No added starch.`);
+          ? `Lentils simmered with tomato, onion, ${pickVegContext(input,"soup",i,4,["onion","tomato"])}, herbs and ${r.stock}. Serve with ${starchAmount(st)}.`
+          : `Lentils simmered with tomato, onion, ${pickVegContext(input,"soup",i,5,["onion","tomato"])}, herbs and ${r.stock}. No added starch.`);
     }
 
     if (main.has("beans")) {
       add("beans","Bean and vegetable chilli with {starch}","18–28g","rice",
         (st,i) => st !== "none"
-          ? `Beans cooked with tomato, onion, mild spices, herbs and ${pickVeg(input,i,4,["onion","tomato"])}. Serve with ${starchAmount(st)}.`
-          : `Beans cooked with tomato, onion, mild spices, herbs and ${pickVeg(input,i,5,["onion","tomato"])}. No added starch.`);
+          ? `Beans cooked with tomato, onion, mild spices, herbs and ${pickVegContext(input,"cooked",i,4,["onion","tomato"])}. Serve with ${starchAmount(st)}.`
+          : `Beans cooked with tomato, onion, mild spices, herbs and ${pickVegContext(input,"cooked",i,5,["onion","tomato"])}. No added starch.`);
     }
 
     if (main.has("chickpeas")) {
       add("chickpeas","Chickpea and vegetable stew with {starch}","18–28g","rice",
         (st,i) => st !== "none"
-          ? `Chickpeas simmered with onion, garlic, tomato, herbs and ${pickVeg(input,i,4,["onion","tomato"])}. Serve with ${starchAmount(st)}. Chickpeas stay in the meal because they are the protein source.`
-          : `Chickpeas simmered with onion, garlic, tomato, herbs and ${pickVeg(input,i,5,["onion","tomato"])}. No added starch. Chickpeas stay in the meal because they are the protein source.`);
+          ? `Chickpeas simmered with onion, garlic, tomato, herbs and ${pickVegContext(input,"cooked",i,4,["onion","tomato"])}. Serve with ${starchAmount(st)}. Chickpeas stay in the meal because they are the protein source.`
+          : `Chickpeas simmered with onion, garlic, tomato, herbs and ${pickVegContext(input,"cooked",i,5,["onion","tomato"])}. No added starch. Chickpeas stay in the meal because they are the protein source.`);
     }
 
     return t;
@@ -351,36 +390,40 @@
     const add = (cat, name, protein, detail) => t.push({cat, name, protein, detail});
 
     if (main.has("chicken")) {
-      add("chicken","Chicken vegetable soup bowl","30–35g", i => `120–150g cooked chicken simmered with ${pickVeg(input,i,5)} and ${r.stock}. No added starch.`);
-      add("chicken","Chicken cucumber plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("chicken","Chicken vegetable soup bowl","30–35g", i => `120–150g cooked chicken simmered with ${pickVegContext(input,"soup",i,5)} and ${r.stock}. No added starch.`);
+      add("chicken","Chicken cucumber plate","25–35g", i => `120–150g cooked chicken served with cucumber, tomato, lettuce and ${coldPlateVeg(input,i,3)}. No added starch.`);
     }
     if (main.has("beef")) {
-      add("beef",`${capFirst(r.mince)} vegetable bowl`,"30–35g", i => `120–150g ${r.mince} cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
+      add("beef",`${capFirst(r.mince)} vegetable bowl`,"30–35g", i => `120–150g ${r.mince} cooked with tomato, onion, garlic, herbs and ${pickVegContext(input,"cooked",i,4,["tomato","onion"])}. No added starch.`);
     }
     if (main.has("pork")) {
-      add("pork","Lean pork vegetable bowl","25–35g", i => `120–150g lean pork strips cooked with tomato, onion, garlic, herbs and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch.`);
+      add("pork","Lean pork vegetable bowl","25–35g", i => `120–150g lean pork strips cooked with tomato, onion, garlic, herbs and ${pickVegContext(input,"cooked",i,4,["tomato","onion"])}. No added starch.`);
     }
     if (main.has("fish")) {
-      add("fish","Tuna cucumber bowl","20–30g", i => `Tuna with cucumber, tomato, lettuce, lemon, herbs and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
-      add("fish",`${capFirst(r.fish)} vegetable plate`,"25–35g", i => `${capFirst(r.fish)} with lemon-herb dressing and ${pickVeg(input,i,5)}. No added starch.`);
+      add("fish","Tuna cucumber bowl","20–30g", i => `Tuna with cucumber, tomato, lettuce, lemon, herbs and ${coldPlateVeg(input,i,3)}. No added starch.`);
+      add("fish",`${capFirst(r.fish)} vegetable plate`,"25–35g", i => `${capFirst(r.fish)} with lemon-herb dressing and ${sidePhrase(input,i,5)}. No added starch.`);
+      add("fish",`${capFirst(r.fish)} vegetable soup bowl`,"25–35g", i => `${capFirst(r.fish)} simmered gently with ${pickVegContext(input,"soup",i,5)} and ${r.stock}. No added starch.`);
+      add("fish",`${capFirst(r.fish)} cucumber plate`,"25–35g", i => `${capFirst(r.fish)} served with cucumber, tomato, lettuce, lemon, herbs and ${coldPlateVeg(input,i,3)}. No added starch.`);
     }
     if (main.has("eggs")) {
-      add("eggs","Boiled egg vegetable plate","14–22g", i => `2 boiled eggs with cucumber, tomato, lettuce and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("eggs","Boiled egg vegetable plate","14–22g", i => `2 boiled eggs with cucumber, tomato, lettuce and ${coldPlateVeg(input,i,3)}. No added starch.`);
+      add("eggs","Egg cucumber salad bowl","14–22g", i => `2 boiled eggs served with cucumber, tomato, peppers, herbs and ${coldPlateVeg(input,i,2)}. No added starch.`);
     }
     if (gate.allowed.includes("dairy")) {
-      add("dairy","Cottage cheese protein plate","18–25g", i => `Cottage cheese served with cucumber, tomato, lettuce, herbs and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("dairy","Cottage cheese protein plate","18–25g", i => `Cottage cheese served with cucumber, tomato, lettuce, herbs and ${coldPlateVeg(input,i,3)}. No added starch.`);
+      add("dairy","Cottage cheese cucumber bowl","18–25g", i => `Cottage cheese served as a light bowl with cucumber, tomato, peppers, herbs and ${coldPlateVeg(input,i,2)}. No added starch.`);
     }
     if (main.has("tofu")) {
-      add("tofu","Tofu vegetable bowl","20–30g", i => `Tofu-style protein with cucumber, tomato, lettuce, lemon-herb dressing and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch.`);
+      add("tofu","Tofu vegetable bowl","20–30g", i => `Tofu-style protein with cucumber, tomato, lettuce, lemon-herb dressing and ${coldPlateVeg(input,i,3)}. No added starch.`);
     }
     if (main.has("lentils")) {
-      add("lentils","Lentil vegetable soup bowl","18–28g", i => `Lentils simmered with ${pickVeg(input,i,5)} and ${r.stock}. No added starch. Lentils stay in the meal because they are the protein source.`);
+      add("lentils","Lentil vegetable soup bowl","18–28g", i => `Lentils simmered with ${pickVegContext(input,"soup",i,5)} and ${r.stock}. No added starch. Lentils stay in the meal because they are the protein source.`);
     }
     if (main.has("beans")) {
-      add("beans","Bean chilli vegetable bowl","18–28g", i => `Beans cooked with tomato, onion, mild spices and ${pickVeg(input,i,4,["tomato","onion"])}. No added starch. Beans stay in the meal because they are the protein source.`);
+      add("beans","Bean chilli vegetable bowl","18–28g", i => `Beans cooked with tomato, onion, mild spices and ${pickVegContext(input,"cooked",i,4,["tomato","onion"])}. No added starch. Beans stay in the meal because they are the protein source.`);
     }
     if (main.has("chickpeas")) {
-      add("chickpeas","Chickpea vegetable bowl","18–28g", i => `Chickpeas with tomato, cucumber, lettuce, herbs and ${pickVeg(input,i,3,["tomato","cucumber","lettuce"])}. No added starch. Chickpeas stay in the meal because they are the protein source.`);
+      add("chickpeas","Chickpea vegetable bowl","18–28g", i => `Chickpeas with tomato, cucumber, lettuce, herbs and ${coldPlateVeg(input,i,3)}. No added starch. Chickpeas stay in the meal because they are the protein source.`);
     }
 
     return t;
@@ -572,7 +615,7 @@
 
     const breakfastsRaw = makeBreakfasts(input, gate);
     const dinners = makeDinners(input, gate);
-    const lunches = input.leftoverLunches ? makeLeftoverLunches(input, dinners) : makeStandaloneLunches(input, gate, dinners);
+    const lunches = input.leftoverLunches ? makeLeftoverLunches(input, dinners) : makeStandaloneLunches(input, gate, dinners, breakfastsRaw);
     const snacks = makeSnacks(input, gate, breakfastsRaw, lunches, dinners);
 
     const days = Array.from({length:7}, (_, i) => ({
@@ -656,6 +699,7 @@
     t.forEach(x => { maxMap[x.cat] = maxWeeklyMainFor(x.cat, mainCount); });
 
     const counts = {};
+    const nameCounts = {};
     const out = [];
 
     for (let day=0; day<7; day++) {
@@ -676,13 +720,15 @@
         starch: st
       });
       counts[template.cat] = (counts[template.cat] || 0) + 1;
+      nameCounts[template.name] = (nameCounts[template.name] || 0) + 1;
       counts.__last = template.cat;
+      counts.__lastName = template.name;
     }
 
     return out;
   }
 
-  function makeStandaloneLunches(input, gate, dinners) {
+  function makeStandaloneLunches(input, gate, dinners, breakfasts) {
     const t = lunchTemplates(input, gate);
     const dinnerCounts = {};
     (dinners || []).forEach(d => { dinnerCounts[d.cat] = (dinnerCounts[d.cat] || 0) + 1; });
@@ -692,6 +738,7 @@
     t.forEach(x => { maxMap[x.cat] = maxWeeklyMainFor(x.cat, mainCount); });
 
     const counts = {};
+    const nameCounts = {};
     const out = [];
 
     for (let day=0; day<7; day++) {
@@ -703,9 +750,11 @@
         const cat = template.cat;
         const used = counts[cat] || 0;
         const totalMainUsed = used + (dinnerCounts[cat] || 0);
-        let score = idx * 0.01 + used * 28 + totalMainUsed * 14;
+        let score = idx * 0.01 + used * 28 + totalMainUsed * 14 + (nameCounts[template.name] || 0) * 35;
 
         if (dinnerCat === cat && t.some(x => x.cat !== cat)) score += 1000;
+        if (counts.__lastName === template.name && t.some(x => x.name !== template.name)) score += 90;
+        if (cat === "dairy" && breakfasts?.[day]?.type === "dairy" && t.some(x => x.cat !== "dairy")) score += 1200;
         const weeklyMax = (maxMap[cat] || 7) + 1;
         if (totalMainUsed >= weeklyMax && t.some(x => x.cat !== cat)) score += 900;
         if (counts.__last === cat && t.some(x => x.cat !== cat)) score += 60;
@@ -722,7 +771,9 @@
         cat: template.cat
       });
       counts[template.cat] = (counts[template.cat] || 0) + 1;
+      nameCounts[template.name] = (nameCounts[template.name] || 0) + 1;
       counts.__last = template.cat;
+      counts.__lastName = template.name;
     }
 
     return out;

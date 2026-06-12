@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-v2026-06-12-meal-engine-v346-strict-snack-gate-quality-fix";
+const CACHE_NAME = "hearty-v2026-06-12-meal-engine-v349-lunch-variety-polish";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
