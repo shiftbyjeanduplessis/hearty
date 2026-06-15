@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  // HEARTY TRACKING V1.1 — no service worker changes.
+  // HEARTY TRACKING V1.2 — no service worker changes, generator-safe.
   // Public anon Supabase key only. Do not use service-role keys in browser code.
   const DEFAULT_SUPABASE_URL = "https://mdsfcnocvelwqiercyci.supabase.co";
   const DEFAULT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M";
@@ -133,7 +133,7 @@
           ...cleanedMetadata,
           first_landing_page: safeLocalStorageGet(STORAGE_KEYS.firstLandingPage) || "",
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
-          tracking_version: "v1.1-no-sw"
+          tracking_version: "v1.2-safe-no-sw"
         }
       };
 
@@ -181,14 +181,6 @@
         trackOnce("free_meal_started", { trigger: "interaction" });
       }
 
-      if (target.closest("[data-action='finish']")) {
-        trackOnce("free_meal_generated", { plan_days: 7, trigger: "generate_button" });
-      }
-
-      if (target.closest("[data-hearty-checkout]")) {
-        trackHeartyEvent("free_meal_app_cta_clicked", { button_location: "free_meal_page" });
-        trackHeartyEvent("checkout_clicked", { currency: "USD", price: 29, button_location: "free_meal_page" });
-      }
     }, true);
 
     document.addEventListener("input", function () {
@@ -205,7 +197,7 @@
     getSessionId: getOrCreateSessionId,
     getSource,
     getCampaign,
-    version: "v1.1-no-sw"
+    version: "v1.2-safe-no-sw"
   };
 
   function init() {
