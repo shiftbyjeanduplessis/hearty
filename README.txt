@@ -1,10 +1,17 @@
-HEARTY LOGIN INLINE FIX
+HEARTY LOGIN SIGNUP MESSAGE FIX
 
-Upload this one file only:
+Upload only:
 
 /login.html
 
-This version has the auth/tab JavaScript embedded inside the page, so the Sign in / Create account tabs work even if /js/hearty-auth-soft.v1.js was missing or uploaded to the wrong path.
+Fixes:
+- After creating an account, the success message no longer disappears.
+- Shows clear instruction to check email confirmation.
+- Gives clearer sign-in error if email confirmation is still pending.
+- Still uses inline JavaScript, so it does not depend on /js/hearty-auth-soft.v1.js.
 
-After upload, hard-refresh:
-https://hearty.health/login.html?mode=signup
+After upload:
+1. Open /login.html?mode=signup
+2. Create account
+3. Confirm email if Supabase requires confirmation
+4. Sign in
