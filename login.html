@@ -85,6 +85,7 @@
     <div class="notice">
       <strong>Already bought Hearty?</strong>
       Create your account using the same email you used when purchasing. Your lifetime access will be kept.
+      <br><br><strong>After creating an account:</strong> check your email for a confirmation link before signing in.
     </div>
 
     <div class="tabs" id="authTabs">
@@ -518,7 +519,14 @@
       if(data && data.user) await completeLogin(data.user);
     } catch(err){
       setBusy(false);
-      setMessage(err.message || "Could not sign in.", "error");
+      const msg = String(err && err.message || "");
+      if(/confirm|confirmed|verification|verified/i.test(msg)){
+        setMessage("This account exists, but the email is not confirmed yet. Please open the confirmation email from Hearty/Supabase first, then sign in again.", "error");
+      } else if(/invalid login|invalid credentials/i.test(msg)){
+        setMessage("The email or password is not correct. If you just created the account, check your email confirmation first.", "error");
+      } else {
+        setMessage(msg || "Could not sign in.", "error");
+      }
       showDebug("Password sign in failed", err);
     }
   }
@@ -553,10 +561,10 @@
       }
 
       setBusy(false);
-      setMessage("Account created. Check your email to confirm your account, then sign in.");
       setPanel("signin");
       const signinEmail = $("signinEmail");
       if(signinEmail) signinEmail.value = email;
+      setMessage("Account created. Check your email to confirm your account, then come back here and sign in. If you do not see the email, check spam/promotions.", "success");
     } catch(err){
       setBusy(false);
       setMessage(err.message || "Could not create account.", "error");
