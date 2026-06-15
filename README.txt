@@ -1,1 +1,12 @@
-Replace old EXERCISE.html with this clean UTF-8 file. Keep images under images/exercises/ with the agreed filenames. The giant embedded base64 logo was replaced with hearty-logo.png so GitHub can edit the file as text.
+HEARTY STEP 1 — BASELINE SETTINGS REPAIR
+
+This is the first safe step.
+
+Replace only:
+- settings.html
+
+Also included:
+- HEARTY_STEP1_BASELINE_AUDIT.md
+- HEARTY_STEP1_VALIDATION.md
+
+Do not combine this with login, Meals, themes or dashboard changes yet.
