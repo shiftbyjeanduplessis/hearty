@@ -84,7 +84,7 @@
 
     <div class="notice">
       <strong>Already bought Hearty?</strong>
-      Create your account using the same email you used when purchasing. Your lifetime access will be kept.
+      Create your account using the same email you used at checkout. Your lifetime access will be kept.
       <br><br><strong>After creating an account:</strong> check your email for a confirmation link before signing in.
     </div>
 
@@ -761,6 +761,37 @@
   });
 })();
 
+</script>
+<script>
+(function(){
+  "use strict";
+  function getParam(name){
+    try { return new URLSearchParams(location.search || "").get(name) || ""; } catch { return ""; }
+  }
+  function setValue(id, value){
+    var el = document.getElementById(id);
+    if(el && value && !el.value) el.value = value;
+  }
+  function clickTab(mode){
+    var tab = document.querySelector('[data-auth-tab="' + mode + '"]');
+    if(tab) tab.click();
+  }
+  document.addEventListener("DOMContentLoaded", function(){
+    var email = (getParam("email") || getParam("purchase_email") || getParam("checkout_email") || "").trim().toLowerCase();
+    var mode = getParam("mode");
+    if(email){
+      setValue("signinEmail", email);
+      setValue("signupEmail", email);
+      setValue("resetEmail", email);
+      setValue("purchaseEmail", email);
+      setValue("accountEmail", email);
+    }
+    if(mode === "signup") setTimeout(function(){ clickTab("signup"); }, 100);
+    if(mode === "access" && window.HeartyAuthSoft) {
+      // The main script handles access mode; this keeps old browsers quiet.
+    }
+  });
+})();
 </script>
 </body>
 </html>
