@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  // HEARTY TRACKING V1
+  // HEARTY TRACKING V1.1 — no service worker changes.
   // Public anon Supabase key only. Do not use service-role keys in browser code.
   const DEFAULT_SUPABASE_URL = "https://mdsfcnocvelwqiercyci.supabase.co";
   const DEFAULT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M";
@@ -10,6 +10,7 @@
   const SUPABASE_URL = (config.supabaseUrl || DEFAULT_SUPABASE_URL || "").replace(/\/$/, "");
   const SUPABASE_ANON_KEY = config.supabaseAnonKey || DEFAULT_SUPABASE_ANON_KEY || "";
   const EVENTS_TABLE = config.eventsTable || "hearty_events";
+  const DEBUG = new URLSearchParams(window.location.search).get("debug_tracking") === "1";
 
   const STORAGE_KEYS = {
     sessionId: "hearty_session_id",
@@ -19,8 +20,10 @@
     firstReferrer: "hearty_first_referrer"
   };
 
+  const firedOnce = new Set();
+
   function safeLocalStorageGet(key) {
-    try { return window.localStorage.getItem(key); } catch (error) { return ""; }
+    try { return window.localStorage.getItem(key) || ""; } catch (error) { return ""; }
   }
 
   function safeLocalStorageSet(key, value) {
@@ -52,17 +55,13 @@
     catch (error) { return ""; }
   }
 
-  function normaliseSource(value) {
-    return String(value || "").trim().slice(0, 120);
-  }
-
-  function normaliseCampaign(value) {
+  function normalise(value) {
     return String(value || "").trim().slice(0, 120);
   }
 
   function storeAttribution() {
-    const src = normaliseSource(getParam("src") || getParam("source") || getParam("utm_source"));
-    const campaign = normaliseCampaign(getParam("campaign") || getParam("utm_campaign"));
+    const src = normalise(getParam("src") || getParam("source") || getParam("utm_source"));
+    const campaign = normalise(getParam("campaign") || getParam("utm_campaign"));
 
     if (src) safeLocalStorageSet(STORAGE_KEYS.source, src);
     if (campaign) safeLocalStorageSet(STORAGE_KEYS.campaign, campaign);
@@ -77,7 +76,7 @@
 
   function getSource() {
     storeAttribution();
-    return normaliseSource(
+    return normalise(
       getParam("src") ||
       getParam("source") ||
       getParam("utm_source") ||
@@ -88,7 +87,7 @@
 
   function getCampaign() {
     storeAttribution();
-    return normaliseCampaign(
+    return normalise(
       getParam("campaign") ||
       getParam("utm_campaign") ||
       safeLocalStorageGet(STORAGE_KEYS.campaign) ||
@@ -98,8 +97,6 @@
 
   function cleanMetadata(metadata) {
     const safe = metadata && typeof metadata === "object" ? { ...metadata } : {};
-
-    // Never allow sensitive fields into browser event tracking.
     [
       "dose",
       "medication_dose",
@@ -115,7 +112,6 @@
     ].forEach((key) => {
       if (key in safe) delete safe[key];
     });
-
     return safe;
   }
 
@@ -137,11 +133,11 @@
           ...cleanedMetadata,
           first_landing_page: safeLocalStorageGet(STORAGE_KEYS.firstLandingPage) || "",
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
-          user_agent_family: navigator.userAgentData?.brands?.[0]?.brand || ""
+          tracking_version: "v1.1-no-sw"
         }
       };
 
-      await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}`, {
         method: "POST",
         keepalive: true,
         headers: {
@@ -152,25 +148,74 @@
         },
         body: JSON.stringify(payload)
       });
+
+      if (DEBUG) console.log("Hearty event", eventName, response.status, payload);
+      if (!response.ok) {
+        if (DEBUG) console.warn("Hearty tracking HTTP error", response.status, await response.text());
+        return false;
+      }
       return true;
     } catch (error) {
-      console.warn("Hearty tracking failed:", error);
+      if (DEBUG) console.warn("Hearty tracking failed:", error);
       return false;
     }
+  }
+
+  function trackOnce(eventName, metadata) {
+    if (firedOnce.has(eventName)) return;
+    firedOnce.add(eventName);
+    trackHeartyEvent(eventName, metadata);
+  }
+
+  function initFreeMealTracking() {
+    const isFreeMealPage = /free-meal-plan/i.test(window.location.pathname) || document.querySelector("#generator");
+    if (!isFreeMealPage) return;
+
+    trackHeartyEvent("free_meal_page_view");
+
+    document.addEventListener("click", function (event) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      if (target.closest("[data-wizard-open], .option-btn, [data-action='select'], [data-action='next'], [data-save-prompt-jump']")) {
+        trackOnce("free_meal_started", { trigger: "interaction" });
+      }
+
+      if (target.closest("[data-action='finish']")) {
+        trackOnce("free_meal_generated", { plan_days: 7, trigger: "generate_button" });
+      }
+
+      if (target.closest("[data-hearty-checkout]")) {
+        trackHeartyEvent("free_meal_app_cta_clicked", { button_location: "free_meal_page" });
+        trackHeartyEvent("checkout_clicked", { currency: "USD", price: 29, button_location: "free_meal_page" });
+      }
+    }, true);
+
+    document.addEventListener("input", function () {
+      trackOnce("free_meal_started", { trigger: "input" });
+    }, true);
+
+    document.addEventListener("change", function () {
+      trackOnce("free_meal_started", { trigger: "change" });
+    }, true);
   }
 
   window.trackHeartyEvent = trackHeartyEvent;
   window.heartyTrackingAttribution = {
     getSessionId: getOrCreateSessionId,
     getSource,
-    getCampaign
+    getCampaign,
+    version: "v1.1-no-sw"
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      trackHeartyEvent("page_view");
-    }, { once: true });
-  } else {
+  function init() {
     trackHeartyEvent("page_view");
+    initFreeMealTracking();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
   }
 })();
