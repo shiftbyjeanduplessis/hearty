@@ -1015,18 +1015,7 @@ font-weight:850;
 }
 
 </style>
-<!-- Hearty free funnel patched to v3.3.5: clean final engine only, no old V6 block. -->
-<!-- Hearty v3.3.6 button helper fix -->
-<!-- Hearty v3.3.7 nav fixed: event-delegated wizard buttons -->
-<meta name="hearty-engine-source" content="3.4.9-lunch-variety-polish rebuilt-funnel-engine-v331-us-first-plus-v349-lunch-variety-polish">
-<!-- Hearty v3.4.9-lunch-variety-polish release gate repair: clean UI shell + rebuilt engine + rendered-output QA -->
-<!-- Hearty v3.4.9-lunch-variety-polish release gate repair -->
-<!-- Hearty v3.4.9-lunch-variety-polish release gate repair -->
-<!-- Hearty v3.4.9-lunch-variety-polish strict snack gate -->
-<!-- Hearty v3.4.9-lunch-variety-polish strict snack gate quality fix -->
-<!-- Hearty v3.4.9-lunch-variety-polish vegetable context polish -->
-<!-- Hearty v3.4.9-lunch-variety-polish vegetable context polish -->
-<!-- Hearty v3.4.9 lunch variety polish -->
+<!-- Free-generator-only v24: uses isolated engine file so the app Meals page is not changed. -->
 </head>
 <body>
 <div class="page">
@@ -1249,7 +1238,7 @@ font-weight:850;
 </div>
 </div>
 </div>
-<script src="hearty-meal-engine-final.js?v=3.4.9-lunch-variety-polish"></script>
+<script src="hearty-meal-engine-final.js?v=3-final-gated"></script>
 <script>
     (function(){
       "use strict";
@@ -1289,7 +1278,7 @@ font-weight:850;
 
       const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
       const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
-      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"US", countrySelected:true, struggleMode:"", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
+      const state = { step:0, firstName:"", email:"", whatsapp:"", country:"", countrySelected:false, struggleMode:"", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[] };
       let latestPlanText = "";
       let latestPlan = [];
       let currentLeadId = "";
@@ -1309,7 +1298,7 @@ font-weight:850;
 
       const steps = [
         { id:"lead", kicker:"Start", title:"First, let's set up your Hearty plan", copy:"Your free 7-day meal plan is the starting point inside Hearty. Add your name and email if you want to save it or receive follow-up support — both are optional.", type:"lead" },
-        { id:"country", kicker:"Step 1", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["US","United States",""],["ZA","South Africa",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
+        { id:"country", kicker:"Step 1", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["ZA","South Africa",""],["US","United States",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
         { id:"struggleMode", kicker:"Step 2", title:"What are you struggling with most right now?", copy:"Tell Hearty what feels hardest right now so the plan starts with your real problem, not a generic diet template.", type:"single", key:"struggleMode", options:[["low_appetite","Low appetite","Smaller meals and easy top-ups"],["protein_hard","Protein is hard","More protein anchors and backup ideas"],["nausea_food_aversion","Nausea / food aversion","Plainer, gentler meal ideas"],["no_breakfast","I’m not a breakfast person","Lighter first-meal options"],["not_sure_what_to_eat","I’m not sure what to eat","Simple starter structure"],["simple_structure","I just want simple structure","Straightforward repeatable meals"]] },
         { id:"proteins", kicker:"Step 3", title:"Which proteins do you actually eat?", copy:"Choose at least 2 main-meal proteins you would realistically use. The best plan is the one you can follow on an ordinary week.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""]] },
         { id:"breakfast", kicker:"Step 4", title:"What kind of breakfast works for you?", copy:"Mornings can be tricky on GLP-1s. Pick what feels doable, even if that means something light.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["egg_toast","Egg on toast / wrap","More filling but still simple"],["protein_shake","Whey protein shake","Easy protein when breakfast is hard"],["smoothie","Protein smoothie","Light option with fruit"],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""],["protein_yoghurt","Protein yoghurt bowl","Higher-protein yoghurt option"],["cottage_cheese_bowl","Cottage cheese fruit bowl","Soft, simple and not too heavy"]] },
@@ -1323,10 +1312,6 @@ font-weight:850;
         const marrow = state.country === "UK" ? "Courgette" : (state.country === "ZA" ? "Baby marrow" : "Zucchini");
         return [["broccoli","Broccoli",""],["cauliflower","Cauliflower",""],["carrots","Carrots",""],["baby_marrow",marrow,""],["spinach","Spinach",""],["mushrooms","Mushrooms",""],["peppers","Peppers",""],["green_beans","Green beans",""],["corn","Corn",""],["butternut","Butternut",""],["cabbage","Cabbage",""],["lettuce","Lettuce / salad greens",""],["cucumber","Cucumber",""],["tomato","Tomato",""],["onion","Onion",""],["peas","Peas",""],["mixed_veg","Mixed vegetables",""]];
       }
-      function localYoghurt(){
-        return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt";
-      }
-
       function getSnackOptions(){
         const jerky = state.country === "ZA" ? "Biltong" : (state.country === "US" || state.country === "CA" ? "Beef jerky" : "Biltong / beef jerky");
         return [["protein_shake","Whey protein shake","Easy 20–25g protein backup"],["low_fat_yoghurt", localYoghurt(), ""],["cottage_cheese","Cottage cheese",""],["fruit","Fruit",""],["biltong", jerky, ""],["nuts_seeds","Nuts and seeds",""],["peanut_butter","Peanut butter",""],["rice_cakes","Rice cakes",""],["wholegrain_crackers","Wholegrain crackers",""],["boiled_eggs","Boiled eggs",""],["tuna_rice_cakes","Tuna on rice cakes",""],["salmon_crackers","Salmon on crackers / rice cakes",""]];
@@ -1334,10 +1319,6 @@ font-weight:850;
 
       function openWizardModal(){
         if(!wizardOverlay) return;
-        if(!state.country) {
-          state.country = "US";
-          state.countrySelected = true;
-        }
         wizardOverlay.classList.add("show");
         wizardOverlay.setAttribute("aria-hidden", "false");
         document.body.classList.add("wizard-modal-open");
@@ -1371,7 +1352,6 @@ font-weight:850;
             <button class="btn btn-primary" type="button" data-action="${step.type === "summary" ? "finish" : "next"}" ${canContinue(step) ? "" : "disabled"}>${step.type === "summary" ? "Generate my free plan" : "Next"}</button>
           </div>`;
         bind();
-        console.log("HEARTY_WIZARD_RENDER", { step: state.step, stepId: step.id });
       }
 
       function renderStepBody(step){
@@ -1411,94 +1391,30 @@ font-weight:850;
       function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
 
       function bind(){
-        // Event delegation keeps wizard buttons working after every render.
-        // This avoids losing Back/Next handlers when the step HTML is replaced.
-        root.onclick = function(event){
-          const btn = event.target.closest("[data-action]");
-          if(!btn || !root.contains(btn)) return;
-
-          const action = btn.getAttribute("data-action");
-          const key = btn.getAttribute("data-key");
-          const value = btn.getAttribute("data-value");
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          try {
-            if(action === "select") {
-              const step = steps[state.step];
-              if(step.type === "multi"){
-                state[key] = Array.isArray(state[key]) ? state[key] : [];
-                state[key] = state[key].includes(value)
-                  ? state[key].filter(v => v !== value)
-                  : state[key].concat(value);
-              } else {
-                state[key] = value;
-                if(key === "country"){
-                  state.countrySelected = true;
-                  updateSalesLinks();
-                }
-              }
-              render();
-              return;
-            }
-
-            if(action === "back") {
-              if(state.step > 0){
-                state.step -= 1;
-                render();
-                scrollWizardTop();
-              }
-              return;
-            }
-
-            if(action === "next") {
-              saveLeadInputs();
-              const step = steps[state.step];
-              if(!canContinue(step)) {
-                console.warn("HEARTY_WIZARD_CANNOT_CONTINUE", { step: state.step, stepId: step?.id, state: JSON.parse(JSON.stringify(state)) });
-                return;
-              }
-              state.step = Math.min(steps.length - 1, state.step + 1);
-              render();
-              scrollWizardTop();
-              return;
-            }
-
-            if(action === "skip") {
-              const step = steps[state.step];
-              if(step && step.key) state[step.key] = [];
-              state.step = Math.min(steps.length - 1, state.step + 1);
-              render();
-              scrollWizardTop();
-              return;
-            }
-
-            if(action === "finish") {
-              saveLeadInputs();
-              if(canContinue(steps[state.step])) generateAndShowPlan();
-              return;
-            }
-          } catch(error) {
-            console.error("HEARTY_WIZARD_NAV_ERROR", error, { action, step: state.step, state });
-            alert("Something went wrong in the wizard. Please refresh and try again.");
-          }
-        };
-
         ["firstName","email","whatsapp"].forEach(id => {
           const el = document.getElementById(id);
-          if(el) el.addEventListener("input", () => {
-            state[id] = el.value.trim();
-            updateNavButton();
+          if(el) el.addEventListener("input", () => { state[id] = el.value.trim(); updateNavButton(); });
+        });
+        root.querySelectorAll("[data-action='select']").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const key = btn.getAttribute("data-key");
+            const value = btn.getAttribute("data-value");
+            const step = steps[state.step];
+            if(step.type === "multi"){
+              state[key] = Array.isArray(state[key]) ? state[key] : [];
+              state[key] = state[key].includes(value) ? state[key].filter(v => v !== value) : state[key].concat(value);
+            } else {
+              state[key] = value;
+              if(key === "country"){ state.countrySelected = true; updateSalesLinks(); }
+            }
+            render();
           });
         });
+        root.querySelector("[data-action='back']")?.addEventListener("click", () => { if(state.step > 0){ state.step -= 1; render(); } });
+        root.querySelector("[data-action='next']")?.addEventListener("click", () => { saveLeadInputs(); const step = steps[state.step]; if(!canContinue(step)) return; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='skip']")?.addEventListener("click", () => { const step = steps[state.step]; state[step.key] = []; state.step = Math.min(steps.length - 1, state.step + 1); render(); });
+        root.querySelector("[data-action='finish']")?.addEventListener("click", () => { saveLeadInputs(); if(canContinue(steps[state.step])) generateAndShowPlan(); });
       }
-
-      function scrollWizardTop(){
-        const wrap = document.querySelector(".wizard-modal-wrap");
-        if(wrap) wrap.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
       function saveLeadInputs(){ ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); }); }
       function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
       function canContinue(step){
@@ -1663,7 +1579,21 @@ font-weight:850;
         openHeartyInternationalCheckout();
       }
 
-      
+      function generateAndShowPlan(){
+        latestPlan = buildPlan();
+        latestPlanText = makePlanText(latestPlan);
+        renderPlan(latestPlan);
+        saveLead(latestPlanText);
+        resultPanel.classList.add("show");
+        marketTag.textContent = "Free starter plan";
+        updateSalesLinks();
+        primePostLeadFields();
+        switchStickyCtaToCheckout();
+        scheduleSavePrompt();
+        closeWizardModal();
+        resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+
       function primePostLeadFields(){
         const nameEl = document.getElementById("postFirstName");
         const emailEl = document.getElementById("postEmail");
@@ -1713,6 +1643,251 @@ font-weight:850;
       }
 
 
+      // BUTTON_FIX_ONLY_V1: these helpers are the only generator-button patch.
+      function getHeartyEngine(){
+        return window.HeartyMealsEngineV6 || null;
+      }
+
+      function buildEngineProfile(){
+        return {
+          country: state.country || "ZA",
+          allowedProteins: Array.isArray(state.proteins) ? state.proteins.slice() : [],
+          allowedBreakfastFamilies: Array.isArray(state.breakfast) ? state.breakfast.slice() : [],
+          allowedStarches: Array.isArray(state.starches) ? state.starches.slice() : [],
+          allowedVegetables: Array.isArray(state.vegetables) ? state.vegetables.slice() : [],
+          allowedFruits: Array.isArray(state.fruits) ? state.fruits.slice() : [],
+          allowedSnacks: Array.isArray(state.snackPreferences) ? state.snackPreferences.slice() : [],
+          struggleMode: state.struggleMode || "simple_structure",
+          snackEnabled: true,
+          seafoodAllowed: !Array.isArray(state.proteins) || state.proteins.length === 0 || state.proteins.includes("fish") || state.proteins.includes("seafood") || state.proteins.includes("canned_tuna")
+        };
+      }
+
+      function buildPlan(){
+        const engine = getHeartyEngine();
+        if(!engine || typeof engine.generateWeekPlan !== "function"){
+          console.warn("Hearty meal engine unavailable. Using fallback generator.");
+          return buildFallbackPlan();
+        }
+
+        const profile = buildEngineProfile();
+        const week = engine.generateWeekPlan({
+          mode: "lead_magnet",
+          profile,
+          struggleMode: state.struggleMode || "simple_structure",
+          adjustments: { supportMode: null },
+          weekState: null
+        });
+
+        const days = Array.isArray(week?.days) ? week.days.slice(0, 7) : [];
+        if(!days.length) return buildFallbackPlan();
+
+        return days.map((day, index) => {
+          const themeLabel = day.themeLabel ? ` • ${day.themeLabel}` : "";
+          return {
+          day: `Day ${index + 1}${themeLabel}`,
+          dayName: day.dayName || dayNames[index] || `Day ${index + 1}`,
+          breakfast: cleanMealTitle(day.breakfast?.title || "Breakfast"),
+          lunch: cleanMealTitle(day.lunch?.title || "Lunch"),
+          snack: cleanMealTitle(day.snack?.title || "Snack"),
+          dinner: cleanMealTitle(day.dinner?.title || "Dinner"),
+          protein: {
+            breakfast: Number(day.breakfast?.proteinEstimate || 0),
+            lunch: Number(day.lunch?.proteinEstimate || 0),
+            snack: Number(day.snack?.proteinEstimate || 0),
+            dinner: Number(day.dinner?.proteinEstimate || 0)
+          },
+          recipe: {
+            breakfast: day.breakfast?.recipeNote || day.breakfast?.methodNote || "",
+            lunch: day.lunch?.recipeNote || day.lunch?.methodNote || "",
+            snack: day.snack?.recipeNote || day.snack?.methodNote || "",
+            dinner: day.dinner?.recipeNote || day.dinner?.methodNote || ""
+          },
+          estimatedProteinTotal: Number(day.estimatedProteinTotal || 0),
+          proteinBooster: day.proteinBooster || "",
+          proteinDisclaimer: day.proteinDisclaimer || proteinDisclaimer(),
+          proteinSnackList: day.proteinSnackList || week?.proteinSnackList || [],
+          proteinSnackIdeas: day.proteinSnackIdeas || week?.proteinSnackIdeas || [],
+          themeLabel: day.themeLabel || "",
+          source: week?.version || "HeartySharedMealEngineV4RecipesFeedback"
+        };
+        });
+      }
+
+      function buildFallbackPlan(){
+        const proteins = state.proteins.length ? state.proteins : ["chicken","beef","fish","eggs"];
+        const breakfasts = state.breakfast.length ? state.breakfast : ["eggs","oats","yoghurt_bowl"];
+        const starches = state.starches.length ? state.starches : ["rice","potato","sweet_potato","whole_wheat_wraps"];
+        const vegetables = state.vegetables.length ? state.vegetables : ["broccoli","carrots","baby_marrow","spinach","lettuce","tomato","cucumber"];
+        const fruits = state.fruits.length ? state.fruits : ["apple","banana","grapes","pineapple"];
+        const snacks = state.snackPreferences.length ? state.snackPreferences : ["protein_shake","low_fat_yoghurt","cottage_cheese","fruit","boiled_eggs"];
+        const plan = [];
+        for(let i=0;i<7;i++){
+          plan.push({
+            day: `Day ${i + 1}`,
+            dayName: dayNames[i] || `Day ${i + 1}`,
+            breakfast: breakfastText(pick(breakfasts, i), pick(fruits, i), vegetables),
+            lunch: lunchText(pick(proteins, i), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i)),
+            snack: snackText(pick(snacks, i), pick(fruits, i+1)),
+            dinner: dinnerText(pick(proteins, i+2), pick(vegetables, i), pick(vegetables, i+3), pick(starches, i+1)),
+            protein: { breakfast: 0, lunch: 0, snack: 0, dinner: 0 },
+            recipe: { breakfast: "", lunch: "", snack: "", dinner: "" },
+            estimatedProteinTotal: 0,
+            proteinBooster: "Protein booster option: add yoghurt, cottage cheese, boiled eggs, salmon/fish, chicken, or a small protein shake if tolerated.",
+            proteinSnackList: fallbackProteinSnackList(),
+            proteinSnackIdeas: fallbackDailyProteinSnackIdeas(),
+            source: "fallback"
+          });
+        }
+        return plan;
+      }
+
+      function cleanMealTitle(value){
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .replace(/\bsmall pasta\b/gi, "whole wheat pasta")
+          .trim();
+      }
+
+      function pick(list, index){ return list[index % list.length]; }
+      function localYoghurt(){ return (state.country === "US" || state.country === "CA") ? "Greek yogurt" : "Low-fat yoghurt"; }
+      function vegLabel(id){
+        const map = { broccoli:"broccoli", cauliflower:"cauliflower", carrots:"carrots", spinach:"spinach", mushrooms:"mushrooms", peppers:"peppers", green_beans:"green beans", corn:"corn", butternut:"butternut", cabbage:"cabbage", lettuce:"salad greens", cucumber:"cucumber", tomato:"tomato", onion:"onion", peas:"peas", mixed_veg:"mixed vegetables" };
+        if(id === "baby_marrow") return state.country === "UK" ? "courgette" : (state.country === "ZA" ? "baby marrow" : "zucchini");
+        return map[id] || String(id || "vegetables").replaceAll("_"," ");
+      }
+      function starchLabel(id){
+        const map = { rice:"rice", potato:"potato", sweet_potato:"sweet potato", couscous:"couscous", whole_wheat_pasta:"whole wheat pasta", whole_wheat_wraps: state.country === "UK" || state.country === "AU" ? "wholemeal wrap" : "whole wheat wrap", whole_wheat_bread: state.country === "UK" || state.country === "AU" ? "wholemeal toast" : "whole wheat toast" };
+        return map[id] || String(id || "starch").replaceAll("_"," ");
+      }
+      function proteinLabel(id){
+        const map = { chicken:"skinless chicken breast", beef: state.country === "US" || state.country === "CA" ? "lean ground beef" : "lean beef mince or strips", pork:"lean pork strips", fish:"white fish", seafood:"prawns or seafood", canned_tuna:"canned tuna in water", eggs:"2 x eggs", turkey:"turkey breast" };
+        return map[id] || String(id || "protein").replaceAll("_"," ");
+      }
+      function breakfastText(id, fruit, vegetables){
+        const yoghurt = localYoghurt().toLowerCase();
+        const fruitText = fruitLabel(fruit);
+        const greens = vegetables.includes("spinach") ? "spinach" : vegLabel(pick(vegetables, 0));
+        const mushroom = vegetables.includes("mushrooms") ? "mushrooms" : vegLabel(pick(vegetables, 1));
+        const map = {
+          protein_shake: `Whey protein shake made with low-fat milk or water and ${fruitText} if tolerated.`,
+          eggs: `2 x eggs scrambled with ${greens} or ${mushroom}.`,
+          all_bran: `A bowl of All Bran / Bran Flakes with low-fat milk and ${fruitText}.`,
+          oats: `A bowl of cooked oats with low-fat milk and ${fruitText}.`,
+          overnight_oats: `Overnight oats made with low-fat milk, ${yoghurt} and ${fruitText}.`,
+          yoghurt_bowl: `A bowl of ${yoghurt} with ${fruitText} and 1 portion oats.`
+        };
+        return map[id] || map.oats;
+      }
+      function lunchText(protein, vegA, vegB, starch){
+        if(protein === "canned_tuna") return `Tuna salad (${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(protein === "eggs") return `Egg salad plate (2 x eggs, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+        if(starch === "whole_wheat_wraps") return `${capitalizeProtein(protein)} wrap (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and low-calorie dressing) in a ${starchLabel(starch)}.`;
+        return `${capitalizeProtein(protein)} salad (1 portion ${proteinLabel(protein)}, ${vegLabel(vegA)}, ${vegLabel(vegB)} and salad greens) with low-calorie dressing + 1 portion ${starchLabel(starch)}.`;
+      }
+      function dinnerText(protein, vegA, vegB, starch){
+        if(protein === "eggs") return `2 x eggs with ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+        return `Grilled ${proteinLabel(protein)} with 1-2 portions ${vegLabel(vegA)} and ${vegLabel(vegB)} + 1 portion ${starchLabel(starch)}.`;
+      }
+      function snackText(id, fruit){
+        const jerky = state.country === "ZA" ? "biltong" : (state.country === "US" || state.country === "CA" ? "beef jerky" : "biltong / beef jerky");
+        const map = {
+          low_fat_yoghurt: `1 cup ${localYoghurt().toLowerCase()}.`,
+          cottage_cheese: "Cottage cheese on 2 x rice cakes or crackerbread.",
+          fruit: `${fruitLabel(fruit)} or a fruit of your choice.`,
+          biltong: `A small portion of ${jerky} with water or tea.`,
+          nuts_seeds: "A small portion of nuts and seeds.",
+          peanut_butter: "1 tablespoon peanut butter on rice cakes.",
+          rice_cakes: "2 x rice cakes with cottage cheese or peanut butter.",
+          wholegrain_crackers: "Wholegrain crackers with cottage cheese.",
+          boiled_eggs: "1-2 boiled eggs.",
+          tuna_rice_cakes: "Tuna on 2 x rice cakes.",
+          salmon_crackers: "Salmon on crackers or rice cakes.",
+          protein_shake: "Whey protein shake with water or low-fat milk if tolerated."
+        };
+        return map[id] || map.fruit;
+      }
+      function fruitLabel(id){ return ({ pawpaw:"pawpaw / papaya", kiwi:"kiwi fruit" }[id] || id || "apple").replaceAll("_"," "); }
+      function capitalizeProtein(id){ return ({ canned_tuna:"Tuna", seafood:"Seafood" }[id] || String(id || "Meal").charAt(0).toUpperCase()+String(id || "meal").slice(1)); }
+
+      function renderPlan(plan){
+        const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
+        document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
+        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • ${state.proteins.length || "default"} protein choice${state.proteins.length === 1 ? "" : "s"} • approximate protein shown`;
+        daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch)}${mealRow("Snack", day.snack, day.protein?.snack, day.recipe?.snack)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner)}${dayTotalRow(day)}${dailySnackIdeasRow(day)}</article>`).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>`;
+      }
+      function mealRow(label, text, protein, recipeNote){
+        const proteinText = Number(protein || 0) > 0 ? ` <span style="color:#7b8998;font-weight:800;">Approx. ${Number(protein)}g protein</span>` : "";
+        const methodText = recipeNote ? `<div style="margin-top:6px;color:#617389;font-size:.9rem;line-height:1.45;"><strong>Basic method:</strong> ${escapeHtml(recipeNote).replace(/^Basic method:\s*/i, "")}</div>` : "";
+        return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}${proteinText}${methodText}</div></div>`;
+      }
+      function dayTotalRow(day){
+        const total = Number(day.estimatedProteinTotal || 0);
+        const totalText = total > 0 ? `<div class="protein-total">Estimated daily protein: approx. ${total}g</div>` : "";
+        const booster = day.proteinBooster ? `<div class="protein-booster">${escapeHtml(day.proteinBooster)}</div>` : "";
+        return totalText + booster;
+      }
+      function dailySnackIdeasRow(day){
+        const ideas = (day && Array.isArray(day.proteinSnackIdeas) && day.proteinSnackIdeas.length) ? day.proteinSnackIdeas : fallbackDailyProteinSnackIdeas();
+        const items = ideas.slice(0, 5).map(item => `<li><strong>${escapeHtml(item.title || item)}</strong>${item.protein ? ` <span>${escapeHtml(item.protein)}</span>` : ""}${item.note ? `<br><small>${escapeHtml(item.note)}</small>` : ""}</li>`).join("");
+        return "";
+      }
+
+      function proteinSnackPanel(plan){
+        const list = (plan && plan[0] && Array.isArray(plan[0].proteinSnackList) && plan[0].proteinSnackList.length) ? plan[0].proteinSnackList : fallbackProteinSnackList();
+        const items = list.slice(0, 6).map(item => `<div class="protein-snack-item"><strong>${escapeHtml(item.title || item)}</strong>${item.protein ? `<span>${escapeHtml(item.protein)}</span>` : ""}${item.note ? `<br>${escapeHtml(item.note)}` : ""}</div>`).join("");
+        return `<div class="protein-snack-panel"><h3>Easy protein snack list</h3><p>For low-appetite days, choose one small protein option rather than skipping food completely.</p><div class="protein-snack-grid">${items}</div></div>`;
+      }
+      function fallbackProteinSnackList(){
+        return [
+          {title: localYoghurt() + " bowl", protein:"Approx. 12–17g", note:"easy when a full meal feels too much"},
+          {title:"Whey protein shake", protein:"Approx. 24g", note:"use water or low-fat milk and sip slowly"},
+          {title:"Cottage cheese with crackers/rice cakes", protein:"Approx. 15g", note:"soft, quick and repeatable"},
+          {title:"2 boiled eggs", protein:"Approx. 12g", note:"simple fridge backup"},
+          {title:"Salmon on crackers/rice cakes", protein:"Approx. 20–28g", note:"savoury fish option with no cooking if using smoked or leftover salmon"},
+          {title:"Leftover chicken strips", protein:"Approx. 25–30g", note:"use dinner leftovers as a top-up"}
+        ];
+      }
+      function fallbackDailyProteinSnackIdeas(){
+        return [
+          {title:"Whey protein shake", protein:"Approx. 24g", note:"Mix with water or low-fat milk and sip slowly."},
+          {title:localYoghurt() + " protein bowl", protein:"Approx. 20–30g", note:"Add berries or fruit and optional whey if tolerated."},
+          {title:"Cottage cheese with crackers/rice cakes", protein:"Approx. 15–22g", note:"Soft, quick and repeatable."},
+          {title:"2 boiled eggs", protein:"Approx. 12g", note:"Simple fridge backup."},
+          {title:"Salmon on crackers/rice cakes", protein:"Approx. 20–28g", note:"Good savoury fish option without cooking if using smoked or leftover salmon."}
+        ];
+      }
+
+      function proteinDisclaimer(){
+        return window.HeartySharedMealEngineV2?.proteinDisclaimer || "Protein estimates are approximate and based on standard serving assumptions. Actual values vary by brand, portion size and preparation.";
+      }
+      function makePlanText(plan){
+        const lines = [`Hearty Free 7-Day GLP-1 Meal Plan`, `Name: ${state.firstName}`, `Country: ${countryLabels[state.country] || "Other"}`, `Main struggle: ${labelForValue("struggleMode", state.struggleMode) || "Simple structure"}`, `Generated with: Hearty meal engine`, ``, `This is general lifestyle support, not medical advice. Protein estimates are approximate.`, ``];
+        plan.forEach(day => {
+          lines.push(day.day,
+            `Breakfast: ${day.breakfast}`,
+            day.recipe?.breakfast ? `  Method: ${day.recipe.breakfast}` : "",
+            `Lunch: ${day.lunch}`,
+            day.recipe?.lunch ? `  Method: ${day.recipe.lunch}` : "",
+            `Snack: ${day.snack}`,
+            day.recipe?.snack ? `  Method: ${day.recipe.snack}` : "",
+            `Dinner: ${day.dinner}`,
+            day.recipe?.dinner ? `  Method: ${day.recipe.dinner}` : "",
+            day.estimatedProteinTotal ? `Estimated daily protein: approx. ${day.estimatedProteinTotal}g` : "",
+            day.proteinBooster || "",
+            `Extra protein snack ideas:`,
+            ...(day.proteinSnackIdeas || fallbackDailyProteinSnackIdeas()).slice(0,5).map(item => `  - ${item.title || item}${item.protein ? " (" + item.protein + ")" : ""}`),
+            ``);
+        });
+        const snackList = (plan[0]?.proteinSnackList || fallbackProteinSnackList()).slice(0,6);
+        lines.push("Easy protein snack list:");
+        snackList.forEach(item => lines.push(`- ${item.title || item}${item.protein ? " (" + item.protein + ")" : ""}`));
+        lines.push("", `Continue with Hearty: ${getSalesUrl()}`);
+        return lines.join("\n");
+      }
+
+
+
       // HEARTY_FINAL_FUNNEL_PATCH_V1
       // This override forces the funnel page to use the final gated meal engine only.
       function generateAndShowPlan(){
@@ -1745,29 +1920,16 @@ font-weight:850;
 
         const finalInput = buildFinalEngineInput();
         const result = engine.generatePlan(finalInput);
-        console.log("HEARTY_ENGINE_DEBUG", { version: engine.VERSION, source: engine.ENGINE_SOURCE, input: finalInput, resultStatus: result?.status, qa: result?.qa?.status });
-        console.log("HEARTY_ENGINE_PROVENANCE", engine.VERSION, engine.ENGINE_SOURCE);
 
         window.__HEARTY_LAST_ENGINE_RESULT__ = result;
         window.__HEARTY_LAST_ENGINE_INPUT__ = finalInput;
 
-        const qaStatus = result?.qa?.status || "PASS";
-
-        if(!result || result.status === "BLOCKED"){
-          const messages = result?.messages || result?.gate?.messages || ["Please adjust your selections and try again."];
+        if(!result || result.status === "BLOCKED" || result.ok === false){
+          const messages = result?.messages || result?.gate?.messages || ["Please add a few more selections so Hearty can build a useful 7-day plan."];
           showGateMessages(messages);
           return null;
         }
 
-        if(qaStatus === "FAIL"){
-          const messages = result?.qa?.hard?.length
-            ? result.qa.hard
-            : ["The plan generated, but failed one of the locked Hearty food rules. Please adjust your selections and try again."];
-          showGateMessages(messages);
-          return null;
-        }
-
-        // Allow PASS and CONDITIONAL PASS. Conditional warnings are not a user-facing gate failure.
         return mapFinalEngineDays(result);
       }
 
@@ -1780,7 +1942,7 @@ font-weight:850;
         const vegetables = mapFinalVegetables(region);
         const noBreakfast = state.struggleMode === "no_breakfast" || breakfastItems.length === 0 && Array.isArray(state.breakfast) && state.breakfast.length === 0;
 
-        return hardenFinalEngineInput({
+        return {
           region,
           diet: "omnivore",
           proteins,
@@ -1790,57 +1952,8 @@ font-weight:850;
           starches,
           exclusions: [],
           lowerStarch: false,
-          noBreakfast,
-          leftoverLunches: false,
-          useLeftovers: false
-        });
-      }
-
-      function hardenFinalEngineInput(input){
-        const add = (arr, value) => {
-          if(value && Array.isArray(arr) && !arr.includes(value)) arr.push(value);
+          noBreakfast
         };
-
-        const yog = input.region === "US" || input.region === "CA" ? "yogurt" : "yoghurt";
-
-        // The funnel offers some snack choices that are not protein snacks.
-        // The strict engine needs matching protein snack categories, so add safe snack supports
-        // from the foods the user already selected.
-        if(input.proteins.includes("dairy")) add(input.snackProteins, yog);
-        if(input.proteins.includes("eggs")) add(input.snackProteins, "boiled_eggs");
-        if(input.proteins.includes("fish")) add(input.snackProteins, "tuna");
-        if(input.proteins.includes("beef")) add(input.snackProteins, input.region === "SA" ? "biltong" : "jerky");
-        if(input.proteins.includes("protein_powder")) add(input.snackProteins, "protein_shake");
-        if(input.proteins.includes("chicken")) add(input.snackProteins, "chicken_strips");
-
-        // Breakfast options in the funnel imply proteins. Make sure engine sees them.
-        if(input.breakfastItems.includes("protein_shake")) add(input.proteins, "protein_powder");
-        if(input.breakfastItems.includes("eggs")) add(input.proteins, "eggs");
-        if(input.breakfastItems.includes(yog) || input.breakfastItems.includes("cottage_cheese") || input.breakfastItems.includes("oats")) add(input.proteins, "dairy");
-
-        // If a user reaches the summary with too few real vegetables after corn/peas/mixed veg are removed,
-        // top up with country-normal vegetables instead of throwing a confusing alert.
-        const defaultVeg = {
-          SA: ["spinach","tomato","onion","carrot","baby marrow","green beans","mushrooms","peppers","broccoli","cucumber"],
-          US: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"],
-          UK: ["spinach","tomato","onion","carrot","courgette","green beans","mushrooms","peppers","broccoli","cucumber"],
-          AU: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"],
-          CA: ["spinach","tomato","onion","carrot","zucchini","green beans","mushrooms","peppers","broccoli","cucumber"]
-        };
-        (defaultVeg[input.region] || defaultVeg.US).forEach(v => {
-          if(input.vegetables.length < 5) add(input.vegetables, v);
-        });
-
-        if(!input.starches.length) add(input.starches, "rice");
-
-
-        // Final browser-side guard: never send chicken unless the wizard selected chicken.
-        if(!(Array.isArray(state.proteins) && state.proteins.includes("chicken"))) {
-          input.proteins = input.proteins.filter(x => x !== "chicken");
-          input.snackProteins = input.snackProteins.filter(x => x !== "chicken_strips");
-        }
-
-        return input;
       }
 
       function mapFinalRegion(country){
@@ -1937,20 +2050,15 @@ font-weight:850;
 
       function mapFinalVegetables(region){
         const out = [];
-        const add = value => {
-          const clean = String(value || "").trim();
-          if(!clean) return;
-          // Corn, peas and mixed vegetables are not core vegetables in the locked engine.
-          if(["corn", "peas", "mixed vegetables", "mixed veg"].includes(clean.toLowerCase())) return;
-          if(!out.includes(clean)) out.push(clean);
-        };
+        const add = value => { if(value && !out.includes(value)) out.push(value); };
         const vegetables = Array.isArray(state.vegetables) ? state.vegetables : [];
 
         vegetables.forEach(v => {
           if(v === "carrots") add("carrot");
           else if(v === "green_beans") add("green beans");
           else if(v === "baby_marrow") add(region === "UK" ? "courgette" : (region === "SA" ? "baby marrow" : "zucchini"));
-          else if(v === "mixed_veg") return;
+          else if(v === "mixed_veg") add("mixed vegetables");
+          else if(v === "lettuce") add("lettuce");
           else add(String(v || "").replaceAll("_", " "));
         });
 
@@ -2019,39 +2127,16 @@ font-weight:850;
 
       function showGateMessages(messages){
         const clean = (messages || []).filter(Boolean);
-        const text = clean.length ? clean.join("\n\n") : "Please adjust your selections and try again.";
-        console.warn("Hearty meal-plan gate/QA message", {
-          messages: clean,
-          lastInput: window.__HEARTY_LAST_ENGINE_INPUT__,
-          lastResult: window.__HEARTY_LAST_ENGINE_RESULT__
-        });
+        const text = clean.length ? clean.join("\n\n") : "Please add a few more selections so Hearty can build a useful 7-day plan.";
         alert(text);
-        showToast(clean.length ? "Please adjust choices" : "Please try again");
+        showToast("Please add more choices");
         if(wizardOverlay && !wizardOverlay.classList.contains("show")) openWizardModal();
-      }
-
-      function mealRow(label, text, protein, recipeNote){
-        const numericProtein = Number(protein || 0);
-        const proteinText = numericProtein > 0
-          ? ` <span style="color:#7b8998;font-weight:800;">Approx. ${numericProtein}g protein</span>`
-          : "";
-        const methodText = recipeNote
-          ? `<div style="margin-top:6px;color:#617389;font-size:.9rem;line-height:1.45;"><strong>Basic method:</strong> ${escapeHtml(recipeNote).replace(/^Basic method:\s*/i, "")}</div>`
-          : "";
-        return `<div class="meal-row"><div class="meal-label">${escapeHtml(label)}</div><div class="meal-text">${escapeHtml(text)}${proteinText}${methodText}</div></div>`;
-      }
-
-      function dayTotalRow(day){
-        const total = Number(day.estimatedProteinTotal || 0);
-        const totalText = total > 0 ? `<div class="protein-total">Estimated daily protein: approx. ${total}g</div>` : "";
-        const booster = day.proteinBooster ? `<div class="protein-booster">${escapeHtml(day.proteinBooster)}</div>` : "";
-        return totalText + booster;
       }
 
       function renderPlan(plan){
         const name = state.firstName ? ` for ${escapeHtml(state.firstName)}` : "";
         document.getElementById("resultTitle").textContent = `Your 7-day GLP-1 meal plan${name}`;
-        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • generated with Hearty engine v3.4 rebuilt funnel reset • approximate protein shown`;
+        document.getElementById("resultSubtitle").textContent = `Your personalised starter plan — ${countryLabels[state.country] || "Your country"} • generated with the final Hearty meal engine • approximate protein shown`;
         daysGrid.innerHTML = plan.map(day => `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast)}${mealRow("Morning snack", day.morningSnack, day.protein?.morningSnack, day.recipe?.morningSnack)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch)}${mealRow("Afternoon snack", day.afternoonSnack, day.protein?.afternoonSnack, day.recipe?.afternoonSnack)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner)}${dayTotalRow(day)}</article>`).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>`;
       }
 
