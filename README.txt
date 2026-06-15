@@ -1,12 +1,4 @@
-HEARTY STEP 1 — BASELINE SETTINGS REPAIR
-
-This is the first safe step.
-
-Replace only:
-- settings.html
-
-Also included:
-- HEARTY_STEP1_BASELINE_AUDIT.md
-- HEARTY_STEP1_VALIDATION.md
-
-Do not combine this with login, Meals, themes or dashboard changes yet.
+email,source,purchase_reference,notes
+customer1@example.com,PayFast,,Replace this row
+customer2@example.com,Paddle,,Replace this row
+customer3@example.com,Manual WhatsApp sale,,Replace this row

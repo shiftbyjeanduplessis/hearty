@@ -249,6 +249,10 @@ input,select,textarea,.control,.form-control{
 <!-- Shared Hearty theme system -->
 <link rel="stylesheet" href="/css/hearty-theme.css">
 <script src="/js/hearty-theme.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/glp-supabase-config.js"></script>
+  <script src="/js/hearty-auth-soft.v1.js" defer></script>
+  <script src="/js/hearty-account-prompt.v1.js" defer></script>
 </head>
 <body data-page="settings">
 <div class="shell">
@@ -272,6 +276,7 @@ input,select,textarea,.control,.form-control{
         <div class="kv-row"><div class="kv-key">Account</div><div id="account-email" class="kv-val">Not connected</div></div>
         <div class="kv-row"><div class="kv-key">Plan</div><div class="kv-val">Lifetime Access</div></div>
         <div class="kv-row"><div class="kv-key">Access</div><div id="license-expiry" class="kv-val">—</div></div>
+        <button type="button" class="primary-btn" data-hearty-logout style="margin-top:12px;width:100%">Sign out</button>
       </div>
 
       <div class="inline-actions" style="margin-top:16px">

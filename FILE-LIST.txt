@@ -1,0 +1,16 @@
+-- HEARTY grandfather import example
+-- Replace the example emails before running.
+-- You can also import CSV directly into Supabase Table Editor.
+
+insert into public.grandfathered_customers (email, source, purchase_reference, notes)
+values
+  ('customer1@example.com', 'PayFast', null, 'Replace this row'),
+  ('customer2@example.com', 'Paddle', null, 'Replace this row'),
+  ('customer3@example.com', 'Manual WhatsApp sale', null, 'Replace this row')
+on conflict (email_normalized, entitlement_key)
+do update set
+  source = excluded.source,
+  purchase_reference = excluded.purchase_reference,
+  notes = excluded.notes,
+  status = 'active',
+  updated_at = now();
