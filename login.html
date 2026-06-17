@@ -17,9 +17,9 @@
   <script src="glp-supabase-config.js"></script>
   <style>
     :root{
-      --ink:#102033;--muted:#64748b;--line:rgba(148,163,184,.32);--card:rgba(255,255,255,.92);
-      --blue:#2f6df6;--blue2:#1857db;--teal:#18b8a6;--danger:#b4234f;--success:#12856f;
-      --shadow:0 28px 80px rgba(15,35,65,.16)
+      --ink:#102033;--muted:#5b7186;--line:rgba(117,152,178,.28);--card:rgba(255,255,255,.96);
+      --blue:#0c5b97;--blue2:#084d84;--teal:#18b8a6;--danger:#b4234f;--success:#12856f;
+      --shadow:0 24px 70px rgba(8,77,132,.16)
     }
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%}
@@ -28,40 +28,40 @@
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.13),transparent 58%),
-        radial-gradient(900px 460px at 100% 100%,rgba(24,184,166,.12),transparent 58%),
-        linear-gradient(180deg,#fbfdff,#eef5fb);
+        radial-gradient(900px 420px at 0% 0%,rgba(12,91,151,.12),transparent 58%),
+        radial-gradient(900px 460px at 100% 100%,rgba(24,184,166,.09),transparent 58%),
+        linear-gradient(180deg,#f8fcff,#eaf4fb);
       display:flex;align-items:center;justify-content:center;padding:24px;
     }
     .auth-card{
-      width:100%;max-width:480px;background:var(--card);border:1px solid var(--line);
-      border-radius:32px;box-shadow:var(--shadow);padding:30px 24px 26px;text-align:center;
+      width:100%;max-width:456px;background:var(--card);border:1px solid rgba(255,255,255,.78);
+      border-radius:28px;box-shadow:var(--shadow);padding:24px 22px 22px;text-align:center;
       backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
     }
-    .auth-logo{height:64px;max-width:310px;width:auto;display:block;margin:0 auto 10px;object-fit:contain}
+    .auth-logo{height:58px;max-width:290px;width:auto;display:block;margin:0 auto 6px;object-fit:contain}
     .tagline{font-size:.96rem;font-weight:750;color:var(--muted)}
-    h1{font-size:2rem;line-height:1.02;letter-spacing:-.045em;margin:16px 0 8px}
-    .subtitle{margin:0 0 18px;color:var(--muted);line-height:1.48;font-size:15px}
-    .notice{border:1px solid rgba(47,109,246,.18);background:rgba(47,109,246,.07);padding:12px 14px;border-radius:18px;color:#23415f;font-size:13px;line-height:1.45;text-align:left;margin:14px 0}
-    .notice strong{display:block;color:var(--ink);margin-bottom:3px}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.64);margin:18px 0}
+    h1{font-size:1.82rem;line-height:1.05;letter-spacing:-.04em;margin:12px 0 7px}
+    .subtitle{margin:0 0 12px;color:var(--muted);line-height:1.42;font-size:14.5px}
+    .notice{border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fcff,#eef8ff);padding:12px 14px;border-radius:18px;color:#23415f;font-size:13px;line-height:1.42;text-align:left;margin:12px 0 14px}
+    .notice strong{display:block;color:var(--ink);margin-bottom:4px}.notice-small{display:block;margin-top:7px;color:#526b83}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px;border:1px solid var(--line);border-radius:18px;background:rgba(232,244,252,.78);margin:14px 0}
     .tab{border:0;background:transparent;border-radius:14px;padding:11px 12px;font-weight:850;color:var(--muted);cursor:pointer}
-    .tab.active{background:#fff;color:var(--blue);box-shadow:0 8px 20px rgba(15,35,65,.08)}
+    .tab.active{background:#fff;color:var(--blue);box-shadow:0 8px 20px rgba(8,77,132,.10)}
     .panel{display:none}.panel.active{display:block}
     .field{display:grid;gap:6px;text-align:left;margin-bottom:12px}
     .label{font-size:.82rem;color:var(--muted);font-weight:850;padding-left:4px}
     input,textarea{
-      width:100%;min-height:48px;border-radius:16px;border:1px solid #d6e2ee;
+      width:100%;min-height:48px;border-radius:16px;border:1px solid #c7ddec;
       padding:0 15px;font-size:16px;background:rgba(255,255,255,.96);color:var(--ink);outline:none
     }
     textarea{padding:12px 15px;resize:vertical;min-height:96px;font-family:inherit}
-    input:focus,textarea:focus{border-color:rgba(47,109,246,.55);box-shadow:0 0 0 4px rgba(47,109,246,.10)}
+    input:focus,textarea:focus{border-color:rgba(12,91,151,.50);box-shadow:0 0 0 4px rgba(12,91,151,.10)}
     .btn{
       width:100%;border:0;border-radius:16px;padding:15px 16px;font-size:16px;font-weight:850;cursor:pointer;
       margin-top:8px;transition:.18s ease
     }
     .btn:active{transform:scale(.985)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-    .primary{background:linear-gradient(180deg,var(--blue),var(--blue2));color:white;box-shadow:0 13px 28px rgba(47,109,246,.24)}
+    .primary{background:linear-gradient(180deg,var(--blue),var(--blue2));color:white;box-shadow:0 13px 28px rgba(12,91,151,.23)}
     .ghost{background:white;color:#123;border:1px solid #d6e2ee}
     .text-link{border:0;background:transparent;color:var(--blue);font-size:14px;font-weight:850;padding:6px 8px;margin:0;width:auto;cursor:pointer}
     .text-link:hover{text-decoration:underline}
@@ -73,7 +73,7 @@
     .debug{display:none;margin-top:12px;padding:10px;border-radius:12px;background:rgba(220,38,38,.08);color:#991b1b;font-size:12px;text-align:left;word-break:break-word}
     .legal{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.45}
     .legal a{color:var(--blue);font-weight:850;text-decoration:none}
-    @media(max-width:560px){body{padding:18px}.auth-card{padding:28px 20px 24px;border-radius:28px}.auth-logo{height:56px}h1{font-size:1.8rem}}
+    @media(max-width:560px){body{padding:14px}.auth-card{padding:20px 18px 20px;border-radius:26px}.auth-logo{height:52px}h1{font-size:1.62rem}.notice{font-size:12.8px}.tab{padding:10px 10px}}
   </style>
 
 <link rel="stylesheet" href="css/hearty-theme.css">
@@ -84,24 +84,77 @@
 <link rel="stylesheet" href="css/hearty-step5ib-foundation.css">
 <link rel="stylesheet" href="css/hearty-shell-template.css">
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
+<style id="hearty-login-access-clarity-fix">
+  html[data-auth-page="login"],
+  html[data-auth-page="login"] body{
+    background:#eaf4fb !important;
+    min-height:100% !important;
+  }
+  body[data-page="login"]{
+    align-items:flex-start !important;
+    justify-content:center !important;
+    padding:18px 16px 28px !important;
+    color:#102033 !important;
+    background:
+      radial-gradient(760px 360px at 16% 0%,rgba(12,91,151,.16),transparent 62%),
+      radial-gradient(720px 360px at 90% 100%,rgba(24,184,166,.10),transparent 60%),
+      linear-gradient(180deg,#f9fcff 0%,#eef7fd 52%,#e6f1f8 100%) !important;
+    background-attachment:scroll !important;
+  }
+  body[data-page="login"]::before,
+  body[data-page="login"]::after{display:none !important;}
+  body[data-page="login"] .auth-card{
+    margin:0 auto !important;
+    background:rgba(255,255,255,.97) !important;
+    border:1px solid rgba(189,216,234,.72) !important;
+    box-shadow:0 24px 70px rgba(8,77,132,.16) !important;
+  }
+  body[data-page="login"] .tagline,
+  body[data-page="login"] .subtitle,
+  body[data-page="login"] .label,
+  body[data-page="login"] .legal{color:#5b7186 !important;}
+  body[data-page="login"] h1,
+  body[data-page="login"] .notice strong{color:#102033 !important;}
+  body[data-page="login"] .notice{
+    background:linear-gradient(180deg,#f7fcff,#eef8ff) !important;
+    border-color:rgba(12,91,151,.16) !important;
+    color:#23415f !important;
+  }
+  body[data-page="login"] .tabs{background:rgba(232,244,252,.78) !important;}
+  body[data-page="login"] .tab.active{color:#0c5b97 !important;}
+  body[data-page="login"] input,
+  body[data-page="login"] textarea{
+    background:#ffffff !important;
+    border-color:#c7ddec !important;
+    color:#102033 !important;
+  }
+  body[data-page="login"] input::placeholder,
+  body[data-page="login"] textarea::placeholder{color:#8295a6 !important;}
+  body[data-page="login"] .primary{
+    background:linear-gradient(180deg,#0c5b97,#084d84) !important;
+    color:#fff !important;
+  }
+  body[data-page="login"] .text-link,
+  body[data-page="login"] .legal a{color:#0c5b97 !important;}
+</style>
 </head>
 <body data-page="login">
   <main class="auth-card" aria-live="polite">
     <img src="hearty-logo.png" alt="Hearty" class="auth-logo" />
     <div class="tagline">Your GLP-1 Companion</div>
 
-    <h1 id="authTitle">Secure your account</h1>
-    <p class="subtitle" id="authSubtitle">Create or sign into your individual Hearty account.</p>
+    <h1 id="authTitle">Access your Hearty account</h1>
+    <p class="subtitle" id="authSubtitle">This page is for customers who have already bought Hearty.</p>
 
     <div class="notice">
-      <strong>Already bought Hearty?</strong>
-      Create your account using the same email you used at checkout. Your lifetime access will be kept.
-      <br><br><strong>After creating an account:</strong> check your email for a confirmation link before signing in.
+      <strong>Use your purchase email</strong>
+      Sign in or set up your app access using the same email you used when you bought Hearty. Your lifetime access can then be matched automatically.
+      <span class="notice-small">Creating access for the first time? Check your email for the confirmation link before signing in.</span>
     </div>
 
     <div class="tabs" id="authTabs">
       <button class="tab active" type="button" data-auth-tab="signin">Sign in</button>
-      <button class="tab" type="button" data-auth-tab="signup">Create account</button>
+      <button class="tab" type="button" data-auth-tab="signup">Set up access</button>
     </div>
 
     <section class="panel active" id="signinPanel">
@@ -127,7 +180,7 @@
       </label>
       <label class="field">
         <span class="label">Email address</span>
-        <input id="signupEmail" type="email" placeholder="Use your purchase email if you already bought Hearty" autocomplete="email" />
+        <input id="signupEmail" type="email" placeholder="Email used when buying Hearty" autocomplete="email" />
       </label>
       <label class="field">
         <span class="label">Password</span>
@@ -137,9 +190,9 @@
         <span class="label">Confirm password</span>
         <input id="signupConfirm" type="password" placeholder="Repeat password" autocomplete="new-password" />
       </label>
-      <button class="btn primary" id="signupBtn" type="button">Create account</button>
+      <button class="btn primary" id="signupBtn" type="button">Set up account access</button>
       <div class="legal">
-        Existing customers keep lifetime access when the account email matches the purchase email.
+        Use the email address from checkout. If your purchase email is different, use “Can’t find access?” on the sign-in tab.
       </div>
     </section>
 
@@ -258,8 +311,8 @@
 
   function setPanel(name){
     const titles = {
-      signin: ["Secure your account", "Create or sign into your individual Hearty account."],
-      signup: ["Create your account", "Use your purchase email if you already bought Hearty."],
+      signin: ["Access your Hearty account", "Sign in with the email you use for Hearty."],
+      signup: ["Set up Hearty access", "Use the same email address you used when you bought Hearty."],
       forgot: ["Reset your password", "Enter your email and we’ll send you a secure reset link."],
       newPassword: ["Choose a new password", "Enter a new password for your Hearty account."],
       access: ["Can’t find your access?", "Send a request and we’ll manually match your purchase."]
@@ -555,7 +608,7 @@
     if(password !== confirm){ setMessage("Passwords do not match.", "error"); return; }
 
     try {
-      setBusy(true); clearDebug(); setMessage("Creating your account…");
+      setBusy(true); clearDebug(); setMessage("Setting up your Hearty access…");
       const { data, error } = await sb.auth.signUp({
         email,
         password,
@@ -575,10 +628,10 @@
       setPanel("signin");
       const signinEmail = $("signinEmail");
       if(signinEmail) signinEmail.value = email;
-      setMessage("Account created. Check your email to confirm your account, then come back here and sign in. If you do not see the email, check spam/promotions.", "success");
+      setMessage("Access account created. Check your email to confirm it, then come back here and sign in. If you do not see the email, check spam/promotions.", "success");
     } catch(err){
       setBusy(false);
-      setMessage(err.message || "Could not create account.", "error");
+      setMessage(err.message || "Could not set up account access.", "error");
       showDebug("Account creation failed", err);
     }
   }

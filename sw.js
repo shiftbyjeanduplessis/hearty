@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-phase1-theme-prompt-v20260617b";
+const CACHE_NAME = "hearty-phase1-login-clarity-v20260617c";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
