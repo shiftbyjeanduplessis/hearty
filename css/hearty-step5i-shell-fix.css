@@ -1,0 +1,304 @@
+/* HEARTY STEP 5I-A — Shell / Logo / Nav Foundation Fix
+   This file is loaded last. It fixes foundations rather than adding another page skin:
+   - one theme logo object per theme
+   - no duplicate Hearty logo text
+   - one header/menu strip language
+   - canonical Support Mode visual state
+   - stronger theme contrast and Pink Lemonade decorative atmosphere
+*/
+
+:root{
+  --shell-radius:26px;
+  --shell-card-radius:26px;
+  --shell-border:1px solid var(--atmo-border, rgba(130,150,170,.24));
+  --shell-strip-bg:var(--atmo-strip, rgba(255,255,255,.88));
+  --shell-card-bg:var(--atmo-card, rgba(255,255,255,.94));
+  --shell-strong-bg:var(--atmo-card-strong, #fff);
+  --shell-text:var(--atmo-text, #101827);
+  --shell-muted:var(--atmo-muted, #627086);
+}
+
+html,body{min-height:100%;}
+body{isolation:isolate;}
+.shell{position:relative;z-index:1;}
+
+/* ---------- Theme atmosphere + stronger contrast ---------- */
+html[data-theme="pink_lemonade"]{
+  --atmo-bg:#ffe3f0;
+  --atmo-hero:linear-gradient(135deg, rgba(255,255,250,.96) 0%, rgba(255,234,244,.95) 58%, rgba(255,243,201,.92) 100%);
+  --atmo-card:rgba(255,252,247,.96);
+  --atmo-card-strong:#fffefa;
+  --atmo-card-soft:rgba(255,242,231,.94);
+  --atmo-strip:linear-gradient(135deg, rgba(255,252,243,.96) 0%, rgba(255,228,242,.94) 52%, rgba(255,241,203,.90) 100%);
+  --atmo-strip-strong:linear-gradient(135deg, rgba(255,255,248,.99), rgba(255,221,239,.96));
+  --atmo-border:rgba(194,47,112,.30);
+  --atmo-border-strong:rgba(206,29,107,.42);
+  --atmo-text:#211123;
+  --atmo-muted:#68465e;
+  --atmo-primary:#c91f68;
+  --atmo-primary-2:#eda400;
+  --atmo-accent:#eda400;
+  --atmo-warning:#c98700;
+  --atmo-button-text:#fff;
+  --atmo-shadow:0 22px 54px rgba(132,27,83,.18);
+  --atmo-shadow-soft:0 12px 28px rgba(132,27,83,.11);
+  --atmo-glow-1:rgba(255,57,145,.24);
+  --atmo-glow-2:rgba(255,196,51,.28);
+  --atmo-logo-mark:#d62b76;
+  --atmo-logo-text:#a80f5a;
+  --atmo-nav-bg:rgba(255,247,230,.94);
+  --atmo-nav-active:linear-gradient(180deg, rgba(255,229,113,.88), rgba(255,238,181,.72));
+  --atmo-nav-active-text:#c91f68;
+}
+html[data-theme="deep_berry"]{
+  --atmo-bg:#190818;
+  --atmo-hero:linear-gradient(135deg, rgba(49,22,50,.92), rgba(33,10,34,.94));
+  --atmo-card:rgba(42,18,43,.90);
+  --atmo-card-strong:rgba(55,24,55,.96);
+  --atmo-card-soft:rgba(52,22,52,.86);
+  --atmo-strip:linear-gradient(135deg, rgba(58,24,59,.92), rgba(30,10,34,.92));
+  --atmo-strip-strong:linear-gradient(135deg, rgba(70,29,69,.96), rgba(40,13,43,.94));
+  --atmo-border:rgba(246,171,209,.20);
+  --atmo-border-strong:rgba(255,177,218,.32);
+  --atmo-text:#fff7fb;
+  --atmo-muted:#d8b8cb;
+  --atmo-primary:#f06aa5;
+  --atmo-primary-2:#ffd190;
+  --atmo-accent:#ffd190;
+  --atmo-warning:#ffd190;
+  --atmo-button-text:#1e081b;
+  --atmo-shadow:0 26px 60px rgba(0,0,0,.42);
+  --atmo-shadow-soft:0 14px 30px rgba(0,0,0,.30);
+  --atmo-glow-1:rgba(240,106,165,.22);
+  --atmo-glow-2:rgba(255,209,144,.12);
+  --atmo-logo-mark:#ffd1df;
+  --atmo-logo-text:#fff7fb;
+  --atmo-nav-bg:rgba(40,15,42,.94);
+  --atmo-nav-active:linear-gradient(180deg, rgba(94,37,88,.98), rgba(55,20,57,.95));
+  --atmo-nav-active-text:#ffd1df;
+}
+html[data-theme="midnight"]{
+  --atmo-bg:#07101e;
+  --atmo-card:rgba(14,25,40,.92);
+  --atmo-card-strong:rgba(19,33,52,.96);
+  --atmo-card-soft:rgba(18,31,49,.88);
+  --atmo-border:rgba(151,176,210,.22);
+  --atmo-text:#f5f8ff;
+  --atmo-muted:#b8c7dc;
+  --atmo-nav-bg:rgba(12,22,36,.94);
+}
+html[data-theme="clean_blue"]{
+  --atmo-bg:#e5f0fb;
+  --atmo-card:#ffffff;
+  --atmo-card-strong:#ffffff;
+  --atmo-border:rgba(66,103,150,.30);
+  --atmo-text:#06162a;
+  --atmo-muted:#4d6178;
+}
+html[data-theme="soft_rose"]{
+  --atmo-border:rgba(154,72,111,.28);
+  --atmo-text:#211522;
+  --atmo-muted:#665064;
+}
+html[data-theme="pink_lemonade"] body{
+  background:
+    radial-gradient(760px 420px at 8% 2%, rgba(255,58,144,.24), transparent 62%),
+    radial-gradient(680px 420px at 95% 4%, rgba(255,202,45,.36), transparent 60%),
+    radial-gradient(520px 360px at 35% 100%, rgba(255,111,175,.16), transparent 64%),
+    linear-gradient(180deg, #ffe4f0 0%, #fff1e0 48%, #ffd8e8 100%) !important;
+}
+html[data-theme="pink_lemonade"] body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.34;
+  background-image:url("data:image/svg+xml,%3Csvg width='260' height='260' viewBox='0 0 260 260' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke-linecap='round' stroke-width='8'%3E%3Cpath d='M28 68c24-30 52 30 76 0s52 30 76 0' stroke='%23d72a76' opacity='.18'/%3E%3Cpath d='M52 204c20-20 40 20 60 0s40 20 60 0' stroke='%23f0a900' opacity='.28'/%3E%3C/g%3E%3Ccircle cx='210' cy='48' r='10' fill='%23f0a900' opacity='.22'/%3E%3Ccircle cx='38' cy='162' r='7' fill='%23d72a76' opacity='.18'/%3E%3Cpath d='M202 148l14 14 14-14' fill='none' stroke='%23d72a76' stroke-width='7' stroke-linecap='round' stroke-linejoin='round' opacity='.18'/%3E%3Cpath d='M80 116l10 18 20-30' fill='none' stroke='%23f0a900' stroke-width='7' stroke-linecap='round' stroke-linejoin='round' opacity='.22'/%3E%3C/svg%3E");
+  background-size:260px 260px;
+  background-position:28px 38px;
+  mask-image:linear-gradient(180deg, #000 0%, #000 64%, transparent 100%);
+}
+
+/* ---------- Canonical theme logo object ---------- */
+.logo-ready .brand-logo,
+.logo-ready .auth-logo,
+.logo-ready .brand-lockup,
+.logo-ready .brand-fallback-mark,
+.logo-ready .brand-text{display:none !important;}
+.brand,.brand-link,.logo-wrap{
+  display:flex !important;
+  align-items:center !important;
+  gap:0 !important;
+  min-width:0 !important;
+  text-decoration:none !important;
+  color:var(--atmo-logo-text) !important;
+}
+.hearty-logo-object,
+.auth-brand-lockup .hearty-logo-object{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:12px !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  color:var(--atmo-logo-text) !important;
+}
+.hearty-logo-mark{
+  width:44px !important;
+  height:44px !important;
+  border-radius:15px !important;
+  display:grid !important;
+  place-items:center !important;
+  font-size:1.25rem !important;
+  font-weight:950 !important;
+  line-height:1 !important;
+  background:linear-gradient(135deg, var(--atmo-logo-mark), color-mix(in srgb, var(--atmo-logo-mark) 70%, var(--atmo-primary-2))) !important;
+  color:var(--atmo-button-text) !important;
+  border:1px solid color-mix(in srgb, var(--atmo-logo-mark) 34%, var(--atmo-border)) !important;
+  box-shadow:0 12px 25px color-mix(in srgb, var(--atmo-logo-mark) 24%, transparent) !important;
+}
+.hearty-logo-word{
+  font-size:clamp(1.85rem,3.1vw,2.35rem) !important;
+  line-height:.95 !important;
+  letter-spacing:-.075em !important;
+  font-weight:950 !important;
+  color:var(--atmo-logo-text) !important;
+}
+html[data-theme="midnight"] .hearty-logo-mark,
+html[data-theme="deep_berry"] .hearty-logo-mark{color:#120a18 !important;}
+.auth-brand-lockup{display:flex !important;justify-content:center !important;margin:0 auto 12px !important;}
+.auth-brand-lockup .hearty-logo-mark{width:50px !important;height:50px !important;border-radius:18px !important;}
+.auth-brand-lockup .hearty-logo-word{font-size:2.55rem !important;}
+
+/* ---------- One shell/menu strip language ---------- */
+.topbar,.status-strip,.first-time-guide-card,.page-header,.guide-header,.help-header,.bottom-nav,.auth-card{
+  background:var(--atmo-strip) !important;
+  color:var(--atmo-text) !important;
+  border:1px solid var(--atmo-border) !important;
+  box-shadow:var(--atmo-shadow-soft) !important;
+  backdrop-filter:blur(18px) saturate(1.08) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.08) !important;
+}
+.topbar{
+  min-height:86px !important;
+  border-radius:26px !important;
+  padding:0 22px !important;
+  margin:0 0 18px !important;
+}
+.status-strip,.page-header,.guide-header,.help-header{
+  background:var(--atmo-hero) !important;
+  border-radius:28px !important;
+  padding:24px !important;
+  margin:0 0 20px !important;
+}
+.first-time-guide-card{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:18px !important;
+  background:var(--atmo-strip-strong) !important;
+  border-color:var(--atmo-border-strong) !important;
+  border-radius:26px !important;
+  padding:20px !important;
+  margin:0 0 20px !important;
+}
+.first-time-guide-card .guide-actions{display:flex !important;align-items:center !important;gap:10px !important;flex-wrap:wrap !important;}
+.first-time-guide-card .action-btn,
+.first-time-guide-card .btn{min-height:44px !important;border-radius:15px !important;padding:0 18px !important;font-weight:900 !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;text-decoration:none !important;}
+.first-time-guide-card .btn.secondary{background:var(--atmo-card-strong) !important;color:var(--atmo-text) !important;}
+
+/* Remove orphan/random white strip effect by forcing all primary surfaces into the same token family. */
+.card,.settings-card,.hero-card,.progress-card,.support-card,.meal-card,.planner-card,.rhythm-card,.guide-section,.help-card,.post-card,.composer-card,.profile-card,.people-card,.knowledge-card,.tool-item,.advice-item,.readout-card,.stat-card,.empty-card,.placeholder-card{
+  background:var(--atmo-card) !important;
+  color:var(--atmo-text) !important;
+  border:1px solid var(--atmo-border) !important;
+  box-shadow:var(--atmo-shadow) !important;
+}
+.day-pill,.status-pill,.soft-pill,.meal-badge,.support-chip,.compact-pill,.theme-option,.link-item,.input,.select,input,select,textarea,.tabs,.tab,.protocol-item,.next-action,.ring-block{
+  background:var(--atmo-card-soft) !important;
+  color:var(--atmo-text) !important;
+  border-color:var(--atmo-border) !important;
+}
+
+.btn,.action-btn,.soft-btn,.ghost-btn,.primary-btn,.secondary-btn,.planner-action,.theme-option,.link-item,.tab,button{font-weight:880 !important;}
+.btn.primary,.action-btn.primary,.soft-btn,.primary-btn,button.primary,#signinBtn,#signupBtn,#resetSendBtn,#savePasswordBtn,.reason-btn.active,.loc-btn.active{
+  background:linear-gradient(180deg, var(--atmo-primary), color-mix(in srgb, var(--atmo-primary) 74%, #000)) !important;
+  color:var(--atmo-button-text) !important;
+  border-color:transparent !important;
+  box-shadow:0 14px 28px color-mix(in srgb, var(--atmo-primary) 24%, transparent) !important;
+}
+.btn.secondary,.ghost-btn,.secondary-btn,.logout-action,#backToLoginBtn{
+  background:linear-gradient(180deg, var(--atmo-card-strong), var(--atmo-card-soft)) !important;
+  color:var(--atmo-text) !important;
+  border:1px solid var(--atmo-border) !important;
+  box-shadow:var(--atmo-shadow-soft) !important;
+}
+
+/* ---------- Canonical support state: only data-support-state="on" may glow ---------- */
+#supportCard,
+.support-card,
+.support-hero{background:var(--atmo-card) !important;border-color:var(--atmo-border) !important;box-shadow:var(--atmo-shadow) !important;}
+#supportCard[data-support-state="off"],
+#supportCard.is-off,
+.support-card[data-support-state="off"],
+.support-hero[data-support-state="off"]{
+  background:var(--atmo-card) !important;
+  border-color:var(--atmo-border) !important;
+  box-shadow:var(--atmo-shadow) !important;
+}
+#supportCard[data-support-state="off"] .led,
+#supportCard.is-off .led,
+.support-card[data-support-state="off"] .led,
+.support-hero[data-support-state="off"] .pill-dot{
+  background:color-mix(in srgb, var(--atmo-muted) 42%, var(--atmo-card-strong)) !important;
+  box-shadow:0 0 0 5px color-mix(in srgb, var(--atmo-muted) 10%, transparent) !important;
+}
+#supportCard[data-support-state="on"],
+.support-card[data-support-state="on"],
+.support-hero[data-support-state="on"]{
+  background:linear-gradient(180deg, color-mix(in srgb, var(--atmo-warning) 18%, var(--atmo-card)), var(--atmo-card)) !important;
+  border-color:color-mix(in srgb, var(--atmo-warning) 42%, var(--atmo-border)) !important;
+  box-shadow:0 24px 54px color-mix(in srgb, var(--atmo-warning) 18%, transparent), var(--atmo-shadow-soft) !important;
+}
+#supportCard[data-support-state="on"] .led,
+.support-card[data-support-state="on"] .led,
+.support-hero[data-support-state="on"] .pill-dot{
+  background:var(--atmo-warning) !important;
+  box-shadow:0 0 0 5px color-mix(in srgb, var(--atmo-warning) 16%, transparent), 0 0 18px color-mix(in srgb, var(--atmo-warning) 38%, transparent) !important;
+}
+
+/* ---------- Bottom nav consistency ---------- */
+.bottom-nav{
+  background:var(--atmo-nav-bg) !important;
+  border:1px solid var(--atmo-border) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.10), var(--atmo-shadow-soft) !important;
+  border-radius:26px !important;
+  padding:10px !important;
+}
+.bottom-nav .nav-item,.nav-item{color:var(--atmo-muted) !important;font-weight:780 !important;border-radius:20px !important;}
+.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],.nav-item.active,.nav-item[aria-current="page"]{
+  background:var(--atmo-nav-active) !important;
+  color:var(--atmo-nav-active-text) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24), 0 12px 22px color-mix(in srgb, var(--atmo-primary) 14%, transparent) !important;
+}
+
+/* Switch alignment stays mechanical. */
+.switch{width:56px !important;height:32px !important;flex:0 0 56px !important;position:relative !important;display:inline-block !important;}
+.slider{position:absolute !important;inset:0 !important;border-radius:999px !important;border:1px solid var(--atmo-border) !important;background:color-mix(in srgb, var(--atmo-muted) 20%, var(--atmo-card-soft)) !important;}
+.slider::before{content:"" !important;position:absolute !important;left:3px !important;top:3px !important;width:24px !important;height:24px !important;border-radius:50% !important;background:#fff !important;transition:.18s ease !important;box-shadow:0 2px 8px rgba(0,0,0,.16) !important;}
+.switch input:checked + .slider{background:linear-gradient(180deg, var(--atmo-primary), color-mix(in srgb, var(--atmo-primary) 74%, #000)) !important;}
+.switch input:checked + .slider::before{transform:translateX(24px) !important;}
+
+h1,h2,h3,h4,.headline,.page-greeting,.card-title,.settings-title,.section-title,.hero-title,.compact-title,.task-title,.ring-title,.progress-main,.support-title{color:var(--atmo-text) !important;}
+p,.subline,.settings-copy,.mini-note,.task-sub,.ring-caption,.page-header-subcopy,.subtitle,.legal,.label,.kv-key,.theme-desc,.guide-section li{color:var(--atmo-muted) !important;}
+.eyebrow,.section-label,.section-kicker{color:color-mix(in srgb, var(--atmo-muted) 74%, var(--atmo-primary)) !important;}
+
+@media(max-width:760px){
+  .topbar{min-height:72px !important;border-radius:20px !important;padding:0 14px !important;}
+  .hearty-logo-mark{width:38px !important;height:38px !important;border-radius:14px !important;}
+  .hearty-logo-word{font-size:1.85rem !important;}
+  .status-strip,.page-header,.guide-header,.help-header{padding:18px !important;border-radius:22px !important;}
+  .first-time-guide-card{display:grid !important;grid-template-columns:1fr !important;padding:16px !important;border-radius:22px !important;}
+  .first-time-guide-card .guide-actions{justify-content:flex-start !important;}
+  .bottom-nav{border-radius:20px !important;padding:7px !important;}
+}

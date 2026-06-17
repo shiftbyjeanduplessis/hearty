@@ -1,1 +1,0 @@
-Replace old EXERCISE.html with this clean UTF-8 file. Keep images under images/exercises/ with the agreed filenames. The giant embedded base64 logo was replaced with hearty-logo.png so GitHub can edit the file as text.

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html data-theme="clean_blue" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+
+<title>How to use Hearty</title>
+<link href="manifest.json" rel="manifest"/>
+<link href="icons/hearty-icon-192.png" rel="apple-touch-icon"/>
+<link href="css/hearty-theme.css" rel="stylesheet"/>
+<script src="js/hearty-theme.js"></script>
+<style>
+*{box-sizing:border-box} html,body{margin:0;padding:0} body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden} button,a{font:inherit} .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:0 18px;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));border-radius:22px;box-shadow:var(--shadow-soft)} .brand-logo{height:42px;width:auto;object-fit:contain} .icon-btn{width:44px;height:44px;border-radius:16px;border:1px solid var(--line);display:grid;place-items:center;text-decoration:none;background:var(--surface-button);color:var(--muted)} .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:80;width:min(880px,calc(100vw - 28px));display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;border:1px solid var(--line)} .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;text-align:center;font-size:.78rem;font-weight:700;text-decoration:none} .nav-item svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round} .guide-hero{padding:24px;border-radius:28px;border:1px solid var(--line);background:var(--surface-card);box-shadow:var(--shadow);margin-bottom:16px} .guide-title{font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.03;letter-spacing:-.045em;margin:0 0 10px} .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px} .guide-section h2{margin:0 0 8px;font-size:1.18rem;letter-spacing:-.03em} .guide-section p{margin:0;color:var(--muted);line-height:1.55} .guide-section .guide-actions{margin-top:14px} .guide-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 14px;border-radius:14px;text-decoration:none;font-weight:900;background:linear-gradient(180deg,var(--theme-accent),color-mix(in srgb,var(--theme-accent) 76%,#000));color:var(--primary-text,#fff)!important} .safe-note{border-left:4px solid var(--theme-accent);padding-left:14px} @media(max-width:760px){.guide-grid{grid-template-columns:1fr}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.nav-item svg{width:18px;height:18px}}
+</style>
+<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
+</head>
+<body data-page="how-to-use"><div data-shell-mount="topbar"></div>
+<div class="guide-page">
+
+<section class="guide-hero">
+<span class="guide-pill">START HERE</span>
+<h1 class="guide-title">How to use Hearty</h1>
+<p class="page-copy">Hearty is built around a simple daily rhythm: meals, water, movement, progress and Support Mode. You do not need to use everything perfectly. Start with one or two basics and build from there.</p>
+</section>
+<main class="guide-stack">
+<section class="guide-section"><h2>Start with these five steps</h2><ol><li>Open Home to see today’s rhythm.</li><li>Generate or view meal ideas in Meals.</li><li>Log water and meals when you can.</li><li>Use Support Mode on rougher days.</li><li>Add progress updates when you are ready.</li></ol></section>
+<div class="guide-grid">
+<section class="guide-section"><h2>Your daily rhythm</h2><p>Home shows what you have logged today and gives simple next steps like logging meals, adding water, checking Support Mode or recording movement.</p><div class="guide-actions"><a class="guide-btn" href="home.html">Open Home</a></div></section>
+<section class="guide-section"><h2>Meals</h2><p>Meals gives practical meal ideas, approximate protein estimates, snacks, rough-day backups, shopping lists and meal logging. Protein amounts are estimates based on standard serving assumptions.</p><ul><li>Generate my week</li><li>View today and full week</li><li>Refresh snack ideas</li><li>Use rough-day backups</li><li>Log or save meals</li></ul><div class="guide-actions"><a class="guide-btn" href="meals.html">Open Meals</a></div></section>
+<section class="guide-section"><h2>Support Mode</h2><p>Support Mode is for days when appetite, energy or meals feel harder. You can check in with low appetite, nausea, bloating, exhaustion or protein struggle. Hearty can then keep ideas simpler where possible.</p><div class="guide-actions"><a class="guide-btn" href="support.html">Open Support</a></div></section>
+<section class="guide-section"><h2>Progress</h2><p>Progress helps you review signals over time, including weight logs, progress photos, habit rhythm and milestones. Photos are optional. Add them only when you are ready.</p><div class="guide-actions"><a class="guide-btn" href="progress.html">Open Progress</a></div></section>
+<section class="guide-section"><h2>Movement</h2><p>Exercise is for simple movement and beginner-friendly strength support. You can log a walk, light movement or a simple strength session. Small movement counts.</p><div class="guide-actions"><a class="guide-btn" href="exercise.html">Open Exercise</a></div></section>
+<section class="guide-section"><h2>Settings</h2><p>Settings is where you manage account access, support contact, app preferences, theme, water target, meal preferences and install help.</p><div class="guide-actions"><a class="guide-btn" href="settings.html">Open Settings</a></div></section>
+</div>
+<section class="guide-section"><h2>Install Hearty on your phone</h2><div class="guide-grid"><div><h3>On iPhone</h3><ol><li>Open Hearty in Safari.</li><li>Tap the Share button.</li><li>Tap Add to Home Screen.</li><li>Tap Add.</li></ol></div><div><h3>On Android</h3><ol><li>Open Hearty in Chrome.</li><li>Tap the menu button.</li><li>Tap Add to Home screen or Install app.</li><li>Confirm.</li></ol></div></div></section>
+<section class="guide-section safe-note"><h2>What Hearty is not</h2><p>Hearty is not medical software. It does not diagnose symptoms, prescribe treatment, adjust medication or replace your doctor, pharmacist, dietitian or coach. Hearty is a practical daily support app for tracking, meal ideas, hydration, movement, progress and rough-day support.</p></section>
+<section class="guide-section"><h2>Need help?</h2><p>If you are stuck, cannot access your account or something does not look right, contact support.</p><div class="guide-actions"><a class="guide-btn" href="mailto:support@hearty.health">Email support</a><a class="guide-btn" href="settings.html">Open Settings</a></div></section>
+</main>
+
+</div>
+<script defer="" src="js/hearty-shell-template.js"></script>
+<div data-shell-mount="bottom-nav"></div></body>
+</html>

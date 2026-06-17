@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+
+  <title>Thank you — Hearty</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#eef5fb">
+  <style>
+    :root{
+      --ink:#102033;--muted:#64748b;--line:rgba(148,163,184,.32);--card:rgba(255,255,255,.94);
+      --blue:#2f6df6;--blue2:#1857db;--teal:#18b8a6;--shadow:0 28px 80px rgba(15,35,65,.14)
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%}
+    body{
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.13),transparent 58%),
+        radial-gradient(900px 460px at 100% 100%,rgba(24,184,166,.12),transparent 58%),
+        linear-gradient(180deg,#fbfdff,#eef5fb);
+      display:flex;align-items:center;justify-content:center;padding:24px;
+    }
+    .wrap{width:100%;max-width:760px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:34px;box-shadow:var(--shadow);padding:30px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+    .logo{height:64px;display:block;margin:0 auto 18px;object-fit:contain}
+    .eyebrow{text-align:center;text-transform:uppercase;letter-spacing:.13em;font-size:.74rem;font-weight:900;color:var(--blue);margin-bottom:8px}
+    h1{font-size:2.35rem;line-height:1.02;letter-spacing:-.055em;text-align:center;margin:0 0 10px}
+    .lead{text-align:center;color:var(--muted);font-size:1.04rem;line-height:1.55;max-width:620px;margin:0 auto 24px}
+    .steps{display:grid;gap:12px;margin:22px 0}
+    .step{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:15px;border:1px solid rgba(148,163,184,.24);border-radius:20px;background:rgba(255,255,255,.74)}
+    .num{width:38px;height:38px;border-radius:14px;background:rgba(47,109,246,.1);color:var(--blue);font-weight:950;display:flex;align-items:center;justify-content:center}
+    .step strong{display:block;margin-bottom:3px}
+    .step span{color:var(--muted);line-height:1.45;font-size:.95rem}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+    .btn{display:flex;justify-content:center;align-items:center;min-height:52px;border-radius:17px;text-decoration:none;font-weight:900;padding:14px 16px;text-align:center}
+    .primary{background:linear-gradient(180deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 13px 28px rgba(47,109,246,.22)}
+    .soft{background:#fff;color:var(--ink);border:1px solid #d6e2ee}
+    .help{margin-top:16px;padding:14px;border-radius:20px;background:rgba(24,184,166,.09);border:1px solid rgba(24,184,166,.18);color:#31515d;line-height:1.5;font-size:.94rem}
+    .help a{color:var(--blue);font-weight:900;text-decoration:none}
+    .small{margin-top:14px;color:var(--muted);font-size:.82rem;line-height:1.45;text-align:center}
+    @media(max-width:650px){.card{padding:24px 18px;border-radius:28px}h1{font-size:2rem}.actions{grid-template-columns:1fr}}
+  </style>
+<link rel="stylesheet" href="css/hearty-step5i-atmosphere.css">
+<link rel="stylesheet" href="css/hearty-step5i-shell-fix.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <img src="hearty-logo.png" alt="Hearty" class="logo">
+      <div class="eyebrow">Purchase complete</div>
+      <h1>Thank you — your Hearty purchase is complete.</h1>
+      <p class="lead">The last step is to secure your Hearty account. Use the same email address you used at checkout so your lifetime access can attach to your account.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div><strong>Create your Hearty account</strong><span>Use the same email you used when buying Hearty.</span></div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div><strong>Open the app</strong><span>Once your account is created, Hearty gives your account a unique user ID and keeps your lifetime access linked to it.</span></div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div><strong>Keep using Hearty on this device</strong><span>Existing local app data stays on your device. Photos and detailed routine reminders stay local for now.</span></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="login.html?mode=signup">Create my Hearty account</a>
+        <a class="btn soft" href="login.html">I already have an account</a>
+      </div>
+
+      <div class="help">
+        <strong>Used a different email?</strong><br>
+        If your checkout email and account email are different, use the access request page and we’ll match it manually:
+        <a href="login.html?mode=access">Can’t find my access?</a>
+      </div>
+
+      <div class="small">
+        Need help? Email support@hearty.health or WhatsApp +27 82 397 6575. Hearty is a tracking and support app and does not replace advice from your doctor, dietitian or coach.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

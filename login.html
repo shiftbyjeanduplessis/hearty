@@ -1,362 +1,811 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-auth-page="login">
 <head>
-  <link rel="stylesheet" href="/css/hearty-theme.css">
-  <script src="/js/hearty-theme.js"></script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Hearty Login</title>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
 
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0057ff">
+  <title>Hearty — Account</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#eef5fb">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Hearty">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-
+  <link rel="apple-touch-icon" href="icons/hearty-icon-192.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="glp-supabase-config.js"></script>
   <style>
     :root{
-      --login-ink:#102033;
-      --login-muted:#5d6f7e;
-      --login-line:rgba(180,200,220,0.5);
-      --login-card:rgba(255,255,255,0.9);
-      --login-blue:#1167d8;
-      --login-blue-deep:#0756c8;
-      --login-shadow:0 24px 70px rgba(50,80,110,0.18);
+      --ink:#102033;--muted:#64748b;--line:rgba(148,163,184,.32);--card:rgba(255,255,255,.92);
+      --blue:#2f6df6;--blue2:#1857db;--teal:#18b8a6;--danger:#b4234f;--success:#12856f;
+      --shadow:0 28px 80px rgba(15,35,65,.16)
     }
-
     *{box-sizing:border-box}
-
+    html,body{margin:0;min-height:100%}
     body{
-      margin:0;
       min-height:100vh;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(900px 420px at 0% 0%, rgba(47,109,246,.10), transparent 55%),
-        radial-gradient(900px 460px at 100% 100%, rgba(20,184,166,.09), transparent 55%),
-        linear-gradient(180deg,#f7fbff,#eef5fb);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-      color:var(--login-ink);
+        radial-gradient(900px 420px at 0% 0%,rgba(47,109,246,.13),transparent 58%),
+        radial-gradient(900px 460px at 100% 100%,rgba(24,184,166,.12),transparent 58%),
+        linear-gradient(180deg,#fbfdff,#eef5fb);
+      display:flex;align-items:center;justify-content:center;padding:24px;
     }
-
-    body.auth-checking .auth-card{
-      opacity:0;
-      pointer-events:none;
-    }
-
-    #splash{
-      position:fixed;
-      inset:0;
-      z-index:9999;
-      background:#0057ff url("/hearty-splash.png") center center no-repeat;
-      background-size:cover;
-      transition:opacity .35s ease, visibility .35s ease;
-    }
-
-    #splash.hide{
-      opacity:0;
-      visibility:hidden;
-      pointer-events:none;
-    }
-
     .auth-card{
-      width:100%;
-      max-width:430px;
-      background:var(--login-card);
-      border:1px solid var(--login-line);
-      border-radius:30px;
-      box-shadow:var(--login-shadow);
-      padding:34px 26px 30px;
-      text-align:center;
-      backdrop-filter:blur(16px);
-      -webkit-backdrop-filter:blur(16px);
-      transition:opacity .25s ease;
+      width:100%;max-width:480px;background:var(--card);border:1px solid var(--line);
+      border-radius:32px;box-shadow:var(--shadow);padding:30px 24px 26px;text-align:center;
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
     }
-
-    .auth-logo-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-bottom:16px;
+    .auth-logo{height:64px;max-width:310px;width:auto;display:block;margin:0 auto 10px;object-fit:contain}
+    .tagline{font-size:.96rem;font-weight:750;color:var(--muted)}
+    h1{font-size:2rem;line-height:1.02;letter-spacing:-.045em;margin:16px 0 8px}
+    .subtitle{margin:0 0 18px;color:var(--muted);line-height:1.48;font-size:15px}
+    .notice{border:1px solid rgba(47,109,246,.18);background:rgba(47,109,246,.07);padding:12px 14px;border-radius:18px;color:#23415f;font-size:13px;line-height:1.45;text-align:left;margin:14px 0}
+    .notice strong{display:block;color:var(--ink);margin-bottom:3px}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.64);margin:18px 0}
+    .tab{border:0;background:transparent;border-radius:14px;padding:11px 12px;font-weight:850;color:var(--muted);cursor:pointer}
+    .tab.active{background:#fff;color:var(--blue);box-shadow:0 8px 20px rgba(15,35,65,.08)}
+    .panel{display:none}.panel.active{display:block}
+    .field{display:grid;gap:6px;text-align:left;margin-bottom:12px}
+    .label{font-size:.82rem;color:var(--muted);font-weight:850;padding-left:4px}
+    input,textarea{
+      width:100%;min-height:48px;border-radius:16px;border:1px solid #d6e2ee;
+      padding:0 15px;font-size:16px;background:rgba(255,255,255,.96);color:var(--ink);outline:none
     }
-
-    .auth-logo{
-      height:64px;
-      width:auto;
-      max-width:300px;
-      object-fit:contain;
-      display:block;
+    textarea{padding:12px 15px;resize:vertical;min-height:96px;font-family:inherit}
+    input:focus,textarea:focus{border-color:rgba(47,109,246,.55);box-shadow:0 0 0 4px rgba(47,109,246,.10)}
+    .btn{
+      width:100%;border:0;border-radius:16px;padding:15px 16px;font-size:16px;font-weight:850;cursor:pointer;
+      margin-top:8px;transition:.18s ease
     }
-
-    .auth-tagline{
-      font-size:.98rem;
-      font-weight:650;
-      color:var(--login-muted);
-    }
-
-    .auth-title{
-      margin:8px 0 8px;
-      font-size:1.9rem;
-      line-height:1.05;
-      font-weight:800;
-      letter-spacing:-.04em;
-      color:var(--login-ink);
-    }
-
-    .subtitle{
-      color:var(--login-muted);
-      font-size:15px;
-      margin-bottom:26px;
-      line-height:1.5;
-    }
-
-    input{
-      width:100%;
-      border-radius:16px;
-      border:1px solid #d7e2ec;
-      padding:15px 16px;
-      font-size:16px;
-      margin-bottom:14px;
-      outline:none;
-      background:rgba(255,255,255,.96);
-      color:var(--login-ink);
-    }
-
-    input:focus{
-      border-color:rgba(17,103,216,.45);
-      box-shadow:0 0 0 4px rgba(17,103,216,.10);
-    }
-
-    button{
-      width:100%;
-      border:0;
-      border-radius:16px;
-      padding:15px 16px;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      margin-top:8px;
-      transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease;
-    }
-
-    button:hover{transform:translateY(-1px)}
-    button:active{transform:scale(.985)}
-    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
-
-    .primary{
-      background:linear-gradient(180deg,var(--login-blue),var(--login-blue-deep));
-      color:white;
-      box-shadow:0 12px 24px rgba(17,103,216,0.25);
-    }
-
-    .ghost{
-      background:white;
-      color:#123;
-      border:1px solid #d7e2ec;
-    }
-
-    .message{
-      margin-top:18px;
-      font-size:14px;
-      color:var(--login-muted);
-      min-height:22px;
-      line-height:1.4;
-    }
-
-    @media(max-width:560px){
-      body{padding:18px}
-      .auth-card{padding:30px 20px 26px;border-radius:28px}
-      .auth-logo{height:56px}
-      .auth-title{font-size:1.75rem}
-    }
+    .btn:active{transform:scale(.985)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .primary{background:linear-gradient(180deg,var(--blue),var(--blue2));color:white;box-shadow:0 13px 28px rgba(47,109,246,.24)}
+    .ghost{background:white;color:#123;border:1px solid #d6e2ee}
+    .text-link{border:0;background:transparent;color:var(--blue);font-size:14px;font-weight:850;padding:6px 8px;margin:0;width:auto;cursor:pointer}
+    .text-link:hover{text-decoration:underline}
+    .actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.78rem;font-weight:850;text-transform:uppercase;letter-spacing:.12em;margin:16px 0 8px}
+    .divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
+    .message{margin-top:16px;font-size:14px;color:var(--muted);min-height:22px;line-height:1.4;white-space:pre-wrap}
+    .message.error{color:var(--danger);font-weight:750}.message.success{color:var(--success);font-weight:750}
+    .debug{display:none;margin-top:12px;padding:10px;border-radius:12px;background:rgba(220,38,38,.08);color:#991b1b;font-size:12px;text-align:left;word-break:break-word}
+    .legal{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.45}
+    .legal a{color:var(--blue);font-weight:850;text-decoration:none}
+    @media(max-width:560px){body{padding:18px}.auth-card{padding:28px 20px 24px;border-radius:28px}.auth-logo{height:56px}h1{font-size:1.8rem}}
   </style>
+
+<link rel="stylesheet" href="css/hearty-theme.css">
+<script src="js/hearty-theme.js"></script>
+<link rel="stylesheet" href="css/hearty-phase1-visual-fixes.css">
+<link rel="stylesheet" href="css/hearty-step5i-atmosphere.css">
+<link rel="stylesheet" href="css/hearty-step5i-shell-fix.css">
+<link rel="stylesheet" href="css/hearty-step5ib-foundation.css">
+<link rel="stylesheet" href="css/hearty-shell-template.css">
+<link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
 </head>
+<body data-page="login">
+  <main class="auth-card" aria-live="polite">
+    <img src="hearty-logo.png" alt="Hearty" class="auth-logo" />
+    <div class="tagline">Your GLP-1 Companion</div>
 
-<body class="auth-checking">
-  <div id="splash" aria-hidden="true"></div>
+    <h1 id="authTitle">Secure your account</h1>
+    <p class="subtitle" id="authSubtitle">Create or sign into your individual Hearty account.</p>
 
-  <main class="auth-card">
-    <div class="auth-logo-wrap">
-      <img src="/hearty-logo.png" alt="Hearty" class="auth-logo">
-      <div class="auth-tagline">Your GLP-1 Companion</div>
+    <div class="notice">
+      <strong>Already bought Hearty?</strong>
+      Create your account using the same email you used at checkout. Your lifetime access will be kept.
+      <br><br><strong>After creating an account:</strong> check your email for a confirmation link before signing in.
     </div>
 
-    <h1 class="auth-title">Welcome back</h1>
-
-    <div class="subtitle">
-      Sign in to continue your journey with Hearty.
+    <div class="tabs" id="authTabs">
+      <button class="tab active" type="button" data-auth-tab="signin">Sign in</button>
+      <button class="tab" type="button" data-auth-tab="signup">Create account</button>
     </div>
 
-    <input id="email" type="email" placeholder="Email address" autocomplete="email" />
+    <section class="panel active" id="signinPanel">
+      <label class="field">
+        <span class="label">Email address</span>
+        <input id="signinEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span class="label">Password</span>
+        <input id="signinPassword" type="password" placeholder="Your password" autocomplete="current-password" />
+      </label>
+      <button class="btn primary" id="signinBtn" type="button">Sign in</button>
+      <div class="actions">
+        <button class="text-link" id="forgotPasswordBtn" type="button">Forgot password?</button>
+        <button class="text-link" id="accessHelpBtn" type="button">Can’t find access?</button>
+      </div>
+    </section>
 
-    <button class="primary" id="sendBtn">Continue with email</button>
-    <button class="ghost" id="googleBtn">Continue with Google</button>
+    <section class="panel" id="signupPanel">
+      <label class="field">
+        <span class="label">Name</span>
+        <input id="signupName" type="text" placeholder="Your name" autocomplete="name" />
+      </label>
+      <label class="field">
+        <span class="label">Email address</span>
+        <input id="signupEmail" type="email" placeholder="Use your purchase email if you already bought Hearty" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span class="label">Password</span>
+        <input id="signupPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+      </label>
+      <label class="field">
+        <span class="label">Confirm password</span>
+        <input id="signupConfirm" type="password" placeholder="Repeat password" autocomplete="new-password" />
+      </label>
+      <button class="btn primary" id="signupBtn" type="button">Create account</button>
+      <div class="legal">
+        Existing customers keep lifetime access when the account email matches the purchase email.
+      </div>
+    </section>
+
+    <section class="panel" id="forgotPanel">
+      <label class="field">
+        <span class="label">Account email</span>
+        <input id="resetEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </label>
+      <button class="btn primary" id="resetSendBtn" type="button">Send reset link</button>
+      <button class="btn ghost" id="backToLoginBtn" type="button">Back to sign in</button>
+    </section>
+
+    <section class="panel" id="newPasswordPanel">
+      <label class="field">
+        <span class="label">New password</span>
+        <input id="newPassword" type="password" placeholder="At least 8 characters" autocomplete="new-password" />
+      </label>
+      <label class="field">
+        <span class="label">Confirm new password</span>
+        <input id="confirmPassword" type="password" placeholder="Repeat password" autocomplete="new-password" />
+      </label>
+      <button class="btn primary" id="savePasswordBtn" type="button">Save new password</button>
+    </section>
+
+    <section class="panel" id="accessPanel">
+      <label class="field">
+        <span class="label">Purchase email</span>
+        <input id="purchaseEmail" type="email" placeholder="Email used when buying Hearty" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span class="label">Current account email</span>
+        <input id="accountEmail" type="email" placeholder="Email you want to use now" autocomplete="email" />
+      </label>
+      <label class="field">
+        <span class="label">Message</span>
+        <textarea id="accessMessage" placeholder="Example: I bought via WhatsApp / PayFast / Paddle and used a different email."></textarea>
+      </label>
+      <button class="btn primary" id="accessRequestBtn" type="button">Send access request</button>
+      <button class="btn ghost" id="backFromAccessBtn" type="button">Back to sign in</button>
+    </section>
+
+    <div class="divider">or</div>
+    <button class="btn ghost" id="googleBtn" type="button">Continue with Google</button>
 
     <div class="message" id="message"></div>
+    <div class="debug" id="debug"></div>
+
+    <div class="legal">
+      Need help? <a href="help.html">Open Help Centre</a>
+    </div>
   </main>
+<script>
+/*
+  Hearty Auth Soft v1
+  Step 2B: soft login + grandfathered access claim.
 
-  <script type="module">
-    import { supabase } from "./supabase-client.js";
+  Important:
+  - Does not force login.
+  - Does not enforce entitlement yet.
+  - On signup/signin, it tries to claim grandfathered lifetime access by matching auth email.
+*/
 
-    window.supabaseClient = supabase;
-    window.supabase = supabase;
+(function(){
+  "use strict";
 
-    const emailInput = document.getElementById("email");
-    const sendBtn = document.getElementById("sendBtn");
-    const googleBtn = document.getElementById("googleBtn");
-    const message = document.getElementById("message");
-    const splash = document.getElementById("splash");
+  const AUTH_CONFIG = Object.assign({
+    appHome: "/home.html",
+    loginPage: "/login.html",
+    requireEntitlement: false,
+    entitlementKey: "hearty_lifetime"
+  }, window.HEARTY_AUTH_CONFIG || {});
 
-    let redirecting = false;
-    let splashUnlocked = false;
+  const $ = (id) => document.getElementById(id);
+  const supabase = () => window.supabaseClient || window.heartySupabase || null;
 
-    function setMessage(text) {
-      if (message) message.textContent = text || "";
+  function getRedirectTarget(){
+    const params = new URLSearchParams(window.location.search || "");
+    const value = params.get("redirect");
+    if(!value) return AUTH_CONFIG.appHome;
+    try {
+      const decoded = decodeURIComponent(value);
+      if(decoded.startsWith("/") && !decoded.startsWith("//")) return decoded;
+    } catch {}
+    return AUTH_CONFIG.appHome;
+  }
+
+  function setMessage(text, kind){
+    const el = $("message");
+    if(!el) return;
+    el.textContent = text || "";
+    el.classList.toggle("error", kind === "error");
+    el.classList.toggle("success", kind === "success");
+  }
+
+  function showDebug(label, err){
+    console.error("[Hearty Auth]", label, err);
+    const el = $("debug");
+    if(!el) return;
+    el.style.display = "block";
+    el.textContent = label + ": " + (err && (err.message || JSON.stringify(err)) || "Unknown error");
+  }
+
+  function clearDebug(){
+    const el = $("debug");
+    if(!el) return;
+    el.style.display = "none";
+    el.textContent = "";
+  }
+
+  function setBusy(busy){
+    ["signinBtn","signupBtn","googleBtn","resetSendBtn","savePasswordBtn","accessRequestBtn"].forEach(id => {
+      const btn = $(id);
+      if(btn) btn.disabled = !!busy;
+    });
+  }
+
+  function setPanel(name){
+    const titles = {
+      signin: ["Secure your account", "Create or sign into your individual Hearty account."],
+      signup: ["Create your account", "Use your purchase email if you already bought Hearty."],
+      forgot: ["Reset your password", "Enter your email and we’ll send you a secure reset link."],
+      newPassword: ["Choose a new password", "Enter a new password for your Hearty account."],
+      access: ["Can’t find your access?", "Send a request and we’ll manually match your purchase."]
+    };
+
+    ["signinPanel","signupPanel","forgotPanel","newPasswordPanel","accessPanel"].forEach(id => {
+      const el = $(id);
+      if(el) el.classList.remove("active");
+    });
+
+    const panel = $(name + "Panel");
+    if(panel) panel.classList.add("active");
+
+    const tabs = $("authTabs");
+    if(tabs) tabs.style.display = (name === "signin" || name === "signup") ? "grid" : "none";
+
+    document.querySelectorAll("[data-auth-tab]").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.authTab === name);
+    });
+
+    const title = $("authTitle");
+    const subtitle = $("authSubtitle");
+    if(title) title.textContent = (titles[name] || titles.signin)[0];
+    if(subtitle) subtitle.textContent = (titles[name] || titles.signin)[1];
+
+    setMessage("");
+    clearDebug();
+  }
+
+  function emailLooksValid(email){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+  }
+
+  async function getCurrentUser(){
+    const sb = supabase();
+    if(!sb || !sb.auth) return null;
+    const { data } = await sb.auth.getUser();
+    return data && data.user ? data.user : null;
+  }
+
+  async function ensureProfile(user){
+    const sb = supabase();
+    if(!sb || !user) return { ok:false, reason:"No Supabase user" };
+
+    const now = new Date().toISOString();
+    const metaName = user.user_metadata?.full_name || user.user_metadata?.name || "";
+    const name = metaName || (user.email ? user.email.split("@")[0] : "Hearty user");
+
+    try {
+      await sb.from("profiles").upsert({
+        user_id: user.id,
+        user_name: name,
+        account_email: user.email || null,
+        updated_at: now
+      }, { onConflict:"user_id" });
+    } catch(err) {
+      console.warn("[Hearty Auth] profile upsert skipped", err);
     }
 
-    function hideSplash() {
-      if (!splash) return;
-      splash.classList.add("hide");
-      setTimeout(() => {
-        if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-      }, 450);
+    try {
+      await sb.from("user_settings").upsert({
+        user_id: user.id,
+        theme: "clean_blue",
+        units_system: "metric",
+        hydration_auto: true,
+        hydration_target_litres: 3.0,
+        social_enabled: true,
+        photo_privacy: "local_only",
+        onboarding_complete: false,
+        updated_at: now
+      }, { onConflict:"user_id" });
+    } catch(err) {
+      console.warn("[Hearty Auth] settings upsert skipped", err);
     }
 
-    function unlockLogin() {
-      if (redirecting || splashUnlocked) return;
-      splashUnlocked = true;
-      document.body.classList.remove("auth-checking");
-      hideSplash();
+    try {
+      await sb.from("user_roles").upsert({
+        user_id: user.id,
+        role: "client",
+        updated_at: now
+      }, { onConflict:"user_id" });
+    } catch(err) {
+      console.warn("[Hearty Auth] role upsert skipped", err);
     }
 
-    function unlockLoginAfterSplashHold() {
-      const run = () => setTimeout(unlockLogin, 900);
+    try {
+      localStorage.setItem("heartyAccountEmail", user.email || "");
+      localStorage.setItem("heartyAuthUserId", user.id);
+      localStorage.setItem("heartyLastLoginAt", now);
+    } catch {}
 
-      if (document.readyState === "complete") {
-        run();
-      } else {
-        window.addEventListener("load", run, { once:true });
+    return { ok:true };
+  }
+
+  async function claimGrandfatheredAccess(){
+    const sb = supabase();
+    if(!sb || !sb.rpc) return { claimed:false, reason:"no_rpc" };
+
+    try {
+      const { data, error } = await sb.rpc("hearty_claim_grandfathered_access");
+      if(error) throw error;
+      return data || { claimed:false, reason:"no_match" };
+    } catch(err){
+      console.warn("[Hearty Auth] grandfather claim skipped/failed", err);
+      return { claimed:false, reason:"error", error:err };
+    }
+  }
+
+  async function getEntitlement(){
+    const sb = supabase();
+    const user = await getCurrentUser();
+    if(!sb || !user) return { active:false, reason:"signed_out" };
+
+    try {
+      const { data, error } = await sb
+        .from("user_entitlements")
+        .select("status,entitlement_key,source,ends_at,created_at")
+        .eq("user_id", user.id)
+        .eq("entitlement_key", AUTH_CONFIG.entitlementKey)
+        .eq("status", "active")
+        .limit(1);
+
+      if(error) throw error;
+
+      const active = (data || []).some(row => {
+        if(!row.ends_at) return true;
+        return new Date(row.ends_at).getTime() > Date.now();
+      });
+
+      return { active, rows:data || [] };
+    } catch(err){
+      return { active:false, reason:"error", error:err };
+    }
+  }
+
+  async function completeLogin(user){
+    await ensureProfile(user);
+    const claim = await claimGrandfatheredAccess();
+    const entitlement = await getEntitlement();
+
+    if(claim && claim.claimed){
+      setMessage("Account secured. Lifetime access matched to your purchase email.", "success");
+    } else if(entitlement.active){
+      setMessage("Account secured. Lifetime access is active.", "success");
+    } else {
+      setMessage("Account secured. If you already bought Hearty, make sure this is your purchase email or send an access request.", "");
+    }
+
+    setTimeout(() => {
+      window.location.replace(getRedirectTarget());
+    }, 700);
+  }
+
+  function hashParams(){
+    return new URLSearchParams(window.location.hash ? window.location.hash.slice(1) : "");
+  }
+
+  function searchParams(){
+    return new URLSearchParams(window.location.search || "");
+  }
+
+  function isRecoveryLink(){
+    const h = hashParams();
+    const s = searchParams();
+    return h.get("type") === "recovery" || s.get("type") === "recovery" || s.get("mode") === "new-password";
+  }
+
+  function cleanUrl(){
+    if(window.history && (window.location.hash || window.location.search)){
+      window.history.replaceState({}, document.title, AUTH_CONFIG.loginPage);
+    }
+  }
+
+  async function handleAuthRedirect(){
+    const sb = supabase();
+    if(!sb || !sb.auth) return false;
+
+    const h = hashParams();
+    const accessToken = h.get("access_token");
+    const refreshToken = h.get("refresh_token");
+
+    if(accessToken && refreshToken){
+      setBusy(true);
+      setMessage(isRecoveryLink() ? "Opening password reset…" : "Completing sign in…");
+      const { data, error } = await sb.auth.setSession({ access_token:accessToken, refresh_token:refreshToken });
+      if(error) throw error;
+
+      if(isRecoveryLink()){
+        cleanUrl();
+        setPanel("newPassword");
+        setBusy(false);
+        return true;
       }
 
-      setTimeout(unlockLogin, 2500);
-    }
-
-    async function ensureProfile() {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const provider = user.app_metadata?.provider || "email";
-
-        await supabase.from("profiles").upsert({
-          user_id: user.id,
-          account_email: user.email,
-          user_name: user.user_metadata?.full_name || user.email || null,
-          first_name: user.user_metadata?.full_name?.split(" ")?.[0] || null,
-          auth_provider: provider,
-          updated_at: new Date().toISOString()
-        }, { onConflict: "user_id" });
-      } catch (error) {
-        console.warn("Profile save failed, continuing login:", error);
+      if(data && data.session && data.session.user){
+        await completeLogin(data.session.user);
+        return true;
       }
     }
 
-    async function sendToHome() {
-      if (redirecting) return;
-      redirecting = true;
-      await ensureProfile();
-      window.location.replace("/home.html");
+    if(window.location.search.includes("code=")){
+      setBusy(true);
+      setMessage(isRecoveryLink() ? "Opening password reset…" : "Completing sign in…");
+      const { data, error } = await sb.auth.exchangeCodeForSession(window.location.href);
+      if(error) throw error;
+
+      if(isRecoveryLink()){
+        cleanUrl();
+        setPanel("newPassword");
+        setBusy(false);
+        return true;
+      }
+
+      if(data && data.session && data.session.user){
+        await completeLogin(data.session.user);
+        return true;
+      }
     }
 
-    async function goHomeIfLoggedIn() {
-      const isAuthCallback =
-        window.location.hash.includes("access_token") ||
-        window.location.search.includes("code=");
+    return false;
+  }
 
-      try {
-        if (window.location.search.includes("code=")) {
-          const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-          if (error) console.warn("Code exchange failed:", error);
+  async function checkExistingSession(){
+    const sb = supabase();
+    if(!sb || !sb.auth){
+      setMessage("Login connection failed. Check /glp-supabase-config.js.", "error");
+      showDebug("Missing Supabase client", { hasSupabaseLibrary: !!window.supabase, hasSupabaseClient: !!window.supabaseClient });
+      return;
+    }
+
+    try {
+      if(await handleAuthRedirect()) return;
+
+      const params = searchParams();
+      if(params.get("mode") === "signup") setPanel("signup");
+      if(params.get("type") === "recovery" || params.get("mode") === "new-password") setPanel("newPassword");
+
+      const { data } = await sb.auth.getSession();
+      if(data && data.session && data.session.user && !isRecoveryLink()){
+        const entitlement = await getEntitlement();
+        if(entitlement.active){
+          setMessage("You are signed in. Lifetime access is active.", "success");
+        } else {
+          const claim = await claimGrandfatheredAccess();
+          if(claim && claim.claimed) setMessage("You are signed in. Lifetime access matched to your purchase email.", "success");
+          else setMessage("You are signed in. If you already purchased, use your purchase email or send an access request.");
         }
+      }
+    } catch(err){
+      setBusy(false);
+      setMessage("Could not complete sign in. Try again.", "error");
+      showDebug("Auth redirect/session error", err);
+    }
+  }
 
-        const { data: { session } } = await supabase.auth.getSession();
+  async function signIn(){
+    const sb = supabase();
+    const email = ($("signinEmail")?.value || "").trim().toLowerCase();
+    const password = $("signinPassword")?.value || "";
 
-        if (session) {
-          await sendToHome();
+    if(!emailLooksValid(email)){ setMessage("Please enter a valid email address.", "error"); return; }
+    if(!password){ setMessage("Please enter your password.", "error"); return; }
+
+    try {
+      setBusy(true); clearDebug(); setMessage("Signing in…");
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if(error) throw error;
+      if(data && data.user) await completeLogin(data.user);
+    } catch(err){
+      setBusy(false);
+      const msg = String(err && err.message || "");
+      if(/confirm|confirmed|verification|verified/i.test(msg)){
+        setMessage("This account exists, but the email is not confirmed yet. Please open the confirmation email from Hearty/Supabase first, then sign in again.", "error");
+      } else if(/invalid login|invalid credentials/i.test(msg)){
+        setMessage("The email or password is not correct. If you just created the account, check your email confirmation first.", "error");
+      } else {
+        setMessage(msg || "Could not sign in.", "error");
+      }
+      showDebug("Password sign in failed", err);
+    }
+  }
+
+  async function signUp(){
+    const sb = supabase();
+    const name = ($("signupName")?.value || "").trim();
+    const email = ($("signupEmail")?.value || "").trim().toLowerCase();
+    const password = $("signupPassword")?.value || "";
+    const confirm = $("signupConfirm")?.value || "";
+
+    if(!name){ setMessage("Please enter your name.", "error"); return; }
+    if(!emailLooksValid(email)){ setMessage("Please enter a valid email address.", "error"); return; }
+    if(password.length < 8){ setMessage("Password must be at least 8 characters.", "error"); return; }
+    if(password !== confirm){ setMessage("Passwords do not match.", "error"); return; }
+
+    try {
+      setBusy(true); clearDebug(); setMessage("Creating your account…");
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name:name },
+          emailRedirectTo: window.location.origin + AUTH_CONFIG.loginPage
+        }
+      });
+      if(error) throw error;
+
+      if(data && data.session && data.user){
+        await completeLogin(data.user);
+        return;
+      }
+
+      setBusy(false);
+      setPanel("signin");
+      const signinEmail = $("signinEmail");
+      if(signinEmail) signinEmail.value = email;
+      setMessage("Account created. Check your email to confirm your account, then come back here and sign in. If you do not see the email, check spam/promotions.", "success");
+    } catch(err){
+      setBusy(false);
+      setMessage(err.message || "Could not create account.", "error");
+      showDebug("Account creation failed", err);
+    }
+  }
+
+  async function googleSignIn(){
+    const sb = supabase();
+    try {
+      setBusy(true); clearDebug(); setMessage("Opening Google sign in…");
+      const { error } = await sb.auth.signInWithOAuth({
+        provider:"google",
+        options:{ redirectTo: window.location.origin + AUTH_CONFIG.loginPage }
+      });
+      if(error) throw error;
+    } catch(err){
+      setBusy(false);
+      setMessage(err.message || "Could not open Google sign in.", "error");
+      showDebug("Google login failed", err);
+    }
+  }
+
+  async function sendReset(){
+    const sb = supabase();
+    const email = ($("resetEmail")?.value || $("signinEmail")?.value || "").trim().toLowerCase();
+
+    if(!emailLooksValid(email)){ setMessage("Please enter a valid email address.", "error"); return; }
+
+    try {
+      setBusy(true); clearDebug(); setMessage("Sending reset link…");
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + AUTH_CONFIG.loginPage + "?type=recovery"
+      });
+      if(error) throw error;
+      setBusy(false);
+      setMessage("Check your email for the password reset link.", "success");
+    } catch(err){
+      setBusy(false);
+      setMessage(err.message || "Could not send reset link.", "error");
+      showDebug("Password reset failed", err);
+    }
+  }
+
+  async function saveNewPassword(){
+    const sb = supabase();
+    const p1 = $("newPassword")?.value || "";
+    const p2 = $("confirmPassword")?.value || "";
+
+    if(p1.length < 8){ setMessage("Password must be at least 8 characters.", "error"); return; }
+    if(p1 !== p2){ setMessage("Passwords do not match.", "error"); return; }
+
+    try {
+      setBusy(true); clearDebug(); setMessage("Saving password…");
+      const { data: userData } = await sb.auth.getUser();
+      const { error } = await sb.auth.updateUser({ password:p1 });
+      if(error) throw error;
+      const user = userData && userData.user ? userData.user : null;
+      if(user) await completeLogin(user);
+      else window.location.replace(AUTH_CONFIG.appHome);
+    } catch(err){
+      setBusy(false);
+      setMessage(err.message || "Could not update password.", "error");
+      showDebug("Password update failed", err);
+    }
+  }
+
+  async function sendAccessRequest(){
+    const sb = supabase();
+    const purchaseEmail = ($("purchaseEmail")?.value || "").trim().toLowerCase();
+    const accountEmail = ($("accountEmail")?.value || "").trim().toLowerCase();
+    const message = ($("accessMessage")?.value || "").trim();
+
+    if(!emailLooksValid(purchaseEmail)){ setMessage("Please enter the email used when buying Hearty.", "error"); return; }
+    if(!emailLooksValid(accountEmail)){ setMessage("Please enter the account email you want to use.", "error"); return; }
+
+    try {
+      setBusy(true); clearDebug(); setMessage("Sending access request…");
+
+      let user = await getCurrentUser();
+
+      const { error } = await sb.from("access_recovery_requests").insert({
+        purchase_email: purchaseEmail,
+        account_email: accountEmail,
+        email: purchaseEmail,
+        user_id: user ? user.id : null,
+        reason: message || "Grandfather access matching request",
+        status: "open"
+      });
+
+      if(error) throw error;
+
+      setBusy(false);
+      setMessage("Request sent. We’ll manually match your purchase if needed.", "success");
+      $("purchaseEmail").value = "";
+      $("accountEmail").value = "";
+      $("accessMessage").value = "";
+    } catch(err){
+      setBusy(false);
+      setMessage(err.message || "Could not send access request.", "error");
+      showDebug("Access request failed", err);
+    }
+  }
+
+  async function signOut(){
+    const sb = supabase();
+    try { if(sb && sb.auth) await sb.auth.signOut(); } catch(err) {}
+    try {
+      localStorage.removeItem("heartyAuthUserId");
+      localStorage.removeItem("heartyLastLoginAt");
+    } catch {}
+    window.location.replace(AUTH_CONFIG.loginPage);
+  }
+
+  function bindLoginPage(){
+    document.querySelectorAll("[data-auth-tab]").forEach(btn => {
+      btn.addEventListener("click", () => setPanel(btn.dataset.authTab));
+    });
+
+    $("signinBtn")?.addEventListener("click", signIn);
+    $("signupBtn")?.addEventListener("click", signUp);
+    $("googleBtn")?.addEventListener("click", googleSignIn);
+    $("forgotPasswordBtn")?.addEventListener("click", () => {
+      const email = $("signinEmail")?.value || "";
+      setPanel("forgot");
+      const resetEmail = $("resetEmail");
+      if(resetEmail) resetEmail.value = email;
+    });
+    $("accessHelpBtn")?.addEventListener("click", () => {
+      const email = $("signinEmail")?.value || $("signupEmail")?.value || "";
+      setPanel("access");
+      const purchase = $("purchaseEmail");
+      const account = $("accountEmail");
+      if(purchase) purchase.value = email;
+      if(account) account.value = email;
+    });
+    $("backToLoginBtn")?.addEventListener("click", () => setPanel("signin"));
+    $("backFromAccessBtn")?.addEventListener("click", () => setPanel("signin"));
+    $("resetSendBtn")?.addEventListener("click", sendReset);
+    $("savePasswordBtn")?.addEventListener("click", saveNewPassword);
+    $("accessRequestBtn")?.addEventListener("click", sendAccessRequest);
+
+    ["signinPassword","signupConfirm","confirmPassword"].forEach(id => {
+      $(id)?.addEventListener("keydown", e => {
+        if(e.key !== "Enter") return;
+        if(id === "signinPassword") signIn();
+        if(id === "signupConfirm") signUp();
+        if(id === "confirmPassword") saveNewPassword();
+      });
+    });
+
+    const params = searchParams();
+    if(params.get("mode") === "signup") setPanel("signup");
+    if(params.get("mode") === "access") setPanel("access");
+    if(params.get("type") === "recovery" || params.get("mode") === "new-password") setPanel("newPassword");
+
+    const sb = supabase();
+    if(sb && sb.auth){
+      sb.auth.onAuthStateChange((event, session) => {
+        if(event === "PASSWORD_RECOVERY"){
+          setBusy(false);
+          setPanel("newPassword");
           return;
         }
-      } catch (error) {
-        console.warn("Session check failed:", error);
-      }
-
-      setTimeout(unlockLogin, isAuthCallback ? 1200 : 800);
-    }
-
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        await sendToHome();
-      }
-    });
-
-    sendBtn.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-
-      if (!email) {
-        setMessage("Please enter your email address.");
-        return;
-      }
-
-      sendBtn.disabled = true;
-      setMessage("Sending login link...");
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login.html`
+        if(session && session.user && event === "SIGNED_IN" && !isRecoveryLink()){
+          completeLogin(session.user);
         }
-      });
-
-      if (error) {
-        setMessage(error.message);
-        sendBtn.disabled = false;
-        return;
-      }
-
-      setMessage("Check your email and click the login link.");
-      sendBtn.disabled = false;
-    });
-
-    googleBtn.addEventListener("click", async () => {
-      setMessage("Opening Google sign in...");
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/login.html`
-        }
-      });
-
-      if (error) setMessage(error.message);
-    });
-
-    emailInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") sendBtn.click();
-    });
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js").catch(console.warn);
       });
     }
 
-    unlockLoginAfterSplashHold();
-    goHomeIfLoggedIn();
-  </script>
+    setBusy(false);
+    checkExistingSession();
+  }
+
+  window.HeartyAuthSoft = {
+    config: AUTH_CONFIG,
+    ensureProfile,
+    claimGrandfatheredAccess,
+    getEntitlement,
+    signOut,
+    getCurrentUser
+  };
+
+  window.HeartyAuth = window.HeartyAuthSoft;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-hearty-logout]").forEach(el => {
+      el.addEventListener("click", signOut);
+    });
+
+    if(document.documentElement.dataset.authPage === "login"){
+      bindLoginPage();
+    }
+  });
+})();
+
+</script>
+<script>
+(function(){
+  "use strict";
+  function getParam(name){
+    try { return new URLSearchParams(location.search || "").get(name) || ""; } catch { return ""; }
+  }
+  function setValue(id, value){
+    var el = document.getElementById(id);
+    if(el && value && !el.value) el.value = value;
+  }
+  function clickTab(mode){
+    var tab = document.querySelector('[data-auth-tab="' + mode + '"]');
+    if(tab) tab.click();
+  }
+  document.addEventListener("DOMContentLoaded", function(){
+    var email = (getParam("email") || getParam("purchase_email") || getParam("checkout_email") || "").trim().toLowerCase();
+    var mode = getParam("mode");
+    if(email){
+      setValue("signinEmail", email);
+      setValue("signupEmail", email);
+      setValue("resetEmail", email);
+      setValue("purchaseEmail", email);
+      setValue("accountEmail", email);
+    }
+    if(mode === "signup") setTimeout(function(){ clickTab("signup"); }, 100);
+    if(mode === "access" && window.HeartyAuthSoft) {
+      // The main script handles access mode; this keeps old browsers quiet.
+    }
+  });
+})();
+</script>
+
+      <p class="auth-help-link" style="text-align:center;margin-top:14px"><a href="how-to-use.html">New to Hearty? Open the quick guide</a></p>
+<script src="js/hearty-shell-template.js" defer></script>
 </body>
 </html>

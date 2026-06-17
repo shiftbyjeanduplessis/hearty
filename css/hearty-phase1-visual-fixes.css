@@ -1,0 +1,184 @@
+
+/* HEARTY PHASE 1 QA VISUAL FIXES v2
+   Purpose: enforce coherent theme surfaces, uniform page strips/nav, clean support-off state,
+   and stable button/switch styling across legacy pages without rewriting page logic.
+*/
+:root{
+  --theme-strip-bg:linear-gradient(135deg,
+    color-mix(in srgb,var(--theme-accent) 5%,var(--surface-card)),
+    color-mix(in srgb,var(--theme-accent-2) 6%,var(--surface-card))
+  );
+  --theme-topbar-bg:linear-gradient(135deg,
+    color-mix(in srgb,var(--theme-accent) 5%,var(--surface-top)),
+    color-mix(in srgb,var(--theme-accent-2) 6%,var(--surface-bottom))
+  );
+  --theme-control-bg:linear-gradient(180deg,var(--surface-button),color-mix(in srgb,var(--theme-accent) 3%,var(--surface-button)));
+  --theme-active-bg:linear-gradient(180deg,var(--theme-accent),color-mix(in srgb,var(--theme-accent) 74%,#000));
+  --theme-support-active-bg:linear-gradient(180deg,
+    color-mix(in srgb,var(--theme-warning) 14%,var(--surface-card)),
+    color-mix(in srgb,var(--theme-accent) 3%,var(--surface-card))
+  );
+  --theme-support-active-border:color-mix(in srgb,var(--theme-warning) 34%,var(--line));
+  --theme-support-active-shadow:0 22px 48px color-mix(in srgb,var(--theme-warning) 18%,transparent),var(--shadow-soft);
+}
+
+/* One shape language for page strips and menu bars */
+.topbar,
+.status-strip,
+.page-header,
+.guide-header,
+.help-header,
+.bottom-nav{
+  border:1px solid var(--line) !important;
+  border-radius:28px !important;
+  background:var(--theme-topbar-bg) !important;
+  box-shadow:var(--shadow-soft) !important;
+  color:var(--ink) !important;
+}
+.status-strip,
+.page-header,
+.guide-header,
+.help-header{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:18px !important;
+  padding:22px 24px !important;
+  margin:0 0 18px !important;
+  overflow:hidden !important;
+}
+.status-strip .day-pill,
+.page-header .day-pill,
+.status-pill,
+.day-pill{
+  background:var(--surface-chip) !important;
+  color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--shadow-soft) !important;
+  font-weight:850 !important;
+}
+
+/* First-time guide card: proper layout, no native grey buttons */
+.first-time-guide-card{
+  border-radius:24px !important;
+  padding:18px 20px !important;
+  margin:0 0 18px !important;
+  background:var(--theme-strip-bg) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--shadow) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:18px !important;
+}
+.first-time-guide-card .guide-actions{display:flex !important;align-items:center !important;gap:10px !important;flex-wrap:wrap !important;justify-content:flex-end !important;}
+.btn,.action-btn,.soft-btn,.ghost-btn,.primary-btn,.secondary-btn,.planner-action,.theme-option,.link-item{font-weight:850 !important;}
+.first-time-guide-card .btn.secondary,
+.first-time-guide-card button,
+button.btn.secondary{
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  border-radius:16px !important;
+  min-height:44px !important;
+  padding:11px 16px !important;
+  background:var(--theme-control-bg) !important;
+  border:1px solid var(--line) !important;
+  color:var(--ink) !important;
+  box-shadow:var(--shadow-soft) !important;
+}
+.first-time-guide-card .action-btn.primary,
+.btn.primary,
+.action-btn.primary,
+.soft-btn,
+.primary-btn{
+  border-radius:16px !important;
+  min-height:44px !important;
+  padding:12px 16px !important;
+  background:var(--theme-active-bg) !important;
+  color:var(--primary-text,#fff) !important;
+  border-color:transparent !important;
+  box-shadow:0 12px 24px color-mix(in srgb,var(--theme-accent) 20%,transparent) !important;
+}
+.ghost-btn,.btn.secondary,.secondary-btn{
+  background:var(--theme-control-bg) !important;
+  color:var(--ink) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:var(--shadow-soft) !important;
+  border-radius:16px !important;
+}
+
+/* Support Mode: OFF is neutral; only active gets warm glow */
+#supportCard,
+.support-card{
+  border-radius:28px !important;
+}
+#supportCard:not(.is-active),
+#supportCard.is-off,
+.support-card:not(.is-active):not(.active){
+  background:var(--surface-card) !important;
+  border-color:var(--line) !important;
+  box-shadow:var(--shadow) !important;
+}
+#supportCard:not(.is-active) .led,
+#supportCard.is-off .led,
+.support-card:not(.is-active):not(.active) .led{
+  background:color-mix(in srgb,var(--muted) 28%,var(--surface-card)) !important;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--muted) 9%,transparent) !important;
+}
+#supportCard.is-active,
+.support-card.is-active,
+.support-card.active{
+  background:var(--theme-support-active-bg) !important;
+  border-color:var(--theme-support-active-border) !important;
+  box-shadow:var(--theme-support-active-shadow) !important;
+}
+#supportCard.is-active .led,
+.support-card.is-active .led,
+.support-card.active .led{
+  background:var(--theme-warning) !important;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--theme-warning) 14%,transparent),0 0 18px color-mix(in srgb,var(--theme-warning) 40%,transparent) !important;
+}
+
+/* Switches: keep knobs aligned inside all legacy tracks */
+.switch{position:relative !important;width:54px !important;height:32px !important;display:inline-block !important;flex:0 0 54px !important;}
+.switch input{position:absolute !important;inset:0 !important;opacity:0 !important;z-index:2 !important;cursor:pointer !important;}
+.slider{position:absolute !important;inset:0 !important;border-radius:999px !important;background:color-mix(in srgb,var(--muted) 22%,var(--surface-button)) !important;border:1px solid var(--line) !important;box-shadow:inset 0 1px 2px rgba(0,0,0,.08) !important;}
+.slider::before{content:"" !important;position:absolute !important;width:24px !important;height:24px !important;left:3px !important;top:3px !important;border-radius:50% !important;background:#fff !important;box-shadow:0 3px 8px rgba(15,23,42,.18) !important;transition:.2s ease !important;}
+.switch input:checked + .slider{background:linear-gradient(180deg,var(--theme-accent),color-mix(in srgb,var(--theme-accent) 74%,#000)) !important;border-color:transparent !important;}
+.switch input:checked + .slider::before{transform:translateX(22px) !important;}
+
+/* Consistent card/menu surfaces on legacy pages */
+.card,.settings-card,.hero-card,.progress-card,.support-card,.meal-card,.planner-card,.rhythm-card,.guide-section,.help-card,.theme-option,.link-item,.tile,.empty-card,.placeholder-card,.stat-card,.readout-card{
+  background:var(--surface-card) !important;
+  color:var(--ink) !important;
+  border-color:var(--line) !important;
+}
+.ring-block,.protocol-item,.next-action,.readout,.input,.select,input,select,textarea,.day-pill,.status-pill,.compact-pill,.soft-pill,.meal-badge,.support-chip,.support-chip-off{
+  background:var(--theme-control-bg) !important;
+  color:var(--ink) !important;
+  border-color:var(--line) !important;
+}
+.bottom-nav{
+  background:var(--nav-bg) !important;
+  box-shadow:var(--shadow-soft) !important;
+}
+.bottom-nav .nav-item,.nav-item{font-weight:750 !important;color:var(--nav-ink) !important;}
+.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],.nav-item.active,.nav-item[aria-current="page"]{
+  background:var(--nav-active-bg) !important;
+  color:var(--nav-active-ink) !important;
+}
+
+/* Theme selector should be obvious */
+#theme-settings-card-quick{order:2 !important;}
+#account-card{order:1 !important;}
+.theme-options-grid{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important;margin-top:12px !important;}
+.theme-option{min-height:74px !important;}
+.theme-option.active{background:var(--theme-active-bg) !important;color:var(--primary-text,#fff) !important;border-color:transparent !important;}
+.theme-option.active *{color:var(--primary-text,#fff) !important;}
+
+@media(max-width:760px){
+  .status-strip,.page-header,.guide-header,.help-header{display:grid !important;padding:18px !important;border-radius:22px !important;}
+  .first-time-guide-card{display:grid !important;align-items:start !important;padding:16px !important;border-radius:22px !important;}
+  .first-time-guide-card .guide-actions{justify-content:flex-start !important;}
+  .theme-options-grid{grid-template-columns:1fr !important;}
+}

@@ -1,0 +1,3539 @@
+/* HEARTY STEP 5N — Theme Beauty + Background Atmosphere
+   Purpose: improve contrast, warmth and theme personality AFTER the shared shell has stabilised.
+   This file must not create logos, rewrite nav markup, or touch the meal engine. */
+
+:root{
+  --hb-shell-max: var(--hf-shell-max, 1240px);
+  --hb-card-radius: 26px;
+  --hb-strong-shadow: 0 22px 58px rgba(24, 45, 72, .14);
+  --hb-soft-shadow: 0 12px 30px rgba(24, 45, 72, .09);
+  --hb-texture-opacity: .24;
+}
+
+/* Stronger, prettier theme foundations. These feed the existing shared shell tokens. */
+html[data-theme="clean_blue"]{
+  --hf-bg: linear-gradient(180deg,#e5f0ff 0%,#f8fbff 42%,#eaf4ff 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 480px at 8% -8%, rgba(31,94,234,.20), transparent 62%),
+    radial-gradient(760px 420px at 96% 3%, rgba(16,166,180,.16), transparent 58%),
+    radial-gradient(560px 360px at 22% 92%, rgba(77,137,255,.10), transparent 62%) !important;
+  --hf-surface: rgba(255,255,255,.965) !important;
+  --hf-surface-strong: #ffffff !important;
+  --hf-surface-soft: rgba(238,247,255,.96) !important;
+  --hf-border: rgba(47,91,145,.30) !important;
+  --hf-border-strong: rgba(31,94,234,.38) !important;
+  --hf-text: #04152a !important;
+  --hf-muted: #405a76 !important;
+  --hf-primary: #1559e8 !important;
+  --hf-accent: #0797a8 !important;
+  --hf-shadow: 0 24px 58px rgba(34,77,130,.15) !important;
+  --hf-shadow-soft: 0 12px 30px rgba(34,77,130,.10) !important;
+  --hf-nav-bg: rgba(255,255,255,.955) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(215,233,255,.98),rgba(255,255,255,.96)) !important;
+}
+
+html[data-theme="pink_lemonade"]{
+  --hf-bg: linear-gradient(180deg,#7f0f43 0%,#d32374 42%,#5f0b32 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(960px 520px at 5% -7%, rgba(255,110,182,.26), transparent 62%),
+    radial-gradient(820px 460px at 98% 3%, rgba(255,214,84,.28), transparent 58%),
+    radial-gradient(620px 420px at 12% 92%, rgba(255,150,196,.18), transparent 64%) !important;
+  --hf-surface: rgba(255,247,239,.95) !important;
+  --hf-surface-strong: rgba(255,251,247,.985) !important;
+  --hf-surface-soft: rgba(255,241,229,.95) !important;
+  --hf-border: rgba(255,183,214,.30) !important;
+  --hf-border-strong: rgba(255,205,84,.38) !important;
+  --hf-text: #2a1020 !important;
+  --hf-muted: #724659 !important;
+  --hf-primary: #d62474 !important;
+  --hf-accent: #ffd24d !important;
+  --hf-primary-text: #ffffff !important;
+  --theme-accent: #d62474 !important;
+  --theme-accent-2: #ffcf57 !important;
+  --accent: #d62474 !important;
+  --accent-2: #ffcf57 !important;
+  --hf-shadow: 0 28px 68px rgba(64,4,31,.30) !important;
+  --hf-shadow-soft: 0 14px 34px rgba(64,4,31,.20) !important;
+  --hf-nav-bg: rgba(255,246,235,.95) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(255,210,77,.95),rgba(255,238,176,.97)) !important;
+  --hf-nav-active-text: #9d1352 !important;
+  --hb-texture-opacity: .16;
+}
+
+html[data-theme="midnight"]{
+  --hf-bg: linear-gradient(180deg,#050d18 0%,#0d1b2e 52%,#050b14 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 500px at 5% -8%, rgba(89,132,255,.21), transparent 62%),
+    radial-gradient(780px 420px at 98% 2%, rgba(48,213,220,.13), transparent 58%),
+    radial-gradient(620px 420px at 50% 100%, rgba(45,86,155,.12), transparent 68%) !important;
+  --hf-surface: rgba(17,31,51,.965) !important;
+  --hf-surface-strong: rgba(24,42,67,.99) !important;
+  --hf-surface-soft: rgba(14,26,44,.97) !important;
+  --hf-border: rgba(166,191,224,.30) !important;
+  --hf-border-strong: rgba(155,186,255,.44) !important;
+  --hf-text: #f8fbff !important;
+  --hf-muted: #c0cde0 !important;
+  --hf-primary: #8fb2ff !important;
+  --hf-accent: #54d5dd !important;
+  --hf-shadow: 0 26px 66px rgba(0,0,0,.48) !important;
+  --hf-shadow-soft: 0 14px 36px rgba(0,0,0,.34) !important;
+  --hf-nav-bg: rgba(13,25,42,.965) !important;
+}
+
+html[data-theme="soft_rose"]{
+  --hf-bg: linear-gradient(180deg,#ffe8f0 0%,#fffaf6 48%,#f8e2ec 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 480px at 5% -8%, rgba(185,68,115,.20), transparent 62%),
+    radial-gradient(760px 420px at 98% 3%, rgba(214,132,103,.17), transparent 58%),
+    radial-gradient(520px 360px at 12% 96%, rgba(255,190,210,.16), transparent 64%) !important;
+  --hf-surface: rgba(255,255,255,.97) !important;
+  --hf-surface-strong: #ffffff !important;
+  --hf-surface-soft: rgba(255,242,247,.96) !important;
+  --hf-border: rgba(154,72,111,.31) !important;
+  --hf-border-strong: rgba(185,68,115,.40) !important;
+  --hf-text: #1f1420 !important;
+  --hf-muted: #61485d !important;
+  --hf-primary: #b23d6d !important;
+  --hf-accent: #c96f58 !important;
+  --hf-shadow: 0 24px 58px rgba(108,43,69,.15) !important;
+  --hf-shadow-soft: 0 12px 30px rgba(108,43,69,.10) !important;
+  --hf-nav-bg: rgba(255,247,249,.965) !important;
+}
+
+html[data-theme="deep_berry"]{
+  --hf-bg: linear-gradient(180deg,#130416 0%,#301235 48%,#120414 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 500px at 5% -8%, rgba(242,94,165,.24), transparent 62%),
+    radial-gradient(760px 420px at 98% 3%, rgba(255,206,139,.14), transparent 58%),
+    radial-gradient(640px 420px at 45% 100%, rgba(138,64,170,.15), transparent 68%) !important;
+  --hf-surface: rgba(48,20,55,.965) !important;
+  --hf-surface-strong: rgba(66,27,72,.99) !important;
+  --hf-surface-soft: rgba(39,15,47,.97) !important;
+  --hf-border: rgba(246,171,209,.31) !important;
+  --hf-border-strong: rgba(255,143,200,.45) !important;
+  --hf-text: #fff8fc !important;
+  --hf-muted: #dfc2d3 !important;
+  --hf-primary: #ff89c3 !important;
+  --hf-accent: #ffd190 !important;
+  --hf-shadow: 0 28px 72px rgba(0,0,0,.50) !important;
+  --hf-shadow-soft: 0 16px 40px rgba(0,0,0,.36) !important;
+  --hf-nav-bg: rgba(39,15,47,.965) !important;
+}
+
+/* Keep old token families synced with the stronger theme layer. */
+html[data-theme]{
+  --hst-bg: var(--hf-surface) !important;
+  --hst-bg-strong: var(--hf-surface-strong) !important;
+  --hst-border: var(--hf-border) !important;
+  --hst-text: var(--hf-text) !important;
+  --hst-muted: var(--hf-muted) !important;
+  --hst-primary: var(--hf-primary) !important;
+  --hst-primary-text: var(--hf-primary-text) !important;
+  --hst-shadow: var(--hf-shadow-soft) !important;
+  --hst-logo-frame: var(--hf-logo-frame) !important;
+  --atmo-bg: var(--hf-bg) !important;
+  --atmo-card: var(--hf-surface) !important;
+  --atmo-card-strong: var(--hf-surface-strong) !important;
+  --atmo-card-soft: var(--hf-surface-soft) !important;
+  --atmo-border: var(--hf-border) !important;
+  --atmo-text: var(--hf-text) !important;
+  --atmo-muted: var(--hf-muted) !important;
+  --atmo-primary: var(--hf-primary) !important;
+  --atmo-primary-2: var(--hf-accent) !important;
+}
+
+html[data-theme] body{
+  position:relative !important;
+  overflow-x:hidden !important;
+  background: var(--hf-atmosphere), var(--hf-bg) !important;
+  color:var(--hf-text) !important;
+}
+html[data-theme] body > .shell,
+html[data-theme] body > main,
+html[data-theme] body > .auth-page,
+html[data-theme] body > .guide-page{
+  position:relative !important;
+  z-index:1 !important;
+}
+
+/* Decorative atmosphere. Kept CSS-based, light, and non-interactive. */
+html[data-theme] body::before,
+html[data-theme] body::after{
+  content:"" !important;
+  position:fixed !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+  display:block !important;
+}
+html[data-theme] body::before{
+  opacity:var(--hb-texture-opacity) !important;
+  background-image:
+    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--hf-primary) 20%, transparent) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--hf-accent) 18%, transparent) 0 1px, transparent 1.8px) !important;
+  background-size:34px 34px, 48px 48px !important;
+  mask-image:linear-gradient(180deg, #000 0%, #000 40%, transparent 82%) !important;
+}
+html[data-theme] body::after{
+  opacity:.16 !important;
+  background:
+    radial-gradient(150px 90px at 78% 18%, color-mix(in srgb, var(--hf-accent) 48%, transparent), transparent 72%),
+    radial-gradient(120px 120px at 12% 72%, color-mix(in srgb, var(--hf-primary) 34%, transparent), transparent 70%) !important;
+  filter:blur(.2px) !important;
+}
+
+/* Pink Lemonade now uses a brighter citrus-and-bubbles background.
+   It should feel like real pink lemonade: juicy pink, lemon yellow, playful and premium. */
+html[data-theme="pink_lemonade"] body::after{
+  opacity:.98 !important;
+  background:
+    linear-gradient(180deg, rgba(130,8,58,.08), rgba(94,5,40,.04)),
+    url("../assets/backgrounds/pink-lemonade-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.12) contrast(1.04) brightness(1.08) !important;
+  mix-blend-mode:normal !important;
+}
+
+@media (max-width: 900px){
+  html[data-theme="pink_lemonade"] body::after{
+    opacity:.96 !important;
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+/* Deep/dark themes should feel rich, not flat. */
+html[data-theme="midnight"] body::before,
+html[data-theme="deep_berry"] body::before{opacity:.20 !important;}
+html[data-theme="midnight"] body::after,
+html[data-theme="deep_berry"] body::after{opacity:.22 !important;mix-blend-mode:screen !important;}
+
+/* Higher-contrast surfaces: same structure, richer feel. */
+.hearty-shell-topbar,
+.hearty-page-strip,
+.card,.settings-card,.hero-card,.progress-card,.support-card,.meal-card,.planner-card,.rhythm-card,.guide-section,.help-card,.post-card,.composer-card,.profile-card,.people-card,.knowledge-card,.tool-item,.advice-item,.readout-card,.stat-card,.empty-card,.placeholder-card,.ring-block,
+.first-time-guide-card,.guide-card,.demo-banner{
+  border-color:var(--hf-border) !important;
+  box-shadow:var(--hf-shadow) !important;
+}
+.hearty-shell-topbar,
+.hearty-page-strip{
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--hf-surface-strong) 88%, var(--hf-primary) 12%), var(--hf-surface)) !important;
+}
+.hearty-page-strip{
+  position:relative !important;
+  overflow:hidden !important;
+}
+.hearty-page-strip::before{
+  content:"" !important;
+  position:absolute !important;
+  width:220px !important;
+  height:220px !important;
+  right:-70px !important;
+  top:-100px !important;
+  border-radius:999px !important;
+  background:radial-gradient(circle, color-mix(in srgb, var(--hf-accent) 24%, transparent), transparent 70%) !important;
+  opacity:.75 !important;
+  pointer-events:none !important;
+}
+.hearty-page-strip::after{
+  content:"" !important;
+  position:absolute !important;
+  left:22px !important;
+  bottom:0 !important;
+  width:92px !important;
+  height:4px !important;
+  border-radius:999px !important;
+  background:linear-gradient(90deg,var(--hf-primary),var(--hf-accent)) !important;
+  opacity:.88 !important;
+}
+.hearty-page-strip-main,.hearty-page-strip-right{position:relative !important;z-index:1 !important;}
+
+/* Bring the opening Home cards to life without changing their layout. */
+body[data-page="home"] .rhythm-card,
+body[data-page="home"] .first-time-guide-card,
+body[data-page="home"] .support-card,
+body[data-page="home"] .card{
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--hf-surface-strong) 78%, var(--hf-accent) 8%), var(--hf-surface)) !important;
+}
+body[data-page="home"] .first-time-guide-card{
+  border-color:var(--hf-border-strong) !important;
+  box-shadow:0 22px 54px color-mix(in srgb, var(--hf-primary) 13%, transparent), var(--hf-shadow-soft) !important;
+}
+
+/* Theme-specific charming card accents. */
+html[data-theme="pink_lemonade"] .hearty-page-strip,
+html[data-theme="pink_lemonade"] body[data-page="home"] .first-time-guide-card{
+  background:
+    radial-gradient(220px 120px at 92% 0%, rgba(255,199,43,.34), transparent 70%),
+    linear-gradient(135deg,#fffefa,#ffe4f1) !important;
+}
+html[data-theme="deep_berry"] .hearty-page-strip{
+  background:
+    radial-gradient(240px 130px at 92% 0%, rgba(255,137,195,.16), transparent 70%),
+    linear-gradient(135deg,var(--hf-surface-strong),var(--hf-surface-soft)) !important;
+}
+html[data-theme="midnight"] .hearty-page-strip{
+  background:
+    radial-gradient(240px 130px at 92% 0%, rgba(84,213,221,.13), transparent 70%),
+    linear-gradient(135deg,var(--hf-surface-strong),var(--hf-surface-soft)) !important;
+}
+
+/* Button hierarchy: stronger but still calm. */
+.btn.primary,.action-btn.primary,.primary-btn,.soft-btn,.planner-action.primary,
+button.primary,#signinBtn,#signupBtn,#resetSendBtn,#savePasswordBtn{
+  background:linear-gradient(180deg,var(--hf-primary),color-mix(in srgb,var(--hf-primary) 68%,#000)) !important;
+  color:var(--hf-primary-text) !important;
+  box-shadow:0 16px 32px color-mix(in srgb,var(--hf-primary) 28%,transparent) !important;
+  border-color:transparent !important;
+}
+.btn.secondary,.ghost-btn,.secondary-btn,.logout-action,#backToLoginBtn,
+.first-time-guide-card .btn.secondary{
+  background:linear-gradient(180deg,var(--hf-surface-strong),var(--hf-surface-soft)) !important;
+  color:var(--hf-text) !important;
+  border-color:var(--hf-border) !important;
+  box-shadow:var(--hf-shadow-soft) !important;
+}
+
+/* Chips and pills need to read clearly on all themes. */
+.day-pill,.status-pill,.soft-pill,.meal-badge,.support-chip,.support-chip-off,.compact-pill,.hearty-page-strip-pill,
+.hearty-page-strip .support-pill,.hearty-page-strip .day-pill,.hearty-page-strip .status-pill{
+  background:color-mix(in srgb, var(--hf-surface-strong) 78%, var(--hf-primary) 8%) !important;
+  border:1px solid var(--hf-border) !important;
+  color:var(--hf-text) !important;
+  box-shadow:0 8px 18px color-mix(in srgb, var(--hf-primary) 8%, transparent) !important;
+}
+
+/* Support mode: keep off neutral, on attractive. */
+.support-card[data-support-state="off"],.support-card.is-off,#supportCard[data-support-state="off"],#supportCard.is-off{
+  background:var(--hf-surface) !important;
+  border-color:var(--hf-border) !important;
+  box-shadow:var(--hf-shadow) !important;
+}
+.support-card[data-support-state="on"],#supportCard[data-support-state="on"]{
+  background:
+    radial-gradient(240px 130px at 92% 0%, color-mix(in srgb,var(--hf-accent) 28%,transparent), transparent 72%),
+    var(--hf-surface) !important;
+  border-color:color-mix(in srgb,var(--hf-accent) 56%,var(--hf-border)) !important;
+  box-shadow:0 22px 52px color-mix(in srgb,var(--hf-accent) 22%,transparent), var(--hf-shadow-soft) !important;
+}
+
+/* Keep the shared shell consistent after visual enrichment. */
+.hearty-shell-bottom-nav,.bottom-nav,#bottomNav,.hearty-unified-nav{
+  background:var(--hf-nav-bg) !important;
+  border-color:var(--hf-border) !important;
+  box-shadow:0 18px 44px color-mix(in srgb,#000 10%,transparent), var(--hf-shadow-soft) !important;
+}
+.hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+.hearty-shell-bottom-nav .hearty-shell-nav-item[aria-current="page"],
+.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],
+#bottomNav .nav-item.active,#bottomNav .nav-item[aria-current="page"]{
+  background:var(--hf-nav-active-bg) !important;
+  color:var(--hf-nav-active-text) !important;
+}
+
+/* Keep real logo only. Do not generate theme logos here. */
+.hearty-real-logo-frame,.hearty-logo-frame{background:transparent !important;}
+html[data-theme="midnight"] .hearty-real-logo-frame,
+html[data-theme="deep_berry"] .hearty-real-logo-frame,
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="deep_berry"] .hearty-logo-frame{
+  background:#ffffff !important;
+  border-color:rgba(255,255,255,.22) !important;
+}
+
+@media(max-width:760px){
+  html[data-theme] body::before{opacity:calc(var(--hb-texture-opacity) * .72) !important;}
+  html[data-theme] body::after{opacity:.12 !important;}
+  html[data-theme="pink_lemonade"] body::after{opacity:.92 !important;background-position:center top, center top !important;background-size:auto, cover !important;}
+  .hearty-page-strip::before{width:160px !important;height:160px !important;right:-64px !important;top:-80px !important;}
+  .hearty-page-strip::after{left:18px !important;width:74px !important;}
+}
+
+
+@media (max-width: 900px){
+  html[data-theme="pink_lemonade"] body::after{
+    opacity:.96 !important;
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* Pink Lemonade: darker stage, lighter app surfaces on top */
+html[data-theme="pink_lemonade"] .hearty-shell-topbar,
+html[data-theme="pink_lemonade"] .hearty-page-strip,
+html[data-theme="pink_lemonade"] .bottom-nav,
+html[data-theme="pink_lemonade"] .card,
+html[data-theme="pink_lemonade"] .settings-card,
+html[data-theme="pink_lemonade"] .support-card,
+html[data-theme="pink_lemonade"] .meal-card,
+html[data-theme="pink_lemonade"] .planner-card,
+html[data-theme="pink_lemonade"] .first-time-guide-card{
+  backdrop-filter: blur(10px) !important;
+}
+
+
+/* Pink Lemonade shell polish: make the shell feel intentional against the lively background. */
+html[data-theme="pink_lemonade"] .hearty-shell-topbar{
+  background:
+    radial-gradient(220px 120px at 86% 0%, rgba(255,210,72,.30), transparent 70%),
+    linear-gradient(135deg, rgba(255,248,235,.98), rgba(255,236,206,.96)) !important;
+  border-color: rgba(255,196,43,.34) !important;
+}
+html[data-theme="pink_lemonade"] .hearty-page-strip{
+  background:
+    radial-gradient(220px 120px at 92% 0%, rgba(255,205,64,.26), transparent 70%),
+    linear-gradient(135deg, rgba(255,250,242,.96), rgba(255,232,242,.95)) !important;
+  border-color: rgba(255,170,205,.30) !important;
+}
+html[data-theme="pink_lemonade"] .hearty-shell-bottom-nav,
+html[data-theme="pink_lemonade"] .bottom-nav,
+html[data-theme="pink_lemonade"] #bottomNav,
+html[data-theme="pink_lemonade"] .hearty-unified-nav{
+  background: linear-gradient(180deg, rgba(255,248,236,.96), rgba(255,238,218,.94)) !important;
+  border-color: rgba(255,196,43,.24) !important;
+}
+
+
+/* Pink Lemonade: replace leftover blue action controls with theme-matching magenta/yellow. */
+html[data-theme="pink_lemonade"] .btn.primary,
+html[data-theme="pink_lemonade"] .primary-btn,
+html[data-theme="pink_lemonade"] .sheet-btn-primary,
+html[data-theme="pink_lemonade"] .action-btn.primary,
+html[data-theme="pink_lemonade"] .soft-btn,
+html[data-theme="pink_lemonade"] .lesson-btn,
+html[data-theme="pink_lemonade"] .support-btn,
+html[data-theme="pink_lemonade"] .planner-action.primary,
+html[data-theme="pink_lemonade"] .action-btn,
+html[data-theme="pink_lemonade"] #signinBtn,
+html[data-theme="pink_lemonade"] #signupBtn,
+html[data-theme="pink_lemonade"] #resetSendBtn,
+html[data-theme="pink_lemonade"] #savePasswordBtn,
+html[data-theme="pink_lemonade"] .theme-option.active,
+html[data-theme="pink_lemonade"] .hero-primary-btn,
+html[data-theme="pink_lemonade"] .cta-btn-primary,
+html[data-theme="pink_lemonade"] .day-action.primary{
+  background: linear-gradient(180deg, #e02f7b 0%, #b9155b 100%) !important;
+  color:#fff !important;
+  border-color:rgba(185,21,91,.18) !important;
+  box-shadow:0 16px 32px rgba(199,31,104,.24) !important;
+}
+html[data-theme="pink_lemonade"] .btn.primary:hover,
+html[data-theme="pink_lemonade"] .primary-btn:hover,
+html[data-theme="pink_lemonade"] .planner-action.primary:hover,
+html[data-theme="pink_lemonade"] .action-btn.primary:hover,
+html[data-theme="pink_lemonade"] .soft-btn:hover,
+html[data-theme="pink_lemonade"] .sheet-btn-primary:hover{
+  filter:brightness(1.03) !important;
+}
+html[data-theme="pink_lemonade"] .switch input:checked + .slider,
+html[data-theme="pink_lemonade"] .slider.is-on,
+html[data-theme="pink_lemonade"] .toggle-switch input:checked + .slider,
+html[data-theme="pink_lemonade"] .switcher input:checked + .slider{
+  background:linear-gradient(180deg,#e02f7b 0%, #b9155b 100%) !important;
+}
+html[data-theme="pink_lemonade"] .switch input:checked + .slider::before,
+html[data-theme="pink_lemonade"] .toggle-switch input:checked + .slider::before,
+html[data-theme="pink_lemonade"] .switcher input:checked + .slider::before{
+  background:#fff7ea !important;
+}
+html[data-theme="pink_lemonade"] .hydration-drop-wrap,
+html[data-theme="pink_lemonade"] .icon-accent,
+html[data-theme="pink_lemonade"] .support-ring-accent{
+  background:linear-gradient(180deg,#fff1b3 0%, #ffe07a 100%) !important;
+  color:#a81455 !important;
+  border-color:rgba(255,205,84,.34) !important;
+  box-shadow:0 10px 22px rgba(255,210,77,.18) !important;
+}
+
+
+/* Pink Lemonade: theme-specific logo frame and darker home action buttons with lighter icons. */
+html[data-theme="pink_lemonade"] .hearty-shell-logo-frame,
+html[data-theme="pink_lemonade"] .auth-brand-lockup .hearty-shell-logo-frame{
+  background:linear-gradient(180deg, rgba(255,247,225,.98), rgba(255,236,194,.96)) !important;
+  border-color:rgba(255,205,84,.34) !important;
+  box-shadow:0 10px 24px rgba(121,12,60,.10), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  padding:8px 12px !important;
+}
+html[data-theme="pink_lemonade"] .task-icon-btn,
+html[data-theme="pink_lemonade"] .dose-icon-btn{
+  background:linear-gradient(180deg,#b9155b 0%, #8f114a 100%) !important;
+  border-color:rgba(111,7,53,.34) !important;
+  color:#fff8ef !important;
+  box-shadow:0 12px 24px rgba(143,17,74,.24), inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+html[data-theme="pink_lemonade"] .task-icon-btn:hover,
+html[data-theme="pink_lemonade"] .dose-icon-btn:hover{
+  background:linear-gradient(180deg,#c41c63 0%, #99124f 100%) !important;
+  box-shadow:0 14px 28px rgba(143,17,74,.28), inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+html[data-theme="pink_lemonade"] .task-icon-btn .icon-main-img{
+  filter:brightness(0) invert(1) saturate(0) brightness(1.3) !important;
+}
+html[data-theme="pink_lemonade"] .dose-icon-btn,
+html[data-theme="pink_lemonade"] .task-icon-btn .task-check{
+  color:#fff8ef !important;
+}
+html[data-theme="pink_lemonade"] .task-icon-btn.done{
+  background:linear-gradient(180deg,#1fa165 0%, #138151 100%) !important;
+  border-color:rgba(9,104,64,.28) !important;
+  color:#fff !important;
+}
+
+
+/* Pink Lemonade: make the custom theme logo slightly larger in the shared shell. */
+html[data-theme="pink_lemonade"] .hearty-shell-logo-frame{
+  height:72px !important;
+  max-width:min(72vw, 320px) !important;
+  padding:8px 14px !important;
+}
+html[data-theme="pink_lemonade"] .hearty-shell-logo-img{
+  height:62px !important;
+  max-width:min(68vw, 286px) !important;
+  width:auto !important;
+}
+@media (max-width:760px){
+  html[data-theme="pink_lemonade"] .hearty-shell-logo-frame{
+    height:60px !important;
+    max-width:min(66vw, 260px) !important;
+    padding:7px 12px !important;
+  }
+  html[data-theme="pink_lemonade"] .hearty-shell-logo-img{
+    height:50px !important;
+    max-width:min(62vw, 228px) !important;
+  }
+}
+
+
+/* Pink Lemonade cleanup pass: remove leftover blue accents across feature pages. */
+html[data-theme="pink_lemonade"] .planner-action.primary,
+html[data-theme="pink_lemonade"] .support-top-action,
+html[data-theme="pink_lemonade"] .action-btn.primary,
+html[data-theme="pink_lemonade"] .rep-btn.selected,
+html[data-theme="pink_lemonade"] .step.current,
+html[data-theme="pink_lemonade"] .loc-btn.active,
+html[data-theme="pink_lemonade"] .recovery-btn.primary,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-b,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-a,
+html[data-theme="pink_lemonade"] .knowledge-topic{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#fff !important;
+  border-color:rgba(185,21,91,.20) !important;
+  box-shadow:0 12px 28px rgba(185,21,91,.18) !important;
+}
+html[data-theme="pink_lemonade"] .exercise-guide-btn{
+  background:rgba(255,248,239,.96) !important;
+  color:#b9155b !important;
+  border-color:rgba(217,36,116,.22) !important;
+  box-shadow:0 8px 18px rgba(185,21,91,.10) !important;
+}
+html[data-theme="pink_lemonade"] .support-top-action.off,
+html[data-theme="pink_lemonade"] .support-off-btn,
+html[data-theme="pink_lemonade"] .ghost-btn,
+html[data-theme="pink_lemonade"] .off-btn{
+  background:rgba(255,249,242,.96) !important;
+  color:#7f4b60 !important;
+  border-color:rgba(217,36,116,.16) !important;
+  box-shadow:0 8px 18px rgba(121,12,60,.08) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn{
+  width:54px !important;
+  height:32px !important;
+  min-width:54px !important;
+  padding:4px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  background:#e9d5dc !important;
+  box-shadow:inset 0 1px 4px rgba(87,16,50,.10) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn span{
+  width:24px !important;
+  height:24px !important;
+  flex:0 0 24px !important;
+  transform:translateX(0) !important;
+  background:#fff8ef !important;
+  box-shadow:0 3px 10px rgba(87,16,50,.16) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#df2e7b 0%, #ffbf4f 100%) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn.is-on span{
+  transform:translateX(22px) !important;
+}
+html[data-theme="pink_lemonade"] .trend-empty-icon,
+html[data-theme="pink_lemonade"] .placeholder-icon,
+html[data-theme="pink_lemonade"] .empty-icon,
+html[data-theme="pink_lemonade"] .chart-empty-icon{
+  color:#c81d67 !important;
+  border-color:rgba(217,36,116,.18) !important;
+  background:rgba(255,250,245,.92) !important;
+}
+html[data-theme="pink_lemonade"] .photo-placeholder,
+html[data-theme="pink_lemonade"] .gallery-thumb,
+html[data-theme="pink_lemonade"] .gallery-empty-note,
+html[data-theme="pink_lemonade"] .history-empty{
+  color:#8a5c72 !important;
+}
+html[data-theme="pink_lemonade"] .gallery-thumb{
+  border-color:rgba(217,36,116,.16) !important;
+  background:linear-gradient(180deg,#fff8fb,#fff1f5) !important;
+}
+html[data-theme="pink_lemonade"] .gallery-action-btn{
+  background:#fffaf5 !important;
+  border-color:rgba(217,36,116,.14) !important;
+  color:#92556f !important;
+}
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-a,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-b{
+  color:#fff !important;
+}
+html[data-theme="pink_lemonade"] .progress-card .date-picker-btn,
+html[data-theme="pink_lemonade"] .progress-card .control-label,
+html[data-theme="pink_lemonade"] .knowledge-card p a,
+html[data-theme="pink_lemonade"] .tool-item a,
+html[data-theme="pink_lemonade"] .trend-empty-copy a{
+  color:#b9155b !important;
+}
+html[data-theme="pink_lemonade"] .support-pill,
+html[data-theme="pink_lemonade"] .status-pill,
+html[data-theme="pink_lemonade"] .status-mini-pill.support,
+html[data-theme="pink_lemonade"] .support-chip{
+  color:#8e144b !important;
+}
+
+
+/* HEARTY STEP 5N-B — final Pink Lemonade blue-leak cleanup.
+   Purpose: override leftover hard-coded blue text/buttons/icons from legacy page CSS. */
+html[data-theme="pink_lemonade"]{
+  --blue:#d62474 !important;
+  --blue-soft:#fff0f6 !important;
+  --theme-accent:#d62474 !important;
+  --theme-accent-2:#ffcf57 !important;
+  --accent:#d62474 !important;
+  --accent-2:#ffcf57 !important;
+  --ui1-blue:#d62474 !important;
+}
+
+/* General legacy link/accent cleanup */
+html[data-theme="pink_lemonade"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
+html[data-theme="pink_lemonade"] .text-link,
+html[data-theme="pink_lemonade"] .link,
+html[data-theme="pink_lemonade"] .inline-link,
+html[data-theme="pink_lemonade"] .progress-card a,
+html[data-theme="pink_lemonade"] .support-card a,
+html[data-theme="pink_lemonade"] .knowledge-card a,
+html[data-theme="pink_lemonade"] .tool-item a,
+html[data-theme="pink_lemonade"] .trend-empty-copy a,
+html[data-theme="pink_lemonade"] .weight-card a,
+html[data-theme="pink_lemonade"] .weight-link,
+html[data-theme="pink_lemonade"] .empty-action,
+html[data-theme="pink_lemonade"] .card-link{
+  color:#b9155b !important;
+}
+
+/* Legacy blue primary/function buttons */
+html[data-theme="pink_lemonade"] .btn.primary,
+html[data-theme="pink_lemonade"] .primary-btn,
+html[data-theme="pink_lemonade"] .action-btn.primary,
+html[data-theme="pink_lemonade"] .planner-action.primary,
+html[data-theme="pink_lemonade"] .planner-action[data-regenerate-week],
+html[data-theme="pink_lemonade"] .support-top-action,
+html[data-theme="pink_lemonade"] .support-btn,
+html[data-theme="pink_lemonade"] .lesson-btn,
+html[data-theme="pink_lemonade"] .sheet-btn-primary,
+html[data-theme="pink_lemonade"] .recovery-btn.primary,
+html[data-theme="pink_lemonade"] .rep-btn.selected,
+html[data-theme="pink_lemonade"] .loc-btn.active,
+html[data-theme="pink_lemonade"] .step.current,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-a,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-b,
+html[data-theme="pink_lemonade"] [data-log-protein],
+html[data-theme="pink_lemonade"] .meal-log-btn,
+html[data-theme="pink_lemonade"] .log-protein-btn,
+html[data-theme="pink_lemonade"] button[id*="protein" i],
+html[data-theme="pink_lemonade"] button[id*="log" i].primary,
+html[data-theme="pink_lemonade"] button[class*="protein" i],
+html[data-theme="pink_lemonade"] button[class*="log" i].primary{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#fff !important;
+  border-color:rgba(185,21,91,.22) !important;
+  box-shadow:0 14px 30px rgba(185,21,91,.22) !important;
+  text-shadow:none !important;
+}
+
+/* Fix Exercise: blue button with unreadable pink text */
+html[data-theme="pink_lemonade"] .support-top-action,
+html[data-theme="pink_lemonade"] #exerciseSupportAction{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#fff !important;
+  border-color:rgba(185,21,91,.22) !important;
+}
+html[data-theme="pink_lemonade"] .support-top-action *,
+html[data-theme="pink_lemonade"] #exerciseSupportAction *{
+  color:#fff !important;
+}
+html[data-theme="pink_lemonade"] .exercise-guide-btn,
+html[data-theme="pink_lemonade"] #openExerciseGuideBtn{
+  background:rgba(255,249,242,.98) !important;
+  color:#b9155b !important;
+  border-color:rgba(217,36,116,.22) !important;
+  box-shadow:0 8px 18px rgba(185,21,91,.10) !important;
+}
+
+/* Secondary/off buttons should be cream/plum, never blue */
+html[data-theme="pink_lemonade"] .btn.secondary,
+html[data-theme="pink_lemonade"] .secondary-btn,
+html[data-theme="pink_lemonade"] .ghost-btn,
+html[data-theme="pink_lemonade"] .support-top-action.off,
+html[data-theme="pink_lemonade"] .support-off-btn,
+html[data-theme="pink_lemonade"] .off-btn,
+html[data-theme="pink_lemonade"] .planner-action:not(.primary),
+html[data-theme="pink_lemonade"] .gallery-action-btn{
+  background:linear-gradient(180deg,#fffaf2,#fff1e2) !important;
+  color:#6f3f56 !important;
+  border-color:rgba(217,36,116,.16) !important;
+  box-shadow:0 8px 18px rgba(121,12,60,.08) !important;
+}
+
+/* Support page chips/cards/icons */
+html[data-theme="pink_lemonade"] .knowledge-topic,
+html[data-theme="pink_lemonade"] .reason-btn strong,
+html[data-theme="pink_lemonade"] .reason-btn span,
+html[data-theme="pink_lemonade"] .tool-name,
+html[data-theme="pink_lemonade"] .history-row strong,
+html[data-theme="pink_lemonade"] .status-mini-pill.support,
+html[data-theme="pink_lemonade"] .support-chip,
+html[data-theme="pink_lemonade"] .support-pill,
+html[data-theme="pink_lemonade"] .status-pill{
+  color:#7f1748 !important;
+}
+html[data-theme="pink_lemonade"] .knowledge-topic{
+  background:#fff2b8 !important;
+  color:#9d1352 !important;
+  border:1px solid rgba(255,205,84,.34) !important;
+}
+html[data-theme="pink_lemonade"] .trend-empty-icon,
+html[data-theme="pink_lemonade"] .trend-empty-icon svg{
+  color:#c81d67 !important;
+  stroke:#c81d67 !important;
+}
+html[data-theme="pink_lemonade"] .trend-empty-icon{
+  background:#fff8f0 !important;
+  border-color:rgba(217,36,116,.18) !important;
+}
+
+/* Progress page blue pills/placeholders */
+html[data-theme="pink_lemonade"] .weight-card a,
+html[data-theme="pink_lemonade"] .progress-card a,
+html[data-theme="pink_lemonade"] .date-picker-btn,
+html[data-theme="pink_lemonade"] .date-picker-btn svg,
+html[data-theme="pink_lemonade"] .control-label,
+html[data-theme="pink_lemonade"] .photo-placeholder,
+html[data-theme="pink_lemonade"] .gallery-thumb,
+html[data-theme="pink_lemonade"] .gallery-empty-note,
+html[data-theme="pink_lemonade"] .history-empty{
+  color:#8a4d67 !important;
+}
+html[data-theme="pink_lemonade"] .weight-card a,
+html[data-theme="pink_lemonade"] .progress-card a,
+html[data-theme="pink_lemonade"] .empty-action{
+  color:#b9155b !important;
+}
+html[data-theme="pink_lemonade"] .status-pill,
+html[data-theme="pink_lemonade"] .day-pill,
+html[data-theme="pink_lemonade"] .soft-pill,
+html[data-theme="pink_lemonade"] .compact-pill,
+html[data-theme="pink_lemonade"] .meal-badge,
+html[data-theme="pink_lemonade"] .hearty-page-strip-pill{
+  background:linear-gradient(180deg,#fffaf2,#fff1e7) !important;
+  color:#7f1748 !important;
+  border-color:rgba(217,36,116,.16) !important;
+}
+html[data-theme="pink_lemonade"] .photo-placeholder,
+html[data-theme="pink_lemonade"] .gallery-thumb{
+  border-color:rgba(217,36,116,.16) !important;
+  background:linear-gradient(180deg,#fff8fb,#fff1f5) !important;
+}
+
+/* Meals: Log Protein / generated blue buttons */
+html[data-theme="pink_lemonade"] .meal-card button,
+html[data-theme="pink_lemonade"] .meal-row button,
+html[data-theme="pink_lemonade"] .meal-actions button,
+html[data-theme="pink_lemonade"] .meal-action,
+html[data-theme="pink_lemonade"] .meal-log-action,
+html[data-theme="pink_lemonade"] .log-action{
+  color:#7f1748 !important;
+  border-color:rgba(217,36,116,.16) !important;
+}
+html[data-theme="pink_lemonade"] .meal-card button.primary,
+html[data-theme="pink_lemonade"] .meal-row button.primary,
+html[data-theme="pink_lemonade"] .meal-actions button.primary,
+html[data-theme="pink_lemonade"] .meal-card button:first-of-type:not(.planner-action):not(.support-off-btn),
+html[data-theme="pink_lemonade"] button[data-log-protein],
+html[data-theme="pink_lemonade"] .log-protein,
+html[data-theme="pink_lemonade"] .log-protein-btn{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#fff !important;
+  border-color:rgba(185,21,91,.22) !important;
+  box-shadow:0 12px 26px rgba(185,21,91,.20) !important;
+}
+
+/* Snack toggle: centre knob and theme colours */
+html[data-theme="pink_lemonade"] .switch-btn{
+  width:54px !important;
+  height:32px !important;
+  min-width:54px !important;
+  padding:4px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  box-sizing:border-box !important;
+  line-height:0 !important;
+  background:#ead3dc !important;
+  border-radius:999px !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn span{
+  width:24px !important;
+  height:24px !important;
+  flex:0 0 24px !important;
+  border-radius:50% !important;
+  margin:0 !important;
+  transform:translateX(0) !important;
+  background:#fff8ef !important;
+  box-shadow:0 3px 10px rgba(87,16,50,.16) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#df2e7b 0%, #ffbf4f 100%) !important;
+}
+html[data-theme="pink_lemonade"] .switch-btn.is-on span{
+  transform:translateX(22px) !important;
+}
+
+/* Generic SVG/icon blue cleanup in Pink Lemonade, excluding the real blue logo image. */
+html[data-theme="pink_lemonade"] svg,
+html[data-theme="pink_lemonade"] svg *{
+  stroke:currentColor !important;
+}
+html[data-theme="pink_lemonade"] .hearty-shell-logo-img,
+html[data-theme="pink_lemonade"] .hearty-shell-logo-img *{
+  filter:none !important;
+}
+
+
+/* HEARTY STEP 5N-C — final Pink Lemonade finishing pass */
+html[data-theme="pink_lemonade"] .first-time-guide-card .action-btn.primary,
+html[data-theme="pink_lemonade"] .first-time-guide-card .action-btn.primary:link,
+html[data-theme="pink_lemonade"] .first-time-guide-card .action-btn.primary:visited,
+html[data-theme="pink_lemonade"] #supportPrimary,
+html[data-theme="pink_lemonade"] #supportPrimary:link,
+html[data-theme="pink_lemonade"] #supportPrimary:visited,
+html[data-theme="pink_lemonade"] .soft-btn,
+html[data-theme="pink_lemonade"] .soft-btn *{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(185,21,91,.24) !important;
+  text-shadow:none !important;
+}
+html[data-theme="pink_lemonade"] .ghost-btn,
+html[data-theme="pink_lemonade"] #supportOff{
+  color:#6f3f56 !important;
+}
+
+/* Restore coherent home ring colours after broad SVG cleanup rules */
+html[data-theme="pink_lemonade"] .ring-wrap svg .ring-track{
+  stroke:#f1d9e4 !important;
+}
+html[data-theme="pink_lemonade"] .ring-wrap svg .ring-progress.ring-orange{
+  stroke:#8f1248 !important;
+}
+html[data-theme="pink_lemonade"] .ring-wrap svg .ring-progress.ring-teal{
+  stroke:#ffbf4f !important;
+}
+html[data-theme="pink_lemonade"] .ring-center{
+  background:linear-gradient(180deg,#fffdf8,#fff6f9) !important;
+  border-color:rgba(217,36,116,.12) !important;
+}
+html[data-theme="pink_lemonade"] .pill-dot{
+  background:#ffbf4f !important;
+  box-shadow:0 0 0 4px rgba(255,191,79,.18) !important;
+}
+html[data-theme="pink_lemonade"] .status-pill:not(.on) .pill-dot{
+  background:#d9c2cd !important;
+  box-shadow:none !important;
+}
+
+/* Support page mini-strip still had blue emphasis */
+html[data-theme="pink_lemonade"] .support-mini-strip span{
+  background:linear-gradient(180deg,#fffaf2,#fff3ea) !important;
+  color:#7a5566 !important;
+  border-color:rgba(217,36,116,.14) !important;
+}
+html[data-theme="pink_lemonade"] .support-mini-strip b{
+  color:#b9155b !important;
+}
+
+/* Progress page remaining blue text and pills */
+html[data-theme="pink_lemonade"] #weightLost,
+html[data-theme="pink_lemonade"] .weight-loss,
+html[data-theme="pink_lemonade"] .fatloss-empty-copy a,
+html[data-theme="pink_lemonade"] .fatloss-chart-copy a{
+  color:#b9155b !important;
+}
+html[data-theme="pink_lemonade"] #fatlossStatus,
+html[data-theme="pink_lemonade"] .fatloss-mini-note,
+html[data-theme="pink_lemonade"] .fatloss-mini-note.ahead,
+html[data-theme="pink_lemonade"] .fatloss-mini-note.behind,
+html[data-theme="pink_lemonade"] .fatloss-mini-note.on-track{
+  background:linear-gradient(180deg,#fffaf2,#fff0e2) !important;
+  color:#7f1748 !important;
+  border:1px solid rgba(217,36,116,.16) !important;
+  box-shadow:0 8px 18px rgba(121,12,60,.08) !important;
+}
+html[data-theme="pink_lemonade"] .date-picker-btn,
+html[data-theme="pink_lemonade"] .date-picker-btn .meta,
+html[data-theme="pink_lemonade"] .date-picker-btn svg{
+  color:#8a5b72 !important;
+  stroke:#8a5b72 !important;
+}
+html[data-theme="pink_lemonade"] .angle-btn{
+  background:linear-gradient(180deg,#fff8fb,#fff1f5) !important;
+  color:#8a5b72 !important;
+  border:1px solid rgba(217,36,116,.14) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92) !important;
+}
+html[data-theme="pink_lemonade"] .angle-btn.active{
+  background:linear-gradient(180deg,#ffe88e,#ffd34f) !important;
+  color:#8f1248 !important;
+  border-color:rgba(255,191,79,.24) !important;
+  box-shadow:0 10px 18px rgba(255,191,79,.18), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+html[data-theme="pink_lemonade"] .gallery-action-btn,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-a,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-b{
+  color:#7f1748 !important;
+}
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-a,
+html[data-theme="pink_lemonade"] .gallery-action-btn.active-b{
+  background:linear-gradient(180deg,#fffaf2,#fff0e2) !important;
+  border-color:rgba(217,36,116,.16) !important;
+}
+
+/* Meals page remaining blue log buttons */
+html[data-theme="pink_lemonade"] .meal-card__actions button[data-log-protein],
+html[data-theme="pink_lemonade"] .meal-card__actions button.log-protein,
+html[data-theme="pink_lemonade"] .meal-card__actions button.log-protein-btn,
+html[data-theme="pink_lemonade"] .meal-card__actions button[data-log-protein] *,
+html[data-theme="pink_lemonade"] .meal-card__actions button.log-protein *,
+html[data-theme="pink_lemonade"] .meal-card__actions button.log-protein-btn *{
+  background:linear-gradient(180deg,#df2e7b 0%, #b9155b 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(185,21,91,.22) !important;
+  box-shadow:0 12px 26px rgba(185,21,91,.20) !important;
+}
+
+/* Any remaining blue utility text/icons on progress/support/meals/exercise */
+html[data-theme="pink_lemonade"] .support-card [style*="#2f6df6"],
+html[data-theme="pink_lemonade"] .progress-card [style*="#2f6df6"],
+html[data-theme="pink_lemonade"] .meal-card [style*="#2f6df6"],
+html[data-theme="pink_lemonade"] .planner-card [style*="#2f6df6"],
+html[data-theme="pink_lemonade"] .rhythm-card [style*="#2f6df6"]{
+  color:#b9155b !important;
+}
+
+
+/* HEARTY STEP 5O — Ocean Blue theme background integration.
+   The clean_blue id is preserved for stability, but visually this is now Ocean Blue. */
+html[data-theme="clean_blue"]{
+  --hf-bg: linear-gradient(180deg,#eaf8ff 0%, #cfefff 44%, #0b4f90 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 520px at 50% -8%, rgba(255,255,255,.42), transparent 62%),
+    radial-gradient(760px 460px at 18% 8%, rgba(85,195,235,.20), transparent 58%),
+    radial-gradient(700px 520px at 95% 82%, rgba(0,79,150,.20), transparent 64%) !important;
+  --hf-surface: rgba(247,253,255,.94) !important;
+  --hf-surface-strong: rgba(255,255,255,.98) !important;
+  --hf-surface-soft: rgba(236,248,255,.92) !important;
+  --hf-border: rgba(62,139,193,.24) !important;
+  --hf-border-strong: rgba(38,119,185,.32) !important;
+  --hf-text: #102033 !important;
+  --hf-muted: #557083 !important;
+  --hf-primary: #1769c2 !important;
+  --hf-accent: #22b8d6 !important;
+  --hf-primary-text: #ffffff !important;
+  --theme-accent: #1769c2 !important;
+  --theme-accent-2: #22b8d6 !important;
+  --accent: #1769c2 !important;
+  --accent-2: #22b8d6 !important;
+  --hf-shadow: 0 26px 64px rgba(8,54,105,.20) !important;
+  --hf-shadow-soft: 0 12px 30px rgba(8,54,105,.12) !important;
+  --hf-nav-bg: rgba(246,252,255,.94) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(219,243,255,.98),rgba(255,255,255,.96)) !important;
+  --hf-nav-active-text: #105aa7 !important;
+  --hb-texture-opacity: .14;
+}
+
+html[data-theme="clean_blue"] body::after{
+  opacity:.78 !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(5,45,94,.12)),
+    url("../assets/backgrounds/ocean-blue-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.02) contrast(1.02) brightness(1.02) !important;
+  mix-blend-mode:normal !important;
+}
+
+/* Ocean Blue shell polish: light, watery surfaces over the real ocean background. */
+html[data-theme="clean_blue"] .hearty-shell-topbar{
+  background:
+    radial-gradient(260px 140px at 50% 0%, rgba(255,255,255,.50), transparent 72%),
+    linear-gradient(135deg, rgba(255,255,255,.96), rgba(230,247,255,.92)) !important;
+  border-color:rgba(62,139,193,.20) !important;
+  box-shadow:0 16px 40px rgba(8,54,105,.12), inset 0 1px 0 rgba(255,255,255,.80) !important;
+}
+html[data-theme="clean_blue"] .hearty-page-strip{
+  background:
+    radial-gradient(360px 180px at 50% 0%, rgba(255,255,255,.46), transparent 72%),
+    linear-gradient(135deg, rgba(249,253,255,.94), rgba(226,245,255,.90)) !important;
+  border-color:rgba(62,139,193,.18) !important;
+  box-shadow:0 18px 46px rgba(8,54,105,.12), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="clean_blue"] .hearty-shell-bottom-nav,
+html[data-theme="clean_blue"] .bottom-nav,
+html[data-theme="clean_blue"] #bottomNav,
+html[data-theme="clean_blue"] .hearty-unified-nav{
+  background:linear-gradient(180deg, rgba(248,253,255,.96), rgba(231,247,255,.94)) !important;
+  border-color:rgba(62,139,193,.20) !important;
+  box-shadow:0 16px 40px rgba(8,54,105,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="clean_blue"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="clean_blue"] .bottom-nav .nav-item.active,
+html[data-theme="clean_blue"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg, rgba(210,240,255,.98), rgba(244,252,255,.98)) !important;
+  color:#105aa7 !important;
+  box-shadow:0 12px 24px rgba(23,105,194,.14), inset 0 1px 0 rgba(255,255,255,.85) !important;
+}
+
+/* Ocean Blue cards/buttons: keep existing blue identity, but make it feel more premium. */
+html[data-theme="clean_blue"] .card,
+html[data-theme="clean_blue"] .settings-card,
+html[data-theme="clean_blue"] .hero-card,
+html[data-theme="clean_blue"] .progress-card,
+html[data-theme="clean_blue"] .support-card,
+html[data-theme="clean_blue"] .meal-card,
+html[data-theme="clean_blue"] .planner-card,
+html[data-theme="clean_blue"] .rhythm-card,
+html[data-theme="clean_blue"] .guide-section,
+html[data-theme="clean_blue"] .help-card,
+html[data-theme="clean_blue"] .post-card,
+html[data-theme="clean_blue"] .composer-card,
+html[data-theme="clean_blue"] .profile-card,
+html[data-theme="clean_blue"] .people-card,
+html[data-theme="clean_blue"] .knowledge-card,
+html[data-theme="clean_blue"] .tool-item,
+html[data-theme="clean_blue"] .advice-item,
+html[data-theme="clean_blue"] .readout-card,
+html[data-theme="clean_blue"] .stat-card,
+html[data-theme="clean_blue"] .empty-card,
+html[data-theme="clean_blue"] .placeholder-card,
+html[data-theme="clean_blue"] .ring-block{
+  background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(238,249,255,.90)) !important;
+  border-color:rgba(62,139,193,.18) !important;
+  box-shadow:0 20px 50px rgba(8,54,105,.13), inset 0 1px 0 rgba(255,255,255,.80) !important;
+}
+html[data-theme="clean_blue"] .btn.primary,
+html[data-theme="clean_blue"] .action-btn.primary,
+html[data-theme="clean_blue"] .primary-btn,
+html[data-theme="clean_blue"] .soft-btn,
+html[data-theme="clean_blue"] .planner-action.primary,
+html[data-theme="clean_blue"] .sheet-btn-primary,
+html[data-theme="clean_blue"] .support-top-action,
+html[data-theme="clean_blue"] .meal-card__actions button[data-log-protein],
+html[data-theme="clean_blue"] .meal-card__actions button.log-protein,
+html[data-theme="clean_blue"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#2483dd 0%, #115cae 100%) !important;
+  color:#fff !important;
+  border-color:rgba(17,92,174,.18) !important;
+  box-shadow:0 14px 30px rgba(17,92,174,.20) !important;
+}
+html[data-theme="clean_blue"] .ring-progress.ring-orange{
+  stroke:#1769c2 !important;
+}
+html[data-theme="clean_blue"] .ring-progress.ring-teal{
+  stroke:#21bdd6 !important;
+}
+html[data-theme="clean_blue"] .hydration-drop-wrap,
+html[data-theme="clean_blue"] .trend-empty-icon,
+html[data-theme="clean_blue"] .fatloss-empty-icon{
+  color:#1769c2 !important;
+  background:linear-gradient(180deg,#e5f7ff,#ccefff) !important;
+  border-color:rgba(38,119,185,.18) !important;
+}
+
+@media (max-width:900px){
+  html[data-theme="clean_blue"] body::after{
+    opacity:.74 !important;
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5O-B — Ocean Blue polish pass */
+html[data-theme="clean_blue"] .btn.primary,
+html[data-theme="clean_blue"] .action-btn.primary,
+html[data-theme="clean_blue"] .primary-btn,
+html[data-theme="clean_blue"] .soft-btn,
+html[data-theme="clean_blue"] .planner-action.primary,
+html[data-theme="clean_blue"] .sheet-btn-primary,
+html[data-theme="clean_blue"] .support-top-action,
+html[data-theme="clean_blue"] .meal-card__actions button[data-log-protein],
+html[data-theme="clean_blue"] .meal-card__actions button.log-protein,
+html[data-theme="clean_blue"] .meal-card__actions button.log-protein-btn,
+html[data-theme="clean_blue"] .off-btn.active{
+  background:linear-gradient(180deg,#196bbd 0%, #0b4e97 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(11,78,151,.24) !important;
+  box-shadow:0 14px 32px rgba(11,78,151,.24) !important;
+}
+html[data-theme="clean_blue"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="clean_blue"] .bottom-nav .nav-item.active,
+html[data-theme="clean_blue"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg, rgba(191,227,252,.98), rgba(231,246,255,.98)) !important;
+  color:#0d4f98 !important;
+  box-shadow:0 12px 24px rgba(13,79,152,.14), inset 0 1px 0 rgba(255,255,255,.85) !important;
+}
+
+/* Meals: centre snack toggle more cleanly */
+html[data-theme="clean_blue"] .switch-btn{
+  width:54px !important;
+  height:32px !important;
+  min-width:54px !important;
+  padding:4px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  box-sizing:border-box !important;
+  line-height:0 !important;
+  background:#cfdae6 !important;
+}
+html[data-theme="clean_blue"] .switch-btn span{
+  width:24px !important;
+  height:24px !important;
+  flex:0 0 24px !important;
+  margin:0 !important;
+  border-radius:50% !important;
+  background:#ffffff !important;
+  box-shadow:0 3px 10px rgba(15,35,55,.16) !important;
+  transform:translateX(0) !important;
+}
+html[data-theme="clean_blue"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#1a74cd 0%, #1fb3d5 100%) !important;
+}
+html[data-theme="clean_blue"] .switch-btn.is-on span{
+  transform:translateX(22px) !important;
+}
+
+/* Support page: remove decorative bubble for Ocean Blue */
+html[data-theme="clean_blue"] .support-hero::before{
+  display:none !important;
+  content:none !important;
+}
+html[data-theme="clean_blue"] .support-hero{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(243,250,255,.92)) !important;
+}
+
+/* Settings: make privacy note match the card above and give proper spacing */
+html[data-theme="clean_blue"] .hearty-privacy-note{
+  margin-top:16px !important;
+  margin-bottom:0 !important;
+  padding:18px 18px !important;
+  border-radius:22px !important;
+  border:1px solid rgba(62,139,193,.18) !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(238,249,255,.90)) !important;
+  color:#557083 !important;
+  box-shadow:0 20px 50px rgba(8,54,105,.13), inset 0 1px 0 rgba(255,255,255,.80) !important;
+}
+
+
+/* HEARTY STEP 5P — Remaining premium theme backgrounds
+   Adds finished visual systems for Midnight, Champagne Blush and Aurora Pop. */
+
+/* Midnight: black space theme */
+html[data-theme="midnight"]{
+  --hf-bg: linear-gradient(180deg,#030812 0%,#07101e 48%,#02060d 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 520px at 48% -10%, rgba(160,190,255,.16), transparent 62%),
+    radial-gradient(720px 440px at 12% 18%, rgba(80,120,210,.10), transparent 60%),
+    radial-gradient(640px 420px at 86% 92%, rgba(70,120,200,.10), transparent 68%) !important;
+  --hf-surface: rgba(12,22,36,.90) !important;
+  --hf-surface-strong: rgba(18,31,49,.96) !important;
+  --hf-surface-soft: rgba(9,18,31,.88) !important;
+  --hf-border: rgba(185,205,235,.16) !important;
+  --hf-border-strong: rgba(185,205,235,.28) !important;
+  --hf-text: #f6f9ff !important;
+  --hf-muted: #aebdd2 !important;
+  --hf-primary: #9db9ff !important;
+  --hf-accent: #63d6ff !important;
+  --theme-accent: #9db9ff !important;
+  --theme-accent-2: #63d6ff !important;
+  --accent: #9db9ff !important;
+  --accent-2: #63d6ff !important;
+  --hf-shadow: 0 28px 72px rgba(0,0,0,.56) !important;
+  --hf-shadow-soft: 0 16px 40px rgba(0,0,0,.38) !important;
+  --hf-nav-bg: rgba(11,21,35,.92) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(51,78,123,.92),rgba(19,33,54,.96)) !important;
+  --hf-nav-active-text: #ffffff !important;
+  --hb-texture-opacity: .08;
+}
+html[data-theme="midnight"] body::after{
+  opacity:.72 !important;
+  background:
+    linear-gradient(180deg, rgba(2,6,13,.18), rgba(2,6,13,.50)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.02) contrast(1.05) brightness(.88) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="midnight"] .hearty-shell-topbar,
+html[data-theme="midnight"] .hearty-page-strip,
+html[data-theme="midnight"] .card,
+html[data-theme="midnight"] .settings-card,
+html[data-theme="midnight"] .hero-card,
+html[data-theme="midnight"] .progress-card,
+html[data-theme="midnight"] .support-card,
+html[data-theme="midnight"] .meal-card,
+html[data-theme="midnight"] .planner-card,
+html[data-theme="midnight"] .rhythm-card,
+html[data-theme="midnight"] .guide-section,
+html[data-theme="midnight"] .help-card,
+html[data-theme="midnight"] .post-card,
+html[data-theme="midnight"] .composer-card,
+html[data-theme="midnight"] .profile-card,
+html[data-theme="midnight"] .people-card,
+html[data-theme="midnight"] .knowledge-card,
+html[data-theme="midnight"] .tool-item,
+html[data-theme="midnight"] .advice-item,
+html[data-theme="midnight"] .readout-card,
+html[data-theme="midnight"] .stat-card,
+html[data-theme="midnight"] .empty-card,
+html[data-theme="midnight"] .placeholder-card,
+html[data-theme="midnight"] .ring-block{
+  background:linear-gradient(180deg,rgba(18,31,49,.92),rgba(9,18,31,.88)) !important;
+  border-color:rgba(185,205,235,.16) !important;
+  color:#f6f9ff !important;
+  box-shadow:0 24px 60px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+html[data-theme="midnight"] .hearty-shell-bottom-nav,
+html[data-theme="midnight"] .bottom-nav,
+html[data-theme="midnight"] #bottomNav,
+html[data-theme="midnight"] .hearty-unified-nav{
+  background:linear-gradient(180deg,rgba(13,24,39,.95),rgba(7,15,27,.94)) !important;
+  border-color:rgba(185,205,235,.16) !important;
+  box-shadow:0 18px 46px rgba(0,0,0,.50), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+html[data-theme="midnight"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="midnight"] .bottom-nav .nav-item.active,
+html[data-theme="midnight"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(72,102,155,.86),rgba(28,48,78,.96)) !important;
+  color:#ffffff !important;
+  box-shadow:0 12px 26px rgba(99,147,255,.18), inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+html[data-theme="midnight"] .btn.primary,
+html[data-theme="midnight"] .action-btn.primary,
+html[data-theme="midnight"] .primary-btn,
+html[data-theme="midnight"] .soft-btn,
+html[data-theme="midnight"] .planner-action.primary,
+html[data-theme="midnight"] .sheet-btn-primary,
+html[data-theme="midnight"] .support-top-action,
+html[data-theme="midnight"] .meal-card__actions button[data-log-protein],
+html[data-theme="midnight"] .meal-card__actions button.log-protein,
+html[data-theme="midnight"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#89a8ff 0%, #496fc5 100%) !important;
+  color:#07101e !important;
+  border-color:rgba(137,168,255,.22) !important;
+  box-shadow:0 14px 30px rgba(73,111,197,.26) !important;
+}
+html[data-theme="midnight"] .btn.secondary,
+html[data-theme="midnight"] .secondary-btn,
+html[data-theme="midnight"] .ghost-btn,
+html[data-theme="midnight"] .planner-action:not(.primary),
+html[data-theme="midnight"] .off-btn,
+html[data-theme="midnight"] .support-off-btn,
+html[data-theme="midnight"] .theme-option,
+html[data-theme="midnight"] .link-item,
+html[data-theme="midnight"] .day-tab,
+html[data-theme="midnight"] .planner-day,
+html[data-theme="midnight"] .angle-btn,
+html[data-theme="midnight"] .date-picker-btn{
+  background:linear-gradient(180deg,rgba(22,37,59,.94),rgba(12,23,39,.92)) !important;
+  color:#d8e3f4 !important;
+  border-color:rgba(185,205,235,.14) !important;
+}
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="midnight"] .hearty-shell-logo-frame{
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(255,255,255,.24) !important;
+}
+
+/* Champagne Blush: nude/gold high-end cosmetics theme */
+html[data-theme="soft_rose"]{
+  --hf-bg: linear-gradient(180deg,#fff2e1 0%,#f7d4bd 52%,#eab29d 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 520px at 10% -8%, rgba(255,216,180,.32), transparent 62%),
+    radial-gradient(760px 430px at 98% 2%, rgba(205,154,88,.20), transparent 58%),
+    radial-gradient(620px 420px at 10% 92%, rgba(211,112,105,.16), transparent 66%) !important;
+  --hf-surface: rgba(255,248,238,.94) !important;
+  --hf-surface-strong: rgba(255,252,246,.985) !important;
+  --hf-surface-soft: rgba(255,239,225,.94) !important;
+  --hf-border: rgba(182,126,83,.24) !important;
+  --hf-border-strong: rgba(185,132,70,.36) !important;
+  --hf-text: #2a1a16 !important;
+  --hf-muted: #73594e !important;
+  --hf-primary: #9d6a38 !important;
+  --hf-accent: #d39b55 !important;
+  --theme-accent: #9d6a38 !important;
+  --theme-accent-2: #d39b55 !important;
+  --accent: #9d6a38 !important;
+  --accent-2: #d39b55 !important;
+  --hf-shadow: 0 26px 64px rgba(122,74,45,.18) !important;
+  --hf-shadow-soft: 0 14px 34px rgba(122,74,45,.11) !important;
+  --hf-nav-bg: rgba(255,247,238,.94) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(248,219,176,.98),rgba(255,248,238,.96)) !important;
+  --hf-nav-active-text: #7d4e28 !important;
+  --hb-texture-opacity: .14;
+}
+html[data-theme="soft_rose"] body::after{
+  opacity:.92 !important;
+  background:
+    linear-gradient(180deg, rgba(255,252,246,.08), rgba(182,129,74,.06)),
+    url("../assets/backgrounds/champagne-blush-floral-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.04) contrast(1.02) brightness(1.02) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-topbar,
+html[data-theme="soft_rose"] .hearty-page-strip,
+html[data-theme="soft_rose"] .card,
+html[data-theme="soft_rose"] .settings-card,
+html[data-theme="soft_rose"] .hero-card,
+html[data-theme="soft_rose"] .progress-card,
+html[data-theme="soft_rose"] .support-card,
+html[data-theme="soft_rose"] .meal-card,
+html[data-theme="soft_rose"] .planner-card,
+html[data-theme="soft_rose"] .rhythm-card,
+html[data-theme="soft_rose"] .guide-section,
+html[data-theme="soft_rose"] .help-card,
+html[data-theme="soft_rose"] .post-card,
+html[data-theme="soft_rose"] .composer-card,
+html[data-theme="soft_rose"] .profile-card,
+html[data-theme="soft_rose"] .people-card,
+html[data-theme="soft_rose"] .knowledge-card,
+html[data-theme="soft_rose"] .tool-item,
+html[data-theme="soft_rose"] .advice-item,
+html[data-theme="soft_rose"] .readout-card,
+html[data-theme="soft_rose"] .stat-card,
+html[data-theme="soft_rose"] .empty-card,
+html[data-theme="soft_rose"] .placeholder-card,
+html[data-theme="soft_rose"] .ring-block{
+  background:linear-gradient(180deg,rgba(255,250,244,.94),rgba(255,239,226,.90)) !important;
+  border-color:rgba(182,126,83,.22) !important;
+  box-shadow:0 20px 50px rgba(122,74,45,.14), inset 0 1px 0 rgba(255,255,255,.70) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav,
+html[data-theme="soft_rose"] .bottom-nav,
+html[data-theme="soft_rose"] #bottomNav,
+html[data-theme="soft_rose"] .hearty-unified-nav{
+  background:linear-gradient(180deg,rgba(255,249,241,.95),rgba(255,236,219,.93)) !important;
+  border-color:rgba(182,126,83,.22) !important;
+  box-shadow:0 16px 38px rgba(122,74,45,.16), inset 0 1px 0 rgba(255,255,255,.70) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(246,214,169,.96),rgba(255,246,235,.98)) !important;
+  color:#7d4e28 !important;
+  box-shadow:0 12px 26px rgba(157,106,56,.18), inset 0 1px 0 rgba(255,255,255,.75) !important;
+}
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#b88245 0%, #85552b 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(133,85,43,.18) !important;
+  box-shadow:0 14px 30px rgba(133,85,43,.22) !important;
+}
+html[data-theme="soft_rose"] .btn.secondary,
+html[data-theme="soft_rose"] .secondary-btn,
+html[data-theme="soft_rose"] .ghost-btn,
+html[data-theme="soft_rose"] .planner-action:not(.primary),
+html[data-theme="soft_rose"] .off-btn,
+html[data-theme="soft_rose"] .support-off-btn,
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .link-item,
+html[data-theme="soft_rose"] .day-tab,
+html[data-theme="soft_rose"] .planner-day,
+html[data-theme="soft_rose"] .angle-btn,
+html[data-theme="soft_rose"] .date-picker-btn{
+  background:linear-gradient(180deg,rgba(255,250,244,.98),rgba(255,238,222,.94)) !important;
+  color:#6f4b3a !important;
+  border-color:rgba(182,126,83,.18) !important;
+}
+html[data-theme="soft_rose"] .hydration-drop-wrap,
+html[data-theme="soft_rose"] .trend-empty-icon,
+html[data-theme="soft_rose"] .fatloss-empty-icon{
+  color:#9d6a38 !important;
+  background:linear-gradient(180deg,#fff3df,#f2d2a7) !important;
+  border-color:rgba(157,106,56,.20) !important;
+}
+html[data-theme="soft_rose"] .ring-progress.ring-orange{stroke:#9d6a38 !important;}
+html[data-theme="soft_rose"] .ring-progress.ring-teal{stroke:#d39b55 !important;}
+
+/* Aurora Pop: dark purple, teal and pink theme */
+html[data-theme="deep_berry"]{
+  --hf-bg: linear-gradient(180deg,#160318 0%,#35113b 48%,#120214 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 520px at 5% -8%, rgba(183,44,132,.25), transparent 62%),
+    radial-gradient(760px 430px at 98% 3%, rgba(255,122,203,.12), transparent 58%),
+    radial-gradient(640px 420px at 45% 100%, rgba(109,26,128,.18), transparent 68%) !important;
+  --hf-surface: rgba(42,12,48,.92) !important;
+  --hf-surface-strong: rgba(56,17,63,.97) !important;
+  --hf-surface-soft: rgba(34,8,41,.90) !important;
+  --hf-border: rgba(255,167,219,.22) !important;
+  --hf-border-strong: rgba(255,120,203,.34) !important;
+  --hf-text: #fff7fc !important;
+  --hf-muted: #e4bfd4 !important;
+  --hf-primary: #ef63b6 !important;
+  --hf-accent: #b156ff !important;
+  --theme-accent: #ef63b6 !important;
+  --theme-accent-2: #b156ff !important;
+  --accent: #ef63b6 !important;
+  --accent-2: #b156ff !important;
+  --hf-shadow: 0 28px 72px rgba(0,0,0,.54) !important;
+  --hf-shadow-soft: 0 16px 40px rgba(0,0,0,.38) !important;
+  --hf-nav-bg: rgba(34,8,41,.94) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(134,37,106,.94),rgba(62,15,70,.96)) !important;
+  --hf-nav-active-text: #ffffff !important;
+  --hb-texture-opacity: .10;
+}
+html[data-theme="deep_berry"] body::after{
+  opacity:.84 !important;
+  background:
+    linear-gradient(180deg, rgba(15,2,17,.12), rgba(15,2,17,.30)),
+    url("../assets/backgrounds/aurora-pop-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.04) contrast(1.03) brightness(.92) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-topbar,
+html[data-theme="deep_berry"] .hearty-page-strip,
+html[data-theme="deep_berry"] .card,
+html[data-theme="deep_berry"] .settings-card,
+html[data-theme="deep_berry"] .hero-card,
+html[data-theme="deep_berry"] .progress-card,
+html[data-theme="deep_berry"] .support-card,
+html[data-theme="deep_berry"] .meal-card,
+html[data-theme="deep_berry"] .planner-card,
+html[data-theme="deep_berry"] .rhythm-card,
+html[data-theme="deep_berry"] .guide-section,
+html[data-theme="deep_berry"] .help-card,
+html[data-theme="deep_berry"] .post-card,
+html[data-theme="deep_berry"] .composer-card,
+html[data-theme="deep_berry"] .profile-card,
+html[data-theme="deep_berry"] .people-card,
+html[data-theme="deep_berry"] .knowledge-card,
+html[data-theme="deep_berry"] .tool-item,
+html[data-theme="deep_berry"] .advice-item,
+html[data-theme="deep_berry"] .readout-card,
+html[data-theme="deep_berry"] .stat-card,
+html[data-theme="deep_berry"] .empty-card,
+html[data-theme="deep_berry"] .placeholder-card,
+html[data-theme="deep_berry"] .ring-block{
+  background:linear-gradient(180deg,rgba(56,17,63,.92),rgba(34,8,41,.90)) !important;
+  border-color:rgba(255,167,219,.20) !important;
+  color:#fff7fc !important;
+  box-shadow:0 24px 62px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-bottom-nav,
+html[data-theme="deep_berry"] .bottom-nav,
+html[data-theme="deep_berry"] #bottomNav,
+html[data-theme="deep_berry"] .hearty-unified-nav{
+  background:linear-gradient(180deg,rgba(45,12,52,.95),rgba(26,6,32,.94)) !important;
+  border-color:rgba(255,167,219,.18) !important;
+  box-shadow:0 18px 48px rgba(0,0,0,.50), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="deep_berry"] .bottom-nav .nav-item.active,
+html[data-theme="deep_berry"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(149,39,119,.94),rgba(70,17,78,.96)) !important;
+  color:#ffffff !important;
+  box-shadow:0 12px 26px rgba(239,99,182,.22), inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+html[data-theme="deep_berry"] .btn.primary,
+html[data-theme="deep_berry"] .action-btn.primary,
+html[data-theme="deep_berry"] .primary-btn,
+html[data-theme="deep_berry"] .soft-btn,
+html[data-theme="deep_berry"] .planner-action.primary,
+html[data-theme="deep_berry"] .sheet-btn-primary,
+html[data-theme="deep_berry"] .support-top-action,
+html[data-theme="deep_berry"] .meal-card__actions button[data-log-protein],
+html[data-theme="deep_berry"] .meal-card__actions button.log-protein,
+html[data-theme="deep_berry"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#f06bbb 0%, #9c287e 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(240,107,187,.22) !important;
+  box-shadow:0 14px 30px rgba(156,40,126,.30) !important;
+}
+html[data-theme="deep_berry"] .btn.secondary,
+html[data-theme="deep_berry"] .secondary-btn,
+html[data-theme="deep_berry"] .ghost-btn,
+html[data-theme="deep_berry"] .planner-action:not(.primary),
+html[data-theme="deep_berry"] .off-btn,
+html[data-theme="deep_berry"] .support-off-btn,
+html[data-theme="deep_berry"] .theme-option,
+html[data-theme="deep_berry"] .link-item,
+html[data-theme="deep_berry"] .day-tab,
+html[data-theme="deep_berry"] .planner-day,
+html[data-theme="deep_berry"] .angle-btn,
+html[data-theme="deep_berry"] .date-picker-btn{
+  background:linear-gradient(180deg,rgba(67,20,75,.94),rgba(38,10,48,.92)) !important;
+  color:#e9c4d8 !important;
+  border-color:rgba(255,167,219,.16) !important;
+}
+html[data-theme="deep_berry"] .hearty-logo-frame,
+html[data-theme="deep_berry"] .hearty-shell-logo-frame{
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(255,255,255,.24) !important;
+}
+html[data-theme="deep_berry"] .hydration-drop-wrap,
+html[data-theme="deep_berry"] .trend-empty-icon,
+html[data-theme="deep_berry"] .fatloss-empty-icon{
+  color:#ef63b6 !important;
+  background:linear-gradient(180deg,rgba(80,20,88,.96),rgba(46,11,56,.94)) !important;
+  border-color:rgba(255,167,219,.18) !important;
+}
+html[data-theme="deep_berry"] .ring-progress.ring-orange{stroke:#ef63b6 !important;}
+html[data-theme="deep_berry"] .ring-progress.ring-teal{stroke:#b156ff !important;}
+
+/* Shared theme refinements for new image-backed themes */
+html[data-theme="midnight"] .switch-btn,
+html[data-theme="deep_berry"] .switch-btn{
+  background:rgba(255,255,255,.14) !important;
+}
+html[data-theme="midnight"] .switch-btn span,
+html[data-theme="deep_berry"] .switch-btn span{
+  background:#ffffff !important;
+}
+html[data-theme="midnight"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#89a8ff,#54d5dd) !important;
+}
+html[data-theme="deep_berry"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#ef63b6,#b156ff) !important;
+}
+html[data-theme="soft_rose"] .switch-btn{
+  background:#ead5c5 !important;
+}
+html[data-theme="soft_rose"] .switch-btn.is-on{
+  background:linear-gradient(180deg,#b88245,#d39b55) !important;
+}
+html[data-theme="midnight"] .support-hero::before,
+html[data-theme="soft_rose"] .support-hero::before,
+html[data-theme="deep_berry"] .support-hero::before{
+  display:none !important;
+  content:none !important;
+}
+html[data-theme="midnight"] .hearty-privacy-note,
+html[data-theme="soft_rose"] .hearty-privacy-note,
+html[data-theme="deep_berry"] .hearty-privacy-note{
+  margin-top:16px !important;
+  padding:18px !important;
+  border-radius:22px !important;
+}
+@media (max-width:900px){
+  html[data-theme="midnight"] body::after,
+  html[data-theme="soft_rose"] body::after,
+  html[data-theme="deep_berry"] body::after{
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5P-B — Champagne Blush refinement: gold background + nude surfaces + dedicated logo */
+html[data-theme="soft_rose"]{
+  --hf-bg: linear-gradient(180deg,#fff3e7 0%,#f5dcc7 54%,#e8c29f 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(900px 520px at 12% -8%, rgba(255,233,205,.28), transparent 62%),
+    radial-gradient(760px 430px at 96% 5%, rgba(205,154,88,.18), transparent 58%),
+    radial-gradient(620px 420px at 10% 92%, rgba(233,194,146,.14), transparent 66%) !important;
+  --hf-surface: rgba(255,247,239,.95) !important;
+  --hf-surface-strong: rgba(255,251,246,.985) !important;
+  --hf-surface-soft: rgba(250,236,222,.94) !important;
+  --hf-border: rgba(184,140,89,.24) !important;
+  --hf-border-strong: rgba(182,132,70,.34) !important;
+  --hf-text: #2d1d18 !important;
+  --hf-muted: #73594e !important;
+  --hf-primary: #a56b30 !important;
+  --hf-accent: #d4a15d !important;
+  --theme-accent: #a56b30 !important;
+  --theme-accent-2: #d4a15d !important;
+  --accent: #a56b30 !important;
+  --accent-2: #d4a15d !important;
+  --hf-shadow: 0 28px 68px rgba(122,74,45,.16) !important;
+  --hf-shadow-soft: 0 14px 34px rgba(122,74,45,.10) !important;
+  --hf-nav-bg: rgba(255,247,238,.95) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(245,220,184,.98),rgba(255,247,238,.96)) !important;
+  --hf-nav-active-text: #7d4e28 !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-topbar,
+html[data-theme="soft_rose"] .hearty-page-strip,
+html[data-theme="soft_rose"] .card,
+html[data-theme="soft_rose"] .settings-card,
+html[data-theme="soft_rose"] .hero-card,
+html[data-theme="soft_rose"] .progress-card,
+html[data-theme="soft_rose"] .support-card,
+html[data-theme="soft_rose"] .meal-card,
+html[data-theme="soft_rose"] .planner-card,
+html[data-theme="soft_rose"] .rhythm-card,
+html[data-theme="soft_rose"] .guide-section,
+html[data-theme="soft_rose"] .help-card,
+html[data-theme="soft_rose"] .post-card,
+html[data-theme="soft_rose"] .composer-card,
+html[data-theme="soft_rose"] .profile-card,
+html[data-theme="soft_rose"] .people-card,
+html[data-theme="soft_rose"] .knowledge-card,
+html[data-theme="soft_rose"] .tool-item,
+html[data-theme="soft_rose"] .advice-item,
+html[data-theme="soft_rose"] .readout-card,
+html[data-theme="soft_rose"] .stat-card,
+html[data-theme="soft_rose"] .empty-card,
+html[data-theme="soft_rose"] .placeholder-card,
+html[data-theme="soft_rose"] .ring-block{
+  background:linear-gradient(180deg,rgba(255,250,245,.95),rgba(248,236,223,.92)) !important;
+  border-color:rgba(184,140,89,.22) !important;
+  box-shadow:0 20px 50px rgba(122,74,45,.12), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav,
+html[data-theme="soft_rose"] .bottom-nav,
+html[data-theme="soft_rose"] #bottomNav,
+html[data-theme="soft_rose"] .hearty-unified-nav{
+  background:linear-gradient(180deg,rgba(255,250,244,.96),rgba(249,236,222,.94)) !important;
+  border-color:rgba(184,140,89,.22) !important;
+  box-shadow:0 16px 38px rgba(122,74,45,.14), inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(246,218,173,.98),rgba(255,248,238,.98)) !important;
+  color:#875327 !important;
+  box-shadow:0 12px 24px rgba(165,107,48,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#bb8343 0%, #94602d 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(148,96,45,.22) !important;
+  box-shadow:0 14px 30px rgba(148,96,45,.20) !important;
+}
+html[data-theme="soft_rose"] .btn.secondary,
+html[data-theme="soft_rose"] .secondary-btn,
+html[data-theme="soft_rose"] .ghost-btn,
+html[data-theme="soft_rose"] .planner-action:not(.primary),
+html[data-theme="soft_rose"] .off-btn,
+html[data-theme="soft_rose"] .support-off-btn,
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .link-item,
+html[data-theme="soft_rose"] .day-tab,
+html[data-theme="soft_rose"] .planner-day,
+html[data-theme="soft_rose"] .angle-btn,
+html[data-theme="soft_rose"] .date-picker-btn{
+  background:linear-gradient(180deg,rgba(255,251,246,.98),rgba(247,234,220,.95)) !important;
+  color:#6f4b3a !important;
+  border-color:rgba(184,140,89,.18) !important;
+}
+html[data-theme="soft_rose"] .hydration-drop-wrap,
+html[data-theme="soft_rose"] .trend-empty-icon,
+html[data-theme="soft_rose"] .fatloss-empty-icon{
+  color:#a56b30 !important;
+  background:linear-gradient(180deg,#fff3df,#f3d8b6) !important;
+  border-color:rgba(165,107,48,.20) !important;
+}
+html[data-theme="soft_rose"] .ring-progress.ring-orange{stroke:#a56b30 !important;}
+html[data-theme="soft_rose"] .ring-progress.ring-teal{stroke:#d4a15d !important;}
+html[data-theme="soft_rose"] .hearty-shell-logo-frame,
+html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame{
+  background:linear-gradient(180deg, rgba(255,253,249,.98), rgba(251,239,225,.96)) !important;
+  border-color:rgba(184,140,89,.22) !important;
+  box-shadow:0 10px 24px rgba(148,96,45,.10), inset 0 1px 0 rgba(255,255,255,.88) !important;
+  padding:8px 12px !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img{
+  height:46px !important;
+  width:auto !important;
+  max-width:min(70vw, 238px) !important;
+}
+
+
+/* HEARTY STEP 5Q — Aurora Pop theme trial.
+   Finalises Aurora Pop as the fun neon purple/teal/pink option. */
+html[data-theme="deep_berry"]{
+  --hf-bg: linear-gradient(180deg,#24114a 0%, #3f1370 56%, #1b0f42 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(780px 420px at 18% 8%, rgba(255,89,202,.18), transparent 58%),
+    radial-gradient(760px 420px at 92% 10%, rgba(33,230,243,.18), transparent 58%),
+    radial-gradient(900px 540px at 50% 100%, rgba(141,96,255,.16), transparent 64%) !important;
+  --hf-surface: rgba(251,245,255,.94) !important;
+  --hf-surface-strong: rgba(255,251,255,.985) !important;
+  --hf-surface-soft: rgba(241,233,250,.94) !important;
+  --hf-border: rgba(165,118,255,.20) !important;
+  --hf-border-strong: rgba(90,224,232,.26) !important;
+  --hf-text: #26163a !important;
+  --hf-muted: #6d5a8d !important;
+  --hf-primary: #8a3ef2 !important;
+  --hf-accent: #20d8ea !important;
+  --theme-accent: #8a3ef2 !important;
+  --theme-accent-2: #20d8ea !important;
+  --accent: #8a3ef2 !important;
+  --accent-2: #20d8ea !important;
+  --hf-shadow: 0 28px 68px rgba(25,12,58,.24) !important;
+  --hf-shadow-soft: 0 14px 34px rgba(25,12,58,.14) !important;
+  --hf-nav-bg: rgba(250,245,255,.95) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(227,241,255,.98),rgba(245,238,255,.98)) !important;
+  --hf-nav-active-text: #2dbdd4 !important;
+}
+html[data-theme="deep_berry"] body::after{
+  opacity:.90 !important;
+  background:
+    linear-gradient(180deg, rgba(18,8,36,.12), rgba(20,10,38,.12)),
+    url("../assets/backgrounds/aurora-pop-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.02) contrast(1.02) brightness(1.01) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-topbar,
+html[data-theme="deep_berry"] .hearty-page-strip,
+html[data-theme="deep_berry"] .card,
+html[data-theme="deep_berry"] .settings-card,
+html[data-theme="deep_berry"] .hero-card,
+html[data-theme="deep_berry"] .progress-card,
+html[data-theme="deep_berry"] .support-card,
+html[data-theme="deep_berry"] .meal-card,
+html[data-theme="deep_berry"] .planner-card,
+html[data-theme="deep_berry"] .rhythm-card,
+html[data-theme="deep_berry"] .guide-section,
+html[data-theme="deep_berry"] .help-card,
+html[data-theme="deep_berry"] .post-card,
+html[data-theme="deep_berry"] .composer-card,
+html[data-theme="deep_berry"] .profile-card,
+html[data-theme="deep_berry"] .people-card,
+html[data-theme="deep_berry"] .knowledge-card,
+html[data-theme="deep_berry"] .tool-item,
+html[data-theme="deep_berry"] .advice-item,
+html[data-theme="deep_berry"] .readout-card,
+html[data-theme="deep_berry"] .stat-card,
+html[data-theme="deep_berry"] .empty-card,
+html[data-theme="deep_berry"] .placeholder-card,
+html[data-theme="deep_berry"] .ring-block{
+  background:linear-gradient(180deg,rgba(255,249,255,.96),rgba(241,234,250,.93)) !important;
+  border-color:rgba(140,87,240,.16) !important;
+  box-shadow:0 20px 52px rgba(25,12,58,.16), inset 0 1px 0 rgba(255,255,255,.84) !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-bottom-nav,
+html[data-theme="deep_berry"] .bottom-nav,
+html[data-theme="deep_berry"] #bottomNav,
+html[data-theme="deep_berry"] .hearty-unified-nav{
+  background:linear-gradient(180deg,rgba(251,246,255,.96),rgba(237,229,248,.95)) !important;
+  border-color:rgba(140,87,240,.16) !important;
+  box-shadow:0 16px 40px rgba(25,12,58,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="deep_berry"] .bottom-nav .nav-item.active,
+html[data-theme="deep_berry"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(212,255,255,.98),rgba(238,247,255,.98)) !important;
+  color:#1dbcd2 !important;
+  box-shadow:0 12px 26px rgba(32,216,234,.18), inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+html[data-theme="deep_berry"] .btn.primary,
+html[data-theme="deep_berry"] .action-btn.primary,
+html[data-theme="deep_berry"] .primary-btn,
+html[data-theme="deep_berry"] .soft-btn,
+html[data-theme="deep_berry"] .planner-action.primary,
+html[data-theme="deep_berry"] .sheet-btn-primary,
+html[data-theme="deep_berry"] .support-top-action,
+html[data-theme="deep_berry"] .meal-card__actions button[data-log-protein],
+html[data-theme="deep_berry"] .meal-card__actions button.log-protein,
+html[data-theme="deep_berry"] .meal-card__actions button.log-protein-btn{
+  background:linear-gradient(180deg,#9648f6 0%, #18bed6 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(32,216,234,.18) !important;
+  box-shadow:0 14px 32px rgba(42,196,221,.22) !important;
+}
+html[data-theme="deep_berry"] .btn.secondary,
+html[data-theme="deep_berry"] .secondary-btn,
+html[data-theme="deep_berry"] .ghost-btn,
+html[data-theme="deep_berry"] .planner-action:not(.primary),
+html[data-theme="deep_berry"] .off-btn,
+html[data-theme="deep_berry"] .support-off-btn,
+html[data-theme="deep_berry"] .theme-option,
+html[data-theme="deep_berry"] .link-item,
+html[data-theme="deep_berry"] .day-tab,
+html[data-theme="deep_berry"] .planner-day,
+html[data-theme="deep_berry"] .angle-btn,
+html[data-theme="deep_berry"] .date-picker-btn{
+  background:linear-gradient(180deg,rgba(252,248,255,.98),rgba(240,233,249,.95)) !important;
+  color:#6a4f8c !important;
+  border-color:rgba(140,87,240,.16) !important;
+}
+html[data-theme="deep_berry"] .hearty-logo-frame,
+html[data-theme="deep_berry"] .hearty-shell-logo-frame{
+  background:linear-gradient(180deg,rgba(251,246,255,.98),rgba(236,229,248,.96)) !important;
+  border-color:rgba(140,87,240,.18) !important;
+  box-shadow:0 12px 26px rgba(25,12,58,.12), inset 0 1px 0 rgba(255,255,255,.86) !important;
+}
+html[data-theme="deep_berry"] .hydration-drop-wrap,
+html[data-theme="deep_berry"] .trend-empty-icon,
+html[data-theme="deep_berry"] .fatloss-empty-icon{
+  color:#8a3ef2 !important;
+  background:linear-gradient(180deg,#eef2ff,#d6fff8) !important;
+  border-color:rgba(32,216,234,.18) !important;
+}
+html[data-theme="deep_berry"] .ring-progress.ring-orange{stroke:#8a3ef2 !important;}
+html[data-theme="deep_berry"] .ring-progress.ring-teal{stroke:#20d8ea !important;}
+html[data-theme="deep_berry"] .switch-btn{background:#d9d2e8 !important;}
+html[data-theme="deep_berry"] .switch-btn.is-on{background:linear-gradient(180deg,#9648f6,#19c5db) !important;}
+html[data-theme="deep_berry"] .support-hero::before{display:none !important;}
+html[data-theme="deep_berry"] .hearty-privacy-note{
+  background:linear-gradient(180deg,rgba(255,249,255,.96),rgba(241,234,250,.93)) !important;
+  border-color:rgba(140,87,240,.16) !important;
+}
+@media (max-width:900px){
+  html[data-theme="deep_berry"] body::after{
+    opacity:.88 !important;
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5Q-B — Aurora Pop polish pass */
+html[data-theme="deep_berry"] body::after{
+  opacity:.90 !important;
+  background-image:
+    linear-gradient(180deg, rgba(18,8,36,.10), rgba(20,10,38,.14)),
+    url("../assets/backgrounds/aurora-pop-background.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1480px auto !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.01) contrast(1.01) brightness(1.01) !important;
+}
+html[data-theme="soft_rose"] body::after{
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1480px auto !important;
+}
+html[data-theme="midnight"] body::after{
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1550px auto !important;
+}
+html[data-theme="deep_berry"] .protein-chip{
+  background:linear-gradient(180deg,rgba(248,242,255,.98),rgba(237,228,249,.96)) !important;
+  border-color:rgba(139,88,240,.16) !important;
+  box-shadow:0 10px 22px rgba(25,12,58,.10) !important;
+}
+html[data-theme="deep_berry"] .protein-name,
+html[data-theme="deep_berry"] .protein-state{
+  color:#41285f !important;
+}
+html[data-theme="deep_berry"] .protein-dot{
+  background:rgba(117,89,175,.46) !important;
+  box-shadow:0 0 0 4px rgba(117,89,175,.12) !important;
+}
+html[data-theme="deep_berry"] .feed-filter.active,
+html[data-theme="deep_berry"] .follow-btn,
+html[data-theme="deep_berry"] .file-pill,
+html[data-theme="deep_berry"] .reaction-btn.active,
+html[data-theme="deep_berry"] .community-switch[aria-pressed="true"],
+html[data-theme="deep_berry"] .action-btn,
+html[data-theme="deep_berry"] #communityPostBtn,
+html[data-theme="deep_berry"] #saveProfileBtn{
+  background:linear-gradient(180deg,#9648f6 0%, #18bed6 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(32,216,234,.18) !important;
+  box-shadow:0 12px 28px rgba(42,196,221,.20) !important;
+}
+html[data-theme="deep_berry"] .follow-btn.following,
+html[data-theme="deep_berry"] .feed-filter,
+html[data-theme="deep_berry"] .reaction-btn,
+html[data-theme="deep_berry"] .community-switch,
+html[data-theme="deep_berry"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,rgba(252,248,255,.98),rgba(240,233,249,.95)) !important;
+  color:#6a4f8c !important;
+  border:1px solid rgba(140,87,240,.16) !important;
+  box-shadow:none !important;
+}
+html[data-theme="deep_berry"] .avatar-lg,
+html[data-theme="deep_berry"] .avatar{
+  background:linear-gradient(180deg,#eef2ff,#d6fff8) !important;
+  color:#7b42db !important;
+}
+html[data-theme="deep_berry"] .support-card .btn.primary,
+html[data-theme="deep_berry"] .support-card .action-btn.primary,
+html[data-theme="deep_berry"] .support-card .soft-btn,
+html[data-theme="deep_berry"] .support-card .primary-btn,
+html[data-theme="deep_berry"] .support-card .support-top-action,
+html[data-theme="deep_berry"] .support-card .support-quick-actions .btn,
+html[data-theme="deep_berry"] .support-card .support-quick-actions button{
+  color:#ffffff !important;
+}
+@media (max-width:900px){
+  html[data-theme="deep_berry"] body::after,
+  html[data-theme="soft_rose"] body::after,
+  html[data-theme="midnight"] body::after{
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5R — Midnight + Champagne Blush final polish */
+html[data-theme="midnight"]{
+  --hf-bg: linear-gradient(180deg,#050617 0%,#110b2b 46%,#060913 100%) !important;
+  --hf-atmosphere:
+    radial-gradient(940px 560px at 50% -12%, rgba(141,137,255,.18), transparent 60%),
+    radial-gradient(760px 430px at 12% 18%, rgba(62,194,255,.10), transparent 56%),
+    radial-gradient(640px 420px at 88% 92%, rgba(220,107,255,.10), transparent 62%) !important;
+  --hf-surface: rgba(13,16,34,.84) !important;
+  --hf-surface-strong: rgba(18,22,44,.92) !important;
+  --hf-surface-soft: rgba(10,14,30,.80) !important;
+  --hf-border: rgba(203,211,255,.16) !important;
+  --hf-border-strong: rgba(203,211,255,.24) !important;
+  --hf-text: #f8f9ff !important;
+  --hf-muted: #c6c6e6 !important;
+  --hf-primary: #91b2ff !important;
+  --hf-accent: #c06cff !important;
+  --theme-accent: #91b2ff !important;
+  --theme-accent-2: #c06cff !important;
+  --accent: #91b2ff !important;
+  --accent-2: #c06cff !important;
+  --hf-nav-bg: rgba(11,14,30,.92) !important;
+  --hf-nav-active-bg: linear-gradient(180deg,rgba(63,83,158,.94),rgba(35,48,96,.96)) !important;
+  --hf-nav-active-text: #ffffff !important;
+}
+html[data-theme="midnight"] body::after{
+  opacity:.90 !important;
+  background-image:
+    linear-gradient(180deg, rgba(7,6,20,.20), rgba(8,8,18,.40)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1560px auto !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(.98) contrast(1.02) brightness(.92) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="midnight"] .hearty-shell-topbar,
+html[data-theme="midnight"] .hearty-page-strip,
+html[data-theme="midnight"] .card,
+html[data-theme="midnight"] .settings-card,
+html[data-theme="midnight"] .hero-card,
+html[data-theme="midnight"] .progress-card,
+html[data-theme="midnight"] .support-card,
+html[data-theme="midnight"] .meal-card,
+html[data-theme="midnight"] .planner-card,
+html[data-theme="midnight"] .rhythm-card,
+html[data-theme="midnight"] .guide-section,
+html[data-theme="midnight"] .help-card,
+html[data-theme="midnight"] .post-card,
+html[data-theme="midnight"] .composer-card,
+html[data-theme="midnight"] .profile-card,
+html[data-theme="midnight"] .people-card,
+html[data-theme="midnight"] .knowledge-card,
+html[data-theme="midnight"] .tool-item,
+html[data-theme="midnight"] .advice-item,
+html[data-theme="midnight"] .readout-card,
+html[data-theme="midnight"] .stat-card,
+html[data-theme="midnight"] .empty-card,
+html[data-theme="midnight"] .placeholder-card,
+html[data-theme="midnight"] .ring-block,
+html[data-theme="midnight"] .hearty-privacy-note{
+  background:linear-gradient(180deg,rgba(17,20,44,.90),rgba(10,14,30,.86)) !important;
+  border-color:rgba(203,211,255,.14) !important;
+  color:#f8f9ff !important;
+  box-shadow:0 24px 60px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html[data-theme="midnight"] .btn.primary,
+html[data-theme="midnight"] .action-btn.primary,
+html[data-theme="midnight"] .primary-btn,
+html[data-theme="midnight"] .soft-btn,
+html[data-theme="midnight"] .planner-action.primary,
+html[data-theme="midnight"] .sheet-btn-primary,
+html[data-theme="midnight"] .support-top-action,
+html[data-theme="midnight"] .meal-card__actions button[data-log-protein],
+html[data-theme="midnight"] .meal-card__actions button.log-protein,
+html[data-theme="midnight"] .meal-card__actions button.log-protein-btn,
+html[data-theme="midnight"] .feed-filter.active,
+html[data-theme="midnight"] .follow-btn,
+html[data-theme="midnight"] .file-pill,
+html[data-theme="midnight"] .reaction-btn.active,
+html[data-theme="midnight"] .community-switch[aria-pressed="true"],
+html[data-theme="midnight"] .action-btn,
+html[data-theme="midnight"] #communityPostBtn,
+html[data-theme="midnight"] #saveProfileBtn{
+  background:linear-gradient(180deg,#6d7df8 0%, #ab5ff4 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(171,95,244,.18) !important;
+  box-shadow:0 14px 30px rgba(92,91,220,.26) !important;
+}
+html[data-theme="midnight"] .btn.secondary,
+html[data-theme="midnight"] .secondary-btn,
+html[data-theme="midnight"] .ghost-btn,
+html[data-theme="midnight"] .planner-action:not(.primary),
+html[data-theme="midnight"] .off-btn,
+html[data-theme="midnight"] .support-off-btn,
+html[data-theme="midnight"] .theme-option,
+html[data-theme="midnight"] .link-item,
+html[data-theme="midnight"] .day-tab,
+html[data-theme="midnight"] .planner-day,
+html[data-theme="midnight"] .angle-btn,
+html[data-theme="midnight"] .date-picker-btn,
+html[data-theme="midnight"] .feed-filter,
+html[data-theme="midnight"] .reaction-btn,
+html[data-theme="midnight"] .community-switch,
+html[data-theme="midnight"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,rgba(25,31,63,.95),rgba(14,18,36,.92)) !important;
+  color:#e2e6ff !important;
+  border-color:rgba(203,211,255,.14) !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-frame,
+html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame{
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,242,255,.96)) !important;
+  border-color:rgba(255,255,255,.22) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.90) !important;
+  padding:8px 12px !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-img{
+  height:46px !important;
+  width:auto !important;
+  max-width:min(70vw, 238px) !important;
+}
+html[data-theme="midnight"] a,
+html[data-theme="midnight"] .accent-text,
+html[data-theme="midnight"] .link-accent,
+html[data-theme="midnight"] .settings-subtext,
+html[data-theme="midnight"] .subtle-note{ color:#cfd8ff !important; }
+html[data-theme="midnight"] .switch-btn{ background:#2a335e !important; }
+html[data-theme="midnight"] .switch-btn.is-on{ background:linear-gradient(180deg,#6d7df8,#ab5ff4) !important; }
+html[data-theme="midnight"] .switch-btn span{ background:#ffffff !important; }
+
+html[data-theme="soft_rose"] body::after{
+  background-image:
+    linear-gradient(180deg, rgba(255,252,246,.08), rgba(182,129,74,.06)),
+    url("../assets/backgrounds/champagne-blush-floral-background.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1450px auto !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.03) contrast(1.02) brightness(1.02) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-frame,
+html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame{
+  padding:8px 12px !important;
+  background:linear-gradient(180deg, rgba(255,254,251,.98), rgba(249,239,227,.96)) !important;
+  border-color:rgba(184,140,89,.24) !important;
+  box-shadow:0 12px 26px rgba(148,96,45,.12), inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img{
+  height:48px !important;
+  width:auto !important;
+  max-width:min(70vw, 240px) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-topbar,
+html[data-theme="soft_rose"] .hearty-page-strip,
+html[data-theme="soft_rose"] .card,
+html[data-theme="soft_rose"] .settings-card,
+html[data-theme="soft_rose"] .hero-card,
+html[data-theme="soft_rose"] .progress-card,
+html[data-theme="soft_rose"] .support-card,
+html[data-theme="soft_rose"] .meal-card,
+html[data-theme="soft_rose"] .planner-card,
+html[data-theme="soft_rose"] .rhythm-card,
+html[data-theme="soft_rose"] .guide-section,
+html[data-theme="soft_rose"] .help-card,
+html[data-theme="soft_rose"] .post-card,
+html[data-theme="soft_rose"] .composer-card,
+html[data-theme="soft_rose"] .profile-card,
+html[data-theme="soft_rose"] .people-card,
+html[data-theme="soft_rose"] .knowledge-card,
+html[data-theme="soft_rose"] .tool-item,
+html[data-theme="soft_rose"] .advice-item,
+html[data-theme="soft_rose"] .readout-card,
+html[data-theme="soft_rose"] .stat-card,
+html[data-theme="soft_rose"] .empty-card,
+html[data-theme="soft_rose"] .placeholder-card,
+html[data-theme="soft_rose"] .ring-block,
+html[data-theme="soft_rose"] .hearty-privacy-note{
+  background:linear-gradient(180deg,rgba(255,251,246,.96),rgba(247,234,220,.93)) !important;
+  border-color:rgba(184,140,89,.22) !important;
+  box-shadow:0 20px 50px rgba(122,74,45,.12), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn,
+html[data-theme="soft_rose"] .feed-filter.active,
+html[data-theme="soft_rose"] .follow-btn,
+html[data-theme="soft_rose"] .file-pill,
+html[data-theme="soft_rose"] .reaction-btn.active,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="true"],
+html[data-theme="soft_rose"] .action-btn,
+html[data-theme="soft_rose"] #communityPostBtn,
+html[data-theme="soft_rose"] #saveProfileBtn{
+  background:linear-gradient(180deg,#bb8343 0%, #94602d 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(148,96,45,.22) !important;
+  box-shadow:0 14px 30px rgba(148,96,45,.20) !important;
+}
+html[data-theme="soft_rose"] .feed-filter,
+html[data-theme="soft_rose"] .reaction-btn,
+html[data-theme="soft_rose"] .community-switch,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,rgba(255,251,246,.98),rgba(247,234,220,.95)) !important;
+  color:#6f4b3a !important;
+  border:1px solid rgba(184,140,89,.18) !important;
+}
+@media (max-width:900px){
+  html[data-theme="midnight"] body::after,
+  html[data-theme="soft_rose"] body::after{
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-B — Midnight corrective pass */
+html[data-theme="midnight"] body::after{
+  opacity:.88 !important;
+  background-image:
+    linear-gradient(180deg, rgba(6,6,16,.14), rgba(7,8,18,.28)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1366px auto !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(.98) contrast(1.01) brightness(.94) !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="midnight"] .hearty-shell-topbar,
+html[data-theme="midnight"] .hearty-page-strip,
+html[data-theme="midnight"] .card,
+html[data-theme="midnight"] .settings-card,
+html[data-theme="midnight"] .hero-card,
+html[data-theme="midnight"] .progress-card,
+html[data-theme="midnight"] .support-card,
+html[data-theme="midnight"] .meal-card,
+html[data-theme="midnight"] .planner-card,
+html[data-theme="midnight"] .rhythm-card,
+html[data-theme="midnight"] .guide-section,
+html[data-theme="midnight"] .help-card,
+html[data-theme="midnight"] .post-card,
+html[data-theme="midnight"] .composer-card,
+html[data-theme="midnight"] .profile-card,
+html[data-theme="midnight"] .people-card,
+html[data-theme="midnight"] .knowledge-card,
+html[data-theme="midnight"] .tool-item,
+html[data-theme="midnight"] .advice-item,
+html[data-theme="midnight"] .readout-card,
+html[data-theme="midnight"] .stat-card,
+html[data-theme="midnight"] .empty-card,
+html[data-theme="midnight"] .placeholder-card,
+html[data-theme="midnight"] .ring-block,
+html[data-theme="midnight"] .hearty-privacy-note{
+  background:linear-gradient(180deg,rgba(9,13,31,.88),rgba(7,10,24,.84)) !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-frame,
+html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="midnight"] .hearty-real-logo-frame{
+  background:linear-gradient(180deg, rgba(220,226,245,.94), rgba(193,202,234,.90)) !important;
+  border-color:rgba(160,173,228,.26) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.74) !important;
+  padding:8px 14px !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-img,
+html[data-theme="midnight"] .hearty-logo-img{
+  height:46px !important;
+  width:auto !important;
+  max-width:min(72vw, 250px) !important;
+  object-fit:contain !important;
+}
+@media (max-width:900px){
+  html[data-theme="midnight"] body::after{
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-C — Final Champagne / load-flash corrective pass */
+html{background:#0c5b97;}
+html[data-theme="pink_lemonade"]{background:#e93578;}
+html[data-theme="midnight"]{background:#090b15;}
+html[data-theme="soft_rose"]{background:#e6b57b;}
+html[data-theme="deep_berry"]{background:#2a1551;}
+body{transition:background-color .12s ease, color .12s ease;}
+
+/* Champagne Blush: remove blue leaks and white logo chip */
+html[data-theme="soft_rose"] body::after{
+  opacity:.90 !important;
+  background-image:
+    linear-gradient(180deg, rgba(255,245,234,.10), rgba(198,134,78,.12)),
+    url("../assets/backgrounds/champagne-blush-floral-background.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 1366px auto !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.02) contrast(1.01) brightness(.98) !important;
+}
+@media (max-width:900px){
+  html[data-theme="soft_rose"] body::after{background-size:auto, cover !important;}
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-frame,
+html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame,
+html[data-theme="soft_rose"] .hearty-logo-frame{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img,
+html[data-theme="soft_rose"] .hearty-logo-img{
+  height:44px !important;
+  width:auto !important;
+  object-fit:contain !important;
+  display:block !important;
+}
+html[data-theme="soft_rose"] .task-icon-btn,
+html[data-theme="soft_rose"] .dose-icon-btn,
+html[data-theme="soft_rose"] .hydration-drop-wrap,
+html[data-theme="soft_rose"] .empty-icon,
+html[data-theme="soft_rose"] .trend-empty-icon,
+html[data-theme="soft_rose"] .fatloss-empty-icon{
+  background:linear-gradient(180deg,#fbefe3 0%, #f3dbc4 100%) !important;
+  border:1px solid rgba(178,129,78,.28) !important;
+  color:#a06b39 !important;
+  box-shadow:0 10px 24px rgba(162,109,58,.14), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+html[data-theme="soft_rose"] .task-icon-btn:hover,
+html[data-theme="soft_rose"] .dose-icon-btn:hover{
+  background:linear-gradient(180deg,#fdf4ea 0%, #f7e1cc 100%) !important;
+}
+html[data-theme="soft_rose"] .task-icon-btn .task-check,
+html[data-theme="soft_rose"] .dose-icon-btn,
+html[data-theme="soft_rose"] .hydration-drop-wrap svg,
+html[data-theme="soft_rose"] .empty-icon svg,
+html[data-theme="soft_rose"] .trend-empty-icon svg,
+html[data-theme="soft_rose"] .fatloss-empty-icon svg{
+  color:#a06b39 !important;
+  stroke:#a06b39 !important;
+  fill:none !important;
+}
+html[data-theme="soft_rose"] .task-icon-btn.done{
+  background:linear-gradient(180deg,#edd4b1 0%, #dfbc8a 100%) !important;
+  border-color:rgba(163,110,53,.32) !important;
+}
+html[data-theme="soft_rose"] .lesson-card-bar,
+html[data-theme="soft_rose"] .lesson-counter,
+html[data-theme="soft_rose"] .file-pill,
+html[data-theme="soft_rose"] .status-mini-pill,
+html[data-theme="soft_rose"] .status-mini-pill.support,
+html[data-theme="soft_rose"] .support-chip,
+html[data-theme="soft_rose"] .support-pill,
+html[data-theme="soft_rose"] .day-pill,
+html[data-theme="soft_rose"] .soft-pill,
+html[data-theme="soft_rose"] .compact-pill,
+html[data-theme="soft_rose"] .meal-badge,
+html[data-theme="soft_rose"] .hearty-page-strip-pill{
+  background:linear-gradient(180deg,#fbf1e8 0%, #f4ddca 100%) !important;
+  border:1px solid rgba(176,125,75,.24) !important;
+  color:#9c6736 !important;
+  box-shadow:0 8px 20px rgba(160,110,61,.10), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="soft_rose"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
+html[data-theme="soft_rose"] .text-link,
+html[data-theme="soft_rose"] .link,
+html[data-theme="soft_rose"] .inline-link,
+html[data-theme="soft_rose"] .weight-card a,
+html[data-theme="soft_rose"] .progress-card a,
+html[data-theme="soft_rose"] .empty-action,
+html[data-theme="soft_rose"] .weight-link,
+html[data-theme="soft_rose"] .control-label,
+html[data-theme="soft_rose"] .date-picker-btn,
+html[data-theme="soft_rose"] .date-picker-btn svg,
+html[data-theme="soft_rose"] .lesson-copy a,
+html[data-theme="soft_rose"] .support-card a{
+  color:#9d6a38 !important;
+  stroke:#9d6a38 !important;
+}
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn,
+html[data-theme="soft_rose"] [data-log-protein],
+html[data-theme="soft_rose"] .log-protein-btn,
+html[data-theme="soft_rose"] .follow-btn,
+html[data-theme="soft_rose"] .reaction-btn.active,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="true"],
+html[data-theme="soft_rose"] #communityPostBtn,
+html[data-theme="soft_rose"] #saveProfileBtn{
+  background:linear-gradient(180deg,#c68a47 0%, #a86d34 100%) !important;
+  color:#fffaf4 !important;
+  border-color:rgba(160,108,52,.28) !important;
+  box-shadow:0 14px 30px rgba(160,108,52,.22) !important;
+}
+html[data-theme="soft_rose"] .btn.secondary,
+html[data-theme="soft_rose"] .secondary-btn,
+html[data-theme="soft_rose"] .ghost-btn,
+html[data-theme="soft_rose"] .planner-action:not(.primary),
+html[data-theme="soft_rose"] .off-btn,
+html[data-theme="soft_rose"] .support-off-btn,
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .link-item,
+html[data-theme="soft_rose"] .day-tab,
+html[data-theme="soft_rose"] .planner-day,
+html[data-theme="soft_rose"] .angle-btn,
+html[data-theme="soft_rose"] .date-picker-btn,
+html[data-theme="soft_rose"] .feed-filter,
+html[data-theme="soft_rose"] .reaction-btn,
+html[data-theme="soft_rose"] .community-switch,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,#fffaf3 0%, #f5e8d7 100%) !important;
+  color:#876048 !important;
+  border-color:rgba(176,125,75,.18) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-settings-btn,
+html[data-theme="soft_rose"] .hearty-shell-settings-btn svg,
+html[data-theme="soft_rose"] .hearty-shell-gear-icon,
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item,
+html[data-theme="soft_rose"] .bottom-nav .nav-item,
+html[data-theme="soft_rose"] .bottom-nav .nav-item svg,
+html[data-theme="soft_rose"] .bottom-nav .nav-item svg *{
+  color:#86614a !important;
+  stroke:#86614a !important;
+}
+html[data-theme="soft_rose"] svg,
+html[data-theme="soft_rose"] svg *{
+  stroke:inherit;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img,
+html[data-theme="soft_rose"] .hearty-shell-logo-img *{
+  stroke:initial !important;
+}
+
+
+/* HEARTY STEP 5R-D — Champagne Blush visibility corrective pass */
+html[data-theme="soft_rose"]{
+  background:#cc9662 !important;
+  --theme-accent:#b2763f !important;
+}
+html[data-theme="soft_rose"] body::after{
+  background-image:
+    linear-gradient(180deg, rgba(255,247,240,.08), rgba(120,77,37,.10)),
+    url("../assets/backgrounds/champagne-blush-floral-background.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, cover !important;
+  background-attachment:fixed, fixed !important;
+  opacity:.96 !important;
+  filter:saturate(1.02) contrast(1.04) brightness(.98) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img,
+html[data-theme="soft_rose"] .hearty-logo-img{
+  height:46px !important;
+  width:auto !important;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.18)) drop-shadow(0 4px 10px rgba(104,63,27,.16)) !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-topbar,
+html[data-theme="soft_rose"] .hearty-page-strip,
+html[data-theme="soft_rose"] .card,
+html[data-theme="soft_rose"] .settings-card,
+html[data-theme="soft_rose"] .hero-card,
+html[data-theme="soft_rose"] .progress-card,
+html[data-theme="soft_rose"] .support-card,
+html[data-theme="soft_rose"] .meal-card,
+html[data-theme="soft_rose"] .planner-card,
+html[data-theme="soft_rose"] .rhythm-card,
+html[data-theme="soft_rose"] .guide-section,
+html[data-theme="soft_rose"] .help-card,
+html[data-theme="soft_rose"] .post-card,
+html[data-theme="soft_rose"] .composer-card,
+html[data-theme="soft_rose"] .profile-card,
+html[data-theme="soft_rose"] .people-card,
+html[data-theme="soft_rose"] .knowledge-card,
+html[data-theme="soft_rose"] .tool-item,
+html[data-theme="soft_rose"] .advice-item,
+html[data-theme="soft_rose"] .readout-card,
+html[data-theme="soft_rose"] .stat-card,
+html[data-theme="soft_rose"] .empty-card,
+html[data-theme="soft_rose"] .placeholder-card,
+html[data-theme="soft_rose"] .ring-block,
+html[data-theme="soft_rose"] .hearty-privacy-note{
+  background:linear-gradient(180deg, rgba(251,245,238,.96), rgba(245,233,219,.92)) !important;
+  border-color:rgba(177,123,70,.22) !important;
+}
+html[data-theme="soft_rose"] .task-icon-btn,
+html[data-theme="soft_rose"] .dose-icon-btn,
+html[data-theme="soft_rose"] .hydration-drop-wrap,
+html[data-theme="soft_rose"] .empty-icon,
+html[data-theme="soft_rose"] .trend-empty-icon,
+html[data-theme="soft_rose"] .fatloss-empty-icon,
+html[data-theme="soft_rose"] .icon-btn,
+html[data-theme="soft_rose"] .photo-placeholder,
+html[data-theme="soft_rose"] .photo-slot,
+html[data-theme="soft_rose"] .gallery-thumb,
+html[data-theme="soft_rose"] .medication-days-grid button,
+html[data-theme="soft_rose"] .unit-toggle button,
+html[data-theme="soft_rose"] .day-toggle-grid button,
+html[data-theme="soft_rose"] .date-picker-btn,
+html[data-theme="soft_rose"] .angle-btn,
+html[data-theme="soft_rose"] .photo-action-row,
+html[data-theme="soft_rose"] .follow-btn.following,
+html[data-theme="soft_rose"] .feed-filter,
+html[data-theme="soft_rose"] .reaction-btn,
+html[data-theme="soft_rose"] .community-switch,
+html[data-theme="soft_rose"] .image-preview button,
+html[data-theme="soft_rose"] .field-input,
+html[data-theme="soft_rose"] input,
+html[data-theme="soft_rose"] select,
+html[data-theme="soft_rose"] textarea{
+  background:linear-gradient(180deg,#fff9f3 0%, #f6e7d6 100%) !important;
+  border-color:rgba(176,125,75,.24) !important;
+  color:#7a5636 !important;
+  box-shadow:0 8px 22px rgba(136,94,57,.08), inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+html[data-theme="soft_rose"] .field-input::placeholder,
+html[data-theme="soft_rose"] input::placeholder,
+html[data-theme="soft_rose"] textarea::placeholder{color:#aa886b !important;}
+html[data-theme="soft_rose"] .medication-days-grid button.active,
+html[data-theme="soft_rose"] .unit-toggle button.active,
+html[data-theme="soft_rose"] .day-toggle-grid button.active,
+html[data-theme="soft_rose"] .angle-btn.active,
+html[data-theme="soft_rose"] .feed-filter.active,
+html[data-theme="soft_rose"] .follow-btn:not(.following),
+html[data-theme="soft_rose"] .reaction-btn.active,
+html[data-theme="soft_rose"] .community-switch.on,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="true"],
+html[data-theme="soft_rose"] .gallery-action-btn,
+html[data-theme="soft_rose"] .switch-btn.is-on,
+html[data-theme="soft_rose"] .switch-btn.active{
+  background:linear-gradient(180deg,#c68a47 0%, #a56a32 100%) !important;
+  color:#fffaf5 !important;
+  border-color:rgba(157,104,49,.28) !important;
+}
+html[data-theme="soft_rose"] .community-switch.on .switch-state,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="true"] .switch-state,
+html[data-theme="soft_rose"] .feed-filter.active,
+html[data-theme="soft_rose"] .reaction-btn.active,
+html[data-theme="soft_rose"] .follow-btn:not(.following){color:#fffaf5 !important;}
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn,
+html[data-theme="soft_rose"] [data-log-protein],
+html[data-theme="soft_rose"] .log-protein-btn,
+html[data-theme="soft_rose"] .follow-btn,
+html[data-theme="soft_rose"] .action-btn,
+html[data-theme="soft_rose"] #communityPostBtn,
+html[data-theme="soft_rose"] #saveProfileBtn,
+html[data-theme="soft_rose"] #checkUpdateBtn,
+html[data-theme="soft_rose"] .btn.danger,
+html[data-theme="soft_rose"] .danger,
+html[data-theme="soft_rose"] .community-switch .switch-track,
+html[data-theme="soft_rose"] .file-pill{
+  background:linear-gradient(180deg,#c68a47 0%, #9d6631 100%) !important;
+  color:#fffaf4 !important;
+  border-color:rgba(160,108,52,.28) !important;
+  box-shadow:0 14px 30px rgba(160,108,52,.22) !important;
+}
+html[data-theme="soft_rose"] .btn.primary *,
+html[data-theme="soft_rose"] .action-btn.primary *,
+html[data-theme="soft_rose"] .primary-btn *,
+html[data-theme="soft_rose"] .soft-btn *,
+html[data-theme="soft_rose"] .planner-action.primary *,
+html[data-theme="soft_rose"] .sheet-btn-primary *,
+html[data-theme="soft_rose"] .support-top-action *,
+html[data-theme="soft_rose"] [data-log-protein] *,
+html[data-theme="soft_rose"] .log-protein-btn *,
+html[data-theme="soft_rose"] .action-btn *,
+html[data-theme="soft_rose"] #communityPostBtn *,
+html[data-theme="soft_rose"] #saveProfileBtn *,
+html[data-theme="soft_rose"] #checkUpdateBtn *,
+html[data-theme="soft_rose"] .btn.danger *,
+html[data-theme="soft_rose"] .file-pill *{color:#fffaf4 !important;stroke:#fffaf4 !important;}
+html[data-theme="soft_rose"] .btn.secondary,
+html[data-theme="soft_rose"] .secondary-btn,
+html[data-theme="soft_rose"] .ghost-btn,
+html[data-theme="soft_rose"] .planner-action:not(.primary),
+html[data-theme="soft_rose"] .off-btn,
+html[data-theme="soft_rose"] .support-off-btn,
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .link-item,
+html[data-theme="soft_rose"] .planner-day,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,#fffaf3 0%, #f6e8d9 100%) !important;
+  color:#7d5a3e !important;
+}
+html[data-theme="soft_rose"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
+html[data-theme="soft_rose"] .text-link,
+html[data-theme="soft_rose"] .link,
+html[data-theme="soft_rose"] .inline-link,
+html[data-theme="soft_rose"] .weight-card a,
+html[data-theme="soft_rose"] .progress-card a,
+html[data-theme="soft_rose"] .empty-action,
+html[data-theme="soft_rose"] .weight-link,
+html[data-theme="soft_rose"] .control-label,
+html[data-theme="soft_rose"] .lesson-copy a,
+html[data-theme="soft_rose"] .support-card a,
+html[data-theme="soft_rose"] .meta,
+html[data-theme="soft_rose"] .muted,
+html[data-theme="soft_rose"] .helper,
+html[data-theme="soft_rose"] .body-copy,
+html[data-theme="soft_rose"] .hearty-shell-settings-btn,
+html[data-theme="soft_rose"] .hearty-shell-settings-btn svg,
+html[data-theme="soft_rose"] .hearty-shell-gear-icon,
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item,
+html[data-theme="soft_rose"] .bottom-nav .nav-item,
+html[data-theme="soft_rose"] .bottom-nav .nav-item svg,
+html[data-theme="soft_rose"] .bottom-nav .nav-item svg *{color:#8a623d !important;stroke:#8a623d !important;}
+html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
+html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
+  background:linear-gradient(180deg,#f0d9b1 0%, #e7c488 100%) !important;
+  color:#7d5324 !important;
+  box-shadow:0 12px 26px rgba(169,121,62,.20) !important;
+}
+html[data-theme="soft_rose"] .ring-track{stroke:rgba(214,188,156,.55) !important;}
+html[data-theme="soft_rose"] .ring-progress.ring-orange{stroke:#a56b30 !important;}
+html[data-theme="soft_rose"] .ring-progress.ring-teal{stroke:#d4a15d !important;}
+html[data-theme="soft_rose"] .segment-btn,
+html[data-theme="soft_rose"] .segmented-control button{background:linear-gradient(180deg,#fff9f4 0%, #f4e5d2 100%) !important;color:#7a5636 !important;}
+html[data-theme="soft_rose"] .segment-btn.active,
+html[data-theme="soft_rose"] .segmented-control button.active{background:linear-gradient(180deg,#c68a47 0%, #a56a32 100%) !important;color:#fffaf4 !important;}
+
+
+/* HEARTY STEP 5R-E — Champagne floral logo implementation */
+html[data-theme="soft_rose"] .hearty-shell-logo-frame,
+html[data-theme="soft_rose"] .hearty-logo-frame{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+html[data-theme="soft_rose"] .hearty-shell-logo-img,
+html[data-theme="soft_rose"] .hearty-logo-img{
+  height: 42px !important;
+  width: auto !important;
+  max-width: 250px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+@media (max-width: 640px){
+  html[data-theme="soft_rose"] .hearty-shell-logo-img,
+  html[data-theme="soft_rose"] .hearty-logo-img{
+    height: 34px !important;
+    max-width: 210px !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-F — Ocean Blue background correction
+   Remove the washed-out white film so the theme shows the real generated ocean image. */
+html[data-theme="clean_blue"] body{
+  background:#0a3362 !important;
+}
+html[data-theme="clean_blue"] body::before{
+  opacity:0 !important;
+  background:none !important;
+}
+html[data-theme="clean_blue"] body::after{
+  opacity:.96 !important;
+  background:url("../assets/backgrounds/ocean-blue-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+}
+@media (max-width:900px){
+  html[data-theme="clean_blue"] body::after{
+    opacity:.98 !important;
+    background-position:center top !important;
+    background-size:cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-G — Champagne Blush floral background implementation */
+html[data-theme="soft_rose"] body{
+  background:#f2d2d8 !important;
+}
+html[data-theme="soft_rose"] body::before{
+  opacity:0 !important;
+  background:none !important;
+}
+html[data-theme="soft_rose"] body::after{
+  opacity:.97 !important;
+  background:
+    linear-gradient(180deg, rgba(88,48,28,.06), rgba(88,48,28,.03)),
+    url("../assets/backgrounds/champagne-blush-floral-background.png") center top / cover no-repeat !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(1.04) contrast(1.02) brightness(.96) !important;
+  mix-blend-mode:normal !important;
+}
+@media (max-width:900px){
+  html[data-theme="soft_rose"] body::after{
+    background-position:center top, center top !important;
+    background-size:auto, cover !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-H — user QA fixes (Aurora Pop + Settings mobile) */
+html[data-theme="deep_berry"] .hearty-shell-logo-frame,
+html[data-theme="deep_berry"] .auth-brand-lockup .hearty-shell-logo-frame,
+html[data-theme="deep_berry"] .hearty-logo-frame,
+html[data-theme="deep_berry"] .hearty-real-logo-frame{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+html[data-theme="deep_berry"] .hearty-shell-logo-img,
+html[data-theme="deep_berry"] .hearty-logo-img{
+  filter:drop-shadow(0 6px 18px rgba(28,8,44,.18)) !important;
+}
+html[data-theme="deep_berry"] .loc-btn.active,
+html[data-theme="deep_berry"] .location-toggle .loc-btn.active,
+html[data-theme="deep_berry"] .location-toggle .loc-btn.active *{
+  color:#ffffff !important;
+}
+body[data-page="settings"] .hearty-privacy-note{
+  margin:16px 0 calc(var(--hst-nav-h, 78px) + 28px) !important;
+}
+@media (max-width:760px){
+  body[data-page="settings"] .hydration-grid{
+    grid-template-columns:1fr !important;
+    align-items:stretch !important;
+  }
+  body[data-page="settings"] .inline-switch{
+    justify-self:start !important;
+    width:100% !important;
+    justify-content:space-between !important;
+    flex-wrap:wrap !important;
+    gap:10px 12px !important;
+  }
+  body[data-page="settings"] .inline-switch-label{
+    max-width:100% !important;
+    line-height:1.35 !important;
+  }
+  body[data-page="settings"] .hearty-privacy-note{
+    margin-bottom:calc(var(--hst-nav-h, 74px) + 34px) !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-I — Champagne Blush final polish fixes */
+html[data-theme="soft_rose"]{
+  --theme-accent:#9a6232 !important;
+  --theme-accent-2:#d58d7d !important;
+  --accent:#9a6232 !important;
+  --accent-2:#d58d7d !important;
+  --blue:#9a6232 !important;
+  --blue-soft:#f5e5d3 !important;
+  --teal:#b57a57 !important;
+  --teal-soft:#f7eadc !important;
+  --violet:#bf8a78 !important;
+  --violet-soft:#f8ebe3 !important;
+}
+html[data-theme="soft_rose"] body::after{
+  opacity:.98 !important;
+  filter:saturate(1.03) contrast(1.05) brightness(.92) !important;
+}
+/* all important filled buttons: richer champagne and guaranteed white text */
+html[data-theme="soft_rose"] .btn.primary,
+html[data-theme="soft_rose"] .action-btn.primary,
+html[data-theme="soft_rose"] .primary-btn,
+html[data-theme="soft_rose"] .soft-btn,
+html[data-theme="soft_rose"] .planner-action.primary,
+html[data-theme="soft_rose"] .sheet-btn-primary,
+html[data-theme="soft_rose"] .support-top-action,
+html[data-theme="soft_rose"] .meal-card__actions button[data-log-protein],
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein,
+html[data-theme="soft_rose"] .meal-card__actions button.log-protein-btn,
+html[data-theme="soft_rose"] [data-log-protein],
+html[data-theme="soft_rose"] .log-protein-btn,
+html[data-theme="soft_rose"] .follow-btn,
+html[data-theme="soft_rose"] .reaction-btn.active,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="true"],
+html[data-theme="soft_rose"] #communityPostBtn,
+html[data-theme="soft_rose"] #saveProfileBtn,
+html[data-theme="soft_rose"] .loc-btn.active{
+  background:linear-gradient(180deg,#b67a3f 0%, #8a5628 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(120,74,34,.25) !important;
+  box-shadow:0 14px 30px rgba(120,74,34,.24) !important;
+  text-shadow:none !important;
+}
+html[data-theme="soft_rose"] .btn.primary *,
+html[data-theme="soft_rose"] .action-btn.primary *,
+html[data-theme="soft_rose"] .primary-btn *,
+html[data-theme="soft_rose"] .soft-btn *,
+html[data-theme="soft_rose"] .planner-action.primary *,
+html[data-theme="soft_rose"] .sheet-btn-primary *,
+html[data-theme="soft_rose"] .support-top-action *,
+html[data-theme="soft_rose"] .loc-btn.active *{
+  color:#ffffff !important;
+  stroke:#ffffff !important;
+}
+/* secondary buttons slightly darker so they don't wash out */
+html[data-theme="soft_rose"] .btn.secondary,
+html[data-theme="soft_rose"] .secondary-btn,
+html[data-theme="soft_rose"] .ghost-btn,
+html[data-theme="soft_rose"] .planner-action:not(.primary),
+html[data-theme="soft_rose"] .off-btn,
+html[data-theme="soft_rose"] .support-off-btn,
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .link-item,
+html[data-theme="soft_rose"] .day-tab,
+html[data-theme="soft_rose"] .planner-day,
+html[data-theme="soft_rose"] .angle-btn,
+html[data-theme="soft_rose"] .date-picker-btn,
+html[data-theme="soft_rose"] .exercise-guide-btn,
+html[data-theme="soft_rose"] .gallery-action-btn,
+html[data-theme="soft_rose"] .feed-filter,
+html[data-theme="soft_rose"] .reaction-btn,
+html[data-theme="soft_rose"] .community-switch,
+html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
+  background:linear-gradient(180deg,#f7ead9 0%, #ead2b8 100%) !important;
+  color:#7e5230 !important;
+  border-color:rgba(156,102,54,.24) !important;
+  box-shadow:0 8px 18px rgba(140,90,50,.10) !important;
+}
+/* home support buttons, hydration logger */
+html[data-theme="soft_rose"] .support-top-action.off{color:#7e5230 !important;}
+html[data-theme="soft_rose"] .hydration-drop-btn{
+  background:linear-gradient(180deg,#f6eadb 0%, #e6c8aa 100%) !important;
+  border-color:rgba(154,98,50,.24) !important;
+}
+html[data-theme="soft_rose"] .hydration-drop-wrap,
+html[data-theme="soft_rose"] .hydration-drop-wrap svg{
+  background:linear-gradient(180deg,#f1d3ab 0%, #daa168 100%) !important;
+  color:#8d5728 !important;
+  stroke:#8d5728 !important;
+  border-color:rgba(141,87,40,.24) !important;
+}
+html[data-theme="soft_rose"] .hydration-add-label{color:#8d5728 !important;}
+html[data-theme="soft_rose"] .hydration-count-chip,
+html[data-theme="soft_rose"] #waterCountChip{
+  background:linear-gradient(180deg,#fff9f3,#f3e3d0) !important;
+  border-color:rgba(154,98,50,.18) !important;
+  color:#6d4a31 !important;
+}
+html[data-theme="soft_rose"] .hydration-progress{background:rgba(200,162,126,.22) !important;}
+html[data-theme="soft_rose"] .hydration-progress span{background:linear-gradient(90deg,#c88b4b,#9a6232) !important;}
+/* settings hydration toggle: remove blue */
+html[data-theme="soft_rose"] .switch,
+html[data-theme="soft_rose"] .switch-btn,
+html[data-theme="soft_rose"] .slider,
+html[data-theme="soft_rose"] .toggle-switch{
+  background:#e6c9b0 !important;
+  border-color:rgba(154,98,50,.22) !important;
+}
+html[data-theme="soft_rose"] .switch input:checked + .slider,
+html[data-theme="soft_rose"] .switch-btn.is-on,
+html[data-theme="soft_rose"] .switch-btn.active,
+html[data-theme="soft_rose"] .toggle-switch.on,
+html[data-theme="soft_rose"] .switch.on{
+  background:linear-gradient(180deg,#c2864b,#9a6232) !important;
+}
+html[data-theme="soft_rose"] .slider:before,
+html[data-theme="soft_rose"] .switch-btn span,
+html[data-theme="soft_rose"] .switch::after,
+html[data-theme="soft_rose"] .toggle-switch::after{
+  background:#fffaf5 !important;
+}
+/* Exercise start button: champagne theme instead of blue/purple */
+html[data-theme="soft_rose"] .start-btn{
+  background:linear-gradient(135deg,#f0c48f 0%, #dd935f 36%, #c87086 68%, #9a6232 100%) !important;
+  box-shadow:0 24px 58px rgba(154,98,50,.24),0 12px 26px rgba(200,112,134,.18),0 0 0 10px rgba(255,249,241,.42),inset 0 1px 0 rgba(255,255,255,.38) !important;
+}
+html[data-theme="soft_rose"] .start-btn.disabled{
+  background:linear-gradient(145deg,#d0b6a1,#e0cfbf) !important;
+  color:#8d735f !important;
+}
+/* progress adherence cards: remove blue styling and hide icons */
+html[data-theme="soft_rose"] .adherence-row{
+  grid-template-columns:minmax(0,1fr) !important;
+  gap:12px !important;
+  background:linear-gradient(180deg,#fdf8f2,#f1e2cf) !important;
+  border-color:rgba(154,98,50,.16) !important;
+}
+html[data-theme="soft_rose"] .adherence-icon{display:none !important;}
+html[data-theme="soft_rose"] .adherence-name{color:#5a3824 !important;}
+html[data-theme="soft_rose"] .adherence-sub{color:#7b5a44 !important;}
+html[data-theme="soft_rose"] .adherence-pill{background:linear-gradient(180deg,#ead8c6,#e1c8ae) !important;border:1px solid rgba(154,98,50,.12) !important;box-shadow:none !important;}
+html[data-theme="soft_rose"] .adherence-pill.blue.active,
+html[data-theme="soft_rose"] .adherence-pill.teal.active,
+html[data-theme="soft_rose"] .adherence-pill.violet.active{
+  background:linear-gradient(180deg,#cf9a60,#9a6232) !important;
+  border-color:rgba(154,98,50,.18) !important;
+}
+html[data-theme="soft_rose"] .adherence-pill.muted{
+  background:linear-gradient(180deg,#efe3d5,#e7d6c5) !important;
+  border-color:rgba(154,98,50,.10) !important;
+}
+/* progress page empty blocks / placeholders: warm neutrals instead of blue */
+html[data-theme="soft_rose"] .photo-placeholder,
+html[data-theme="soft_rose"] .gallery-thumb,
+html[data-theme="soft_rose"] .gallery-empty-note,
+html[data-theme="soft_rose"] .history-empty,
+html[data-theme="soft_rose"] .empty-card,
+html[data-theme="soft_rose"] .placeholder-card,
+html[data-theme="soft_rose"] .fatloss-chart-wrap,
+html[data-theme="soft_rose"] .control-card,
+html[data-theme="soft_rose"] .info-tile,
+html[data-theme="soft_rose"] .injection-shell,
+html[data-theme="soft_rose"] .field-card,
+html[data-theme="soft_rose"] .history-row,
+html[data-theme="soft_rose"] .photo-panel,
+html[data-theme="soft_rose"] .gallery-item{
+  background:linear-gradient(180deg,#fdf8f2,#f1e2cf) !important;
+  border-color:rgba(154,98,50,.16) !important;
+}
+html[data-theme="soft_rose"] .gallery-action-btn.active-a,
+html[data-theme="soft_rose"] .gallery-action-btn.active-b,
+html[data-theme="soft_rose"] .date-option.active,
+html[data-theme="soft_rose"] .angle-btn.active{
+  background:linear-gradient(180deg,#f1ddc6,#e7c8a0) !important;
+  border-color:rgba(154,98,50,.18) !important;
+  color:#7d4e28 !important;
+}
+html[data-theme="soft_rose"] .progress-card .control-label,
+html[data-theme="soft_rose"] .progress-card .date-picker-btn,
+html[data-theme="soft_rose"] .progress-card .date-picker-btn svg,
+html[data-theme="soft_rose"] .progress-card a,
+html[data-theme="soft_rose"] .weight-card a,
+html[data-theme="soft_rose"] .empty-action{
+  color:#8a5a34 !important;
+  stroke:#8a5a34 !important;
+}
+
+
+/* HEARTY STEP 5R-J — final user QA patch */
+/* Champagne Blush: force support CTA text to stay white and readable */
+html[data-theme="soft_rose"] #supportPrimary,
+html[data-theme="soft_rose"] #supportPrimary:link,
+html[data-theme="soft_rose"] #supportPrimary:visited,
+html[data-theme="soft_rose"] .support-actions-row .soft-btn,
+html[data-theme="soft_rose"] .support-actions-row .soft-btn:link,
+html[data-theme="soft_rose"] .support-actions-row .soft-btn:visited,
+html[data-theme="soft_rose"] .support-card .soft-btn,
+html[data-theme="soft_rose"] .support-card .action-btn.primary,
+html[data-theme="soft_rose"] .support-card .btn.primary,
+html[data-theme="soft_rose"] .support-card .support-top-action,
+html[data-theme="soft_rose"] .support-card .primary-btn{
+  background:linear-gradient(180deg,#b8793b 0%, #8c5626 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(124,74,32,.24) !important;
+  box-shadow:0 14px 30px rgba(124,74,32,.24) !important;
+  text-shadow:none !important;
+}
+html[data-theme="soft_rose"] #supportPrimary *,
+html[data-theme="soft_rose"] .support-actions-row .soft-btn *,
+html[data-theme="soft_rose"] .support-card .soft-btn *,
+html[data-theme="soft_rose"] .support-card .action-btn.primary *,
+html[data-theme="soft_rose"] .support-card .btn.primary *,
+html[data-theme="soft_rose"] .support-card .support-top-action *,
+html[data-theme="soft_rose"] .support-card .primary-btn *{
+  color:#ffffff !important;
+  stroke:#ffffff !important;
+}
+/* Midnight: remove grain/noise and use the clean original space image without stretching artifacts */
+html[data-theme="midnight"] body::before{
+  opacity:0 !important;
+  background:none !important;
+}
+html[data-theme="midnight"] body::after{
+  opacity:.95 !important;
+  background-image:
+    linear-gradient(180deg, rgba(5,7,16,.18), rgba(5,7,16,.36)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:auto, 100% auto !important;
+  background-attachment:scroll, scroll !important;
+  image-rendering:auto !important;
+  filter:saturate(1.02) contrast(1.04) brightness(.90) !important;
+  mix-blend-mode:normal !important;
+}
+@media (max-width:900px){
+  html[data-theme="midnight"] body::after{
+    background-size:auto, 100% auto !important;
+    background-position:center top, center top !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-L — midnight corrective pass */
+html[data-theme="midnight"] body::after{
+  opacity:.94 !important;
+  background-image:
+    linear-gradient(180deg, rgba(6,7,18,.10), rgba(6,8,18,.26)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:cover, cover !important;
+  background-attachment:fixed, fixed !important;
+  filter:saturate(.94) contrast(1.01) brightness(.90) !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-frame,
+html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="midnight"] .hearty-real-logo-frame{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-img,
+html[data-theme="midnight"] .hearty-logo-img,
+html[data-theme="midnight"] .hearty-real-logo-img{
+  height:48px !important;
+  width:auto !important;
+  max-width:min(70vw, 242px) !important;
+  filter:brightness(1.12) saturate(1.06) drop-shadow(0 8px 18px rgba(7,10,26,.34)) !important;
+}
+html[data-theme="midnight"] .hearty-shell-settings-btn,
+html[data-theme="midnight"] .topbar .icon-btn{
+  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.96)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+  color:#d7ddff !important;
+  box-shadow:0 12px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+html[data-theme="midnight"] .hearty-shell-settings-btn[aria-current="page"]{
+  background:linear-gradient(180deg,#5b74d8 0%, #394f9e 100%) !important;
+  color:#ffffff !important;
+  border-color:rgba(145,178,255,.34) !important;
+}
+html[data-theme="midnight"] .hearty-shell-settings-btn svg,
+html[data-theme="midnight"] .hearty-shell-gear-icon,
+html[data-theme="midnight"] .hearty-shell-settings-btn svg *{
+  stroke:currentColor !important;
+  color:inherit !important;
+}
+html[data-theme="midnight"] .protein-meter{
+  background:conic-gradient(
+    from -90deg,
+    #8faeff 0 calc(var(--protein-percent) * 1%),
+    rgba(123,141,201,.22) calc(var(--protein-percent) * 1%) 100%
+  ) !important;
+  box-shadow:0 18px 36px rgba(3,7,19,.30), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html[data-theme="midnight"] .protein-meter::before{
+  background:linear-gradient(180deg, rgba(12,18,36,.96), rgba(16,23,45,.92)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+}
+html[data-theme="midnight"] .protein-meter::after{
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0)) !important;
+}
+html[data-theme="midnight"] .protein-center{
+  background:linear-gradient(180deg, rgba(14,20,38,.98), rgba(20,28,52,.96)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+html[data-theme="midnight"] .protein-center-title{color:#aebce3 !important;}
+html[data-theme="midnight"] .protein-center-copy{color:#f6f8ff !important;}
+html[data-theme="midnight"] .protein-pip{background:rgba(176,192,235,.24) !important;}
+html[data-theme="midnight"] .protein-pip.is-filled{background:#7fe0b6 !important;}
+html[data-theme="midnight"] .protein-chip{
+  background:linear-gradient(180deg, rgba(20,28,52,.94), rgba(12,17,33,.94)) !important;
+  border-color:rgba(203,211,255,.16) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html[data-theme="midnight"] .protein-dot{background:rgba(176,192,235,.30) !important;box-shadow:0 0 0 4px rgba(176,192,235,.08) !important;}
+html[data-theme="midnight"] .protein-name{color:#f5f7ff !important;}
+html[data-theme="midnight"] .protein-state{color:#bcc7e8 !important;}
+html[data-theme="midnight"] .info-tile{
+  background:linear-gradient(180deg, rgba(17,23,45,.94), rgba(9,14,28,.92)) !important;
+  border-color:rgba(203,211,255,.16) !important;
+  box-shadow:0 18px 36px rgba(2,7,18,.28), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html[data-theme="midnight"] .info-label{color:#aebce3 !important;}
+html[data-theme="midnight"] .info-value,
+html[data-theme="midnight"] #nextInjection,
+html[data-theme="midnight"] #currentDosage{color:#f8f9ff !important;}
+html[data-theme="midnight"] .info-copy,
+html[data-theme="midnight"] #nextInjectionDetail{color:#c7d1eb !important;}
+html[data-theme="midnight"] .info-tile .theme-option,
+html[data-theme="midnight"] .info-tile .link-item,
+html[data-theme="midnight"] .info-tile .day-tab,
+html[data-theme="midnight"] .info-tile .planner-day,
+html[data-theme="midnight"] .info-tile .angle-btn,
+html[data-theme="midnight"] .info-tile .date-picker-btn,
+html[data-theme="midnight"] .info-tile .chip,
+html[data-theme="midnight"] .info-tile button,
+html[data-theme="midnight"] .info-tile select{
+  color:#eef2ff !important;
+}
+@media (max-width:760px){
+  html[data-theme="midnight"] .hearty-shell-logo-img,
+  html[data-theme="midnight"] .hearty-logo-img,
+  html[data-theme="midnight"] .hearty-real-logo-img{
+    height:44px !important;
+    max-width:min(64vw, 220px) !important;
+  }
+}
+
+
+/* HEARTY STEP 5R-M — Midnight readability + logo + background correction */
+html[data-theme="midnight"] body::before{
+  opacity:0 !important;
+  background:none !important;
+}
+html[data-theme="midnight"] body::after{
+  opacity:.96 !important;
+  background-image:
+    linear-gradient(180deg, rgba(4,6,16,.06), rgba(4,6,16,.20)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:cover, cover !important;
+  background-attachment:fixed, fixed !important;
+  filter:none !important;
+  mix-blend-mode:normal !important;
+}
+html[data-theme="midnight"] .hearty-shell-topbar{
+  background:linear-gradient(180deg, rgba(8,12,30,.88), rgba(7,10,24,.84)) !important;
+  border-color:rgba(178,190,255,.18) !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-frame,
+html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="midnight"] .hearty-real-logo-frame{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+html[data-theme="midnight"] .hearty-shell-logo-img,
+html[data-theme="midnight"] .hearty-logo-img,
+html[data-theme="midnight"] .hearty-real-logo-img{
+  height:48px !important;
+  width:auto !important;
+  max-width:min(70vw, 252px) !important;
+  filter:drop-shadow(0 7px 18px rgba(0,0,0,.42)) !important;
+}
+
+/* Replace stark white inner panels with readable deep-slate cards */
+html[data-theme="midnight"] .chart-empty,
+html[data-theme="midnight"] .fatloss-empty,
+html[data-theme="midnight"] .trend-empty,
+html[data-theme="midnight"] .trend-empty-card,
+html[data-theme="midnight"] .trend-empty-state,
+html[data-theme="midnight"] .fatloss-chart-wrap,
+html[data-theme="midnight"] .empty-state,
+html[data-theme="midnight"] .empty-panel,
+html[data-theme="midnight"] .placeholder-panel,
+html[data-theme="midnight"] .progress-chart-empty,
+html[data-theme="midnight"] .support-trend-empty,
+html[data-theme="midnight"] .no-data-card{
+  background:linear-gradient(180deg, rgba(24,31,52,.96), rgba(13,18,34,.95)) !important;
+  border-color:rgba(190,202,255,.18) !important;
+  color:#f4f7ff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 18px 36px rgba(0,0,0,.28) !important;
+}
+html[data-theme="midnight"] .chart-empty *,
+html[data-theme="midnight"] .fatloss-empty *,
+html[data-theme="midnight"] .trend-empty *,
+html[data-theme="midnight"] .trend-empty-card *,
+html[data-theme="midnight"] .trend-empty-state *,
+html[data-theme="midnight"] .fatloss-chart-wrap *,
+html[data-theme="midnight"] .empty-state *,
+html[data-theme="midnight"] .empty-panel *,
+html[data-theme="midnight"] .placeholder-panel *,
+html[data-theme="midnight"] .progress-chart-empty *,
+html[data-theme="midnight"] .support-trend-empty *,
+html[data-theme="midnight"] .no-data-card *{
+  color:#f4f7ff !important;
+  stroke:#9fb7ff !important;
+}
+
+/* Support trend chart specific fallback: card without class names still becomes dark. */
+html[data-theme="midnight"] .support-card [style*="background:linear-gradient"],
+html[data-theme="midnight"] .support-card [style*="background:#fff"],
+html[data-theme="midnight"] .support-card [style*="background: #fff"]{
+  background:linear-gradient(180deg, rgba(24,31,52,.96), rgba(13,18,34,.95)) !important;
+  color:#f4f7ff !important;
+  border-color:rgba(190,202,255,.18) !important;
+}
+html[data-theme="midnight"] .support-card .empty-icon,
+html[data-theme="midnight"] .support-card .trend-empty-icon,
+html[data-theme="midnight"] .fatloss-empty-icon{
+  background:linear-gradient(180deg, rgba(35,45,78,.98), rgba(20,27,52,.96)) !important;
+  border-color:rgba(190,202,255,.18) !important;
+  color:#a8bcff !important;
+}
+
+/* Progress page white chart/trajectory card correction */
+html[data-theme="midnight"] .weight-card,
+html[data-theme="midnight"] .progress-card .weight-card,
+html[data-theme="midnight"] .fatloss-card,
+html[data-theme="midnight"] .trajectory-card{
+  background:linear-gradient(180deg, rgba(17,23,45,.94), rgba(9,14,28,.92)) !important;
+  border-color:rgba(190,202,255,.16) !important;
+  color:#f8f9ff !important;
+}
+html[data-theme="midnight"] .weight-card *,
+html[data-theme="midnight"] .fatloss-card *,
+html[data-theme="midnight"] .trajectory-card *{
+  color:inherit;
+}
+html[data-theme="midnight"] a,
+html[data-theme="midnight"] .weight-card a,
+html[data-theme="midnight"] .progress-card a{
+  color:#9fb7ff !important;
+}
+
+/* Protein meter: dark readable center instead of bright white. */
+html[data-theme="midnight"] .protein-meter{
+  background:conic-gradient(
+    from -90deg,
+    #8faeff 0 calc(var(--protein-percent) * 1%),
+    rgba(123,141,201,.22) calc(var(--protein-percent) * 1%) 100%
+  ) !important;
+}
+html[data-theme="midnight"] .protein-meter::before{
+  background:linear-gradient(180deg, rgba(12,18,36,.96), rgba(16,23,45,.92)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+}
+html[data-theme="midnight"] .protein-center{
+  background:linear-gradient(180deg, rgba(14,20,38,.98), rgba(20,28,52,.96)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+}
+html[data-theme="midnight"] .protein-center-title{color:#aebce3 !important;}
+html[data-theme="midnight"] .protein-center-copy{color:#f6f8ff !important;}
+html[data-theme="midnight"] .protein-pip{background:rgba(176,192,235,.24) !important;}
+html[data-theme="midnight"] .protein-chip{
+  background:linear-gradient(180deg, rgba(20,28,52,.94), rgba(12,17,33,.94)) !important;
+  border-color:rgba(203,211,255,.16) !important;
+}
+html[data-theme="midnight"] .protein-name{color:#f5f7ff !important;}
+html[data-theme="midnight"] .protein-state{color:#bcc7e8 !important;}
+
+/* Gear icon: correct on topbar and active settings state */
+html[data-theme="midnight"] .hearty-shell-settings-btn{
+  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.96)) !important;
+  border-color:rgba(203,211,255,.18) !important;
+  color:#d7ddff !important;
+}
+html[data-theme="midnight"] .hearty-shell-settings-btn[aria-current="page"]{
+  background:linear-gradient(180deg,#5b74d8 0%, #394f9e 100%) !important;
+  color:#ffffff !important;
+}
+html[data-theme="midnight"] .hearty-shell-settings-btn svg,
+html[data-theme="midnight"] .hearty-shell-gear-icon,
+html[data-theme="midnight"] .hearty-shell-settings-btn svg *{
+  stroke:currentColor !important;
+  color:inherit !important;
+}
+
+
+/* HEARTY STEP 5R-N — settings theme selector and Midnight support polish */
+.field[hidden],
+#theme-select-quick,
+.theme-select[data-theme-input],
+select[data-theme-input]{
+  display:none !important;
+}
+.theme-current-card{
+  display:grid !important;
+  gap:4px !important;
+  margin:12px 0 12px !important;
+  padding:14px 16px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,250,255,.84)) !important;
+  border:1px solid var(--line, rgba(160,178,201,.20)) !important;
+  color:var(--ink, #132235) !important;
+  box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06)) !important;
+}
+.theme-current-kicker{
+  font-size:.68rem !important;
+  text-transform:uppercase !important;
+  letter-spacing:.16em !important;
+  font-weight:900 !important;
+  color:var(--muted, #6f7c8d) !important;
+}
+.theme-current-card strong{
+  font-size:1rem !important;
+  color:var(--ink, #132235) !important;
+}
+.theme-current-card span:last-child{
+  color:var(--muted, #6f7c8d) !important;
+  font-size:.84rem !important;
+  font-weight:750 !important;
+}
+.theme-option{
+  position:relative !important;
+  min-height:82px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(247,250,255,.84)) !important;
+  color:var(--ink, #132235) !important;
+  border:1px solid var(--line, rgba(160,178,201,.20)) !important;
+  box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06)) !important;
+}
+.theme-option-top{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+}
+.theme-selected-badge{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:24px !important;
+  padding:5px 9px !important;
+  border-radius:999px !important;
+  font-size:.66rem !important;
+  font-weight:950 !important;
+  letter-spacing:.04em !important;
+  color:var(--muted, #6f7c8d) !important;
+  background:rgba(255,255,255,.62) !important;
+  border:1px solid var(--line, rgba(160,178,201,.20)) !important;
+}
+.theme-option .theme-name,
+.theme-option .theme-desc{
+  color:inherit !important;
+}
+.theme-option .theme-desc{
+  opacity:.82 !important;
+}
+.theme-option.active{
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,246,255,.90)) !important;
+  color:var(--ink, #132235) !important;
+  border:2px solid var(--theme-accent, #2f6df6) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.10), 0 0 0 4px color-mix(in srgb, var(--theme-accent, #2f6df6) 14%, transparent) !important;
+}
+.theme-option.active .theme-selected-badge{
+  color:#ffffff !important;
+  background:linear-gradient(180deg, var(--theme-accent, #2f6df6), color-mix(in srgb, var(--theme-accent, #2f6df6) 72%, #000)) !important;
+  border-color:transparent !important;
+}
+html[data-theme="midnight"] body::after{
+  opacity:.98 !important;
+  background-image:
+    linear-gradient(180deg, rgba(4,6,16,.05), rgba(4,6,16,.20)),
+    url("../assets/backgrounds/midnight-space-background-calm.png") !important;
+  background-position:center top, center top !important;
+  background-repeat:no-repeat, no-repeat !important;
+  background-size:cover, cover !important;
+  background-attachment:fixed, fixed !important;
+  filter:none !important;
+}
+html[data-theme="midnight"] .theme-current-card,
+html[data-theme="midnight"] .theme-option{
+  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.92)) !important;
+  color:#f4f7ff !important;
+  border-color:rgba(190,202,255,.18) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+html[data-theme="midnight"] .theme-current-card strong,
+html[data-theme="midnight"] .theme-current-card span,
+html[data-theme="midnight"] .theme-name,
+html[data-theme="midnight"] .theme-desc{
+  color:#f4f7ff !important;
+}
+html[data-theme="midnight"] .theme-current-kicker,
+html[data-theme="midnight"] .theme-option .theme-desc{
+  color:#c3cce8 !important;
+}
+html[data-theme="midnight"] .theme-selected-badge{
+  color:#c3cce8 !important;
+  background:rgba(255,255,255,.06) !important;
+  border-color:rgba(190,202,255,.14) !important;
+}
+html[data-theme="midnight"] .theme-option.active{
+  border-color:#9fb7ff !important;
+  background:linear-gradient(180deg, rgba(35,47,88,.96), rgba(18,25,50,.94)) !important;
+  color:#ffffff !important;
+  box-shadow:0 14px 30px rgba(0,0,0,.28), 0 0 0 4px rgba(159,183,255,.14) !important;
+}
+html[data-theme="soft_rose"] .theme-current-card,
+html[data-theme="soft_rose"] .theme-option{
+  background:linear-gradient(180deg,#fff9f3 0%, #f6e7d6 100%) !important;
+  color:#6f472b !important;
+  border-color:rgba(176,125,75,.24) !important;
+}
+html[data-theme="soft_rose"] .theme-current-card strong,
+html[data-theme="soft_rose"] .theme-current-card span,
+html[data-theme="soft_rose"] .theme-name,
+html[data-theme="soft_rose"] .theme-desc{
+  color:#6f472b !important;
+}
+html[data-theme="soft_rose"] .theme-current-kicker{color:#8c6545 !important;}
+html[data-theme="soft_rose"] .theme-option.active{
+  border-color:#9a6232 !important;
+  box-shadow:0 12px 28px rgba(120,74,34,.16), 0 0 0 4px rgba(154,98,50,.14) !important;
+}
+/* Midnight support knowledge/tools/readability */
+html[data-theme="midnight"] .tool-item,
+html[data-theme="midnight"] .knowledge-card,
+html[data-theme="midnight"] .advice-item,
+html[data-theme="midnight"] .accordion-item,
+html[data-theme="midnight"] .helpful-tools,
+html[data-theme="midnight"] .support-tools,
+html[data-theme="midnight"] .support-card details,
+html[data-theme="midnight"] .support-card summary,
+html[data-theme="midnight"] .support-card [class*="tool"],
+html[data-theme="midnight"] .support-card [class*="knowledge"]{
+  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.92)) !important;
+  color:#f4f7ff !important;
+  border-color:rgba(190,202,255,.18) !important;
+}
+html[data-theme="midnight"] .tool-item *,
+html[data-theme="midnight"] .knowledge-card *,
+html[data-theme="midnight"] .advice-item *,
+html[data-theme="midnight"] .accordion-item *,
+html[data-theme="midnight"] .helpful-tools *,
+html[data-theme="midnight"] .support-tools *,
+html[data-theme="midnight"] .support-card details *,
+html[data-theme="midnight"] .support-card summary *,
+html[data-theme="midnight"] .support-card [class*="tool"] *,
+html[data-theme="midnight"] .support-card [class*="knowledge"] *{
+  color:#f4f7ff !important;
+  stroke:#a8bcff !important;
+}
+
+
+/* HEARTY STEP 5R-O — settings/home layout cleanup */
+body[data-page="settings"] .settings-layout,
+body[data-page="settings"] .settings-stack{
+  gap:18px !important;
+}
+body[data-page="settings"] .settings-card{
+  margin-bottom:18px !important;
+}
+body[data-page="settings"] .hearty-privacy-note{
+  margin-top:20px !important;
+  margin-bottom:calc(var(--hst-nav-h, 78px) + 38px) !important;
+}
+
+/* Theme selector: one clear selected state, no duplicate current box */
+.theme-current-card,
+.theme-current-card[hidden],
+[data-theme-current]{
+  display:none !important;
+}
+#theme-settings-card-quick .settings-copy{
+  max-width:32rem !important;
+}
+.theme-options-grid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:12px !important;
+}
+.theme-option{
+  min-height:76px !important;
+  padding:14px 14px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(245,250,255,.88)) !important;
+  color:var(--ink, #132235) !important;
+  border:1px solid var(--line, rgba(160,178,201,.20)) !important;
+  box-shadow:0 8px 18px rgba(14,31,53,.06) !important;
+}
+.theme-option.active{
+  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(242,248,255,.92)) !important;
+  color:var(--ink, #132235) !important;
+  border:2px solid var(--theme-accent, #2f6df6) !important;
+  box-shadow:0 10px 24px rgba(14,31,53,.10), 0 0 0 4px color-mix(in srgb, var(--theme-accent, #2f6df6) 13%, transparent) !important;
+}
+.theme-option.active .theme-name,
+.theme-option.active .theme-desc,
+.theme-option.active strong,
+.theme-option.active span:not(.theme-selected-badge){
+  color:var(--ink, #132235) !important;
+}
+.theme-selected-badge{
+  color:var(--muted, #5d7186) !important;
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid var(--line, rgba(160,178,201,.24)) !important;
+}
+.theme-option.active .theme-selected-badge{
+  color:#ffffff !important;
+  background:linear-gradient(180deg, var(--theme-accent, #2f6df6), color-mix(in srgb, var(--theme-accent, #2f6df6) 74%, #000)) !important;
+  border-color:transparent !important;
+}
+
+/* Theme-specific selected cards remain readable */
+html[data-theme="midnight"] .theme-option{
+  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.92)) !important;
+  color:#f4f7ff !important;
+  border-color:rgba(190,202,255,.18) !important;
+}
+html[data-theme="midnight"] .theme-option.active{
+  background:linear-gradient(180deg, rgba(35,47,88,.96), rgba(18,25,50,.94)) !important;
+  border-color:#9fb7ff !important;
+}
+html[data-theme="midnight"] .theme-option.active .theme-name,
+html[data-theme="midnight"] .theme-option.active .theme-desc,
+html[data-theme="midnight"] .theme-option.active strong,
+html[data-theme="midnight"] .theme-option.active span:not(.theme-selected-badge),
+html[data-theme="midnight"] .theme-name,
+html[data-theme="midnight"] .theme-desc{
+  color:#f4f7ff !important;
+}
+html[data-theme="soft_rose"] .theme-option,
+html[data-theme="soft_rose"] .theme-option.active{
+  background:linear-gradient(180deg,#fff9f3 0%, #f6e7d6 100%) !important;
+  color:#6f472b !important;
+}
+html[data-theme="soft_rose"] .theme-option.active .theme-name,
+html[data-theme="soft_rose"] .theme-option.active .theme-desc,
+html[data-theme="soft_rose"] .theme-option.active strong,
+html[data-theme="soft_rose"] .theme-option.active span:not(.theme-selected-badge){
+  color:#6f472b !important;
+}
+html[data-theme="deep_berry"] .theme-option,
+html[data-theme="deep_berry"] .theme-option.active{
+  background:linear-gradient(180deg,rgba(252,248,255,.98),rgba(240,233,249,.95)) !important;
+  color:#43245f !important;
+}
+html[data-theme="deep_berry"] .theme-option.active .theme-name,
+html[data-theme="deep_berry"] .theme-option.active .theme-desc,
+html[data-theme="deep_berry"] .theme-option.active strong,
+html[data-theme="deep_berry"] .theme-option.active span:not(.theme-selected-badge){
+  color:#43245f !important;
+}
+html[data-theme="pink_lemonade"] .theme-option,
+html[data-theme="pink_lemonade"] .theme-option.active{
+  background:linear-gradient(180deg,#fff5f9 0%, #ffe8ef 100%) !important;
+  color:#341827 !important;
+}
+html[data-theme="pink_lemonade"] .theme-option.active .theme-name,
+html[data-theme="pink_lemonade"] .theme-option.active .theme-desc,
+html[data-theme="pink_lemonade"] .theme-option.active strong,
+html[data-theme="pink_lemonade"] .theme-option.active span:not(.theme-selected-badge){
+  color:#341827 !important;
+}
+
+/* Settings hydration: flatten nested light blocks and make the recommended toggle fit */
+body[data-page="settings"] .hydration-grid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:14px !important;
+  align-items:stretch !important;
+}
+body[data-page="settings"] .readout-card{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+body[data-page="settings"] .readout-label{
+  margin-bottom:8px !important;
+}
+body[data-page="settings"] .readout-value{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  line-height:1.25 !important;
+}
+body[data-page="settings"] .inline-switch{
+  width:100% !important;
+  min-height:48px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  padding:12px 14px !important;
+  border-radius:16px !important;
+  background:color-mix(in srgb, var(--hf-surface-soft, rgba(255,255,255,.72)) 72%, transparent) !important;
+  border:1px solid var(--hf-border, rgba(160,178,201,.20)) !important;
+  box-shadow:none !important;
+}
+body[data-page="settings"] .inline-switch-label{
+  min-width:0 !important;
+  max-width:calc(100% - 72px) !important;
+  line-height:1.25 !important;
+  white-space:normal !important;
+}
+body[data-page="settings"] .field,
+body[data-page="settings"] .field.full{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+body[data-page="settings"] .input,
+body[data-page="settings"] .select{
+  box-shadow:none !important;
+}
+body[data-page="settings"] .formula-note{
+  margin:0 !important;
+}
+
+/* Home header: only the welcome line remains */
+body[data-page="home"] .status-strip.home-welcome-only{
+  display:block !important;
+  padding:18px 20px !important;
+  margin:0 0 14px !important;
+}
+body[data-page="home"] .status-strip.home-welcome-only .headline{
+  margin:0 !important;
+}
+body[data-page="home"] #dailyStatusLine,
+body[data-page="home"] #homeDayPill,
+body[data-page="home"] .status-strip .eyebrow{
+  display:none !important;
+}
+
+/* Mobile spacing */
+@media(max-width:760px){
+  body[data-page="settings"] .settings-card{
+    margin-bottom:16px !important;
+  }
+  body[data-page="settings"] .inline-switch{
+    min-height:54px !important;
+  }
+}
