@@ -13,6 +13,72 @@
 <script src="js/hearty-theme.js"></script>
 <style>
 *{box-sizing:border-box} html,body{margin:0;padding:0} body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden} button,a{font:inherit} .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:0 18px;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));border-radius:22px;box-shadow:var(--shadow-soft)} .brand-logo{height:42px;width:auto;object-fit:contain} .icon-btn{width:44px;height:44px;border-radius:16px;border:1px solid var(--line);display:grid;place-items:center;text-decoration:none;background:var(--surface-button);color:var(--muted)} .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:80;width:min(880px,calc(100vw - 28px));display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;border:1px solid var(--line)} .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;text-align:center;font-size:.78rem;font-weight:700;text-decoration:none} .nav-item svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round} .guide-hero{padding:24px;border-radius:28px;border:1px solid var(--line);background:var(--surface-card);box-shadow:var(--shadow);margin-bottom:16px} .guide-title{font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.03;letter-spacing:-.045em;margin:0 0 10px} .guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px} .guide-section h2{margin:0 0 8px;font-size:1.18rem;letter-spacing:-.03em} .guide-section p{margin:0;color:var(--muted);line-height:1.55} .guide-section .guide-actions{margin-top:14px} .guide-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 14px;border-radius:14px;text-decoration:none;font-weight:900;background:linear-gradient(180deg,var(--theme-accent),color-mix(in srgb,var(--theme-accent) 76%,#000));color:var(--primary-text,#fff)!important} .safe-note{border-left:4px solid var(--theme-accent);padding-left:14px} @media(max-width:760px){.guide-grid{grid-template-columns:1fr}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.nav-item svg{width:18px;height:18px}}
+
+
+/* HEARTY HOTFIX V6 — how-to-use visible header/back/done */
+.guide-action-bar{
+  position: sticky;
+  top: max(10px, env(safe-area-inset-top));
+  z-index: 120;
+  width: min(880px, calc(100vw - 28px));
+  margin: 12px auto 18px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--line, rgba(255,255,255,.35)) 75%, transparent);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--surface-card, #fff) 86%, transparent);
+  box-shadow: 0 16px 40px rgba(0,0,0,.18);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.guide-action-title{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  color: var(--text, #102033);
+  font-weight: 950;
+  letter-spacing: -.03em;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.guide-back-btn,
+.guide-done-btn{
+  min-height: 42px;
+  border: 1px solid color-mix(in srgb, var(--line, rgba(0,0,0,.16)) 78%, transparent);
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  color: var(--text, #102033) !important;
+  background: color-mix(in srgb, var(--surface-button, #fff) 90%, transparent);
+  text-decoration: none;
+  font-weight: 950;
+  cursor: pointer;
+}
+.guide-done-btn{
+  color: var(--primary-text, #fff) !important;
+  background: linear-gradient(180deg, var(--theme-accent, #2764ff), color-mix(in srgb, var(--theme-accent, #2764ff) 78%, #000));
+  border-color: color-mix(in srgb, var(--theme-accent, #2764ff) 66%, transparent);
+}
+.guide-back-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.25;fill:none;stroke-linecap:round;stroke-linejoin:round}
+[data-theme="midnight"] .guide-action-bar{background:rgba(10,13,29,.82);border-color:rgba(255,255,255,.18)}
+[data-theme="midnight"] .guide-action-title,[data-theme="midnight"] .guide-back-btn{color:#f6f2ff !important}
+[data-theme="midnight"] .guide-back-btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
+[data-theme="soft_rose"] .guide-done-btn{color:#fff !important;background:linear-gradient(180deg,#b98736,#8b5e22)}
+@media(max-width:560px){
+  .guide-action-bar{width:calc(100vw - 18px);margin-top:8px;border-radius:18px;gap:6px;padding:8px;}
+  .guide-action-title{font-size:.92rem;justify-content:flex-start;}
+  .guide-back-btn,.guide-done-btn{min-height:40px;border-radius:14px;padding:0 10px;font-size:.88rem;}
+}
+
 </style>
 <link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
 <link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
@@ -23,6 +89,15 @@
 <script src="js/hearty-production-guard.js?v=5"></script>
 </head>
 <body data-page="how-to-use"><div data-shell-mount="topbar"></div>
+<div class="guide-action-bar" data-keep-legacy-header="true">
+  <button class="guide-back-btn" id="guideBackBtn" type="button" aria-label="Go back">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    <span>Back</span>
+  </button>
+  <div class="guide-action-title">How to use Hearty</div>
+  <a class="guide-done-btn" href="home.html" id="guideDoneBtn">Done</a>
+</div>
+
 <div class="guide-page">
 
 <section class="guide-hero">
@@ -46,6 +121,20 @@
 </main>
 
 </div>
+<script>
+(function(){
+  function goBack(){
+    try{
+      if(window.history && window.history.length > 1){ window.history.back(); return; }
+    }catch(e){}
+    window.location.href = 'home.html';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    var back = document.getElementById('guideBackBtn');
+    if(back) back.addEventListener('click', goBack);
+  });
+})();
+</script>
 <script defer="" src="js/hearty-shell-template.js"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div></body>
 </html>
