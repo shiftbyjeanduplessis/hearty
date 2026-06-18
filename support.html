@@ -260,54 +260,8 @@ html body[data-page]{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))
 #bottomNav .nav-item.active,#bottomNav .nav-item[aria-current="page"]{color:#fff!important;background:rgba(255,255,255,.15)!important;}
 @media(min-width:900px){#bottomNav{padding-left:22px!important;padding-right:22px!important;}#bottomNav .bottom-nav{max-width:720px!important;}}
 </style>
-
-<style id="hearty-nav-v10-visible-fix">
-/* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
-html body[data-page] [data-shell-mount="bottom-nav"]#bottomNav{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  position:fixed !important;
-  left:0 !important;
-  right:0 !important;
-  bottom:0 !important;
-  transform:none !important;
-  z-index:2147483647 !important;
-  pointer-events:none !important;
-  width:100vw !important;
-  max-width:100vw !important;
-  height:auto !important;
-  min-height:0 !important;
-  padding:0 10px calc(8px + env(safe-area-inset-bottom,0px)) !important;
-  margin:0 !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-}
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{
-  display:grid !important;
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  bottom:auto !important;
-  transform:none !important;
-  width:min(860px,calc(100vw - 20px)) !important;
-  max-width:720px !important;
-  height:74px !important;
-  min-height:74px !important;
-  margin:0 auto !important;
-  padding:7px 6px !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
-  gap:4px !important;
-  pointer-events:auto !important;
-  opacity:1 !important;
-  visibility:visible !important;
-}
-html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)) !important;}
-</style>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
 </head>
 <body data-page="support">
 <div class="shell"><div data-shell-mount="topbar"></div>
@@ -384,7 +338,7 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
 </section>
 </main>
 
-<div id="bottomNav" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"><nav class="bottom-nav hearty-shell-bottom-nav" data-shell-template="bottom-nav" data-active-page="support" aria-label="Hearty navigation"><a class="nav-item hearty-shell-nav-item" href="./home.html" data-nav-target="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg><span>Home</span></a><a class="nav-item hearty-shell-nav-item" href="./meals.html" data-nav-target="meals"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path></svg><span>Meals</span></a><a class="nav-item hearty-shell-nav-item" href="./exercise.html" data-nav-target="exercise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path></svg><span>Exercise</span></a><a class="nav-item hearty-shell-nav-item" href="./progress.html" data-nav-target="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path></svg><span>Progress</span></a><a class="nav-item hearty-shell-nav-item active" href="./support.html" data-nav-target="support" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg><span>Support</span></a><a class="nav-item hearty-shell-nav-item" href="./social.html" data-nav-target="social"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Social</span></a><a class="nav-item hearty-shell-nav-item" href="./settings.html" data-nav-target="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg><span>Settings</span></a></nav></div><script>
+<div id="bottomNav" data-shell-mount="bottom-nav"><nav class="bottom-nav hearty-shell-bottom-nav" data-shell-template="bottom-nav" data-active-page="support" aria-label="Hearty navigation"><a class="nav-item hearty-shell-nav-item" href="./home.html" data-nav-target="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg><span>Home</span></a><a class="nav-item hearty-shell-nav-item" href="./meals.html" data-nav-target="meals"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path></svg><span>Meals</span></a><a class="nav-item hearty-shell-nav-item" href="./exercise.html" data-nav-target="exercise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path></svg><span>Exercise</span></a><a class="nav-item hearty-shell-nav-item" href="./progress.html" data-nav-target="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path></svg><span>Progress</span></a><a class="nav-item hearty-shell-nav-item active" href="./support.html" data-nav-target="support" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg><span>Support</span></a><a class="nav-item hearty-shell-nav-item" href="./social.html" data-nav-target="social"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Social</span></a><a class="nav-item hearty-shell-nav-item" href="./settings.html" data-nav-target="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg><span>Settings</span></a></nav></div><script>
 (function(){
   const STATE_KEY = 'heartySupportState';
   const HISTORY_KEY = 'heartySupportHistory';
@@ -535,8 +489,37 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
   function todayKey(){ return new Date().toISOString().slice(0,10); }
   function readJSON(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } }
   function writeJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-  function getState(){ return readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }); }
-  function setState(state){ writeJSON(STATE_KEY, state); window.dispatchEvent(new CustomEvent('hearty:support-change', { detail: state })); }
+  function normalizeSupportState(raw){
+    const base = { active:false, reason:null, updatedAt:null };
+    if(!raw || typeof raw !== 'object') return base;
+    const active = raw.active === true || raw.isActive === true || raw.supportMode === true || raw.mode === 'on' || raw.status === 'on';
+    const reason = raw.reason || raw.type || raw.supportReason || null;
+    return { active: !!active, reason: reason, updatedAt: raw.updatedAt || raw.updated_at || Date.now() };
+  }
+  function getState(){
+    const keys = ['heartySupportState','hearty_support_mode_v1','heartySupportMode','hearty_support_state'];
+    for(const key of keys){
+      try {
+        const raw = localStorage.getItem(key);
+        if(!raw) continue;
+        const parsed = JSON.parse(raw);
+        const normalized = normalizeSupportState(parsed);
+        if(normalized.active && normalized.reason) return normalized;
+      } catch(e) {}
+    }
+    return normalizeSupportState(readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }));
+  }
+  function setState(state){
+    const normalized = normalizeSupportState(state);
+    const payload = Object.assign({}, normalized, { isActive: normalized.active, type: normalized.reason || '', updated_at: new Date(normalized.updatedAt || Date.now()).toISOString() });
+    writeJSON('heartySupportState', payload);
+    writeJSON('hearty_support_mode_v1', payload);
+    writeJSON('heartySupportMode', payload);
+    writeJSON('hearty_support_state', payload);
+    try { localStorage.setItem('supportMode', normalized.active ? 'on' : 'off'); } catch(e) {}
+    try { window.dispatchEvent(new CustomEvent('hearty:support-change', { detail: payload })); } catch(e) {}
+    try { window.dispatchEvent(new CustomEvent('hearty:support-mode-changed', { detail: payload })); } catch(e) {}
+  }
   function getHistory(){ return readJSON(HISTORY_KEY, []); }
   function addHistory(reason, action){
     const list = getHistory();
@@ -777,13 +760,13 @@ const SUPPORT_TOOLS = [
   function render(){
     const state = getState();
     const data = state.active && reasons[state.reason] ? reasons[state.reason] : null;
-    document.getElementById('statusPill').classList.toggle('on', !!data);
-    document.getElementById('statusText').textContent = data ? `${data.label} Support On` : 'Support Off';
-    document.getElementById('supportHero').classList.toggle('is-support-on', !!data);
-    document.getElementById('supportTitle').textContent = data ? data.title : 'What do you need support with?';
-    document.getElementById('supportCopy').textContent = data ? data.copy : 'Pick one reason. Hearty will treat this as the active support reason until you switch it off or choose another reason.';
+    const statusPillEl=document.getElementById('statusPill'); if(statusPillEl) statusPillEl.classList.toggle('on', !!data);
+    const statusTextEl=document.getElementById('statusText'); if(statusTextEl) statusTextEl.textContent = data ? `${data.label} Support On` : 'Support Off';
+    const supportHeroEl=document.getElementById('supportHero'); if(supportHeroEl) supportHeroEl.classList.toggle('is-support-on', !!data);
+    const supportTitleEl=document.getElementById('supportTitle'); if(supportTitleEl) supportTitleEl.textContent = data ? data.title : 'What do you need support with?';
+    const supportCopyEl=document.getElementById('supportCopy'); if(supportCopyEl) supportCopyEl.textContent = data ? data.copy : 'Pick one reason. Hearty will treat this as the active support reason until you switch it off or choose another reason.';
     document.querySelectorAll('.reason-btn').forEach(btn => btn.classList.toggle('active', data && btn.dataset.reason === state.reason));
-    document.getElementById('supportOffBtn').classList.toggle('active', !data);
+    const supportOffEl=document.getElementById('supportOffBtn'); if(supportOffEl) supportOffEl.classList.toggle('active', !data);
     renderAdvice(state); renderKnowledge(state); renderTrend(); renderHistory();
   }
 
@@ -798,14 +781,14 @@ const SUPPORT_TOOLS = [
       ['settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']
     ];
     const cur='support.html';
-    document.querySelector('.bottom-nav').innerHTML=pages.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('');
+    const supportNavEl = document.querySelector('#bottomNav .bottom-nav, .bottom-nav'); if(!supportNavEl) return; supportNavEl.innerHTML=pages.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
     autoResetDaily();
     buildNav();
     document.querySelectorAll('.reason-btn').forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.reason)));
-    document.getElementById('supportOffBtn').addEventListener('click', deactivate);
+    const supportOffClickEl=document.getElementById('supportOffBtn'); if(supportOffClickEl) supportOffClickEl.addEventListener('click', deactivate);
     document.querySelectorAll('.range-tab').forEach(btn => btn.addEventListener('click', function(){
       document.querySelectorAll('.range-tab').forEach(b => b.classList.remove('active'));
       this.classList.add('active');

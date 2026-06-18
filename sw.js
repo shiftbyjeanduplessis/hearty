@@ -1,27 +1,38 @@
-const CACHE_NAME = 'hearty-hotfix-v12b-remove-temp-nav';
-const APP_SHELL = [
-  "/", "/index.html", "/home.html", "/meals.html", "/exercise.html", "/progress.html", "/support.html", "/settings.html", "/manifest.json",
-  "/css/hearty-shell-template.css", "/js/hearty-shell-template.js", "/js/hearty-production-guard.js", "/js/hearty-install.js",
-  "/icons/hearty-icon-192.png", "/icons/hearty-icon-512.png", "/icons/hearty-icon-maskable-512.png"
+const CACHE_NAME = "hearty-production-v15-critical-restore";
+const CORE_URLS = [
+  "/", "/home.html", "/meals.html", "/meals-onboarding.html", "/exercise.html", "/progress.html", "/support.html", "/social.html", "/settings.html", "/how-to-use.html", "/help.html", "/login.html", "/data-recovery.html",
+  "/manifest.json", "/pwa-install.css", "/pwa-install.js",
+  "/css/hearty-shell-template.css", "/css/hearty-step5n-theme-beauty.css", "/css/hearty-theme.css",
+  "/js/hearty-shell-template.js", "/js/hearty-production-guard.js", "/js/hearty-theme.js", "/js/hearty-updater.js",
+  "/icons/hearty-icon-192.png", "/icons/hearty-icon-512.png", "/icons/hearty-icon-maskable-512.png", "/assets/hearty-splash-screen.png"
 ];
+
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).catch(() => null).then(() => self.skipWaiting()));
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_URLS).catch(() => undefined)));
 });
+
 self.addEventListener("activate", event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
 });
+
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
   const req = event.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
-    fetch(req, { cache: "no-store" }).then(res => {
-      try {
-        if (res && res.ok && new URL(req.url).origin === self.location.origin) {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(req, copy)).catch(() => null);
-        }
-      } catch(_) {}
-      return res;
-    }).catch(() => caches.match(req).then(cached => cached || caches.match("/home.html")))
+    fetch(new Request(req, { cache: "no-store" }))
+      .then(resp => {
+        const copy = resp.clone();
+        if (resp && resp.ok) caches.open(CACHE_NAME).then(cache => cache.put(req, copy)).catch(() => undefined);
+        return resp;
+      })
+      .catch(() => caches.match(req).then(cached => cached || caches.match(url.pathname)).then(cached => cached || Response.error()))
   );
 });
