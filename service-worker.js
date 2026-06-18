@@ -1,29 +1,9 @@
-const CACHE_NAME = "hearty-v2026-06-18-production-hotfix-v3";
-
-self.addEventListener("install", (event) => {
-  self.skipWaiting();
-});
-
+const CACHE_NAME = "hearty-production-hotfix-v5";
+self.addEventListener("install", (event) => { self.skipWaiting(); });
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key !== CACHE_NAME)
-            .map((key) => caches.delete(key))
-        )
-      )
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()))
 });
-
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-
-  event.respondWith(
-    fetch(event.request, { cache: "no-store" })
-      .catch(() => caches.match(event.request))
-  );
+  event.respondWith(fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request)));
 });

@@ -517,7 +517,7 @@
     if ($('waterCountHint')) $('waterCountHint').textContent = `Target: ${target} glasses • 250 ml each`;
     if ($('waterCountChip')) $('waterCountChip').dataset.state = count ? 'active' : 'idle';
     if ($('waterProgressBar')) $('waterProgressBar').style.width = `${pct}%`;
-    if($('waterUndo')) $('waterUndo').disabled = count <= 0; ring('waterRing', pct);
+    $('waterUndo').disabled = count <= 0; ring('waterRing', pct);
   }
 
   function renderMedication(){
@@ -531,9 +531,9 @@
     const due = medicationDueToday(med);
     const logged = med.lastDoseDate === today;
 
-    const injectionCard = $('injectionCard');
-    if(injectionCard){ injectionCard.classList.toggle('due', due && !logged); injectionCard.classList.toggle('logged', logged); }
-    if($('logDoseBtn')) $('logDoseBtn').classList.toggle('active', logged);
+    $('injectionCard').classList.toggle('due', due && !logged);
+    $('injectionCard').classList.toggle('logged', logged);
+    $('logDoseBtn').classList.toggle('active', logged);
 
     if (!med.type || med.type === 'Not set yet') {
       $('nextInjectionDateText').textContent = 'Set your medication schedule during setup.';
@@ -548,31 +548,13 @@
     }
   }
 
-  function syncSupportAliases(active, reason){
-    const on = !!active;
-    const mode = on ? (reason || state.support.type || 'support') : null;
-    const now = new Date().toISOString();
-    try{
-      writeJSON('hearty_support_mode_v1', { active:on, reason:mode, source:'home-js', updatedAt:now });
-      writeJSON('heartySupportState', { active:on, reason:mode, updatedAt:Date.now() });
-      writeJSON('hearty_support_state', { active:on, reason:mode, updatedAt:Date.now() });
-      localStorage.setItem('heartySupportActive', on ? 'true' : 'false');
-      localStorage.setItem('hearty_support_mode', on ? mode : 'off');
-      if(on) localStorage.setItem('meals_support_mode', mode || 'support');
-      else localStorage.removeItem('meals_support_mode');
-    }catch(e){}
-  }
-
   function renderSupport(){
     const active = isSupportActiveValue(state.support.active);
-    const led = $('supportLed');
-    const card = $('supportCard');
-    const subtext = $('supportSubtext');
-    const offBtn = $('supportOff');
-    if(led) led.classList.toggle('active', active);
-    if(card){ card.classList.toggle('is-active', active); card.classList.toggle('is-off', !active); }
-    if(subtext) subtext.textContent = active ? 'Support Mode is active. Meals and movement should feel gentler today.' : 'If side effects are getting in the way, switch to a softer day from the Support page.';
-    if(offBtn) offBtn.disabled = !active;
+    $('supportLed').classList.toggle('active', active);
+    $('supportCard').classList.toggle('is-active', active);
+    $('supportCard').classList.toggle('is-off', !active);
+    $('supportSubtext').textContent = active ? 'Support Mode is active. Meals and movement should feel gentler today.' : 'If side effects are getting in the way, switch to a softer day from the Support page.';
+    $('supportOff').disabled = !active;
   }
 
 
@@ -606,7 +588,7 @@
     if ($('lessonBody')) $('lessonBody').innerHTML = allDone && !completedToday ? '<div class="lesson-complete-icon">✓</div><p>You have completed the 10-day Hearty lesson sequence.</p><p>Keep repeating the daily rhythm: weigh in, hydrate, move, eat protein-forward meals, and use Support Mode when needed.</p>' : `<div class="lesson-hero-icon" aria-hidden="true">${lessonIcon}</div>${lesson.body}`;
     if ($('lessonSub')) $('lessonSub').textContent = completedToday ? `${lessonLabel} complete. Next lesson unlocks tomorrow.` : allDone ? 'Lesson series complete.' : `${lessonLabel} • ${lesson.title}`;
     if ($('completeLessonBtn')){
-      if($('completeLessonBtn')) $('completeLessonBtn').disabled = completedToday || (allDone && !completedToday);
+      $('completeLessonBtn').disabled = completedToday || (allDone && !completedToday);
       $('completeLessonBtn').textContent = completedToday ? 'Lesson complete' : 'Mark lesson complete';
     }
     if (state.daily.tasks.lesson !== completedToday){ state.daily.tasks.lesson = completedToday; saveDaily(); }
@@ -622,7 +604,7 @@
       const done = !!state.daily.tasks[k]; row.classList.toggle('completed', done); btn.classList.toggle('done', done);
     });
     $('protocolSummary').textContent = `${counts.done} of ${counts.total} complete`;
-    if($('protocolComplete')) $('protocolComplete').classList.toggle('show', counts.done === counts.total);
+    $('protocolComplete').classList.toggle('show', counts.done === counts.total);
     const next = counts.keys.find(k=>!state.daily.tasks[k]);
     $('nextActionText').textContent = next === 'weight' ? 'Record today’s weight' : next === 'walk' ? 'Complete your movement baseline' : next === 'photos' ? 'Take progress photos' : next === 'lesson' ? 'Read today’s 2–3 minute lesson' : 'All core tasks complete';
     const pct = counts.total ? Math.round((counts.done/counts.total)*100) : 0;
@@ -670,7 +652,7 @@
       saveLessonState(lessonState);
       state.daily.tasks.lesson = true; saveDaily(); closeSheets(); renderAll();
     });
-    $('supportOff')?.addEventListener('click',()=>{ state.support.active=false; state.support.type=''; writeJSON(KEY.support,state.support); syncSupportAliases(false, null); hdSupport(''); renderSupport(); toast('Support Mode off.'); });
+    $('supportOff').addEventListener('click',()=>{ state.support.active=false; state.support.type=''; writeJSON(KEY.support,state.support); hdSupport(''); renderSupport(); toast('Support Mode off.'); });
     $('logDoseBtn').addEventListener('click',()=>{
       const today = localDate();
       state.medication.lastDoseDate = today;
