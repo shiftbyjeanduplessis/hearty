@@ -1,4 +1,19 @@
-const CACHE_NAME="hearty-v20-sales-restore";
-self.addEventListener("install",()=>self.skipWaiting());
-self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(fetch(e.request,{cache:"no-store"}).catch(()=>caches.match(e.request)));});
+const CACHE_NAME = "hearty-production-v22-install-loop-stop";
+
+self.addEventListener("install", (event) => {
+  // Do not call skipWaiting here. This avoids controllerchange reload loops on older open pages.
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.filter((key) => key.startsWith("hearty-") && key !== CACHE_NAME).map((key) => caches.delete(key))
+    ))
+    // Do not call clients.claim here. New pages will use the worker normally after navigation/reopen.
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+  event.respondWith(fetch(event.request, { cache: "no-store" }).catch(() => caches.match(event.request)));
+});

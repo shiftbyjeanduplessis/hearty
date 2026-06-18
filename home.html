@@ -141,7 +141,7 @@ html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bot
 }
 html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)) !important;}
 </style>
-  <link rel="stylesheet" href="/pwa-install.css?v=18">
+  <link rel="stylesheet" href="/pwa-install.css?v=19">
 </head>
 <body data-page="home">
 <div class="shell" id="app"><div data-shell-mount="topbar"></div>
@@ -615,31 +615,14 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
     }
   })();
   </script>
-<script>
+<script id="hearty-safe-service-worker-registration-v22">
+  /* Hearty v22: registration only. No automatic reload on service-worker controllerchange. */
   if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
-    window.addEventListener('load', () => {
-      const registerServiceWorker = () =>
-        navigator.serviceWorker.register('/sw.js').catch(() =>
-          navigator.serviceWorker.register('/service-worker.js')
-        );
-
-      registerServiceWorker().then(reg => {
-        reg.update();
-        reg.addEventListener('updatefound', () => {
-          const nw = reg.installing;
-          nw.addEventListener('statechange', () => {
-            if(nw.state === 'installed' && navigator.serviceWorker.controller){
-              const bar = document.createElement('div');
-              bar.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1550b3;color:white;padding:12px 20px;border-radius:12px;z-index:9999;box-shadow:0 14px 34px rgba(21,80,179,.24);font:700 14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-              bar.textContent = 'Update ready — tap to reload';
-              bar.onclick = () => location.reload();
-              document.body.appendChild(bar);
-            }
-          });
-        });
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(){
+        return navigator.serviceWorker.register('/service-worker.js').catch(function(){});
       });
     });
-    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
   }
   </script>
 <script>
@@ -672,6 +655,6 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
   window.addEventListener('load',function(){ensure();setTimeout(ensure,250);setTimeout(ensure,1200);});
 })();
 </script>
-<script defer src="/pwa-install.js?v=18"></script>
+<script defer src="/pwa-install.js?v=19"></script>
 </body>
 </html>
