@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Hearty">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icons/hearty-icon-192.png">
+  <link rel="stylesheet" href="/pwa-install.css?v=18">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="glp-supabase-config.js"></script>
   <style>
@@ -85,6 +86,71 @@
 <link rel="stylesheet" href="css/hearty-shell-template.css">
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
 <script src="js/hearty-production-guard.js?v=5"></script>
+
+<style id="hearty-login-layout-v17">
+/* HOTFIX V17: keep login/auth card centred and readable on mobile browsers.
+   The shared app theme CSS is for the in-app shell; login needs its own hard layout guard. */
+html[data-auth-page="login"],
+html[data-auth-page="login"] body,
+body[data-page="login"]{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  overflow-x:hidden !important;
+}
+body[data-page="login"]{
+  min-height:100vh !important;
+  min-height:100svh !important;
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(22px + env(safe-area-inset-bottom,0px)) !important;
+  margin:0 !important;
+}
+body[data-page="login"] .auth-card{
+  width:min(480px, calc(100vw - 32px)) !important;
+  max-width:480px !important;
+  min-width:0 !important;
+  margin:0 auto !important;
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  transform:none !important;
+}
+body[data-page="login"] .auth-logo{
+  width:min(310px, 88%) !important;
+  max-width:310px !important;
+  height:auto !important;
+  max-height:76px !important;
+}
+body[data-page="login"] input,
+body[data-page="login"] textarea,
+body[data-page="login"] button{
+  max-width:100% !important;
+}
+@media (max-width:560px){
+  body[data-page="login"]{
+    padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  body[data-page="login"] .auth-card{
+    width:100% !important;
+    max-width:calc(100vw - 28px) !important;
+    padding:24px 18px 22px !important;
+    border-radius:26px !important;
+  }
+  body[data-page="login"] h1{
+    font-size:clamp(1.7rem, 8vw, 2.15rem) !important;
+    line-height:1.06 !important;
+  }
+  body[data-page="login"] .notice{
+    font-size:13px !important;
+    line-height:1.45 !important;
+  }
+  body[data-page="login"] .tabs{
+    gap:6px !important;
+  }
+}
+</style>
 </head>
 <body data-page="login">
   <main class="auth-card" aria-live="polite">
@@ -808,5 +874,6 @@
 
       <p class="auth-help-link" style="text-align:center;margin-top:14px"><a href="how-to-use.html">New to Hearty? Open the quick guide</a></p>
 <script src="js/hearty-shell-template.js" defer></script>
+<script src="/pwa-install.js?v=18"></script>
 </body>
 </html>
