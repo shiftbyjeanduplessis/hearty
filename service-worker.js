@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-production-v15-critical-restore";
+const CACHE_NAME = "hearty-production-v16-theme-aware-onboarding";
 const CORE_URLS = [
   "/", "/home.html", "/meals.html", "/meals-onboarding.html", "/exercise.html", "/progress.html", "/support.html", "/social.html", "/settings.html", "/how-to-use.html", "/help.html", "/login.html", "/data-recovery.html",
   "/manifest.json", "/pwa-install.css", "/pwa-install.js",
