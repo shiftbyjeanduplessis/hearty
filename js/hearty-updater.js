@@ -1,5 +1,5 @@
 (function () {
-  const HEARTY_APP_VERSION = "1.0.1";
+  const HEARTY_APP_VERSION = "1.0.3-hotfix-v3";
   window.HEARTY_APP_VERSION = HEARTY_APP_VERSION;
 
   function showHeartyUpdateToast() {

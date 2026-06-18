@@ -593,10 +593,10 @@ main.stack > .hero .location-toggle{
 ========================================================= -->
 <script id="hearty-layer4-theme-authority">
 (function(){
-  var VALID = ['clean_blue','pink_lemonade','midnight','soft_rose','deep_berry'];
+  var VALID = ['clean_blue','pink_lemonade','midnight','soft_rose','deep_berry','partner_neutral'];
   var DEFAULT_THEME = 'clean_blue';
   var USER_SELECTED_KEY = 'heartyThemeUserSelected';
-  function valid(t){ t = String(t || '').replace(/[-\s]+/g,'_'); var legacy = {sunlit:'pink_lemonade', rose_aurora:'soft_rose', fresh_green:'clean_blue'}; t = legacy[t] || t; return VALID.indexOf(t) >= 0 ? t : DEFAULT_THEME; }
+  function valid(t){ t = String(t || '').replace(/[-\s]+/g,'_'); var legacy = {sunlit:'pink_lemonade', rose_aurora:'soft_rose', fresh_green:'partner_neutral'}; t = legacy[t] || t; return VALID.indexOf(t) >= 0 ? t : DEFAULT_THEME; }
   function firstUse(){ try { return localStorage.getItem('heartyCoreSetupDone') !== 'true'; } catch(e){ return false; } }
   function readTheme(){
     try{
@@ -821,7 +821,7 @@ body{background:var(--bg-base)!important;color:var(--ink)!important}body::before
 </section>
 </main>
 
-<div data-shell-mount="bottom-nav"></div></div>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div></div>
 <script>
 
 (() => {

@@ -94,18 +94,7 @@
         var isMealsOnboarding = path.indexOf("meals-onboarding") !== -1;
 
         if (isMealsPage && !isMealsOnboarding && !hasMealProfile()) {
-          /* Phase 1 deploy safety: meals-onboarding.html is not part of this release.
-             Seed a simple default profile so Meals opens for new users instead of redirecting to a missing page. */
-          try {
-            localStorage.setItem("heartyMealsStateVFinal", JSON.stringify({
-              profileComplete: true,
-              onboardingComplete: true,
-              country: localStorage.getItem("heartyMealsCountry") || localStorage.getItem("heartyCountry") || "ZA",
-              snackEnabled: localStorage.getItem("heartyMealsSnacksOn") !== "false",
-              seafoodAllowed: true,
-              source: "phase1_default_profile"
-            }));
-          } catch(e) {}
+          window.location.replace("meals-onboarding.html");
         }
       } catch(e) {}
     })();
@@ -907,7 +896,7 @@
 </aside>
 </div>
 
-<div data-shell-mount="bottom-nav"></div></div>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div></div>
 <script>
     (function(){
       "use strict";
@@ -1670,21 +1659,10 @@
         return complete ? profile : null;
       }
 
-      function defaultMealProfile(){
-        return {
-          profileComplete: true,
-          onboardingComplete: true,
-          country: localStorage.getItem("heartyMealsCountry") || localStorage.getItem("heartyCountry") || "ZA",
-          snackEnabled: localStorage.getItem("heartyMealsSnacksOn") !== "false",
-          seafoodAllowed: true,
-          source: "phase1_default_profile"
-        };
-      }
-
       function redirectToMealsOnboarding(){
-        // Phase 1 deploy safety: no separate onboarding page is shipped in this release.
-        // Keep Meals usable by falling back to the default profile.
-        try { localStorage.setItem("heartyMealsStateVFinal", JSON.stringify(defaultMealProfile())); } catch(e) {}
+        var current = (window.location.pathname || "").toLowerCase();
+        if (current.indexOf("meals-onboarding") !== -1) return;
+        window.location.href = "meals-onboarding.html";
       }
 
       async function bootMeals(){
@@ -1701,16 +1679,33 @@
 
           if (!mealProfile) {
             redirectToMealsOnboarding();
-            mealProfile = defaultMealProfile();
+            return;
           }
 
           await loadFirst([
-            "./meals-engine.js"
+            "./meals-engine-v6.5.js",
+            "./js/meals-engine-v6.5.js",
+            "./meals-engine.js",
+            "./js/meals-engine.js",
+            "./hearty-meals-engine.js",
+            "./js/hearty-meals-engine.js"
           ]);
 
           await loadFirst([
-            "./meals-bridge.js"
+            "./meals-bridge.js",
+            "./js/meals-bridge.js",
+            "./hearty-meals-bridge.js",
+            "./js/hearty-meals-bridge.js"
           ]);
+
+          try {
+            await loadFirst([
+              "./hearty-meals-db-bridge.js",
+              "./js/hearty-meals-db-bridge.js"
+            ]);
+          } catch(dbBridgeError) {
+            console.info("[Hearty Meals] DB bridge not loaded; continuing with local meals bridge.", dbBridgeError);
+          }
 
           var engine = findEngine();
           var factory = findBridgeFactory();

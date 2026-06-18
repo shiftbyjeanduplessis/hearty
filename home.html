@@ -88,7 +88,9 @@
 <div class="shell" id="app"><div data-shell-mount="topbar"></div>
 
 <section class="status-strip home-welcome-only">
+<span id="homeDayPill" hidden></span>
 <h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
+<p id="dailyStatusLine" hidden></p>
 </section>
 <section aria-label="How to use Hearty" class="first-time-guide-card" id="firstTimeGuideCard">
 <div>
@@ -199,7 +201,7 @@
 </aside>
 </main>
 
-<div data-shell-mount="bottom-nav"></div></div>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div></div>
 <section aria-hidden="true" class="sheet-overlay" hidden="" id="weightSheet">
 <div aria-labelledby="weightSheetTitle" aria-modal="true" class="task-sheet" role="dialog">
 <div class="sheet-handle"></div>
@@ -561,7 +563,9 @@
   if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
     window.addEventListener('load', () => {
       const registerServiceWorker = () =>
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js').catch(() =>
+          navigator.serviceWorker.register('/service-worker.js')
+        );
 
       registerServiceWorker().then(reg => {
         reg.update();

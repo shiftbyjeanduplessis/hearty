@@ -14,7 +14,12 @@
   ];
 
   const PAGE_STRIPS = {
-    home: null,
+    home: {
+      eyebrow: '',
+      title: 'Welcome to Hearty',
+      subtitle: '',
+      action: ''
+    },
     meals: {
       eyebrow: 'Meal planner',
       title: 'Your meals for today',
@@ -249,7 +254,7 @@
       if(['on','true','1','active'].includes(v)) isOn = true;
       if(!isOn && raw && raw[0] === '{'){
         const obj = JSON.parse(raw);
-        isOn = obj && (obj.active === true || obj.supportModeOn === true || obj.on === true);
+        isOn = obj && (obj.active === true || obj.isActive === true || obj.supportModeOn === true || obj.on === true || !!obj.active_state);
       }
     }catch(e){ isOn = false; }
     document.querySelectorAll('#supportCard,.support-card,[data-support-card]').forEach(card => {

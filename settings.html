@@ -361,9 +361,9 @@ input,select,textarea,.control,.form-control{
 <section class="settings-card">
 <div class="settings-head"><div><h2 class="settings-title">Privacy &amp; Legal</h2><p class="settings-copy">Your photos stay on your device by default.</p></div></div>
 <div class="link-list">
-<a class="link-item" href="privacy.html" id="privacy-link">Privacy Policy <span>↗</span></a>
-<a class="link-item" href="terms.html" id="terms-link">Terms of Service <span>↗</span></a>
-<a class="link-item" href="refund.html" id="refund-link">Refund Policy <span>↗</span></a>
+<a class="link-item" href="#" id="privacy-link">Privacy Policy <span>↗</span></a>
+<a class="link-item" href="#" id="terms-link">Terms of Service <span>↗</span></a>
+<a class="link-item" href="#" id="refund-link">Refund Policy <span>↗</span></a>
 <a class="link-item" href="mailto:support@hearty.health">
 <span>Support · support@hearty.health</span>
 <span>Email</span>
@@ -394,7 +394,7 @@ input,select,textarea,.control,.form-control{
 </div>
 </section>
 
-<div data-shell-mount="bottom-nav"></div></div>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div></div>
 <div class="toast" id="settings-toast"></div>
 <script>
 const STORAGE = {
@@ -645,7 +645,7 @@ $('logoutBtn')?.addEventListener('click', async () => {
   });
 })();
 
-['privacy-link','terms-link','refund-link'].forEach(id => { const el = $(id); if(el) el.setAttribute('target','_self'); });
+['privacy-link','terms-link','refund-link'].forEach(id => $(id).addEventListener('click', e => { e.preventDefault(); showToast('Public legal page link to be added'); }));
 hydrateBodyMetricsFromHome();
 render();
 </script>

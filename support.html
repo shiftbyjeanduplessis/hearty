@@ -273,11 +273,11 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
 <span><b>Resets</b> daily</span>
 </div>
 <div class="reason-grid" id="reasonGrid">
-<button class="reason-btn" type="button" data-reason="nausea"><strong>Nausea</strong><span>Softer meals, simpler foods, less pressure.</span></button>
-<button class="reason-btn" type="button" data-reason="bloating"><strong>Bloating</strong><span>Gentler meal suggestions and reduced intensity.</span></button>
-<button class="reason-btn" type="button" data-reason="fatigue"><strong>Fatigue</strong><span>Lower workout demand and easier daily rhythm.</span></button>
-<button class="reason-btn" type="button" data-reason="low_appetite"><strong>Low appetite</strong><span>Protein-first, smaller portions, snack-style support.</span></button>
-<button class="reason-btn" type="button" data-reason="constipation"><strong>Constipation</strong><span>Hydration, fibre-aware nudges, and gentle movement.</span></button>
+<button class="reason-btn" data-reason="nausea"><strong>Nausea</strong><span>Softer meals, simpler foods, less pressure.</span></button>
+<button class="reason-btn" data-reason="bloating"><strong>Bloating</strong><span>Gentler meal suggestions and reduced intensity.</span></button>
+<button class="reason-btn" data-reason="fatigue"><strong>Fatigue</strong><span>Lower workout demand and easier daily rhythm.</span></button>
+<button class="reason-btn" data-reason="low_appetite"><strong>Low appetite</strong><span>Protein-first, smaller portions, snack-style support.</span></button>
+<button class="reason-btn" data-reason="constipation"><strong>Constipation</strong><span>Hydration, fibre-aware nudges, and gentle movement.</span></button>
 </div>
 <div class="off-row"><button class="off-btn" id="supportOffBtn" type="button">Support Off</button></div>
 </section>
@@ -326,10 +326,14 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
 </section>
 </main>
 
-<div data-shell-mount="bottom-nav"></div></div>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div></div>
 <script>
 (function(){
   const STATE_KEY = 'heartySupportState';
+  const SHARED_SUPPORT_KEY = 'hearty_support_mode_v1';
+  const HOME_SUPPORT_KEY = 'heartySupportMode';
+  const LEGACY_SUPPORT_STATE_KEY = 'hearty_support_state';
+  const LEGACY_MEALS_SUPPORT_KEY = 'meals_support_mode';
   const HISTORY_KEY = 'heartySupportHistory';
   const DAY_KEY = 'heartySupportLastSeenDate';
 
@@ -477,9 +481,67 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
 
   function todayKey(){ return new Date().toISOString().slice(0,10); }
   function readJSON(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } }
-  function writeJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-  function getState(){ return readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }); }
-  function setState(state){ writeJSON(STATE_KEY, state); window.dispatchEvent(new CustomEvent('hearty:support-change', { detail: state })); }
+  function writeJSON(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {} }
+  function normaliseReason(value){
+    if(!value) return null;
+    const v = String(value).trim().toLowerCase().replace(/-/g, '_');
+    if(v === 'low_appetite' || v === 'low appetite') return 'low_appetite';
+    if(v === 'low_energy' || v === 'low energy' || v === 'exhaustion') return 'fatigue';
+    if(v === 'nausea' || v === 'bloating' || v === 'fatigue' || v === 'constipation') return v;
+    return null;
+  }
+  function coerceState(raw){
+    if(!raw) return null;
+    if(typeof raw === 'string'){
+      const reason = normaliseReason(raw);
+      if(reason) return { active:true, reason, updatedAt:null };
+      if(['off','false','0','none',''].includes(raw.trim().toLowerCase())) return { active:false, reason:null, updatedAt:null };
+      return null;
+    }
+    const active = raw.active === true || raw.isActive === true || raw.supportModeOn === true || raw.on === true;
+    const reason = normaliseReason(raw.reason || raw.type || raw.mode || raw.primarySymptom || raw.active_state);
+    if(active && reason) return { active:true, reason, updatedAt:raw.updatedAt || raw.updated_at || Date.now() };
+    if(raw.active === false || raw.isActive === false || raw.active_state === '') return { active:false, reason:null, updatedAt:raw.updatedAt || raw.updated_at || Date.now() };
+    return null;
+  }
+  function getState(){
+    const candidates = [
+      readJSON(SHARED_SUPPORT_KEY, null),
+      readJSON(STATE_KEY, null),
+      readJSON(HOME_SUPPORT_KEY, null),
+      readJSON(LEGACY_SUPPORT_STATE_KEY, null),
+      localStorage.getItem(LEGACY_MEALS_SUPPORT_KEY)
+    ];
+    for(const item of candidates){
+      const state = coerceState(item);
+      if(state && state.active) return state;
+    }
+    const explicit = candidates.map(coerceState).find(Boolean);
+    return explicit || { active:false, reason:null, updatedAt:null };
+  }
+  function syncSupportAliases(state){
+    const nowISO = new Date().toISOString();
+    const on = !!(state && state.active && state.reason);
+    const reason = on ? normaliseReason(state.reason) : null;
+    const shared = { active:on, reason, source:'support-page', updatedAt:nowISO };
+    writeJSON(STATE_KEY, { active:on, reason, updatedAt:Date.now() });
+    writeJSON(SHARED_SUPPORT_KEY, shared);
+    writeJSON(LEGACY_SUPPORT_STATE_KEY, { active:on, reason, updatedAt:Date.now() });
+    writeJSON(HOME_SUPPORT_KEY, { active:on, isActive:on, type:reason || '', reason, sourcePage:'support', updatedAt:nowISO });
+    try{
+      if(on) localStorage.setItem(LEGACY_MEALS_SUPPORT_KEY, reason);
+      else localStorage.removeItem(LEGACY_MEALS_SUPPORT_KEY);
+      localStorage.setItem('heartySupportActive', on ? 'true' : 'false');
+      localStorage.setItem('hearty_support_mode', on ? reason : 'off');
+    }catch(e){}
+  }
+  function setState(state){
+    const clean = { active:!!(state && state.active), reason:normaliseReason(state && state.reason), updatedAt:Date.now() };
+    if(!clean.reason) clean.active = false;
+    syncSupportAliases(clean);
+    try { window.dispatchEvent(new CustomEvent('hearty:support-change', { detail: clean })); } catch(e) {}
+    try { window.dispatchEvent(new CustomEvent('hearty:support-mode-changed', { detail: clean })); } catch(e) {}
+  }
   function getHistory(){ return readJSON(HISTORY_KEY, []); }
   function addHistory(reason, action){
     const list = getHistory();
@@ -741,7 +803,9 @@ const SUPPORT_TOOLS = [
       ['settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']
     ];
     const cur='support.html';
-    document.querySelector('.bottom-nav').innerHTML=pages.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('');
+    const nav = document.getElementById('bottomNav') || document.querySelector('[data-shell-mount="bottom-nav"]') || document.querySelector('.bottom-nav');
+    if(!nav) return;
+    nav.innerHTML=pages.map(p=>`<a class="nav-item ${p[0]===cur?'active':''}" ${p[0]===cur?'aria-current="page"':''} href="./${p[0]}"><svg viewBox="0 0 24 24" aria-hidden="true">${p[2]}</svg><span>${p[1]}</span></a>`).join('');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
