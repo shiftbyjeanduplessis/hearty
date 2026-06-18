@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en" data-theme="clean_blue">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hearty Data Recovery</title>
+<meta name="robots" content="noindex,nofollow" />
+<style>
+:root{--bg:#eef7fb;--ink:#102033;--muted:#587084;--card:rgba(255,255,255,.86);--line:rgba(30,60,90,.14);--accent:#0b74bd;--accent2:#0a5d98;--good:#1f8f5f;--warn:#b36b00;--bad:#b92e4a;--shadow:0 20px 60px rgba(0,41,77,.15)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(800px 360px at 50% -10%,rgba(255,255,255,.72),transparent),linear-gradient(180deg,#e8f7ff,#d7eefb 40%,#f4fbff)}
+.shell{max-width:920px;margin:0 auto;padding:18px 16px 42px}.topbar{position:sticky;top:0;z-index:10;margin:-18px -16px 18px;padding:14px 16px;border-bottom:1px solid var(--line);background:rgba(241,250,255,.92);backdrop-filter:blur(14px);display:flex;gap:10px;align-items:center;justify-content:space-between}.brand{font-weight:900;letter-spacing:-.03em;font-size:1.05rem}.top-actions{display:flex;gap:8px;align-items:center}.btn{appearance:none;border:0;border-radius:999px;padding:11px 14px;font-weight:850;cursor:pointer;background:linear-gradient(180deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 12px 28px rgba(11,116,189,.22)}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}.btn.warn{background:linear-gradient(180deg,#c98010,#9d6208)}.hero,.card{border:1px solid var(--line);border-radius:28px;background:var(--card);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}.hero h1{margin:0 0 8px;font-size:clamp(1.7rem,5vw,2.8rem);line-height:1.02;letter-spacing:-.06em}.hero p,.card p{color:var(--muted);line-height:1.55;margin:8px 0}.notice{border-left:5px solid var(--warn);background:rgba(255,246,230,.9);padding:14px;border-radius:18px;color:#563900;font-weight:700}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.metric{border:1px solid var(--line);background:rgba(255,255,255,.72);border-radius:20px;padding:14px}.metric b{display:block;font-size:1.6rem;letter-spacing:-.04em}.metric span{font-size:.82rem;color:var(--muted);font-weight:760}.status{font-weight:900}.status.good{color:var(--good)}.status.warn{color:var(--warn)}.status.bad{color:var(--bad)}pre{white-space:pre-wrap;word-break:break-word;background:#0e1724;color:#d9e8ff;padding:14px;border-radius:18px;max-height:280px;overflow:auto;font-size:.82rem}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.small{font-size:.86rem;color:var(--muted)}.hidden{display:none!important}@media(max-width:720px){.grid{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.btn{padding:10px 12px}.hero,.card{border-radius:22px;padding:16px}}@media(max-width:440px){.grid{grid-template-columns:1fr}.topbar{position:relative}.shell{padding-bottom:28px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="brand">Hearty data recovery</div>
+    <div class="top-actions">
+      <a class="btn secondary" href="home.html">Back to Home</a>
+      <button class="btn secondary" id="rescanBtn" type="button">Rescan</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <h1>Recover local progress</h1>
+    <p>This page checks the saved Hearty data on this device and safely copies older records into the current keys used by the app.</p>
+    <div class="notice">Do not clear browser data, delete the app, or reinstall before running this on the same phone/browser where the progress was originally saved.</div>
+  </section>
+
+  <section class="card">
+    <h2>Found on this device</h2>
+    <div class="grid" id="metrics"></div>
+    <p class="small" id="originLine"></p>
+  </section>
+
+  <section class="card">
+    <h2>Recovery action</h2>
+    <p id="summaryText">Scanning...</p>
+    <div class="row">
+      <button class="btn" id="recoverBtn" type="button">Recover / migrate data</button>
+      <button class="btn secondary" id="backupBtn" type="button">Download backup</button>
+      <a class="btn secondary" href="progress.html?v=recovery">Open Progress</a>
+    </div>
+    <p class="small">A backup is created before any migration. This recovery only writes local app keys on this device.</p>
+  </section>
+
+  <section class="card">
+    <h2>Recovery result</h2>
+    <p id="resultText">No recovery run yet.</p>
+    <pre id="debugBox" class="hidden"></pre>
+  </section>
+</div>
+<script>
+(function(){
+  'use strict';
+  var BACKUP_PREFIX='heartyRecoveryBackup:';
+  var MIGRATION_MARK='heartyRecoveryMigrationV1';
+  function nowIso(){return new Date().toISOString();}
+  function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function set(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}
+  function setJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  function readJSON(k,f){try{var r=get(k);return r?JSON.parse(r):f}catch(e){return f}}
+  function num(v){var n=Number(String(v==null?'':v).replace(',','.'));return Number.isFinite(n)?n:null}
+  function keys(){try{return Object.keys(localStorage)}catch(e){return []}}
+  function snapshot(){var out={origin:location.origin,createdAt:nowIso(),items:{}};keys().forEach(function(k){try{out.items[k]=localStorage.getItem(k)}catch(e){}});return out}
+  function download(name,obj){var blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+  function normalDate(v){if(!v)return'';var s=String(v);if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);var d=new Date(s);if(!isNaN(d))return d.toISOString().slice(0,10);return''}
+  function normalWeight(item){
+    if(!item||typeof item!=='object')return null;
+    var date=normalDate(item.date||item.day||item.createdAt||item.loggedAt||item.updatedAt);
+    var w=num(item.weightKg!=null?item.weightKg:item.currentWeightKg!=null?item.currentWeightKg:item.weight!=null?item.weight:item.value!=null?item.value:item.kg!=null?item.kg:item.weight_kg);
+    if(!date||!w||w<=0)return null;return{date:date,weight:Number(w.toFixed(1)),kg:Number(w.toFixed(1)),source:item.source||'recovery'};
+  }
+  function addWeight(map,item){var e=normalWeight(item);if(e)map[e.date]=e;}
+  function collectWeights(){
+    var map={};
+    ['heartyWeightHistory','heartyWeightLogs','hearty_weight_logs','heartyDailyWeightsV1','heartyWeightLogsV1','heartyWeightLogV1','heartyProgressWeightLogsV1','heartyDailyWeighInsV1','heartyCheckinsV1','heartyHomeWeightLogsV1'].forEach(function(k){
+      var v=readJSON(k,null);
+      if(Array.isArray(v))v.forEach(function(x){addWeight(map,x)});
+      else if(v&&typeof v==='object')Object.keys(v).forEach(function(d){var x=v[d]; if(typeof x==='number'||typeof x==='string')addWeight(map,{date:d,weight:x}); else addWeight(map,Object.assign({date:d},x||{}));});
+    });
+    var hp=readJSON('heartyProgressV1',{}); if(Array.isArray(hp.weighIns))hp.weighIns.forEach(function(x){addWeight(map,x)}); if(Array.isArray(hp.weightLogs))hp.weightLogs.forEach(function(x){addWeight(map,x)});
+    var legacy=readJSON('heartyProgress',{})||{}; if(Array.isArray(legacy.weightLogs))legacy.weightLogs.forEach(function(x){addWeight(map,x)});
+    var legacy2=readJSON('hearty_progress',{})||{}; if(Array.isArray(legacy2.weightLogs))legacy2.weightLogs.forEach(function(x){addWeight(map,x)});
+    keys().forEach(function(k){
+      var m=k.match(/^heartyTodayWeightKg:(\d{4}-\d{2}-\d{2})$/); if(m){var w=num(get(k)); if(w)addWeight(map,{date:m[1],weight:w,source:'daily_key'});}
+    });
+    var current=num(get('heartyCurrentWeightKg')||get('heartyWeightCurrentKg')||get('heartyProgressCurrentWeightKg')||get('heartyTodayWeightKg'));
+    if(current)addWeight(map,{date:today(),weight:current,source:'current_fallback'});
+    return Object.values(map).sort(function(a,b){return a.date.localeCompare(b.date)});
+  }
+  function collectWater(){
+    var out={};
+    ['heartyWater','heartyWaterLog'].forEach(function(k){
+      var v=readJSON(k,null);
+      if(v&&typeof v==='object'&&!Array.isArray(v))Object.keys(v).forEach(function(d){var x=v[d]; if(typeof x==='number')out[d]=x; else if(x&&typeof x==='object')out[d]=num(x.count)!=null?num(x.count):Math.round((num(x.litres)||0)/0.25);});
+    });
+    keys().forEach(function(k){var m=k.match(/^heartyWaterLog:(\d{4}-\d{2}-\d{2})$/); if(m){var x=readJSON(k,{});out[m[1]]=num(x.count)!=null?num(x.count):Math.round((num(x.litres)||0)/0.25);}});
+    Object.keys(out).forEach(function(k){out[k]=Math.max(0,Math.min(30,Number(out[k]||0)))});
+    return out;
+  }
+  function collectPhotos(){
+    var arr=[];['heartyPhotoLog','heartyPhotoCheckins','heartyPhotoCheckinsV1'].forEach(function(k){var v=readJSON(k,null);if(Array.isArray(v))v.forEach(function(x){if(x)arr.push(Object.assign({source_key:k},x))})});
+    var last=get('heartyLastPhotoCheckInAt'); if(last)arr.push({date:normalDate(last)||last,checked_in_at:last,count:num(get('heartyLastPhotoCheckInCount')),source_key:'heartyLastPhotoCheckInAt',storage:'local_only'});
+    var seen={};return arr.filter(function(x){var id=(normalDate(x.date||x.checked_in_at)||'no-date')+'|'+(x.angle||x.type||x.source_key||'');if(seen[id])return false;seen[id]=true;return true});
+  }
+  function collectInjections(){
+    var arr=[];['heartyInjectionLog','heartyMedicationLog','heartyDoseLog'].forEach(function(k){var v=readJSON(k,null);if(Array.isArray(v))v.forEach(function(x){if(x)arr.push(Object.assign({source_key:k},x))})});
+    keys().forEach(function(k){var m=k.match(/^heartyInjectionLogged:(.+)$/);if(m){arr.push({date:normalDate(m[1])||m[1],logged:get(k)==='1'||get(k)==='true',source_key:k})}});
+    var seen={};return arr.map(function(x){return Object.assign({},x,{date:normalDate(x.date||x.loggedAt||x.createdAt)})}).filter(function(x){if(!x.date)return false; if(seen[x.date])return false; seen[x.date]=true; return true}).sort(function(a,b){return a.date.localeCompare(b.date)});
+  }
+  function collectTasks(){var out={};keys().forEach(function(k){if(k.indexOf('heartyTask:')===0||k.indexOf('heartyDailyTask:')===0){out[k]=readJSON(k,get(k));}});return out;}
+  function collectProfile(weights){
+    var p=readJSON('heartyProfileV1',{})||{};var p2=readJSON('heartyProfile',{})||{};var p3=readJSON('hearty_profile',{})||{};var first=weights[0]||{};var last=weights[weights.length-1]||{};
+    return {
+      first_name:get('heartyFirstName')||p.firstName||p.name||p2.name||p3.firstName||p3.name||'',
+      account_email:get('heartyAccountEmail')||'',
+      height_cm:num(get('heartyHeightCm')||p.heightCm||p3.heightCm||p3.height_cm),
+      starting_weight_kg:num(get('heartyStartingWeightKg')||get('heartyWeightStartingKg')||get('heartyProgressStartingWeightKg')||p.startingWeightKg||p3.startingWeightKg||first.weight),
+      current_weight_kg:num(get('heartyCurrentWeightKg')||get('heartyWeightCurrentKg')||get('heartyProgressCurrentWeightKg')||get('heartyTodayWeightKg')||p.currentWeightKg||p3.currentWeightKg||last.weight),
+      target_weight_kg:num(get('heartyTargetWeightKg')||get('heartyWeightTargetKg')||get('heartyProgressTargetWeightKg')||get('heartyTargetWeight')||p.targetWeightKg||p.targetWeight||p3.targetWeightKg),
+      medication_name:get('heartyMedicationType')||get('heartyInjectionName')||'',
+      injection_name:get('heartyInjectionName')||get('heartyMedicationType')||'',
+      injection_dose:get('heartyInjectionDose')||get('heartyCurrentDosage')||'',
+      injection_day:get('heartyInjectionDay')||get('heartyInjectionDayName')||''
+    };
+  }
+  function scan(){
+    var weights=collectWeights(), water=collectWater(), photos=collectPhotos(), inj=collectInjections(), tasks=collectTasks(), profile=collectProfile(weights);
+    return{weights:weights,water:water,photos:photos,injections:inj,tasks:tasks,profile:profile,totalHeartyKeys:keys().filter(function(k){return k.toLowerCase().indexOf('hearty')===0||k.indexOf('meals_')===0||k.indexOf('supportMode')===0}).length};
+  }
+  function metric(label,val,cls){return'<div class="metric"><b class="'+(cls||'')+'">'+val+'</b><span>'+label+'</span></div>'}
+  function render(s){
+    document.getElementById('originLine').textContent='Current origin: '+location.origin+' — recovery only works for data saved under this same address.';
+    var weightStatus=s.weights.length?'good':'warn';
+    document.getElementById('metrics').innerHTML=metric('weight records',s.weights.length,weightStatus)+metric('water days',Object.keys(s.water).length,Object.keys(s.water).length?'good':'warn')+metric('photo check-ins',s.photos.length,s.photos.length?'good':'warn')+metric('injection logs',s.injections.length,s.injections.length?'good':'warn')+metric('task logs',Object.keys(s.tasks).length,Object.keys(s.tasks).length?'good':'warn')+metric('Hearty storage keys',s.totalHeartyKeys,'');
+    var text=[]; if(s.weights.length)text.push('Found '+s.weights.length+' weight record(s).'); if(Object.keys(s.water).length)text.push('Found '+Object.keys(s.water).length+' water day(s).'); if(s.photos.length)text.push('Found '+s.photos.length+' photo check-in record(s).'); if(!text.length)text.push('No recoverable progress records were found under this website address on this device.');
+    document.getElementById('summaryText').textContent=text.join(' ');
+    window.__heartyRecoveryScan=s;
+  }
+  function migrate(){
+    var before=snapshot();var backupKey=BACKUP_PREFIX+nowIso();setJSON(backupKey,before);
+    var s=scan();var weights=s.weights, water=s.water, photos=s.photos, injections=s.injections, tasks=s.tasks, p=s.profile;
+    if(weights.length){
+      setJSON('heartyWeightHistory',weights.map(function(x){return{date:x.date,weight:x.weight}}));
+      setJSON('heartyWeightLogs',weights.map(function(x){return{date:x.date,kg:x.weight,createdAt:x.createdAt||x.date,source:x.source||'recovery'}}));
+      setJSON('hearty_weight_logs',weights.map(function(x){return{date:x.date,weightKg:x.weight,weight:x.weight,source:x.source||'recovery'}}));
+      var first=weights[0], last=weights[weights.length-1];
+      set('heartyStartingWeightKg',p.starting_weight_kg||first.weight);set('heartyWeightStartingKg',p.starting_weight_kg||first.weight);set('heartyProgressStartingWeightKg',p.starting_weight_kg||first.weight);
+      set('heartyCurrentWeightKg',p.current_weight_kg||last.weight);set('heartyWeightCurrentKg',p.current_weight_kg||last.weight);set('heartyProgressCurrentWeightKg',p.current_weight_kg||last.weight);set('heartyTodayWeightKg',p.current_weight_kg||last.weight);
+    }
+    if(p.target_weight_kg){set('heartyTargetWeightKg',p.target_weight_kg);set('heartyWeightTargetKg',p.target_weight_kg);set('heartyProgressTargetWeightKg',p.target_weight_kg);set('heartyTargetWeight',p.target_weight_kg);}
+    if(p.height_cm)set('heartyHeightCm',p.height_cm); if(p.first_name)set('heartyFirstName',p.first_name);
+    if(Object.keys(water).length){setJSON('heartyWater',water);setJSON('heartyWaterLog',water);}
+    if(photos.length){setJSON('heartyPhotoLog',photos);setJSON('heartyPhotoCheckins',photos);}
+    if(injections.length)setJSON('heartyInjectionLog',injections);
+    if(p.injection_name)set('heartyInjectionName',p.injection_name); if(p.medication_name)set('heartyMedicationType',p.medication_name); if(p.injection_dose)set('heartyInjectionDose',p.injection_dose); if(p.injection_day)set('heartyInjectionDay',p.injection_day);
+    var canonical=readJSON('hearty:data:v1',{})||{};
+    canonical.version=canonical.version||1; canonical.updated_at=nowIso(); canonical.settings=Object.assign({theme:get('heartyTheme')||'clean_blue',units_system:get('heartyUnitsSystem')||'metric',photo_privacy:'local_only'},canonical.settings||{});
+    canonical.profile=Object.assign({},canonical.profile||{},p);
+    canonical.progress=Object.assign({weight_logs:{},hydration_logs:{},task_logs:{},injection_logs:{},photo_checkins:[]},canonical.progress||{});
+    weights.forEach(function(x){canonical.progress.weight_logs[x.date]={date:x.date,weight_kg:x.weight,source:x.source||'recovery'}});
+    Object.keys(water).forEach(function(d){canonical.progress.hydration_logs[d]={date:d,count:water[d],litres:Number((water[d]*0.25).toFixed(2)),source:'recovery'}});
+    injections.forEach(function(x){canonical.progress.injection_logs[x.date]=x}); canonical.progress.task_logs=Object.assign({},canonical.progress.task_logs||{},tasks); canonical.progress.photo_checkins=photos;
+    canonical.meta=Object.assign({},canonical.meta||{},{last_recovery_at:nowIso(),last_recovery_backup_key:backupKey}); setJSON('hearty:data:v1',canonical);
+    var progressV1=readJSON('heartyProgressV1',{})||{}; progressV1.weighIns=weights.map(function(x){return{date:x.date,weightKg:x.weight,weight:x.weight,source:'recovery'}}); progressV1.targetWeightKg=p.target_weight_kg||progressV1.targetWeightKg; progressV1.currentWeightKg=p.current_weight_kg||progressV1.currentWeightKg; progressV1.startingWeightKg=p.starting_weight_kg||progressV1.startingWeightKg; setJSON('heartyProgressV1',progressV1);
+    setJSON(MIGRATION_MARK,{ranAt:nowIso(),backupKey:backupKey,counts:{weights:weights.length,water:Object.keys(water).length,photos:photos.length,injections:injections.length,tasks:Object.keys(tasks).length}});
+    render(scan());
+    document.getElementById('resultText').innerHTML='<span class="status good">Recovery complete.</span> Backup saved as '+backupKey+'. Open Progress to check the result.';
+    document.getElementById('debugBox').classList.remove('hidden'); document.getElementById('debugBox').textContent=JSON.stringify(readJSON(MIGRATION_MARK,{}),null,2);
+  }
+  document.getElementById('backupBtn').addEventListener('click',function(){download('hearty-local-backup-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.json',snapshot())});
+  document.getElementById('recoverBtn').addEventListener('click',function(){if(confirm('Create a backup and copy older local data into the current Hearty keys on this device?'))migrate()});
+  document.getElementById('rescanBtn').addEventListener('click',function(){render(scan())});
+  render(scan());
+})();
+</script>
+</body>
+</html>
