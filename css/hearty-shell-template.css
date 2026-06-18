@@ -32,8 +32,9 @@ body[data-page] .shell{padding-bottom:calc(var(--hst-nav-h) + 42px + env(safe-ar
 /* Hide legacy shell fragments after the shared template has rendered. */
 body[data-page] .topbar:not([data-shell-template="topbar"]),
 body[data-page] header:not([data-shell-template="topbar"]):not([data-keep-legacy-header="true"]){display:none !important;}
-body[data-page] .bottom-nav:not([data-shell-template="bottom-nav"]),
-body[data-page] #bottomNav:not([data-shell-template="bottom-nav"]){display:none !important;}
+body[data-page] .bottom-nav:not([data-shell-template="bottom-nav"]){display:none !important;}
+/* HOTFIX V10: never hide #bottomNav container. It is a mount, not a legacy nav. */
+body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{display:block !important;visibility:visible !important;opacity:1 !important;}
 
 .hearty-shell-topbar{
   box-sizing:border-box !important;
@@ -400,4 +401,27 @@ html[data-theme="deep_berry"] .hearty-shell-bottom-nav .hearty-shell-nav-item[ar
   .hearty-page-strip-title{font-size:1.52rem !important;}
   .hearty-page-strip-copy{font-size:.92rem !important;}
   .hearty-page-strip-actions{justify-content:flex-start !important;}
+}
+
+
+/* HOTFIX V10: bottom nav mount visibility final guard */
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{display:block !important;visibility:visible !important;opacity:1 !important;}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{display:grid !important;visibility:visible !important;opacity:1 !important;}
+
+/* HOTFIX V12B: remove temporary emergency nav overlay from v11.
+   The real Hearty bottom nav is now visible again, so hide the emergency strip/card even if old HTML still contains them. */
+html body #heartyEmergencyNav,
+html body #heartyQuickAccessCard {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
 }
