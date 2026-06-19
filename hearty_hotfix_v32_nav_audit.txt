@@ -1,0 +1,18 @@
+HEARTY V32 NAV AUDIT
+
+Findings:
+1. Nav was not one system. Pages had old inline #bottomNav/.bottom-nav CSS, external shell CSS, and JS-generated nav all fighting.
+2. Some pages still carried a static fallback nav CSS block after the external shell stylesheet, so it overrode later fixes.
+3. Exercise/support had page-specific nav builders that could inject old .bottom-nav markup with relative links.
+4. CSS/JS links were still cache-busted as ?v=30 even after v31 changes, so users could receive stale shell files.
+5. The nav used old shared class names (.bottom-nav/.nav-item), which let page-specific styles leak into the nav differently per page.
+
+Fix applied:
+- Updated app pages to load css/js shell files with ?v=32.
+- Removed page-level static nav fallback CSS blocks.
+- Created one unique nav class system: .hearty-bottom-nav-v32 / .hearty-nav-item-v32.
+- Production guard now removes old emergency/bottom nav layers and creates one canonical nav mounted on body.
+- Shell template now renders the same canonical nav class.
+- Added final high-specificity CSS for all 7 app pages and per-theme nav colours.
+
+Pages audited: home, meals, exercise, progress, support, social, settings.

@@ -108,10 +108,10 @@
   function navMarkup(active){
     const links = NAV.map(item => {
       const isActive = item.id === active;
-      return '<a class="nav-item hearty-shell-nav-item' + (isActive ? ' active' : '') + '" href="' + item.href + '" data-nav-target="' + item.id + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
+      return '<a class="hearty-nav-item-v32' + (isActive ? ' active' : '') + '" href="' + item.href + '" data-nav-target="' + item.id + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' + item.icon + '</svg><span>' + item.label + '</span></a>';
     }).join('');
-    return '<nav class="bottom-nav hearty-shell-bottom-nav" data-shell-template="bottom-nav" aria-label="Hearty navigation">' + links + '</nav>';
+    return '<nav class="hearty-bottom-nav-v32" data-shell-template="bottom-nav" aria-label="Hearty navigation">' + links + '</nav>';
   }
 
   function shellHost(){
@@ -304,7 +304,7 @@
 
 /* HEARTY V24 shell safety: canonicalise nav after shell render */
 (function(){
-  function run(){try{if(window.HeartyProductionGuardV30&&window.HeartyProductionGuardV30.normaliseNav){window.HeartyProductionGuardV24.normaliseNav();}}catch(e){}}
+  function run(){try{if(window.HeartyProductionGuardV32&&window.HeartyProductionGuardV32.normaliseNav){window.HeartyProductionGuardV32.normaliseNav();}}catch(e){}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
   window.addEventListener('load',function(){setTimeout(run,50);setTimeout(run,500);});
 })();

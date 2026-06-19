@@ -890,3 +890,132 @@ html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="botto
   html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
   html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{height:48px !important;min-height:48px !important;font-size:8.25px !important;border-radius:14px !important;}
 }
+
+
+/* HEARTY V32 — audited canonical nav system
+   One nav only. Unique class names avoid older page-level .bottom-nav/.nav-item rules. */
+html body[data-page="home"],
+html body[data-page="meals"],
+html body[data-page="exercise"],
+html body[data-page="progress"],
+html body[data-page="support"],
+html body[data-page="social"],
+html body[data-page="settings"]{
+  padding-bottom:calc(96px + env(safe-area-inset-bottom,0px)) !important;
+}
+html body[data-page="login"] #bottomNav,
+html body[data-page="login"] [data-shell-mount="bottom-nav"],
+html body[data-page="login"] .hearty-bottom-nav-v32{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+html body[data-page] .bottom-nav:not(.hearty-bottom-nav-v32),
+html body[data-page] .hearty-shell-bottom-nav:not(.hearty-bottom-nav-v32),
+html body[data-page] .hearty-emergency-nav,
+html body[data-page] #heartyEmergencyNav,
+html body[data-page] [data-emergency-nav]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+html body[data-page="home"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="meals"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="progress"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="support"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="social"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="settings"] #bottomNav[data-shell-mount="bottom-nav"]{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;
+  transform:translateX(-50%) !important;
+  width:min(500px, calc(100vw - 28px)) !important;
+  max-width:calc(100vw - 28px) !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  z-index:2147483000 !important;
+  pointer-events:none !important;
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]::before,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]::after{display:none !important;content:none !important;}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32{
+  position:relative !important;
+  inset:auto !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-height:64px !important;
+  margin:0 auto !important;
+  padding:7px 6px !important;
+  display:grid !important;
+  grid-template-columns:repeat(7, minmax(0,1fr)) !important;
+  gap:3px !important;
+  border-radius:22px !important;
+  background:linear-gradient(180deg,rgba(247,253,255,.96),rgba(226,242,252,.92)) !important;
+  border:1px solid rgba(98,157,196,.28) !important;
+  box-shadow:0 12px 30px rgba(7,45,77,.16) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.1) !important;
+  backdrop-filter:blur(18px) saturate(1.1) !important;
+  pointer-events:auto !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32{
+  display:grid !important;
+  place-items:center !important;
+  grid-template-rows:20px 14px !important;
+  gap:3px !important;
+  min-width:0 !important;
+  height:50px !important;
+  min-height:50px !important;
+  padding:6px 2px 5px !important;
+  border-radius:16px !important;
+  color:rgba(38,72,98,.78) !important;
+  text-decoration:none !important;
+  font-size:8.7px !important;
+  font-weight:850 !important;
+  line-height:1 !important;
+  letter-spacing:-.03em !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32 svg{
+  width:18px !important;height:18px !important;display:block !important;stroke:currentColor !important;fill:none !important;stroke-width:1.9 !important;stroke-linecap:round !important;stroke-linejoin:round !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32 svg *{stroke:currentColor !important;fill:none !important;}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32 span{display:block !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;max-width:100% !important;color:inherit !important;}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32[aria-current="page"]{
+  color:#124f95 !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(233,244,255,.96)) !important;
+  box-shadow:0 8px 18px rgba(25,92,151,.16) !important;
+}
+html[data-theme="pink_lemonade"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32{
+  background:linear-gradient(180deg,rgba(255,247,250,.97),rgba(255,226,239,.93)) !important;border-color:rgba(228,54,120,.24) !important;box-shadow:0 12px 30px rgba(159,27,81,.14) !important;
+}
+html[data-theme="pink_lemonade"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32.active,
+html[data-theme="pink_lemonade"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32[aria-current="page"]{color:#b6155a !important;background:rgba(255,255,255,.96) !important;}
+html[data-theme="soft_rose"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32{
+  background:linear-gradient(180deg,rgba(255,250,241,.97),rgba(250,229,198,.94)) !important;border-color:rgba(185,126,58,.25) !important;box-shadow:0 12px 30px rgba(117,75,31,.13) !important;
+}
+html[data-theme="soft_rose"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32.active,
+html[data-theme="soft_rose"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32[aria-current="page"]{color:#8b541c !important;background:rgba(255,255,255,.96) !important;}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32{
+  background:linear-gradient(180deg,rgba(24,25,45,.95),rgba(14,16,30,.94)) !important;border-color:rgba(255,255,255,.16) !important;box-shadow:0 12px 32px rgba(0,0,0,.35) !important;
+}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32{color:rgba(255,255,255,.72) !important;}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32.active,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32.active,
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32[aria-current="page"],
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32[aria-current="page"]{color:#fff !important;background:rgba(255,255,255,.15) !important;box-shadow:none !important;}
+@media(max-width:390px){
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{width:calc(100vw - 18px) !important;max-width:calc(100vw - 18px) !important;bottom:calc(7px + env(safe-area-inset-bottom,0px)) !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-bottom-nav-v32{min-height:61px !important;padding:6px 4px !important;gap:2px !important;border-radius:20px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32{height:48px !important;min-height:48px !important;font-size:8px !important;border-radius:14px !important;grid-template-rows:18px 13px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-nav-item-v32 svg{width:16px !important;height:16px !important;}
+}
