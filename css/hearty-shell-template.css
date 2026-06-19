@@ -409,19 +409,23 @@ html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{display:block !im
 html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
 html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{display:grid !important;visibility:visible !important;opacity:1 !important;}
 
-/* HOTFIX V12B: remove temporary emergency nav overlay from v11.
-   The real Hearty bottom nav is now visible again, so hide the emergency strip/card even if old HTML still contains them. */
-html body #heartyEmergencyNav,
-html body #heartyQuickAccessCard {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
+
+/* HEARTY V24 — canonical app nav and login cleanup */
+body[data-page="login"] #bottomNav,
+body[data-page="login"] [data-shell-mount="bottom-nav"],
+body[data-page="login"] #heartyInstallBanner,
+body[data-page="login"] .hearty-install-banner,
+body[data-page="login"] [data-hearty-install],
+body[data-page="login"] [data-install-banner]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+body[data-page="login"]{padding-bottom:0!important;}
+#heartyEmergencyNav,.hearty-emergency-nav,[data-emergency-nav]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+body[data-page="home"],body[data-page="meals"],body[data-page="exercise"],body[data-page="progress"],body[data-page="support"],body[data-page="social"],body[data-page="settings"]{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;}
+body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:2147483000!important;display:block!important;visibility:visible!important;pointer-events:none!important;padding:0 10px calc(8px + env(safe-area-inset-bottom,0px))!important;background:transparent!important;}
+body[data-page] #bottomNav .bottom-nav{pointer-events:auto!important;width:min(860px,calc(100vw - 20px))!important;margin:0 auto!important;display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;padding:7px 6px!important;border-radius:20px!important;background:rgba(7,22,35,.94)!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:0 -12px 40px rgba(0,0,0,.28)!important;-webkit-backdrop-filter:blur(18px)!important;backdrop-filter:blur(18px)!important;}
+body[data-page] #bottomNav .nav-item{display:grid!important;place-items:center!important;gap:3px!important;min-width:0!important;min-height:48px!important;padding:6px 2px 5px!important;border-radius:15px!important;color:rgba(255,255,255,.76)!important;text-decoration:none!important;font-size:10px!important;font-weight:800!important;line-height:1.05!important;letter-spacing:-.02em!important;}
+body[data-page] #bottomNav .nav-item svg{width:18px!important;height:18px!important;stroke:currentColor!important;stroke-width:1.9!important;fill:none!important;stroke-linecap:round!important;stroke-linejoin:round!important;display:block!important;}
+body[data-page] #bottomNav .nav-item.active,body[data-page] #bottomNav .nav-item[aria-current="page"]{color:#fff!important;background:rgba(255,255,255,.15)!important;}
+@media(max-width:390px){body[data-page] #bottomNav .bottom-nav{gap:2px!important;padding:6px 4px!important;}body[data-page] #bottomNav .nav-item{font-size:9px!important;min-height:45px!important;}body[data-page] #bottomNav .nav-item svg{width:16px!important;height:16px!important;}}
+@media(min-width:900px){body[data-page] #bottomNav{padding-left:22px!important;padding-right:22px!important;}body[data-page] #bottomNav .bottom-nav{max-width:720px!important;}}
+.reason-btn,.off-btn,#supportOffBtn{pointer-events:auto!important;touch-action:manipulation!important;}
+.reason-btn *{pointer-events:none;}

@@ -293,3 +293,11 @@
   window.addEventListener('hearty:theme-change', () => setTimeout(render, 0));
   window.HeartyShellTemplate = { render, NAV };
 })();
+
+
+/* HEARTY V24 shell safety: canonicalise nav after shell render */
+(function(){
+  function run(){try{if(window.HeartyProductionGuardV24&&window.HeartyProductionGuardV24.normaliseNav){window.HeartyProductionGuardV24.normaliseNav();}}catch(e){}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
+  window.addEventListener('load',function(){setTimeout(run,50);setTimeout(run,500);});
+})();

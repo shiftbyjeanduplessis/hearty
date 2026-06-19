@@ -13,8 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Hearty">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="icons/hearty-icon-192.png">
-  <link rel="stylesheet" href="/pwa-install.css?v=18">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="glp-supabase-config.js"></script>
   <style>
     :root{
@@ -85,7 +84,7 @@
 <link rel="stylesheet" href="css/hearty-step5ib-foundation.css">
 <link rel="stylesheet" href="css/hearty-shell-template.css">
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=5"></script>
+<script src="js/hearty-production-guard.js?v=24"></script>
 
 <style id="hearty-login-layout-v17">
 /* HOTFIX V17: keep login/auth card centred and readable on mobile browsers.
@@ -151,6 +150,126 @@ body[data-page="login"] button{
   }
 }
 </style>
+
+<style id="hearty-login-premium-v19">
+/* V19: login is a focused auth screen, not an install surface.
+   Keep it centred, premium, and visually calm while preserving the current theme background. */
+body[data-page="login"]{
+  min-height:100vh !important;
+  min-height:100svh !important;
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  padding:clamp(18px,4vh,42px) 16px 32px !important;
+  overflow-x:hidden !important;
+}
+html[data-theme="clean_blue"] body[data-page="login"]{
+  background:
+    linear-gradient(180deg, rgba(4,38,68,.08), rgba(4,44,77,.22)),
+    url("/assets/backgrounds/ocean-blue-background.png") center top / cover fixed no-repeat !important;
+}
+html[data-theme="clean_blue"] body[data-page="login"]::before,
+html[data-theme="clean_blue"] body[data-page="login"]::after{
+  opacity:.08 !important;
+}
+body[data-page="login"] .auth-card{
+  width:min(500px, calc(100vw - 32px)) !important;
+  max-width:500px !important;
+  margin:0 auto !important;
+  padding:34px 26px 28px !important;
+  border-radius:34px !important;
+  background:rgba(247,252,255,.91) !important;
+  border:1px solid rgba(214,231,242,.72) !important;
+  box-shadow:0 30px 90px rgba(1,28,56,.22) !important;
+  backdrop-filter:blur(18px) saturate(1.12) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.12) !important;
+}
+body[data-page="login"] .auth-logo{
+  height:auto !important;
+  width:min(260px,72%) !important;
+  max-width:260px !important;
+  margin-bottom:14px !important;
+}
+body[data-page="login"] .tagline{
+  font-size:.82rem !important;
+  letter-spacing:.08em !important;
+  text-transform:uppercase !important;
+  color:#496479 !important;
+}
+body[data-page="login"] h1{
+  margin:14px 0 7px !important;
+  font-size:clamp(1.8rem,4.6vw,2.35rem) !important;
+  letter-spacing:-.055em !important;
+  color:#102033 !important;
+}
+body[data-page="login"] .subtitle{
+  margin-bottom:18px !important;
+  color:#536b7e !important;
+}
+body[data-page="login"] .notice{
+  margin:16px 0 18px !important;
+  padding:14px 16px !important;
+  border-radius:20px !important;
+  background:rgba(255,255,255,.54) !important;
+  border:1px solid rgba(181,208,225,.58) !important;
+  color:#27445a !important;
+  line-height:1.48 !important;
+  box-shadow:none !important;
+}
+body[data-page="login"] .notice strong{
+  display:inline !important;
+  color:#102033 !important;
+  margin:0 !important;
+}
+body[data-page="login"] .tabs{
+  background:rgba(255,255,255,.55) !important;
+  border-color:rgba(181,208,225,.58) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65) !important;
+}
+body[data-page="login"] .tab.active{
+  color:#0c58c9 !important;
+  background:rgba(255,255,255,.86) !important;
+}
+body[data-page="login"] input,
+body[data-page="login"] textarea{
+  background:rgba(255,255,255,.74) !important;
+  border-color:rgba(181,208,225,.74) !important;
+  color:#102033 !important;
+}
+body[data-page="login"] .ghost{
+  background:rgba(255,255,255,.62) !important;
+  border-color:rgba(181,208,225,.66) !important;
+}
+body[data-page="login"] #heartyInstallBanner{display:none !important;}
+@media(max-width:560px){
+  body[data-page="login"]{
+    padding:calc(18px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px)) !important;
+    align-items:flex-start !important;
+  }
+  body[data-page="login"] .auth-card{
+    width:100% !important;
+    max-width:calc(100vw - 28px) !important;
+    padding:28px 18px 24px !important;
+    border-radius:30px !important;
+  }
+  body[data-page="login"] .auth-logo{width:min(235px,74%) !important;}
+  body[data-page="login"] .notice{font-size:13px !important;}
+}
+</style>
+
+
+<style id="hearty-login-no-install-v24">
+body[data-page="login"] #heartyInstallBanner,
+body[data-page="login"] .hearty-install-banner,
+body[data-page="login"] [data-hearty-install],
+body[data-page="login"] [data-install-banner],
+body[data-page="login"] #bottomNav,
+body[data-page="login"] [data-shell-mount="bottom-nav"]{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+body[data-page="login"]{padding-bottom:0!important;}
+</style>
+<script id="hearty-login-no-install-v24-script">
+(function(){function removeInstall(){document.querySelectorAll('#heartyInstallBanner,.hearty-install-banner,[data-hearty-install],[data-install-banner],#bottomNav,[data-shell-mount="bottom-nav"]').forEach(function(el){el.remove();});} if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',removeInstall,{once:true});} else removeInstall(); window.addEventListener('load',function(){removeInstall(); setTimeout(removeInstall,250); setTimeout(removeInstall,1000);});})();
+</script>
 </head>
 <body data-page="login">
   <main class="auth-card" aria-live="polite">
@@ -161,9 +280,7 @@ body[data-page="login"] button{
     <p class="subtitle" id="authSubtitle">Create or sign into your individual Hearty account.</p>
 
     <div class="notice">
-      <strong>Already bought Hearty?</strong>
-      Create your account using the same email you used at checkout. Your lifetime access will be kept.
-      <br><br><strong>After creating an account:</strong> check your email for a confirmation link before signing in.
+      <strong>Already bought Hearty?</strong> Use your checkout email. After creating an account, check your inbox before signing in.
     </div>
 
     <div class="tabs" id="authTabs">
@@ -874,6 +991,5 @@ body[data-page="login"] button{
 
       <p class="auth-help-link" style="text-align:center;margin-top:14px"><a href="how-to-use.html">New to Hearty? Open the quick guide</a></p>
 <script src="js/hearty-shell-template.js" defer></script>
-<script src="/pwa-install.js?v=18"></script>
 </body>
 </html>
