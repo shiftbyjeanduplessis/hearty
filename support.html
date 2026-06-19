@@ -248,9 +248,9 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
 <link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=33" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=34" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=33"></script>
+<script src="js/hearty-production-guard.js?v=34"></script>
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
 </head>
@@ -488,17 +488,32 @@ button{font:inherit}.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px
     return { active: !!active, reason: reason, updatedAt: raw.updatedAt || raw.updated_at || Date.now() };
   }
   function getState(){
-    const keys = ['heartySupportState','hearty_support_mode_v1','heartySupportMode','hearty_support_state'];
+    const keys = ['heartySupportState','hearty_support_mode_v1','heartySupportMode','hearty_support_state','support_mode_state'];
+    let best = null;
+    function stamp(obj){
+      const raw = obj && (obj.updatedAt || obj.updated_at || obj.lastChangedAt || obj.endedAt || obj.startedAt || obj.at || 0);
+      if(typeof raw === 'number') return raw;
+      const t = Date.parse(raw || '');
+      return isNaN(t) ? 0 : t;
+    }
     for(const key of keys){
       try {
         const raw = localStorage.getItem(key);
         if(!raw) continue;
         const parsed = JSON.parse(raw);
         const normalized = normalizeSupportState(parsed);
-        if(normalized.active && normalized.reason) return normalized;
+        normalized.updatedAt = stamp(parsed);
+        if(!best || normalized.updatedAt >= best.updatedAt) best = normalized;
       } catch(e) {}
     }
-    return normalizeSupportState(readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }));
+    if(best) return best;
+    try {
+      const simple = String(localStorage.getItem('supportMode') || '').toLowerCase();
+      if(simple === 'off' || simple === 'false' || simple === '0') return { active:false, reason:null, updatedAt:0 };
+      if(simple === 'on') return { active:true, reason:'support', updatedAt:0 };
+    } catch(e) {}
+    const legacy = normalizeSupportState(readJSON(STATE_KEY, { active:false, reason:null, updatedAt:null }));
+    return legacy;
   }
   function setState(state){
     const normalized = normalizeSupportState(state);
@@ -790,7 +805,7 @@ const SUPPORT_TOOLS = [
 })();
 </script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=33"></script>
+<script defer="" src="js/hearty-shell-template.js?v=34"></script>
 <style id="hearty-support-v23-click-guard-css">
   .reason-btn, .off-btn, #supportOffBtn { position: relative; z-index: 5; pointer-events: auto !important; touch-action: manipulation; }
   .reason-btn * { pointer-events: none; }
@@ -851,10 +866,23 @@ const SUPPORT_TOOLS = [
     }
   }
   function readInitial(){
-    var keys = SUPPORT_KEYS;
-    for(var i=0;i<keys.length;i++){
-      try { var raw=localStorage.getItem(keys[i]); if(!raw) continue; var obj=JSON.parse(raw); if((obj.active===true || obj.isActive===true || obj.supportMode===true || obj.mode==='on') && obj.reason) return obj.reason; } catch(e){}
+    var latest = null;
+    function ts(obj){
+      var raw = obj && (obj.updatedAt || obj.updated_at || obj.lastChangedAt || obj.endedAt || obj.startedAt || obj.at || 0);
+      if(typeof raw === 'number') return raw;
+      var parsed = Date.parse(raw || '');
+      return isNaN(parsed) ? 0 : parsed;
     }
+    for(var i=0;i<SUPPORT_KEYS.length;i++){
+      try {
+        var raw=localStorage.getItem(SUPPORT_KEYS[i]); if(!raw) continue;
+        var obj=JSON.parse(raw);
+        var active = obj && (obj.active===true || obj.isActive===true || obj.supportMode===true || obj.mode==='on' || obj.status==='on');
+        var item = { active: !!active, reason: active ? (obj.reason || obj.type || obj.supportReason || null) : null, updatedAt: ts(obj) };
+        if(!latest || item.updatedAt >= latest.updatedAt) latest = item;
+      } catch(e){}
+    }
+    if(latest) return latest.active ? latest.reason : null;
     try { var m=localStorage.getItem('meals_support_mode'); if(m && m !== 'off') return m; } catch(e){}
     return null;
   }
@@ -874,6 +902,87 @@ const SUPPORT_TOOLS = [
 })();
 </script>
 
+
+
+<!-- HEARTY V34 SUPPORT AUTHORITY -->
+<script id="hearty-support-authority-v34">
+(function(){
+  'use strict';
+  var VERSION='hearty-support-authority-v34';
+  var KEYS=['heartySupportState','hearty_support_mode_v1','heartySupportMode','hearty_support_state','support_mode_state'];
+  var REASONS={
+    nausea:{label:'Nausea',title:'Nausea support is on',copy:'Hearty will favour simpler, smaller meals and reduce training pressure today.'},
+    bloating:{label:'Bloating',title:'Bloating support is on',copy:'Hearty will keep meals simpler and reduce pressure while your body settles.'},
+    fatigue:{label:'Fatigue',title:'Fatigue support is on',copy:'Hearty will lower exercise intensity and keep the daily plan manageable.'},
+    exhaustion:{label:'Fatigue',title:'Fatigue support is on',copy:'Hearty will lower exercise intensity and keep the daily plan manageable.'},
+    low_appetite:{label:'Low appetite',title:'Low appetite support is on',copy:'Hearty will favour smaller protein-first meals and easier snack-style options.'},
+    constipation:{label:'Constipation',title:'Constipation support is on',copy:'Hearty will focus on hydration, fibre-aware nudges, and gentle movement.'},
+    support:{label:'Support',title:'Support Mode is on',copy:'Hearty will soften meals and movement until you turn Support Mode off.'}
+  };
+  function now(){return Date.now();}
+  function iso(t){try{return new Date(t||Date.now()).toISOString();}catch(e){return String(Date.now());}}
+  function stamp(obj){var raw=obj&&(obj.updatedAt||obj.updated_at||obj.lastChangedAt||obj.endedAt||obj.startedAt||obj.at||0); if(typeof raw==='number')return raw; var t=Date.parse(raw||''); return isNaN(t)?0:t;}
+  function normReason(r){r=String(r||'').toLowerCase().trim().replace(/-/g,'_').replace(/\s+/g,'_'); if(r==='low_energy'||r==='exhaustion'||r==='tired') return 'fatigue'; if(!REASONS[r]) return r||null; return r;}
+  function normalize(obj){
+    if(!obj||typeof obj!=='object') return null;
+    var active=obj.active===true||obj.isActive===true||obj.supportMode===true||obj.mode==='on'||obj.status==='on';
+    var reason=normReason(obj.reason||obj.type||obj.supportReason||obj.primarySymptom||obj.symptom||'');
+    return {active:!!active,reason:active?(reason||'support'):null,updatedAt:stamp(obj)};
+  }
+  function read(){
+    var best=null;
+    KEYS.forEach(function(k){try{var raw=localStorage.getItem(k); if(!raw)return; var obj=JSON.parse(raw); var n=normalize(obj); if(!n)return; if(!best||n.updatedAt>=best.updatedAt)best=n;}catch(e){}});
+    if(best&&best.updatedAt>0) return best;
+    try{var s=String(localStorage.getItem('supportMode')||'').toLowerCase(); if(s==='off'||s==='false'||s==='0')return {active:false,reason:null,updatedAt:0}; if(s==='on')return {active:true,reason:'support',updatedAt:0};}catch(e){}
+    try{var m=normReason(localStorage.getItem('meals_support_mode')||''); if(m&&m!=='off')return {active:true,reason:m,updatedAt:0};}catch(e){}
+    return {active:false,reason:null,updatedAt:0};
+  }
+  function write(active,reason){
+    reason=active?normReason(reason||'support'):null;
+    var t=now();
+    var obj={active:!!active,isActive:!!active,supportMode:!!active,reason:reason,type:reason||'',mode:active?'on':'off',status:active?'on':'off',sourcePage:'support',updatedAt:t,updated_at:iso(t),lastChangedAt:iso(t),v:VERSION};
+    KEYS.forEach(function(k){try{localStorage.setItem(k,JSON.stringify(obj));}catch(e){}});
+    try{localStorage.setItem('heartySupportActive',active?'true':'false');}catch(e){}
+    try{localStorage.setItem('supportMode',active?'on':'off');}catch(e){}
+    try{localStorage.setItem('hearty_support_mode',active?reason:'off');}catch(e){}
+    try{if(active)localStorage.setItem('meals_support_mode',reason);else localStorage.removeItem('meals_support_mode');}catch(e){}
+    try{window.dispatchEvent(new CustomEvent('hearty:support-change',{detail:obj}));}catch(e){}
+    try{window.dispatchEvent(new CustomEvent('hearty:support-mode-changed',{detail:obj}));}catch(e){}
+    try{window.dispatchEvent(new CustomEvent('hearty:support-mode-change',{detail:obj}));}catch(e){}
+    return obj;
+  }
+  function paint(state){
+    state=state||read();
+    var active=!!(state.active&&state.reason), reason=active?normReason(state.reason):null, info=REASONS[reason]||REASONS.support;
+    document.querySelectorAll('#statusText').forEach(function(el){el.textContent=active?info.label+' Support On':'Support Off';});
+    document.querySelectorAll('#statusPill').forEach(function(el){el.classList.toggle('on',active);el.classList.toggle('active',active);el.classList.toggle('is-on',active);el.classList.toggle('is-off',!active);});
+    document.querySelectorAll('#supportPill').forEach(function(el){el.textContent=active?'Support On':'Support Off';el.classList.toggle('is-on',active);el.classList.toggle('is-off',!active);});
+    document.querySelectorAll('#supportOffBtn,[data-support-off]').forEach(function(el){el.hidden=false;el.textContent=active?'Turn Support Off':'Support Off';el.classList.toggle('active',!active);el.setAttribute('aria-pressed',active?'false':'true');});
+    document.querySelectorAll('.reason-btn,[data-reason]').forEach(function(btn){var on=active&&normReason(btn.getAttribute('data-reason'))===reason;btn.classList.toggle('active',on);btn.classList.toggle('hearty-v23-active',on);btn.classList.toggle('hearty-v24-active',on);btn.setAttribute('aria-pressed',on?'true':'false');});
+    var hero=document.getElementById('supportHero'); if(hero)hero.classList.toggle('is-support-on',active);
+    var title=document.getElementById('supportTitle'); if(title)title.textContent=active?info.title:'What do you need support with?';
+    var copy=document.getElementById('supportCopy'); if(copy)copy.textContent=active?info.copy:'Pick one reason. Hearty will treat this as the active support reason until you switch it off or choose another reason.';
+  }
+  function bind(){
+    document.querySelectorAll('.reason-btn,[data-reason],#supportOffBtn,[data-support-off],.off-btn').forEach(function(el){el.setAttribute('type','button');});
+    document.addEventListener('click',function(e){
+      var btn=e.target&&e.target.closest?e.target.closest('.reason-btn[data-reason],#supportOffBtn,[data-support-off],.off-btn'):null;
+      if(!btn) return;
+      var off=btn.matches('#supportOffBtn,[data-support-off],.off-btn');
+      var reason=btn.getAttribute('data-reason');
+      if(!off&&!reason) return;
+      setTimeout(function(){paint(off?write(false,null):write(true,reason));},0);
+      setTimeout(function(){paint(read());},80);
+      setTimeout(function(){paint(read());},450);
+    },false);
+    paint(read());
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+  window.addEventListener('load',function(){[0,100,300,800,1600,3000,5000].forEach(function(ms){setTimeout(function(){paint(read());},ms);});});
+  ['hearty:support-change','hearty:support-mode-change','hearty:support-mode-changed','storage'].forEach(function(ev){window.addEventListener(ev,function(){setTimeout(function(){paint(read());},0);setTimeout(function(){paint(read());},250);});});
+  window.HeartySupportAuthorityV34={read:read,write:write,paint:paint,version:VERSION};
+})();
+</script>
 
 <div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
 </body>

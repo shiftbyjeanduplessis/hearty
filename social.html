@@ -196,9 +196,9 @@
 <link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=33" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=34" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=33"></script>
+<script src="js/hearty-production-guard.js?v=34"></script>
 <style id="hearty-nav-v10-visible-fix">
 /* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
 html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
@@ -1052,7 +1052,7 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
   }
 
   function renderNav(){
-    // Step 5J-K: bottom navigation is owned by js/hearty-shell-template.js?v=33.
+    // Step 5J-K: bottom navigation is owned by js/hearty-shell-template.js?v=34.
     // Keep this no-op for older Social page code paths without fighting the shared shell.
     if (window.HeartyShellTemplate && window.HeartyShellTemplate.render) window.HeartyShellTemplate.render();
   }
@@ -1105,7 +1105,7 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
   });
 })();
 </script>
-<script defer="" src="js/hearty-shell-template.js?v=33"></script>
+<script defer="" src="js/hearty-shell-template.js?v=34"></script>
 
 <div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
 </body>
