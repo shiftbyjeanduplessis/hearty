@@ -1,4 +1,4 @@
-const CACHE_NAME = "hearty-production-v24-stable-nav-support";
+const CACHE_NAME = "hearty-production-v25-login-empty-bar-remove";
 self.addEventListener("install", (event) => { self.skipWaiting(); });
 self.addEventListener("activate", (event) => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME && k.indexOf("hearty") !== -1).map(k => caches.delete(k)))));

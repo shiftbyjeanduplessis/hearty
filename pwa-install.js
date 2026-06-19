@@ -2,11 +2,16 @@
   "use strict";
   var deferredPrompt = null;
   var shown = false;
-  var VERSION = "v22";
+  var VERSION = "v25";
 
   function isStandalone() {
     try { return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true; }
     catch(_) { return false; }
+  }
+
+
+  function isLoginPage(){
+    try{ return (document.body && document.body.getAttribute("data-page") === "login") || (document.documentElement && document.documentElement.getAttribute("data-auth-page") === "login") || /\/login\.html$/i.test(location.pathname||""); }catch(_){ return false; }
   }
 
   function isHomePage(){
@@ -29,6 +34,7 @@
   }
 
   function showInstallBanner(force) {
+    if (isLoginPage()) return;
     if (!isHomePage()) return;
     if (isStandalone()) return;
     if (!force && shown) return;
@@ -81,6 +87,7 @@
   }
 
   window.addEventListener("load", function () {
+    if (isLoginPage()) return;
     registerSW();
     // Home screen only. Never reload the page during install/update.
     setTimeout(function(){ showInstallBanner(false); }, 1700);

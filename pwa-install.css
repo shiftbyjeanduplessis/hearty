@@ -66,3 +66,19 @@ html[data-theme="deep_berry"] #heartyInstallBtn{background:linear-gradient(180de
   #heartyInstallBtn{padding:8px 12px;}
   #heartyInstallClose{width:28px;height:28px;}
 }
+
+/* V25 hard stop: never show install/banner UI on login */
+html[data-auth-page="login"] #heartyInstallBanner,
+html[data-auth-page="login"] .hearty-install-banner,
+html[data-auth-page="login"] [data-hearty-install],
+html[data-auth-page="login"] [data-install-banner],
+html[data-auth-page="login"] .pwa-install,
+html[data-auth-page="login"] .pwa-install-banner,
+html[data-auth-page="login"] .install-banner,
+body[data-page="login"] #heartyInstallBanner,
+body[data-page="login"] .hearty-install-banner,
+body[data-page="login"] [data-hearty-install],
+body[data-page="login"] [data-install-banner],
+body[data-page="login"] .pwa-install,
+body[data-page="login"] .pwa-install-banner,
+body[data-page="login"] .install-banner{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
