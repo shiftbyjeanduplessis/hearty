@@ -778,3 +778,115 @@ html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="botto
 }
 html body[data-page="login"] #bottomNav,
 html body[data-page="login"] [data-shell-mount="bottom-nav"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+
+/* HEARTY V31 — viewport-centred nav final alignment
+   Fixes the remaining offset/dark footer effect by making the nav mount a single centred viewport element. */
+html body[data-page="home"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="meals"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="progress"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="support"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="social"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="settings"] #bottomNav[data-shell-mount="bottom-nav"]{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;
+  width:min(500px, calc(100vw - 28px)) !important;
+  max-width:calc(100vw - 28px) !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateX(-50%) !important;
+  z-index:2147483000 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  outline:0 !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]::before,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]::after{
+  display:none !important;
+  content:none !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .bottom-nav.hearty-shell-bottom-nav{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  inset:auto !important;
+  transform:none !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:66px !important;
+  margin:0 auto !important;
+  padding:7px 7px !important;
+  display:grid !important;
+  grid-template-columns:repeat(7, minmax(0,1fr)) !important;
+  gap:3px !important;
+  border-radius:24px !important;
+  border:1px solid rgba(255,255,255,.68) !important;
+  background:linear-gradient(180deg, rgba(244,251,255,.94), rgba(228,244,255,.88)) !important;
+  color:#49647a !important;
+  box-shadow:0 10px 28px rgba(20,55,90,.13), inset 0 1px 0 rgba(255,255,255,.74) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.08) !important;
+  backdrop-filter:blur(18px) saturate(1.08) !important;
+  pointer-events:auto !important;
+  overflow:hidden !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{
+  height:52px !important;
+  min-height:52px !important;
+  padding:6px 2px 5px !important;
+  border-radius:17px !important;
+  color:#4f6578 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  font-size:9.5px !important;
+  font-weight:850 !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item[aria-current="page"],
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item[aria-current="page"]{
+  color:#0f5fb9 !important;
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(221,239,255,.94)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.88), 0 8px 18px rgba(25,100,190,.12) !important;
+}
+html[data-theme="pink_lemonade"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html[data-theme="pink_lemonade"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav{
+  background:linear-gradient(180deg, rgba(255,243,249,.94), rgba(255,226,240,.88)) !important;
+  border-color:rgba(255,255,255,.68) !important;
+  color:#7a4b61 !important;
+}
+html[data-theme="soft_rose"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html[data-theme="soft_rose"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav{
+  background:linear-gradient(180deg, rgba(255,249,239,.95), rgba(246,227,199,.90)) !important;
+  border-color:rgba(255,255,255,.68) !important;
+  color:#705a3f !important;
+}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav{
+  background:linear-gradient(180deg, rgba(23,25,50,.94), rgba(10,13,31,.92)) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:rgba(255,255,255,.72) !important;
+  box-shadow:0 12px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+@media(max-width:430px){
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{width:calc(100vw - 22px) !important;max-width:calc(100vw - 22px) !important;bottom:calc(7px + env(safe-area-inset-bottom,0px)) !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav{min-height:62px !important;padding:6px 5px !important;gap:2px !important;border-radius:20px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{height:48px !important;min-height:48px !important;font-size:8.25px !important;border-radius:14px !important;}
+}

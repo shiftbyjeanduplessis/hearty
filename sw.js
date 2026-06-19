@@ -1,5 +1,5 @@
-// HOTFIX V30 nav canonical
-const CACHE_NAME = "hearty-hotfix-v30-nav-canonical";
+// HOTFIX V31 nav centre/left-foot cleanup
+const CACHE_NAME = "hearty-hotfix-v31-nav-centre";
 self.addEventListener("install", (event) => { self.skipWaiting(); });
 self.addEventListener("activate", (event) => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME && k.indexOf("hearty") !== -1).map(k => caches.delete(k)))));

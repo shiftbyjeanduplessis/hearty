@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  var VERSION='hearty-production-guard-v30-nav-canonical';
+  var VERSION='hearty-production-guard-v31-nav-centre';
   var NAV_PAGES=[
     ['home','Home','/home.html','<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'],
     ['meals','Meals','/meals.html','<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>'],
@@ -22,6 +22,29 @@
       return '<a class="nav-item hearty-shell-nav-item'+(on?' active':'')+'" href="'+i[2]+'" data-nav-target="'+i[0]+'"'+(on?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+i[3]+'</svg><span>'+i[1]+'</span></a>';
     }).join('')+'</nav>';
   }
+
+  function applyCanonicalNavStyles(m){
+    if(!m) return;
+    var active=page();
+    var isApp=/^(home|meals|exercise|progress|support|social|settings)$/.test(active);
+    if(!isApp) return;
+    var nav=m.querySelector('nav[data-shell-template="bottom-nav"], nav.bottom-nav, nav.hearty-shell-bottom-nav');
+    // inline layout only: CSS still controls theme colours. This prevents older page styles from moving the nav off centre.
+    Object.assign(m.style,{
+      position:'fixed', left:'50%', right:'auto', bottom:'calc(10px + env(safe-area-inset-bottom,0px))',
+      transform:'translateX(-50%)', width:'min(500px, calc(100vw - 28px))', maxWidth:'calc(100vw - 28px)',
+      height:'auto', margin:'0', padding:'0', background:'transparent', border:'0', boxShadow:'none',
+      zIndex:'2147483000', pointerEvents:'none', overflow:'visible', display:'block', visibility:'visible', opacity:'1'
+    });
+    if(nav){
+      Object.assign(nav.style,{
+        position:'relative', left:'auto', right:'auto', top:'auto', bottom:'auto', transform:'none',
+        width:'100%', maxWidth:'100%', margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(7,minmax(0,1fr))',
+        gap:'3px', pointerEvents:'auto', overflow:'hidden'
+      });
+    }
+  }
+
   function normaliseNav(){
     var active=page();
     if(!/^(home|meals|exercise|progress|support|social|settings)$/.test(active)){
@@ -56,6 +79,7 @@
         if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
       });
     }
+    applyCanonicalNavStyles(m);
     m.style.display='block';
     m.style.visibility='visible';
     m.style.opacity='1';
@@ -103,5 +127,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
   window.addEventListener('load',function(){run();[100,300,750,1500,3000].forEach(function(ms){setTimeout(run,ms);});});
   var ticks=0; var timer=setInterval(function(){ticks++; run(); if(ticks>=10) clearInterval(timer);},500);
-  window.HeartyProductionGuardV30={normaliseNav:normaliseNav,syncSupportState:syncSupportState,version:VERSION}; window.HeartyProductionGuardV29=window.HeartyProductionGuardV30;
+  window.HeartyProductionGuardV31={normaliseNav:normaliseNav,syncSupportState:syncSupportState,version:VERSION}; window.HeartyProductionGuardV30=window.HeartyProductionGuardV31; window.HeartyProductionGuardV29=window.HeartyProductionGuardV31;
 })();
