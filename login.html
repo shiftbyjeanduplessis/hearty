@@ -303,6 +303,44 @@ body[data-page="login"]{padding-bottom:24px!important;}
   body[data-page="login"] .auth-help-link,
   body[data-page="login"] a[href*="how-to-use"] { display: none !important; }
 </style>
+
+<style id="hearty-login-remove-panel-block-v27">
+/* V27: stop shared app .panel styles leaking into the login form.
+   The sign-in panel should sit directly on the auth card, not inside a second tinted block. */
+body[data-page="login"] .panel,
+body[data-page="login"] .panel.active,
+html[data-auth-page="login"] .panel,
+html[data-auth-page="login"] .panel.active{
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  outline:0!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:0!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+body[data-page="login"] .panel.active,
+html[data-auth-page="login"] .panel.active{
+  display:block!important;
+}
+body[data-page="login"] .field,
+html[data-auth-page="login"] .field{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+body[data-page="login"] .actions,
+html[data-auth-page="login"] .actions{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+</style>
+
 </head>
 <body data-page="login">
   <main class="auth-card" aria-live="polite">
