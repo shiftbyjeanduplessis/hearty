@@ -298,6 +298,11 @@ body[data-page="login"] [data-shell-mount="bottom-nav"]{
 }
 body[data-page="login"]{padding-bottom:24px!important;}
 </style>
+
+<style id="hearty-login-hide-stray-help">
+  body[data-page="login"] .auth-help-link,
+  body[data-page="login"] a[href*="how-to-use"] { display: none !important; }
+</style>
 </head>
 <body data-page="login">
   <main class="auth-card" aria-live="polite">
@@ -1017,7 +1022,6 @@ body[data-page="login"]{padding-bottom:24px!important;}
 })();
 </script>
 
-      <p class="auth-help-link" style="text-align:center;margin-top:14px"><a href="how-to-use.html">New to Hearty? Open the quick guide</a></p>
 <script src="js/hearty-shell-template.js" defer></script>
 
 <script id="hearty-login-remove-install-bar-v25-script">
