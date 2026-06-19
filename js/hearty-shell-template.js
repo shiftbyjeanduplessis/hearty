@@ -108,10 +108,10 @@
   function navMarkup(active){
     const links = NAV.map(item => {
       const isActive = item.id === active;
-      return '<a class="hearty-nav-item-v32' + (isActive ? ' active' : '') + '" href="' + item.href + '" data-nav-target="' + item.id + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
+      return '<a class="hearty-nav-item-v33' + (isActive ? ' active' : '') + '" href="' + item.href + '" data-nav-target="' + item.id + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
         '<svg viewBox="0 0 24 24" aria-hidden="true">' + item.icon + '</svg><span>' + item.label + '</span></a>';
     }).join('');
-    return '<nav class="hearty-bottom-nav-v32" data-shell-template="bottom-nav" aria-label="Hearty navigation">' + links + '</nav>';
+    return '<nav class="hearty-bottom-nav-v33" data-shell-template="bottom-nav" aria-label="Hearty navigation">' + links + '</nav>';
   }
 
   function shellHost(){

@@ -2,16 +2,11 @@
   "use strict";
   var deferredPrompt = null;
   var shown = false;
-  var VERSION = "v25";
+  var VERSION = "v33-top-banner";
 
   function isStandalone() {
     try { return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true; }
     catch(_) { return false; }
-  }
-
-
-  function isLoginPage(){
-    try{ return (document.body && document.body.getAttribute("data-page") === "login") || (document.documentElement && document.documentElement.getAttribute("data-auth-page") === "login") || /\/login\.html$/i.test(location.pathname||""); }catch(_){ return false; }
   }
 
   function isHomePage(){
@@ -21,8 +16,8 @@
     }catch(_){ return false; }
   }
 
-  function shouldHideForSession(){
-    try { return sessionStorage.getItem("heartyInstallDismissedSession") === "true"; } catch(_) { return false; }
+  function dismissed(){
+    try { return localStorage.getItem("heartyInstallDismissed") === "true"; } catch(_) { return false; }
   }
 
   function installInstructions(){
@@ -33,24 +28,49 @@
     return "On Android: tap the browser menu ⋮, then Install app or Add to Home screen.";
   }
 
+  function removeOldFloatingInstall(){
+    try{
+      Array.prototype.slice.call(document.querySelectorAll('.hearty-install-bottom, .hearty-install-pill, [data-hearty-install-old]')).forEach(function(el){ el.remove(); });
+    }catch(_){}
+  }
+
+  function placeBanner(banner){
+    var shell = document.querySelector('.shell') || document.querySelector('#app') || document.body;
+    var topMount = document.querySelector('[data-shell-mount="topbar"]');
+    var topbar = document.querySelector('[data-shell-template="topbar"]');
+    var anchor = topbar || topMount;
+    if(anchor && anchor.parentNode){
+      anchor.insertAdjacentElement('afterend', banner);
+    } else if(shell && shell.firstChild){
+      shell.insertBefore(banner, shell.firstChild);
+    } else {
+      document.body.appendChild(banner);
+    }
+  }
+
   function showInstallBanner(force) {
-    if (isLoginPage()) return;
     if (!isHomePage()) return;
     if (isStandalone()) return;
     if (!force && shown) return;
-    if (!force && shouldHideForSession()) return;
-    if (document.getElementById("heartyInstallBanner")) return;
+    if (!force && dismissed()) return;
+    removeOldFloatingInstall();
+    var existing = document.getElementById("heartyInstallBanner");
+    if (existing) return;
     shown = true;
 
-    var banner = document.createElement("div");
+    var banner = document.createElement("section");
     banner.id = "heartyInstallBanner";
+    banner.className = "hearty-install-banner-v33";
     banner.setAttribute("data-hearty-install", VERSION);
-    banner.innerHTML = '<span class="hearty-install-title">Install Hearty</span><button id="heartyInstallBtn" type="button">Install</button><button id="heartyInstallClose" type="button" aria-label="Close">×</button>';
-    document.body.appendChild(banner);
+    banner.setAttribute("aria-label", "Install Hearty");
+    banner.innerHTML = '<div class="hearty-install-icon" aria-hidden="true">↗</div>'+
+      '<div class="hearty-install-copy"><strong>Install Hearty</strong><span>Open it like an app from your phone screen.</span></div>'+
+      '<div class="hearty-install-actions"><button id="heartyInstallBtn" type="button">Install</button><button id="heartyInstallClose" type="button" aria-label="Dismiss install prompt">×</button></div>';
+    placeBanner(banner);
 
     var close = document.getElementById("heartyInstallClose");
     if (close) close.onclick = function(){
-      try{sessionStorage.setItem("heartyInstallDismissedSession","true");}catch(_){}
+      try{localStorage.setItem("heartyInstallDismissed","true");}catch(_){}
       banner.remove();
     };
 
@@ -87,10 +107,9 @@
   }
 
   window.addEventListener("load", function () {
-    if (isLoginPage()) return;
     registerSW();
-    // Home screen only. Never reload the page during install/update.
-    setTimeout(function(){ showInstallBanner(false); }, 1700);
+    setTimeout(function(){ showInstallBanner(false); }, 1300);
+    setTimeout(removeOldFloatingInstall, 1800);
   });
 
   window.HeartyPWAInstall = window.HeartyPWAInstall || { show:function(){ showInstallBanner(true); } };

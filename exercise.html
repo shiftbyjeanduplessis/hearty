@@ -231,9 +231,9 @@ html[data-theme="legacy_rose_aurora_disabled"]{color-scheme:dark;--bg-base:#0f0a
 <link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=32" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=33" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=32"></script>
+<script src="js/hearty-production-guard.js?v=33"></script>
 <style id="hearty-nav-v10-visible-fix">
 /* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
 html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
@@ -428,7 +428,7 @@ function bind(){
 function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{buildNav();bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 </script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=32"></script>
+<script defer="" src="js/hearty-shell-template.js?v=33"></script>
 <div style="position:fixed;right:6px;bottom:6px;z-index:99999;font:10px/1 monospace;color:rgba(255,255,255,.55);pointer-events:none">ex v5</div>
 
 <div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
