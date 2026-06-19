@@ -1,0 +1,12 @@
+css/hearty-shell-template.css
+exercise.html
+home.html
+js/hearty-production-guard.js
+js/hearty-shell-template.js
+meals.html
+progress.html
+service-worker.js
+settings.html
+social.html
+support.html
+sw.js

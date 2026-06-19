@@ -1,0 +1,5 @@
+css/hearty-shell-template.css
+js/hearty-shell-template.js
+js/hearty-production-guard.js
+sw.js
+service-worker.js

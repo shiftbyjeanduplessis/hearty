@@ -777,9 +777,9 @@
 <link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=30" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=24"></script>
+<script src="js/hearty-production-guard.js?v=30"></script>
 <style id="hearty-static-nav-fallback-css">
 html body[data-page]{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;}
 #bottomNav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:2147483000!important;pointer-events:none!important;padding:0 10px calc(8px + env(safe-area-inset-bottom,0px))!important;}
@@ -908,7 +908,7 @@ html body[data-page]{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))
 </aside>
 </div>
 
-<div id="bottomNav" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"><nav class="bottom-nav hearty-shell-bottom-nav" data-shell-template="bottom-nav" data-active-page="meals" aria-label="Hearty navigation"><a class="nav-item hearty-shell-nav-item" href="/home.html" data-nav-target="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path></svg><span>Home</span></a><a class="nav-item hearty-shell-nav-item active" href="/meals.html" data-nav-target="meals" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path></svg><span>Meals</span></a><a class="nav-item hearty-shell-nav-item" href="/exercise.html" data-nav-target="exercise"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path></svg><span>Exercise</span></a><a class="nav-item hearty-shell-nav-item" href="/progress.html" data-nav-target="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path></svg><span>Progress</span></a><a class="nav-item hearty-shell-nav-item" href="/support.html" data-nav-target="support"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path></svg><span>Support</span></a><a class="nav-item hearty-shell-nav-item" href="/social.html" data-nav-target="social"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Social</span></a><a class="nav-item hearty-shell-nav-item" href="/settings.html" data-nav-target="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg><span>Settings</span></a></nav></div><script>
+<script>
     (function(){
       "use strict";
 
@@ -1782,19 +1782,8 @@ html body[data-page]{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))
     })();
   </script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=24"></script>
-<script id="hearty-static-nav-watchdog">
-(function(){
-  var VERSION='hearty-static-nav-v8';
-  function navHtml(active){
-    var data = [['home', 'Home', 'home.html', '<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'], ['meals', 'Meals', 'meals.html', '<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>'], ['exercise', 'Exercise', 'exercise.html', '<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>'], ['progress', 'Progress', 'progress.html', '<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>'], ['support', 'Support', 'support.html', '<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>'], ['social', 'Social', 'social.html', '<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'], ['settings', 'Settings', 'settings.html', '<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']];
-    return '<nav class="bottom-nav hearty-shell-bottom-nav" data-shell-template="bottom-nav" data-active-page="'+active+'" aria-label="Hearty navigation">' + data.map(function(i){var on=i[0]===active;return '<a class="nav-item hearty-shell-nav-item'+(on?' active':'')+'" href="./'+i[2]+'" data-nav-target="'+i[0]+'"'+(on?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+i[3]+'</svg><span>'+i[1]+'</span></a>';}).join('') + '</nav>';
-  }
-  function page(){var p=(document.body&&document.body.getAttribute('data-page'))||location.pathname.split('/').pop().replace(/\.html$/,'')||'home';return p==='community'?'social':p;}
-  function ensure(){var active=page(); if(!/^(home|meals|exercise|progress|support|social|settings)$/.test(active)) return; var m=document.getElementById('bottomNav')||document.querySelector('[data-shell-mount="bottom-nav"]'); if(!m){m=document.createElement('div');m.id='bottomNav';m.setAttribute('data-shell-mount','bottom-nav');document.body.appendChild(m);} if(!m.id)m.id='bottomNav'; if(!m.querySelector('[data-shell-template="bottom-nav"],.bottom-nav')){m.innerHTML=navHtml(active);} m.style.display='block'; }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensure,{once:true}); else ensure();
-  window.addEventListener('load',function(){ensure();setTimeout(ensure,250);setTimeout(ensure,1200);});
-})();
-</script>
+<script defer="" src="js/hearty-shell-template.js?v=30"></script>
+
+<div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
 </body>
 </html>

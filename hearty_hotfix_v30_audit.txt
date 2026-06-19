@@ -1,0 +1,8 @@
+V30 canonical nav repair
+
+- #bottomNav is the only fixed wrapper.
+- Shell JS now always creates #bottomNav in body instead of inserting a stray nav into page content.
+- Production guard removes all old page-level bottom navs outside #bottomNav.
+- CSS hides stray page-level navs and styles only #bottomNav > nav.
+- Nav colour returns to theme surface/glass for Ocean instead of hard-coded black.
+- Login remains nav-free.

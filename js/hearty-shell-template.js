@@ -4,13 +4,13 @@
   const DEFAULT_LOGO_SRC = './hearty-logo.png';
   const MAIN_PAGES = new Set(['home','meals','exercise','progress','support','social','community','settings','how-to-use','help']);
   const NAV = [
-    { id:'home', label:'Home', href:'./home.html', icon:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>' },
-    { id:'meals', label:'Meals', href:'./meals.html', icon:'<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>' },
-    { id:'exercise', label:'Exercise', href:'./exercise.html', icon:'<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>' },
-    { id:'progress', label:'Progress', href:'./progress.html', icon:'<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>' },
-    { id:'support', label:'Support', href:'./support.html', icon:'<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>' },
-    { id:'social', label:'Social', href:'./social.html', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>' },
-    { id:'settings', label:'Settings', href:'./settings.html', icon:'<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>' }
+    { id:'home', label:'Home', href:'/home.html', icon:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>' },
+    { id:'meals', label:'Meals', href:'/meals.html', icon:'<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>' },
+    { id:'exercise', label:'Exercise', href:'/exercise.html', icon:'<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>' },
+    { id:'progress', label:'Progress', href:'/progress.html', icon:'<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>' },
+    { id:'support', label:'Support', href:'/support.html', icon:'<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>' },
+    { id:'social', label:'Social', href:'/social.html', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>' },
+    { id:'settings', label:'Settings', href:'/settings.html', icon:'<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>' }
   ];
 
   const PAGE_STRIPS = {
@@ -214,23 +214,30 @@
   }
 
   function renderNav(host, active){
-    const mount = document.querySelector('[data-shell-mount="bottom-nav"]');
-    const existing = mount ? mount.querySelector('[data-shell-template="bottom-nav"]') : document.querySelector('[data-shell-template="bottom-nav"]');
-    Array.from(document.querySelectorAll('.bottom-nav, #bottomNav, [data-shell-template="bottom-nav"]')).forEach(el => {
-      if(existing && el === existing) return;
-      if(mount && mount.contains(el)) return;
+    let mount = document.getElementById('bottomNav') || document.querySelector('[data-shell-mount="bottom-nav"]');
+    if(!mount){
+      mount = document.createElement('div');
+      mount.id = 'bottomNav';
+    }
+    mount.id = 'bottomNav';
+    mount.setAttribute('data-shell-mount','bottom-nav');
+    mount.setAttribute('data-shell-template','bottom-nav');
+    if(mount.parentNode !== document.body) document.body.appendChild(mount);
+
+    // Remove every old/stray nav that is not inside the canonical mount.
+    Array.from(document.querySelectorAll('nav.bottom-nav, .bottom-nav, nav.hearty-shell-bottom-nav, .hearty-shell-bottom-nav, [data-emergency-nav], #heartyEmergencyNav, .hearty-emergency-nav')).forEach(el => {
+      if(mount.contains(el)) return;
       el.remove();
     });
-    if(existing){
-      updateNavActive(existing, active);
-      return;
-    }
-    const html = navMarkup(active).replace('data-shell-template="bottom-nav"', 'data-shell-template="bottom-nav" data-active-page="' + active + '"');
-    if(mount){
+
+    const current = mount.querySelector('nav[data-shell-template="bottom-nav"]');
+    const needsRebuild = !current || current.querySelectorAll('[data-nav-target]').length !== NAV.length || current.getAttribute('data-active-page') !== active;
+    if(needsRebuild){
+      const html = navMarkup(active).replace('data-shell-template="bottom-nav"', 'data-shell-template="bottom-nav" data-active-page="' + active + '"');
       mount.innerHTML = html;
       return;
     }
-    host.insertAdjacentHTML('beforeend', html);
+    updateNavActive(current, active);
   }
 
   function renderAuthLogo(){
@@ -297,7 +304,7 @@
 
 /* HEARTY V24 shell safety: canonicalise nav after shell render */
 (function(){
-  function run(){try{if(window.HeartyProductionGuardV24&&window.HeartyProductionGuardV24.normaliseNav){window.HeartyProductionGuardV24.normaliseNav();}}catch(e){}}
+  function run(){try{if(window.HeartyProductionGuardV30&&window.HeartyProductionGuardV30.normaliseNav){window.HeartyProductionGuardV24.normaliseNav();}}catch(e){}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
   window.addEventListener('load',function(){setTimeout(run,50);setTimeout(run,500);});
 })();

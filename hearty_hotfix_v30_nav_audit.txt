@@ -1,0 +1,6 @@
+V30 canonical nav repair
+- Patches all app pages to request nav CSS/JS with ?v=30.
+- Removes old static nav watchdog scripts from app pages.
+- Replaces page-level bottomNav blocks with one clean mount.
+- Production guard injects a canonical 7-item nav and applies inline !important styles so page-specific CSS cannot push/cut it off.
+- Does not touch login or sales pages.

@@ -429,3 +429,352 @@ body[data-page] #bottomNav .nav-item.active,body[data-page] #bottomNav .nav-item
 @media(min-width:900px){body[data-page] #bottomNav{padding-left:22px!important;padding-right:22px!important;}body[data-page] #bottomNav .bottom-nav{max-width:720px!important;}}
 .reason-btn,.off-btn,#supportOffBtn{pointer-events:auto!important;touch-action:manipulation!important;}
 .reason-btn *{pointer-events:none;}
+
+/* HEARTY V29 — canonical fixed bottom nav viewport repair
+   Reason: older inline/page nav styles and .hearty-shell-bottom-nav were fighting each other.
+   The mount controls fixed viewport position; the nav inside is plain relative grid. */
+html body[data-page="home"],
+html body[data-page="meals"],
+html body[data-page="exercise"],
+html body[data-page="progress"],
+html body[data-page="support"],
+html body[data-page="social"],
+html body[data-page="settings"]{
+  padding-bottom:calc(96px + env(safe-area-inset-bottom,0px)) !important;
+}
+html body[data-page="home"] .shell,
+html body[data-page="meals"] .shell,
+html body[data-page="exercise"] .shell,
+html body[data-page="progress"] .shell,
+html body[data-page="support"] .shell,
+html body[data-page="social"] .shell,
+html body[data-page="settings"] .shell{
+  padding-bottom:calc(112px + env(safe-area-inset-bottom,0px)) !important;
+}
+html body[data-page="home"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="meals"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="progress"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="support"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="social"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="settings"] #bottomNav[data-shell-mount="bottom-nav"]{
+  box-sizing:border-box !important;
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;
+  transform:translateX(-50%) !important;
+  z-index:2147483000 !important;
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  width:min(880px, calc(100vw - 18px)) !important;
+  max-width:calc(100vw - 18px) !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+  isolation:isolate !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-shell-bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] nav.hearty-shell-bottom-nav{
+  box-sizing:border-box !important;
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  z-index:auto !important;
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  gap:4px !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:66px !important;
+  margin:0 !important;
+  padding:7px 6px !important;
+  border-radius:22px !important;
+  background:rgba(7,22,35,.94) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:0 -12px 40px rgba(0,0,0,.28) !important;
+  color:rgba(255,255,255,.78) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.05) !important;
+  backdrop-filter:blur(18px) saturate(1.05) !important;
+  pointer-events:auto !important;
+  overflow:hidden !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-rows:20px 14px !important;
+  align-content:center !important;
+  align-items:center !important;
+  justify-items:center !important;
+  place-items:center !important;
+  gap:3px !important;
+  min-width:0 !important;
+  width:100% !important;
+  min-height:50px !important;
+  height:50px !important;
+  padding:6px 1px 5px !important;
+  border:0 !important;
+  border-radius:16px !important;
+  background:transparent !important;
+  color:rgba(255,255,255,.78) !important;
+  text-decoration:none !important;
+  text-align:center !important;
+  font:800 10px/1.05 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  letter-spacing:-.025em !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg{
+  width:18px !important;
+  height:18px !important;
+  display:block !important;
+  stroke:currentColor !important;
+  fill:none !important;
+  stroke-width:1.9 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  overflow:visible !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg *,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg *{
+  stroke:currentColor !important;
+  fill:none !important;
+  stroke-width:1.9 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  vector-effect:non-scaling-stroke !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item span,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item span{
+  display:block !important;
+  max-width:100% !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  color:inherit !important;
+  font:inherit !important;
+  line-height:1 !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item[aria-current="page"],
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item[aria-current="page"]{
+  color:#fff !important;
+  background:rgba(255,255,255,.16) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+@media(max-width:430px){
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{width:calc(100vw - 12px) !important;max-width:calc(100vw - 12px) !important;bottom:calc(7px + env(safe-area-inset-bottom,0px)) !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .bottom-nav,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .hearty-shell-bottom-nav{gap:2px !important;padding:6px 4px !important;border-radius:20px !important;min-height:62px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{font-size:8.5px !important;min-height:48px !important;height:48px !important;border-radius:14px !important;grid-template-rows:18px 13px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg{width:16px !important;height:16px !important;}
+}
+html body[data-page="login"] #bottomNav,
+html body[data-page="login"] [data-shell-mount="bottom-nav"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
+
+
+/* HEARTY V30 — final nav reset
+   Fixes: old glass footer behind nav, nav clipped on Meals/Support/Progress, and black nav in Ocean.
+   Architecture: #bottomNav is the only fixed wrapper. Any old page-level nav is hidden/removed by JS. */
+html body[data-page="home"],
+html body[data-page="meals"],
+html body[data-page="exercise"],
+html body[data-page="progress"],
+html body[data-page="support"],
+html body[data-page="social"],
+html body[data-page="settings"]{
+  padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)) !important;
+}
+html body[data-page="home"] .shell,
+html body[data-page="meals"] .shell,
+html body[data-page="exercise"] .shell,
+html body[data-page="progress"] .shell,
+html body[data-page="support"] .shell,
+html body[data-page="social"] .shell,
+html body[data-page="settings"] .shell{
+  padding-bottom:calc(116px + env(safe-area-inset-bottom,0px)) !important;
+}
+
+/* Hide any old page-level nav shells. Only #bottomNav may show the nav. */
+html body[data-page] .shell > nav.bottom-nav[data-shell-template="bottom-nav"],
+html body[data-page] main nav.bottom-nav[data-shell-template="bottom-nav"],
+html body[data-page] .app nav.bottom-nav[data-shell-template="bottom-nav"],
+html body[data-page] .phone nav.bottom-nav[data-shell-template="bottom-nav"],
+html body[data-page] .phone-shell nav.bottom-nav[data-shell-template="bottom-nav"],
+html body[data-page] [data-page-root] nav.bottom-nav[data-shell-template="bottom-nav"]{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+html body[data-page="home"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="meals"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="progress"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="support"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="social"] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page="settings"] #bottomNav[data-shell-mount="bottom-nav"]{
+  box-sizing:border-box !important;
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:calc(10px + env(safe-area-inset-bottom,0px)) !important;
+  transform:none !important;
+  z-index:2147483000 !important;
+  width:100% !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 10px !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  pointer-events:none !important;
+  overflow:visible !important;
+}
+
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > .bottom-nav.hearty-shell-bottom-nav{
+  box-sizing:border-box !important;
+  position:relative !important;
+  inset:auto !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  z-index:1 !important;
+  width:min(880px, calc(100vw - 20px)) !important;
+  max-width:min(880px, calc(100vw - 20px)) !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:70px !important;
+  margin:0 auto !important;
+  padding:8px 7px !important;
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  gap:4px !important;
+  border-radius:24px !important;
+  border:1px solid var(--hst-border) !important;
+  background:linear-gradient(180deg, color-mix(in srgb, var(--hst-bg-strong) 94%, white 6%), var(--hst-bg)) !important;
+  color:var(--hst-muted) !important;
+  box-shadow:0 18px 44px rgba(20,31,50,.16) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.06) !important;
+  backdrop-filter:blur(18px) saturate(1.06) !important;
+  pointer-events:auto !important;
+  overflow:hidden !important;
+}
+
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-rows:22px 15px !important;
+  align-content:center !important;
+  align-items:center !important;
+  justify-items:center !important;
+  gap:3px !important;
+  min-width:0 !important;
+  width:100% !important;
+  height:54px !important;
+  min-height:54px !important;
+  padding:7px 2px 6px !important;
+  border:0 !important;
+  border-radius:17px !important;
+  background:transparent !important;
+  color:var(--hst-muted) !important;
+  text-align:center !important;
+  text-decoration:none !important;
+  font:850 10px/1.05 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  letter-spacing:-.025em !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg{
+  width:19px !important;
+  height:19px !important;
+  display:block !important;
+  stroke:currentColor !important;
+  fill:none !important;
+  stroke-width:1.9 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  overflow:visible !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg *,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg *{
+  stroke:currentColor !important;
+  fill:none !important;
+  stroke-width:1.9 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  vector-effect:non-scaling-stroke !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item span,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item span{
+  display:block !important;
+  max-width:100% !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  color:inherit !important;
+  font:inherit !important;
+  line-height:1 !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item[aria-current="page"],
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item.active,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item[aria-current="page"]{
+  color:var(--hst-primary) !important;
+  background:linear-gradient(180deg, color-mix(in srgb,var(--hst-primary) 14%,white 86%), color-mix(in srgb,var(--hst-primary) 8%,var(--hst-bg-strong) 92%)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 8px 18px color-mix(in srgb,var(--hst-primary) 16%,transparent) !important;
+}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav{
+  background:linear-gradient(180deg, rgba(18,21,42,.92), rgba(10,13,28,.92)) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:rgba(255,255,255,.72) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.34) !important;
+}
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item.active,
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item.active,
+html[data-theme="midnight"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item[aria-current="page"],
+html[data-theme="deep_berry"] body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item[aria-current="page"]{
+  color:#fff !important;
+  background:linear-gradient(180deg, color-mix(in srgb,var(--hst-primary) 34%,transparent), color-mix(in srgb,var(--hst-primary) 16%,transparent)) !important;
+}
+@media(max-width:430px){
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"]{bottom:calc(7px + env(safe-area-inset-bottom,0px)) !important;padding:0 6px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] > nav.hearty-shell-bottom-nav{width:100% !important;max-width:100% !important;gap:2px !important;padding:6px 4px !important;border-radius:20px !important;min-height:62px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item{font-size:8.5px !important;height:48px !important;min-height:48px !important;border-radius:14px !important;grid-template-rows:18px 13px !important;}
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .nav-item svg,
+  html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-nav-item svg{width:16px !important;height:16px !important;}
+}
+html body[data-page="login"] #bottomNav,
+html body[data-page="login"] [data-shell-mount="bottom-nav"]{display:none !important;visibility:hidden !important;pointer-events:none !important;}
