@@ -3098,21 +3098,21 @@ body{
       </div>
       <div class="save-plan-card" id="savePlanCard" hidden>
         <h3>Send yourself the plan + shopping lists</h3>
-        <p>Add your email and we’ll send your custom 7-day GLP-1 starter plan, plus a 7-day shopping list and a simple 28-day shopping guide based on your results. This is the only way to save the full plan. WhatsApp is optional.</p>
+        <p>Add your email and your full meal-plan PDF will download instantly. It includes the complete 7-day plan, protein quantities, optional boost notes, fibre guidance and a 7-day shopping list. WhatsApp is optional.</p>
         <div class="shopping-sweetener" aria-label="Plan delivery bonus">
           <strong>Included when we send it:</strong>
           <span>7-day shopping list</span>
-          <span>28-day shopping guide</span>
+          <span>Full plan PDF</span>
         </div>
         <div class="save-lead-grid">
           <div class="save-field"><label for="saveFirstName">First name</label><input id="saveFirstName" type="text" autocomplete="given-name" placeholder="Your first name" /></div>
           <div class="save-field"><label for="saveEmail">Email</label><input id="saveEmail" type="email" autocomplete="email" placeholder="you@example.com" /></div>
           <div class="save-field full"><label for="saveWhatsapp">WhatsApp optional</label><input id="saveWhatsapp" type="tel" autocomplete="tel" placeholder="Optional" /></div>
         </div>
-        <button class="btn btn-primary btn-small" id="saveLeadDetails" type="button">Send me my plan + shopping lists</button>
+        <button class="btn btn-primary btn-small" id="saveLeadDetails" type="button">Download my plan PDF</button>
         <div class="lead-capture-status" id="leadCaptureStatus" aria-live="polite"></div>
         <div class="post-submit-cta" id="postSubmitCta" aria-live="polite">
-          <div class="cta-check">Plan sent ✅</div>
+          <div class="cta-check">PDF downloaded ✅</div>
           <h3>Don’t start over next week.</h3>
           <p>Your first 7 days are sorted. Hearty helps you keep going after Day 7 with fresh meal ideas, protein guidance, hydration, progress, simple exercise and Support Mode for rough days.</p>
           <div class="post-submit-actions">
@@ -3283,9 +3283,9 @@ body{
 <div class="save-prompt-card">
 <button aria-label="Close" class="save-prompt-close" data-save-prompt-close="" type="button">×</button>
 <h3 id="savePromptTitle">Want this plan sent to you?</h3>
-<p>Add your email and Hearty will send the custom plan you just generated, plus your 7-day shopping list and simple 28-day shopping guide. Your plan stays visible here either way.</p>
+<p>Add your email and your full meal-plan PDF will download instantly. It includes your 7-day plan, protein quantities and 7-day shopping list. Your plan stays visible here either way.</p>
 <div class="save-prompt-actions">
-<button class="btn btn-primary" data-save-prompt-jump="" type="button">Send me my plan + shopping lists</button>
+<button class="btn btn-primary" data-save-prompt-jump="" type="button">Download my plan PDF</button>
 <button class="btn btn-secondary" data-save-prompt-close="" type="button">Maybe later</button>
 </div>
 </div>
@@ -3324,28 +3324,26 @@ body{
         formId: window.HEARTY_JOTFORM?.formId || "261731501099051",
         formUrl: window.HEARTY_JOTFORM?.formUrl || "https://form.jotform.com/261731501099051",
         submitUrl: window.HEARTY_JOTFORM?.submitUrl || "https://submit.jotform.com/submit/261731501099051/",
-        // Exact live Jotform field names for form 261731501099051.
-        // The autoresponder sends to the real Email field, so q3_email1 must be populated.
         fieldMap: window.HEARTY_JOTFORM?.fieldMap || {
-          first_name: ["q2_textbox0"],
-          email: ["q3_email1"],
-          whatsapp: ["q4_phone2", "q4_phone2[full]"],
-          country: ["q5_textbox3"],
-          main_struggle: ["q6_textbox4"],
-          plan_pace: ["q7_textbox5"],
-          calorie_guide: ["q8_textbox6"],
-          protein_target: ["q9_textbox7"],
-          fibre_guide: ["q10_textbox8"],
-          plan_summary: ["q11_textarea9"],
-          full_plan_text: ["q12_textarea10"],
-          full_plan_json: ["q13_textarea11"],
-          selected_proteins: ["q14_textarea12"],
-          selected_breakfasts: ["q15_textarea13"],
-          selected_snacks: ["q16_textarea14"],
-          selected_vegetables: ["q17_textarea15"],
-          source_page: ["q18_textbox16"],
-          generated_date: ["q19_textbox17"],
-          buyer_interest: ["q20_textbox18"]
+          first_name: ["first_name", "q2_firstName", "q2_first_name", "q3_firstName", "q3_first_name", "q3_name", "q4_firstName"],
+          email: ["email", "q3_email", "q4_email", "q5_email"],
+          whatsapp: ["whatsapp", "whatsapp_number", "q4_whatsappNumber", "q4_whatsapp", "q5_whatsappNumber", "q5_whatsapp", "q6_whatsappNumber"],
+          country: ["country", "q5_country", "q6_country", "q7_country"],
+          main_struggle: ["main_struggle", "q6_mainStruggle", "q7_mainStruggle", "q8_mainStruggle"],
+          plan_pace: ["plan_pace", "q7_planPace", "q8_planPace", "q9_planPace"],
+          calorie_guide: ["calorie_guide", "q8_calorieGuide", "q9_calorieGuide", "q10_calorieGuide"],
+          protein_target: ["protein_target", "protein_guide", "q9_proteinTarget", "q10_proteinTarget", "q11_proteinTarget"],
+          fibre_guide: ["fibre_guide", "q10_fibreGuide", "q11_fibreGuide", "q12_fibreGuide"],
+          plan_summary: ["plan_summary", "q11_planSummary", "q12_planSummary", "q13_planSummary"],
+          full_plan_text: ["full_plan_text", "q12_fullPlanText", "q12_fullPlan", "q13_fullPlanText", "q13_fullPlan", "q14_fullPlanText"],
+          full_plan_json: ["full_plan_json", "q13_fullPlanJson", "q13_fullPlanJSON", "q14_fullPlanJson", "q14_fullPlanJSON"],
+          selected_proteins: ["selected_proteins", "q14_selectedProteins", "q15_selectedProteins"],
+          selected_breakfasts: ["selected_breakfasts", "q15_selectedBreakfasts", "q16_selectedBreakfasts"],
+          selected_snacks: ["selected_snacks", "q16_selectedSnacks", "q17_selectedSnacks"],
+          selected_vegetables: ["selected_vegetables", "q17_selectedVegetables", "q18_selectedVegetables"],
+          source_page: ["source_page", "source", "q18_sourcePage", "q19_sourcePage"],
+          generated_date: ["generated_date", "q19_generatedDate", "q20_generatedDate"],
+          buyer_interest: ["buyer_interest", "q20_buyerInterest", "q21_buyerInterest"]
         }
       };
 
@@ -4611,7 +4609,7 @@ body{
           const text = names.length
             ? `If appetite allows, use the higher end of one main protein portion or choose one separate booster later: ${boosterText}.`
             : "If appetite allows, use the higher end of one main protein portion.";
-          return { title:"Small protein lift", text, gainMin:gainLow, gainMax:gainHigh, boosters:names };
+          return { title:"Optional protein boost", text, gainMin:gainLow, gainMax:gainHigh, boosters:names };
         }
         if(gap <= 30) {
           const text = names.length
@@ -4653,20 +4651,37 @@ body{
       }
 
 
-      function dayFibreSupportRow(day, targets){
+      function fibreSupportTextForDay(day, targets){
         if(!targets) return "";
-        const mealText = [day?.breakfast, day?.morningSnack, day?.lunch, day?.afternoonSnack, day?.dinner].join(" ").toLowerCase();
+        const mealText = [day?.breakfast, day?.morningSnack, day?.lunch, day?.afternoonSnack, day?.dinner, day?.recipe?.breakfast, day?.recipe?.morningSnack, day?.recipe?.lunch, day?.recipe?.afternoonSnack, day?.recipe?.dinner].join(" ").toLowerCase();
         const rough = /nausea|low appetite|rough|bloated|bloating/.test(String(state.struggleMode || "").toLowerCase());
-        const fibreSources = [];
-        if(/oats|berries|apple|mandarin|clementine|naartjie|fruit/.test(mealText)) fibreSources.push("fruit/oats");
-        if(/lentil|bean|chickpea|hummus/.test(mealText)) fibreSources.push("legumes");
-        if(/potato|sweet potato|wrap|rice|pasta|couscous/.test(mealText)) fibreSources.push("starch choice");
-        fibreSources.push("vegetables");
-        const uniqueSources = [...new Set(fibreSources)].slice(0, 4).join(", ");
-        const note = rough
-          ? `Fibre support today: ${uniqueSources}. Build gently — do not force bulky fibre if nausea, bloating or very low appetite is active.`
-          : `Fibre support today: ${uniqueSources}. Add extra vegetables or fruit if appetite allows.`;
-        return `<div class="fibre-support-note"><strong>${escapeHtml(note)}</strong></div>`;
+        const hasOats = /oats/.test(mealText);
+        const hasFruit = /berries|apple|mandarin|clementine|naartjie|fruit/.test(mealText);
+        const hasLegumes = /lentil|bean|chickpea|hummus/.test(mealText);
+        const hasGentleStarch = /sweet potato|potato|wrap|rice|pasta|couscous|wholegrain|crackers|rice cakes/.test(mealText);
+        const hasCookedVeg = /soup|curry|stir-fry|bolognese|chilli|frittata|scrambled|omelette/.test(mealText);
+        const sources = [];
+        if(hasOats) sources.push("oats");
+        if(hasFruit) sources.push("fruit");
+        if(hasLegumes) sources.push("legumes");
+        if(hasGentleStarch) sources.push("your starch choice");
+        sources.push(hasCookedVeg ? "cooked vegetables" : "vegetables");
+        const uniqueSources = [...new Set(sources)].slice(0, 4).join(", ");
+        if(rough){
+          return `Fibre support today: keep it gentle. You have ${uniqueSources}; use small cooked-veg portions and steady fluids rather than forcing bulky fibre.`;
+        }
+        if(hasOats || hasFruit){
+          return `Fibre support today: you already have a gentle base from ${uniqueSources}. Add extra vegetables only if appetite allows.`;
+        }
+        if(hasLegumes){
+          return `Fibre support today: legumes plus vegetables give this day a stronger fibre base. Keep portions modest if bloating is active.`;
+        }
+        return `Fibre support today: vegetables and starch give a base. Add one fruit serving or extra cooked vegetables if constipation is a concern and appetite allows.`;
+      }
+
+      function dayFibreSupportRow(day, targets){
+        const note = fibreSupportTextForDay(day, targets);
+        return note ? `<div class="fibre-support-note"><strong>${escapeHtml(note)}</strong></div>` : "";
       }
 
       function dayTotalRow(day){
@@ -4707,7 +4722,7 @@ body{
           const breakfastHtml = noBreakfastPlan ? "" : mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast, targets);
           const morningLabel = noBreakfastPlan ? "First protein anchor" : "Morning snack";
           return `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${breakfastHtml}${mealRow(morningLabel, day.morningSnack, day.protein?.morningSnack, day.recipe?.morningSnack, targets)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch, targets)}${mealRow("Afternoon snack", day.afternoonSnack, day.protein?.afternoonSnack, day.recipe?.afternoonSnack, targets)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner, targets)}${dayTotalRow(day)}${dayFibreSupportRow(day, targets)}</article>`;
-        }).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>`;
+        }).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>` + `<div class="nutrition-note"><strong>Shake note:</strong> If a protein shake already appears in a day, count it as one protein anchor. You do not need to add another shake unless appetite allows.</div>`;
       }
 
       function renderTargetPlanPanel(targets){
@@ -4799,15 +4814,7 @@ body{
           section("Snacks & extras", snackItems)
         ].join("\n\n");
 
-        const twentyEightDay = [
-          "28-DAY SHOPPING GUIDE",
-          "Use the 7-day list as your base week and repeat/rotate it for four weeks.",
-          "For 28 days, plan roughly 4x the protein anchors, starches and snack items from the 7-day list.",
-          "Freezer-friendly: chicken, turkey mince, lean beef, fish portions, cooked rice, wraps and some prepared soups/stews.",
-          "Fresh weekly: salad leaves, tomatoes, berries, yoghurt/cottage cheese and any soft fruit."
-        ].join("\n");
-
-        return `${sevenDay}\n\n${twentyEightDay}`;
+        return sevenDay;
       }
 
       function makePlanText(plan){
@@ -4832,7 +4839,7 @@ body{
             day.recipe?.dinner ? `  How to build it: ${cleanRecipeNote(day.recipe.dinner)}` : "",
             day.estimatedProteinTotal ? `Base day protein: approx. ${day.estimatedProteinTotal}g` : "",
             day.proteinSupport ? `Optional protein boost: ${day.proteinSupport.text} With boost: approx. ${day.estimatedProteinTotal + day.proteinSupport.gainMin}-${day.estimatedProteinTotal + day.proteinSupport.gainMax}g.` : "",
-            targets ? `Fibre support: build toward ${formatFibreRange(targets).replace(/^Build toward /, "")} gradually with vegetables, fruit, oats, legumes or starch choices as tolerated.` : "",
+            targets ? fibreSupportTextForDay(day, targets).replace(/^Fibre support today: /, "Fibre support: ") : "",
             ``);
         });
         const snackList = (plan[0]?.proteinSnackList || []).filter(item => !/(fruit|mandarin|naartjie|clementine|apple|berries|rice cakes?|crackers?)/i.test(`${item?.title || ""} ${item?.note || ""}`)).slice(0,6);
@@ -4981,6 +4988,136 @@ body{
         }, null, 2);
       }
 
+
+      function pdfSafeText(value){
+        return String(value || "")
+          .replace(/[\u2018\u2019\u2032]/g, "'")
+          .replace(/[\u201C\u201D\u2033]/g, '"')
+          .replace(/[\u2013\u2014\u2212]/g, "-")
+          .replace(/[\u2022]/g, "-")
+          .replace(/[\u00A0]/g, " ")
+          .replace(/[\u2713]/g, "check")
+          .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "");
+      }
+
+      function wrapPdfLine(line, maxChars){
+        const clean = pdfSafeText(line).replace(/\s+/g, " ").trim();
+        if(!clean) return [""];
+        const words = clean.split(" ");
+        const lines = [];
+        let current = "";
+        words.forEach(word => {
+          const candidate = current ? `${current} ${word}` : word;
+          if(candidate.length > maxChars && current){
+            lines.push(current);
+            current = word;
+          } else {
+            current = candidate;
+          }
+        });
+        if(current) lines.push(current);
+        return lines;
+      }
+
+      function escapePdfString(text){
+        return pdfSafeText(text).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+      }
+
+      function makePdfBlobFromText(title, bodyText){
+        const pageWidth = 595;
+        const pageHeight = 842;
+        const marginLeft = 48;
+        const topY = 794;
+        const lineHeight = 13;
+        const maxLines = 56;
+        const fontSize = 10;
+        const maxChars = 92;
+        const sourceLines = pdfSafeText(`${title}\n\n${bodyText}`).split(/\r?\n/);
+        const wrapped = [];
+        sourceLines.forEach(line => {
+          if(!line.trim()) wrapped.push("");
+          else wrapPdfLine(line, maxChars).forEach(w => wrapped.push(w));
+        });
+        const pages = [];
+        for(let i = 0; i < wrapped.length; i += maxLines){
+          pages.push(wrapped.slice(i, i + maxLines));
+        }
+        if(!pages.length) pages.push([title]);
+
+        const objects = [];
+        objects.push("<< /Type /Catalog /Pages 2 0 R >>");
+        const kids = pages.map((_, idx) => `${3 + idx * 2} 0 R`).join(" ");
+        objects.push(`<< /Type /Pages /Kids [${kids}] /Count ${pages.length} >>`);
+
+        pages.forEach((lines, idx) => {
+          const pageObjNumber = 3 + idx * 2;
+          const contentObjNumber = pageObjNumber + 1;
+          objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> /F1B << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> >> >> /Contents ${contentObjNumber} 0 R >>`);
+          const commands = [];
+          commands.push("BT");
+          commands.push(`/F1 ${fontSize} Tf`);
+          commands.push(`1 0 0 1 ${marginLeft} ${topY} Tm`);
+          lines.forEach((line, lineIdx) => {
+            if(lineIdx === 0 && idx === 0){
+              commands.push(`/F1B 14 Tf`);
+              commands.push(`(${escapePdfString(line)}) Tj`);
+              commands.push(`/F1 ${fontSize} Tf`);
+            } else {
+              commands.push(`(${escapePdfString(line)}) Tj`);
+            }
+            commands.push(`0 -${lineHeight} Td`);
+          });
+          commands.push("ET");
+          const stream = commands.join("\n");
+          objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
+        });
+
+        let pdf = "%PDF-1.4\n";
+        const offsets = [0];
+        objects.forEach((obj, idx) => {
+          offsets.push(pdf.length);
+          pdf += `${idx + 1} 0 obj\n${obj}\nendobj\n`;
+        });
+        const xrefStart = pdf.length;
+        pdf += `xref\n0 ${objects.length + 1}\n`;
+        pdf += "0000000000 65535 f \n";
+        offsets.slice(1).forEach(offset => {
+          pdf += String(offset).padStart(10, "0") + " 00000 n \n";
+        });
+        pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+        return new Blob([pdf], { type:"application/pdf" });
+      }
+
+      function downloadMealPlanPdf(payload){
+        try{
+          const targets = ensureTargets();
+          const name = (payload?.first_name || state.firstName || "hearty").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "hearty";
+          const title = "Hearty Free 7-Day GLP-1 Starter Plan";
+          const planText = payload?.full_plan_text || latestPlanText || (latestPlan?.length ? makePlanText(latestPlan) : "");
+          const intro = [
+            `Name: ${payload?.first_name || state.firstName || ""}`,
+            `Guide: ${targets ? `${targets.calorieMin}-${targets.calorieMax} kcal/day, ${targets.proteinMin}-${targets.proteinMax}g protein/day, fat minimum ${targets.fatMin}g/day, ${formatFibreRange(targets)}` : "GLP-1 starter meal structure"}`,
+            "",
+            "This PDF includes your complete 7-day plan, protein estimates, optional boost notes, fibre guidance and 7-day shopping list.",
+            ""
+          ].join("\n");
+          const blob = makePdfBlobFromText(title, `${intro}${planText}`);
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${name}-hearty-7-day-glp1-plan.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+          window.trackHeartyEvent?.("meal_plan_pdf_downloaded", { source:"lead_capture" });
+          return true;
+        } catch(error){
+          console.error("HEARTY_PDF_DOWNLOAD_FAILED", error);
+          showToast("PDF download failed. Your plan is still visible here.");
+          return false;
+        }
+      }
+
       function buildJotformPayload(){
         savePostPlanContactInputs();
         const targets = ensureTargets();
@@ -5069,7 +5206,8 @@ body{
           form.submit();
           window.trackHeartyEvent?.("jotform_lead_capture_submitted", { meal_plan_tier: ensureTargets()?.tier || 2 });
           updateLeadEvent({ email: payload.email, whatsapp: payload.whatsapp, jotform_submitted: true, jotform_submitted_at: new Date().toISOString() });
-          if(statusEl) statusEl.textContent = "Done — your plan and shopping lists have been sent. Please check your inbox.";
+          downloadMealPlanPdf(payload);
+          if(statusEl) statusEl.textContent = "Done — your PDF is downloading now. Your plan also stays visible on this page.";
           closeSavePrompt();
           showPostSubmitCta();
           return true;
