@@ -3324,26 +3324,28 @@ body{
         formId: window.HEARTY_JOTFORM?.formId || "261731501099051",
         formUrl: window.HEARTY_JOTFORM?.formUrl || "https://form.jotform.com/261731501099051",
         submitUrl: window.HEARTY_JOTFORM?.submitUrl || "https://submit.jotform.com/submit/261731501099051/",
+        // Exact live Jotform field names for form 261731501099051.
+        // The autoresponder sends to the real Email field, so q3_email1 must be populated.
         fieldMap: window.HEARTY_JOTFORM?.fieldMap || {
-          first_name: ["first_name", "q2_firstName", "q2_first_name", "q3_firstName", "q3_first_name", "q3_name", "q4_firstName"],
-          email: ["email", "q3_email", "q4_email", "q5_email"],
-          whatsapp: ["whatsapp", "whatsapp_number", "q4_whatsappNumber", "q4_whatsapp", "q5_whatsappNumber", "q5_whatsapp", "q6_whatsappNumber"],
-          country: ["country", "q5_country", "q6_country", "q7_country"],
-          main_struggle: ["main_struggle", "q6_mainStruggle", "q7_mainStruggle", "q8_mainStruggle"],
-          plan_pace: ["plan_pace", "q7_planPace", "q8_planPace", "q9_planPace"],
-          calorie_guide: ["calorie_guide", "q8_calorieGuide", "q9_calorieGuide", "q10_calorieGuide"],
-          protein_target: ["protein_target", "protein_guide", "q9_proteinTarget", "q10_proteinTarget", "q11_proteinTarget"],
-          fibre_guide: ["fibre_guide", "q10_fibreGuide", "q11_fibreGuide", "q12_fibreGuide"],
-          plan_summary: ["plan_summary", "q11_planSummary", "q12_planSummary", "q13_planSummary"],
-          full_plan_text: ["full_plan_text", "q12_fullPlanText", "q12_fullPlan", "q13_fullPlanText", "q13_fullPlan", "q14_fullPlanText"],
-          full_plan_json: ["full_plan_json", "q13_fullPlanJson", "q13_fullPlanJSON", "q14_fullPlanJson", "q14_fullPlanJSON"],
-          selected_proteins: ["selected_proteins", "q14_selectedProteins", "q15_selectedProteins"],
-          selected_breakfasts: ["selected_breakfasts", "q15_selectedBreakfasts", "q16_selectedBreakfasts"],
-          selected_snacks: ["selected_snacks", "q16_selectedSnacks", "q17_selectedSnacks"],
-          selected_vegetables: ["selected_vegetables", "q17_selectedVegetables", "q18_selectedVegetables"],
-          source_page: ["source_page", "source", "q18_sourcePage", "q19_sourcePage"],
-          generated_date: ["generated_date", "q19_generatedDate", "q20_generatedDate"],
-          buyer_interest: ["buyer_interest", "q20_buyerInterest", "q21_buyerInterest"]
+          first_name: ["q2_textbox0"],
+          email: ["q3_email1"],
+          whatsapp: ["q4_phone2", "q4_phone2[full]"],
+          country: ["q5_textbox3"],
+          main_struggle: ["q6_textbox4"],
+          plan_pace: ["q7_textbox5"],
+          calorie_guide: ["q8_textbox6"],
+          protein_target: ["q9_textbox7"],
+          fibre_guide: ["q10_textbox8"],
+          plan_summary: ["q11_textarea9"],
+          full_plan_text: ["q12_textarea10"],
+          full_plan_json: ["q13_textarea11"],
+          selected_proteins: ["q14_textarea12"],
+          selected_breakfasts: ["q15_textarea13"],
+          selected_snacks: ["q16_textarea14"],
+          selected_vegetables: ["q17_textarea15"],
+          source_page: ["q18_textbox16"],
+          generated_date: ["q19_textbox17"],
+          buyer_interest: ["q20_textbox18"]
         }
       };
 
