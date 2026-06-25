@@ -4,16 +4,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Free 7-Day GLP-1 Starter Plan | Hearty</title>
-<meta content="Not sure what to eat on GLP-1? Get a free 7-day starter plan with a calorie guide, protein guide, fibre guide and simple meals — powered by Hearty." name="description"/>
-<meta property="og:title" content="Free 7-Day GLP-1 Starter Plan | Hearty"/>
-<meta property="og:description" content="Get a free 7-day GLP-1 starter plan with a calorie guide, protein guide, fibre guide and simple meals — without calorie counting."/>
+<title>Free GLP-1 Meal Ideas + 7-Day Setup | Hearty</title>
+<meta content="Not sure what to eat on GLP-1? Get quick meal ideas first, then build a free 7-day setup with simple meals, protein help and a shopping list." name="description"/>
+<meta property="og:title" content="Free GLP-1 Meal Ideas + 7-Day Setup | Hearty"/>
+<meta property="og:description" content="Get quick GLP-1 meal ideas first, then build a free 7-day setup with simple meals, protein help and a shopping list."/>
 <meta property="og:image" content="https://hearty.health/assets/free-meal-planner-share.png"/>
 <meta property="og:url" content="https://hearty.health/free-meal-plan.html"/>
 <meta property="og:type" content="website"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Free 7-Day GLP-1 Starter Plan | Hearty"/>
-<meta name="twitter:description" content="Get a free 7-day GLP-1 starter plan that answers calories, protein, fibre and what to eat this week."/>
+<meta name="twitter:title" content="Free GLP-1 Meal Ideas + 7-Day Setup | Hearty"/>
+<meta name="twitter:description" content="Get quick GLP-1 meal ideas first, then build a free 7-day setup with simple meals, protein help and a shopping list."/>
 <meta name="twitter:image" content="https://hearty.health/assets/free-meal-planner-share.png"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
@@ -2865,7 +2865,7 @@ body{
 
 
 
-/* v17 Jotform save-card bridge */
+/* v30f Supabase-only save-card bridge */
 .save-lead-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 14px;}
 .save-field{display:grid;gap:7px;}
 .save-field.full{grid-column:1 / -1;}
@@ -2960,8 +2960,997 @@ body{
 .post-submit-cta .btn{width:100%; justify-content:center;}
 .post-submit-cta .post-submit-micro{display:block; text-align:center; color:rgba(255,255,255,.72); font-size:.86rem; font-weight:800;}
 
+
+/* v30d conversion polish */
+.v30d-guarantee{
+  display:block;
+  margin-top:10px;
+  font-size:.88rem;
+  line-height:1.35;
+  font-weight:850;
+  color:#0f766e;
+}
+.v11-dark-close .v30d-guarantee,
+.post-submit-cta .v30d-guarantee{
+  color:rgba(255,255,255,.9);
+}
+.v30d-coach-note{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(47,109,246,.08);
+  border:1px solid rgba(47,109,246,.14);
+  color:#102033;
+  font-weight:800;
+  line-height:1.45;
+}
+.v30d-skip-top{
+  margin:0 0 4px;
+}
+.v30d-skip-top .btn{
+  width:100%;
+  justify-content:center;
+}
+.v30d-unlock-note{
+  margin-top:8px;
+  color:#617389;
+  font-size:.92rem;
+  line-height:1.45;
+}
+.v30d-price-proof{
+  margin:10px 0 0;
+  padding:10px 12px;
+  border-radius:16px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(126,148,174,.18);
+  color:#102033;
+  font-weight:800;
+  line-height:1.4;
+}
+
+.option-subgroup{ display:grid; gap:10px; margin:14px 0 18px; }
+.option-subgroup h4{ margin:0; font-size:1rem; letter-spacing:-.02em; color:#173653; }
+.country-correction{ margin:8px 0 0; color:var(--muted); font-size:.92rem; }
+.country-change-btn{ border:0; background:transparent; color:var(--blue-dark); font-weight:800; cursor:pointer; text-decoration:underline; padding:0 0 0 6px; }
+.country-select-wrap select{ margin-left:8px; border:1px solid var(--line); border-radius:12px; padding:6px 8px; background:#fff; }
+
+
+
+/* v30g brand colour fix — restore Hearty navy / ocean blue / pink palette */
+:root{
+  --ink:#061b33;
+  --muted:#53677d;
+  --muted-2:#71849a;
+  --blue:#0c5b97;
+  --blue-dark:#073e70;
+  --teal:#0c6fb3;
+  --teal-dark:#084f82;
+  --coral:#f65f9a;
+  --coral-dark:#d93f7b;
+  --mint:#eef7ff;
+  --soft-blue:#eef6ff;
+}
+body{
+  background:
+    radial-gradient(780px 420px at 92% 5%, rgba(12,91,151,.12), transparent 62%),
+    radial-gradient(620px 340px at 8% 3%, rgba(246,95,154,.10), transparent 58%),
+    linear-gradient(180deg,#ffffff 0%,#f4f9ff 56%,#ffffff 100%) !important;
+}
+.topbar{
+  background:rgba(255,255,255,.94) !important;
+  color:#061b33 !important;
+  border-bottom:1px solid rgba(12,91,151,.12) !important;
+  box-shadow:0 8px 24px rgba(6,27,51,.05) !important;
+}
+.brand-fallback{
+  display:inline-flex;
+  align-items:center;
+  color:#0b2f64;
+  font-weight:950;
+  font-size:1.35rem;
+  letter-spacing:-.04em;
+  white-space:nowrap;
+}
+.nav-actions .mini-link{ color:#173653 !important; }
+.nav-actions .btn-secondary{
+  color:#173653 !important;
+  background:rgba(255,255,255,.88) !important;
+  border:1px solid rgba(12,91,151,.16) !important;
+  box-shadow:0 8px 18px rgba(6,27,51,.06) !important;
+}
+.nav-actions .buy-link{
+  opacity:.78;
+  background:rgba(247,250,255,.78) !important;
+}
+.btn-primary{
+  color:#fff !important;
+  background:linear-gradient(135deg,#0b4f8a 0%,#0f7dcb 58%,#f65f9a 100%) !important;
+  box-shadow:0 14px 30px rgba(12,91,151,.22) !important;
+}
+.btn-primary:hover{ box-shadow:0 18px 38px rgba(12,91,151,.26),0 0 0 5px rgba(246,95,154,.10) !important; }
+.btn-secondary{
+  color:#173653 !important;
+  background:#fff !important;
+  border:1px solid rgba(12,91,151,.15) !important;
+}
+.eyebrow,.setup-capsule,.v12-kicker,.v13-kicker-light,.v13-price-kicker{
+  color:#0b4f8a !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,239,247,.78)) !important;
+  border-color:rgba(246,95,154,.22) !important;
+}
+.v12-kicker::before,.setup-capsule::before,.eyebrow::before{ background:linear-gradient(135deg,#f65f9a,#0c5b97) !important; }
+.v13-hero-shell{
+  background:
+    radial-gradient(720px 380px at 12% 10%, rgba(246,95,154,.18), transparent 62%),
+    radial-gradient(680px 420px at 92% 0%, rgba(25,124,201,.24), transparent 60%),
+    linear-gradient(135deg,#061b33 0%,#0b3f72 58%,#0c5b97 100%) !important;
+}
+.v13-hero-copy h1 span{
+  color:#ff6fa8 !important;
+  background:none !important;
+  -webkit-text-fill-color:#ff6fa8 !important;
+}
+.gradient-text{
+  background:linear-gradient(135deg,#0b4f8a,#0f7dcb 55%,#f65f9a) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  color:transparent !important;
+}
+.v13-question-stack span::before,
+.v13-quiz-steps strong{
+  background:linear-gradient(135deg,#f65f9a,#0f7dcb) !important;
+  color:#fff !important;
+}
+.v13-plan-list div::before,
+.shopping-sweetener span::before{ color:#0c5b97 !important; }
+.v13-include-card::before,.v13-proof-card::before{ background:linear-gradient(90deg,#0c5b97,#f65f9a) !important; }
+.v13-quiz-card,.v13-final-cta{
+  background:linear-gradient(135deg,#061b33 0%,#0b3f72 65%,#0c5b97 100%) !important;
+}
+.v13-bridge-shell,.post-submit-cta{
+  background:linear-gradient(135deg,#061b33 0%,#0b4f8a 62%,#f65f9a 130%) !important;
+}
+.funnel-note,.fibre-support-note,.shopping-sweetener{
+  background:linear-gradient(135deg,rgba(239,247,255,.94),rgba(255,239,247,.78)) !important;
+  border-color:rgba(246,95,154,.18) !important;
+  color:#244762 !important;
+}
+.v30d-guarantee{ color:#0b5b97 !important; }
+.v11-dark-close .v30d-guarantee,.post-submit-cta .v30d-guarantee{ color:rgba(255,255,255,.92) !important; }
+
+
+/* v30h logo + contrast pass — use real Hearty logo and reduce white washout */
+body{
+  background:
+    radial-gradient(900px 460px at 96% 3%, rgba(12,91,151,.22), transparent 58%),
+    radial-gradient(760px 420px at 5% 2%, rgba(246,95,154,.18), transparent 56%),
+    linear-gradient(180deg,#eaf4ff 0%,#f4f8ff 46%,#eef5ff 100%) !important;
+}
+.topbar{
+  background:rgba(248,252,255,.96) !important;
+  border-bottom:1px solid rgba(12,91,151,.18) !important;
+  box-shadow:0 10px 30px rgba(6,27,51,.09) !important;
+}
+.topbar .brand img{
+  height:44px !important;
+  max-width:230px !important;
+  object-fit:contain !important;
+}
+.v13-hero-shell{
+  background:
+    radial-gradient(720px 380px at 8% 8%, rgba(246,95,154,.22), transparent 58%),
+    radial-gradient(760px 440px at 98% 0%, rgba(59,154,229,.34), transparent 62%),
+    linear-gradient(135deg,#061b33 0%,#0b3f72 56%,#0c5b97 100%) !important;
+  padding:32px 0 28px !important;
+}
+.v13-hero-copy{
+  color:#ffffff !important;
+  background:
+    radial-gradient(560px 300px at 100% 0%, rgba(246,95,154,.20), transparent 60%),
+    linear-gradient(145deg,#071e3c 0%,#0a3767 64%,#0c5b97 100%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  box-shadow:0 28px 70px rgba(2,14,32,.30) !important;
+}
+.v13-hero-copy h1{ color:#ffffff !important; }
+.v13-hero-copy h1 span,
+.v13-hero-copy .gradient-text{
+  color:#ff76ad !important;
+  -webkit-text-fill-color:#ff76ad !important;
+  background:none !important;
+}
+.v13-hero-lead,
+.v13-hero-copy p,
+.v13-hero-copy .micro-proof{
+  color:rgba(255,255,255,.86) !important;
+}
+.v13-hero-copy .v12-kicker,
+.v13-hero-copy .eyebrow{
+  color:#ffffff !important;
+  background:rgba(255,255,255,.12) !important;
+  border-color:rgba(255,255,255,.18) !important;
+  box-shadow:none !important;
+}
+.v13-question-stack span{
+  background:rgba(255,255,255,.11) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:#ffffff !important;
+  box-shadow:none !important;
+}
+.v13-question-stack span::before{
+  background:linear-gradient(135deg,#f65f9a,#43a6f2) !important;
+  color:#fff !important;
+}
+.v13-hero-copy .funnel-note,
+.v13-hero-copy .proof-card{
+  background:rgba(255,255,255,.10) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:rgba(255,255,255,.86) !important;
+  box-shadow:none !important;
+}
+.v13-hero-copy .funnel-note strong,
+.v13-hero-copy .proof-card strong{ color:#ffffff !important; }
+.v13-hero-copy .v13-trust-row span,
+.v13-hero-copy .trust-pill{
+  background:rgba(255,255,255,.11) !important;
+  border-color:rgba(255,255,255,.15) !important;
+  color:rgba(255,255,255,.88) !important;
+  box-shadow:none !important;
+}
+.v13-hero-copy .btn-secondary{
+  background:rgba(255,255,255,.12) !important;
+  color:#ffffff !important;
+  border-color:rgba(255,255,255,.20) !important;
+  box-shadow:none !important;
+}
+.v13-hero-card,
+.v13-generator-card,
+.save-plan-card,
+.result-card,
+.plan-card,
+.v13-proof-card{
+  background:linear-gradient(180deg,#f3f8ff 0%,#ffffff 100%) !important;
+  border:1px solid rgba(12,91,151,.16) !important;
+  box-shadow:0 22px 56px rgba(6,27,51,.11) !important;
+}
+.v13-hero-card{
+  background:
+    radial-gradient(460px 260px at 100% 0%, rgba(246,95,154,.10), transparent 62%),
+    linear-gradient(180deg,#edf6ff 0%,#ffffff 100%) !important;
+}
+.v13-plan-list div,
+.v13-include-card,
+.v15-rating-card{
+  background:linear-gradient(180deg,#eaf4ff 0%,#f8fbff 100%) !important;
+  border-color:rgba(12,91,151,.16) !important;
+}
+.v13-mini-banner,
+.funnel-note,
+.fibre-support-note,
+.shopping-sweetener{
+  background:linear-gradient(135deg,#e6f2ff 0%,#fff0f7 100%) !important;
+  border-color:rgba(246,95,154,.22) !important;
+}
+.v13-proof-section,
+.v13-generator-shell,
+.v13-app-bridge{
+  background:transparent !important;
+}
+.section-soft,
+.how-it-works,
+.pricing-section{
+  background:linear-gradient(180deg,rgba(255,255,255,.54),rgba(238,247,255,.58)) !important;
+}
+@media(max-width:700px){
+  .topbar .brand img{ height:38px !important; max-width:190px !important; }
+  .v13-hero-copy{ background:linear-gradient(145deg,#071e3c 0%,#0b3f72 100%) !important; }
+}
+
+
+/* v30k controlled funnel hierarchy + image/section fix */
+.v13-proof-strip{display:none !important;}
+.v13-hero-shell{
+  background:
+    radial-gradient(860px 420px at 0% 0%, rgba(246,95,154,.12), transparent 58%),
+    radial-gradient(820px 420px at 100% 0%, rgba(12,91,151,.18), transparent 60%),
+    linear-gradient(180deg,#edf6ff 0%,#f7fbff 100%) !important;
+  padding:28px 0 24px !important;
+}
+.v13-hero-copy{
+  background:
+    radial-gradient(560px 300px at 100% 0%, rgba(246,95,154,.20), transparent 62%),
+    linear-gradient(145deg,#071e3c 0%,#0b3f72 68%,#0c5b97 100%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  color:#fff !important;
+  box-shadow:0 28px 64px rgba(6,27,51,.24) !important;
+}
+.v13-hero-copy h1{color:#fff !important;}
+.v13-hero-copy h1 span{color:#ff76ad !important; -webkit-text-fill-color:#ff76ad !important; background:none !important;}
+.v13-hero-lead,.v13-hero-copy p{color:rgba(255,255,255,.88) !important;}
+.v13-hero-copy .v12-kicker{
+  color:#fff !important;
+  background:rgba(255,255,255,.12) !important;
+  border-color:rgba(255,255,255,.18) !important;
+}
+.v13-question-stack span{
+  background:rgba(255,255,255,.11) !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:#fff !important;
+  box-shadow:none !important;
+}
+.v13-question-stack span::before{background:linear-gradient(135deg,#f65f9a,#43a6f2) !important;color:#fff !important;}
+.v13-hero-copy .btn-secondary{
+  background:rgba(255,255,255,.12) !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.24) !important;
+}
+.v13-hero-copy .btn-secondary:hover{background:rgba(255,255,255,.18) !important;}
+.v13-hero-copy .v13-trust-row span,
+.v30k-hero-badges span{
+  background:rgba(255,255,255,.12) !important;
+  border-color:rgba(255,255,255,.17) !important;
+  color:rgba(255,255,255,.92) !important;
+  box-shadow:none !important;
+}
+.v13-hero-copy .v15-rating-card{
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(255,255,255,.22) !important;
+  box-shadow:0 14px 28px rgba(2,14,32,.18) !important;
+}
+.v13-hero-copy .v15-rating-card p{color:#173452 !important;}
+.v13-hero-card{
+  background:#fff !important;
+  border:1px solid rgba(12,91,151,.16) !important;
+  box-shadow:0 24px 58px rgba(6,27,51,.12) !important;
+}
+.v30k-wide-shot{
+  max-width:100% !important;
+  width:100% !important;
+  border-radius:22px !important;
+  box-shadow:0 18px 34px rgba(6,27,51,.13) !important;
+  filter:none !important;
+}
+.v13-hero-card-stack{align-items:stretch !important;}
+.v13-mini-banner{background:linear-gradient(135deg,#fff0f7,#eaf4ff) !important;border:1px solid rgba(246,95,154,.20) !important;}
+.v13-generator-card{margin-top:26px !important;}
+.v30k-plan-failure-section{padding:24px 0 8px !important;}
+.v30k-section-heading{max-width:860px;margin:0 auto 18px;text-align:center;}
+.v30k-section-heading p{margin:10px auto 0;max-width:680px;color:#49627b;line-height:1.6;}
+.v30k-plan-failure-section .v13-proof-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f4f9ff 100%) !important;
+  border:1px solid rgba(12,91,151,.16) !important;
+  box-shadow:0 18px 44px rgba(6,27,51,.08) !important;
+}
+.v30k-plan-failure-section .v13-proof-icon{
+  background:linear-gradient(135deg,#0c5b97,#f65f9a) !important;
+  color:#fff !important;
+}
+.topbar .brand img{background:#fff;border-radius:8px;}
+@media(max-width:700px){
+  .v13-hero-shell{padding:18px 0 18px !important;}
+  .v13-actions .btn{width:100%;}
+  .v15-rating-row{grid-template-columns:1fr !important;}
+}
+
+
+
+/* v30l nav/logo/contrast/product-image cleanup — visual hierarchy only */
+.topbar{
+  background:linear-gradient(180deg,#ffffff 0%,#f1f8ff 100%) !important;
+  border-bottom:1px solid rgba(12,91,151,.16) !important;
+  box-shadow:0 10px 28px rgba(6,27,51,.07) !important;
+}
+.topbar-inner{padding:10px 0 !important;}
+.topbar .brand img{
+  height:56px !important;
+  max-width:min(330px,44vw) !important;
+  background:transparent !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.nav-actions-clean{gap:8px !important;}
+.nav-actions-clean .mini-link{
+  color:#14395c !important;
+  font-weight:900 !important;
+  padding:10px 12px !important;
+}
+.nav-actions-clean .nav-buy{
+  min-height:42px !important;
+  padding:0 18px !important;
+  box-shadow:0 12px 24px rgba(47,109,246,.18) !important;
+}
+.v13-hero-shell{
+  background:
+    radial-gradient(740px 360px at 10% 0%, rgba(47,109,246,.18), transparent 60%),
+    radial-gradient(760px 360px at 92% 3%, rgba(246,95,154,.10), transparent 62%),
+    linear-gradient(180deg,#dfefff 0%,#f7fbff 100%) !important;
+  border-top:1px solid rgba(12,91,151,.08) !important;
+}
+.v13-hero-grid{align-items:stretch !important;}
+.v13-hero-copy{
+  background:
+    radial-gradient(460px 260px at 100% 0%, rgba(246,95,154,.18), transparent 62%),
+    linear-gradient(145deg,#071e3c 0%,#0b3f72 68%,#0c5b97 100%) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+}
+.v13-hero-copy h1{font-size:clamp(2.65rem,5.5vw,5.15rem) !important;}
+.v30l-hero-helper{
+  margin:18px 0 0;
+  color:rgba(255,255,255,.86);
+  font-weight:850;
+  letter-spacing:.01em;
+  line-height:1.45;
+}
+.v30l-cred-line{
+  margin-top:14px;
+  color:rgba(255,255,255,.78);
+  font-size:.91rem;
+  font-weight:780;
+  line-height:1.45;
+}
+.v13-hero-copy .v13-trust-row,
+.v30k-hero-badges,
+.v13-question-stack{display:none !important;}
+.v15-rating-row{margin-top:16px !important;}
+.v15-rating-card{min-height:0 !important;}
+.v15-rating-card p{font-size:.88rem !important; line-height:1.35 !important;}
+.v13-hero-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%) !important;
+  border:1px solid rgba(12,91,151,.16) !important;
+}
+.v13-hero-card-body.v13-hero-card-stack{
+  display:grid !important;
+  grid-template-columns:minmax(150px,220px) minmax(0,1fr) !important;
+  gap:20px !important;
+  align-items:center !important;
+}
+.v30l-app-shot{
+  width:min(210px,100%) !important;
+  max-height:430px !important;
+  object-fit:contain !important;
+  margin:0 auto !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  filter:drop-shadow(0 20px 34px rgba(6,27,51,.18)) !important;
+}
+.v13-plan-list{align-self:center !important;}
+.v13-plan-list div{background:#f0f7ff !important; border-color:rgba(12,91,151,.16) !important;}
+.v13-mini-banner{font-size:.95rem !important;}
+.v13-hero-card-footer .buy-cta{width:100% !important;}
+.v13-proof-section.v30k-plan-failure-section{background:#ffffff !important;}
+.v16-app-bridge{background:linear-gradient(180deg,#f4f9ff 0%,#ffffff 100%) !important;}
+@media(max-width:900px){
+  .v13-hero-card-body.v13-hero-card-stack{grid-template-columns:1fr !important;}
+  .v30l-app-shot{max-height:330px !important;}
+}
+@media(max-width:700px){
+  .topbar-inner{padding:8px 0 !important;}
+  .topbar .brand img{height:46px !important; max-width:210px !important;}
+  .nav-actions-clean .mini-link{display:none !important;}
+  .nav-actions-clean .nav-buy{font-size:.82rem !important; padding:0 12px !important; min-height:40px !important;}
+  .v13-hero-copy h1{font-size:clamp(2.25rem,12vw,3.4rem) !important;}
+}
+
+
+
+/* v30m visual refinement fast — header/logo, hero line-break, images, gaps, colour only */
+.topbar{
+  background:linear-gradient(90deg,#f7fbff 0%,#ffffff 48%,#f0f7ff 100%) !important;
+  border-bottom:1px solid rgba(12,91,151,.14) !important;
+}
+.topbar-inner{
+  padding:8px 0 !important;
+  min-height:74px !important;
+}
+.topbar .brand{
+  display:flex !important;
+  align-items:center !important;
+  min-width:0 !important;
+}
+.topbar .brand img{
+  height:68px !important;
+  max-width:min(390px,45vw) !important;
+  object-fit:contain !important;
+}
+.nav-actions-clean .nav-buy,
+.topbar .nav-buy{
+  background:linear-gradient(135deg,#0c5b97 0%,#2f6df6 58%,#f65f9a 100%) !important;
+  color:#fff !important;
+  border:0 !important;
+  box-shadow:0 14px 28px rgba(47,109,246,.24) !important;
+}
+.nav-actions-clean .nav-buy:hover{ transform:translateY(-1px); }
+.v13-hero-shell{
+  padding-top:30px !important;
+  background:
+    radial-gradient(760px 360px at 18% 0%, rgba(246,95,154,.10), transparent 62%),
+    radial-gradient(860px 420px at 92% 0%, rgba(47,109,246,.18), transparent 65%),
+    linear-gradient(180deg,#dbeeff 0%,#f6fbff 72%,#ffffff 100%) !important;
+}
+.v13-hero-copy{
+  background:
+    radial-gradient(560px 300px at 100% 0%, rgba(246,95,154,.20), transparent 63%),
+    radial-gradient(520px 300px at 0% 100%, rgba(47,109,246,.16), transparent 65%),
+    linear-gradient(145deg,#071e3c 0%,#0b3f72 62%,#0a6a9a 100%) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  min-height:540px !important;
+}
+.v13-hero-copy h1{
+  font-size:clamp(2.45rem,4.8vw,4.55rem) !important;
+  line-height:.98 !important;
+  max-width:11.2ch !important;
+}
+.v13-hero-copy h1 .nowrap{display:inline !important; white-space:nowrap !important; color:inherit !important; -webkit-text-fill-color:inherit !important;}
+.v13-hero-copy h1 > span:not(.nowrap){display:block !important; color:#ff72ae !important; -webkit-text-fill-color:#ff72ae !important;}
+.v30l-hero-helper{
+  color:#e9f8ff !important;
+  font-size:1rem !important;
+}
+.v30l-cred-line{
+  color:rgba(255,255,255,.9) !important;
+  font-weight:850 !important;
+  border-left:3px solid #ff72ae;
+  padding-left:12px;
+}
+.v15-rating-card{
+  background:rgba(255,255,255,.96) !important;
+  border-color:rgba(255,255,255,.36) !important;
+}
+.v13-hero-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f3f9ff 100%) !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+.v13-hero-card-body.v13-hero-card-stack{
+  grid-template-columns:minmax(170px,240px) minmax(0,1fr) !important;
+  gap:22px !important;
+  align-items:center !important;
+}
+.v30l-app-shot{
+  width:min(235px,100%) !important;
+  max-height:395px !important;
+  object-fit:contain !important;
+  transform:rotate(-2deg);
+}
+.v13-plan-list div:nth-child(1){background:#eef8ff !important;}
+.v13-plan-list div:nth-child(2){background:#fff1f7 !important;}
+.v13-plan-list div:nth-child(3){background:#effdf9 !important;}
+.v13-plan-list div:nth-child(4){background:#f5f1ff !important;}
+.v13-plan-list div:nth-child(5){background:#fff8ed !important;}
+.v13-hero-card-footer{margin-top:18px !important;}
+.v12-free-plan{
+  padding:18px 0 24px !important;
+  background:linear-gradient(180deg,#ffffff 0%,#f4f9ff 100%) !important;
+}
+.v13-generator-card{
+  padding:34px 32px !important;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%) !important;
+}
+.v13-generator-grid{align-items:stretch !important;}
+.v13-generator-copy{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  padding-top:28px !important;
+  padding-bottom:26px !important;
+}
+.v13-includes-grid{margin-top:24px !important;}
+.v13-include-card{
+  min-height:112px !important;
+  background:linear-gradient(180deg,#f7fbff 0%,#eef7ff 100%) !important;
+}
+.v13-include-card:nth-child(2),.v13-include-card:nth-child(6){background:linear-gradient(180deg,#fff6fa 0%,#fff1f7 100%) !important;}
+.v13-quiz-card{
+  justify-content:center !important;
+  padding:34px !important;
+  background:
+    radial-gradient(420px 240px at 100% 0%, rgba(246,95,154,.16), transparent 63%),
+    linear-gradient(145deg,#082247 0%,#0b4775 100%) !important;
+}
+.v13-micro.v30m-micro{
+  display:block !important;
+  margin-top:12px !important;
+  padding:10px 12px !important;
+  border-radius:999px !important;
+  text-align:center !important;
+  color:#e9f8ff !important;
+  background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  font-size:.88rem !important;
+}
+.v16-app-bridge{
+  padding:20px 0 16px !important;
+  background:linear-gradient(180deg,#edf7ff 0%,#ffffff 100%) !important;
+}
+.v16-bridge-shell{
+  background:
+    radial-gradient(640px 340px at 100% 0%, rgba(246,95,154,.18), transparent 62%),
+    radial-gradient(660px 340px at 0% 100%, rgba(47,109,246,.20), transparent 62%),
+    linear-gradient(135deg,#062247 0%,#0b466d 56%,#137f8a 100%) !important;
+}
+.v16-app-proof-layout{
+  grid-template-columns:minmax(330px,.9fr) minmax(0,1.1fr) !important;
+  align-items:stretch !important;
+}
+.v16-phone-feature{
+  min-height:0 !important;
+  padding:18px !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.08)) !important;
+}
+.v16-phone-feature img{
+  width:100% !important;
+  max-width:520px !important;
+  border-radius:24px !important;
+  filter:drop-shadow(0 20px 30px rgba(2,12,28,.28)) !important;
+}
+.v16-benefit-card{
+  background:rgba(255,255,255,.12) !important;
+  border-color:rgba(255,255,255,.20) !important;
+}
+.v16-buy-band{
+  background:linear-gradient(135deg,#ffffff 0%,#fff3f8 100%) !important;
+  border:1px solid rgba(246,95,154,.18) !important;
+}
+.v16-buy-band h3{color:#08203c !important;}
+.v16-buy-band p{color:#486278 !important;}
+.v13-proof-section.v30k-plan-failure-section{padding-top:22px !important;}
+@media(max-width:900px){
+  .v13-hero-copy{min-height:auto !important;}
+  .v13-hero-card-body.v13-hero-card-stack{grid-template-columns:1fr !important;}
+  .v16-app-proof-layout{grid-template-columns:1fr !important;}
+}
+@media(max-width:700px){
+  .topbar-inner{min-height:62px !important;}
+  .topbar .brand img{height:52px !important; max-width:230px !important;}
+  .v13-hero-copy h1{font-size:clamp(2.15rem,10vw,3.15rem) !important; max-width:11.5ch !important;}
+  .v13-hero-copy,.v13-hero-card,.v13-generator-card,.v13-quiz-card{padding:22px !important;}
+}
+
+
+
+/* v30n quick visual correction — logo, hero image, spacing, app image, colour only */
+.topbar{
+  background:linear-gradient(90deg,#ffffff 0%,#f4f9ff 52%,#eef7ff 100%) !important;
+  border-bottom:1px solid rgba(12,91,151,.12) !important;
+}
+.topbar-inner{
+  min-height:64px !important;
+  padding:6px 0 !important;
+}
+.topbar .brand img{
+  height:54px !important;
+  max-width:230px !important;
+  object-fit:contain !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.nav-actions-clean .nav-buy,
+.topbar .nav-buy{
+  background:linear-gradient(135deg,#0c5b97 0%,#2f6df6 52%,#f65f9a 100%) !important;
+  color:#fff !important;
+  border:0 !important;
+  box-shadow:0 12px 24px rgba(47,109,246,.24) !important;
+}
+.v13-hero-shell{
+  padding-top:14px !important;
+  background:
+    radial-gradient(820px 360px at 9% 0%, rgba(246,95,154,.13), transparent 64%),
+    radial-gradient(900px 430px at 94% 0%, rgba(47,109,246,.20), transparent 66%),
+    linear-gradient(180deg,#e7f4ff 0%,#f7fbff 76%,#ffffff 100%) !important;
+}
+.v13-hero-copy{
+  min-height:500px !important;
+  justify-content:center !important;
+  background:
+    radial-gradient(520px 280px at 100% 0%, rgba(246,95,154,.22), transparent 64%),
+    radial-gradient(500px 280px at 0% 100%, rgba(47,109,246,.20), transparent 66%),
+    linear-gradient(145deg,#071e3c 0%,#0b3f72 64%,#0c6f99 100%) !important;
+}
+.v13-hero-copy h1{
+  font-size:clamp(2.35rem,4.35vw,4.15rem) !important;
+  line-height:1.02 !important;
+  max-width:13.4ch !important;
+}
+.v13-hero-copy h1 .nowrap{white-space:nowrap !important;}
+.v13-hero-lead{max-width:620px !important;}
+.v13-hero-card{
+  background:linear-gradient(180deg,#ffffff 0%,#f5fbff 100%) !important;
+}
+.v13-hero-card-body.v13-hero-card-stack{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:16px !important;
+  align-items:stretch !important;
+}
+.v30n-offer-shot{
+  width:100% !important;
+  max-width:100% !important;
+  height:260px !important;
+  object-fit:cover !important;
+  object-position:center 48% !important;
+  border-radius:22px !important;
+  box-shadow:0 18px 34px rgba(6,27,51,.12) !important;
+  background:#fff !important;
+}
+.v13-plan-list{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+.v13-plan-list div{min-height:48px !important;}
+.v13-hero-card-footer{margin-top:14px !important;}
+.v12-free-plan{
+  padding:10px 0 18px !important;
+  background:linear-gradient(180deg,#ffffff 0%,#f4f9ff 100%) !important;
+}
+.v13-generator-card{
+  padding:32px !important;
+}
+.v13-generator-copy{
+  justify-content:center !important;
+  padding-top:36px !important;
+  padding-bottom:36px !important;
+}
+.v13-quiz-card{
+  min-height:470px !important;
+  justify-content:center !important;
+}
+.v13-micro.v30m-micro{
+  border-radius:18px !important;
+  padding:13px 16px !important;
+  font-size:.96rem !important;
+  font-weight:900 !important;
+  line-height:1.35 !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(246,95,154,.14)) !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+  color:#fff !important;
+}
+.v16-app-bridge{padding-top:14px !important;}
+.v16-phone-feature{
+  display:grid !important;
+  place-items:center !important;
+  min-height:470px !important;
+  padding:24px !important;
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255,255,255,.20), transparent 52%),
+    linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.08)) !important;
+}
+.v16-phone-feature img{
+  width:min(290px,86%) !important;
+  max-width:290px !important;
+  height:auto !important;
+  border-radius:0 !important;
+  object-fit:contain !important;
+  filter:drop-shadow(0 24px 34px rgba(2,12,28,.34)) !important;
+}
+.v16-benefit-card:nth-child(1){background:rgba(255,118,174,.16) !important;}
+.v16-benefit-card:nth-child(2){background:rgba(125,243,217,.14) !important;}
+.v16-benefit-card:nth-child(3){background:rgba(47,141,246,.14) !important;}
+.v16-benefit-card:nth-child(4){background:rgba(255,209,102,.13) !important;}
+@media(max-width:900px){
+  .v13-hero-card-body.v13-hero-card-stack{grid-template-columns:1fr !important;}
+  .v30n-offer-shot{height:230px !important;}
+}
+@media(max-width:700px){
+  .topbar-inner{min-height:58px !important;}
+  .topbar .brand img{height:44px !important; max-width:170px !important;}
+  .v13-hero-shell{padding-top:10px !important;}
+  .v13-hero-copy h1{font-size:clamp(2.15rem,9.5vw,3rem) !important; max-width:12.5ch !important;}
+  .v30n-offer-shot{height:210px !important;}
+  .v13-plan-list{grid-template-columns:1fr !important;}
+  .v16-phone-feature{min-height:360px !important;}
+}
+
+
+
+/* v30p email gate card fix: make the post-plan email ask a real section, not an orphan pill */
+#savePlanCard.v30p-save-gate{
+  position:relative;
+  margin:32px 0 28px !important;
+  padding:28px !important;
+  border-radius:30px !important;
+  overflow:hidden;
+  display:block;
+  background:
+    radial-gradient(520px 240px at 5% 0%, rgba(246,95,154,.18), transparent 62%),
+    radial-gradient(520px 260px at 100% 0%, rgba(47,109,246,.18), transparent 60%),
+    linear-gradient(135deg,#071f3d 0%,#0c5b97 52%,#148b7f 100%) !important;
+  border:1px solid rgba(255,255,255,.20) !important;
+  box-shadow:0 26px 70px rgba(7,31,61,.22) !important;
+  color:#fff !important;
+}
+#savePlanCard.v30p-save-gate::after{
+  content:'';
+  position:absolute;
+  right:-80px; bottom:-90px;
+  width:260px; height:260px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  pointer-events:none;
+}
+#savePlanCard .v30p-save-kicker{
+  display:inline-flex;
+  width:max-content;
+  align-items:center;
+  gap:8px;
+  padding:8px 13px;
+  margin-bottom:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.20);
+  color:#fff;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:.78rem;
+}
+#savePlanCard.v30p-save-gate h3{
+  color:#fff !important;
+  font-size:clamp(1.7rem,3vw,2.35rem) !important;
+  letter-spacing:-.055em;
+  margin:0 0 10px !important;
+  max-width:780px;
+}
+#savePlanCard.v30p-save-gate p{
+  color:rgba(255,255,255,.86) !important;
+  font-size:1.02rem;
+  max-width:860px;
+  margin-bottom:18px !important;
+}
+#savePlanCard.v30p-save-gate .shopping-sweetener{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:none !important;
+  padding:14px !important;
+  margin:16px 0 18px !important;
+}
+#savePlanCard.v30p-save-gate .shopping-sweetener strong,
+#savePlanCard.v30p-save-gate .shopping-sweetener span{
+  color:#fff !important;
+}
+#savePlanCard.v30p-save-gate .shopping-sweetener span{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.15) !important;
+}
+#savePlanCard.v30p-save-gate .save-lead-grid{
+  max-width:820px;
+  grid-template-columns:1.15fr .85fr;
+  margin:18px 0 12px !important;
+}
+#savePlanCard.v30p-save-gate .save-field label{
+  color:#fff !important;
+}
+#savePlanCard.v30p-save-gate .save-field input{
+  min-height:54px;
+  border-radius:18px;
+  border-color:rgba(255,255,255,.28) !important;
+  box-shadow:0 12px 30px rgba(4,18,34,.18) !important;
+}
+#savePlanCard .v30p-optional{font-weight:750;color:rgba(255,255,255,.68);font-size:.78rem;}
+#savePlanCard .v30p-save-main{
+  min-height:56px;
+  padding:0 24px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ffffff,#fff0f7) !important;
+  color:#08233f !important;
+  box-shadow:0 18px 38px rgba(4,18,34,.22) !important;
+}
+#savePlanCard .v30p-save-privacy{
+  margin-top:10px;
+  color:rgba(255,255,255,.76);
+  font-weight:800;
+  font-size:.9rem;
+}
+#savePlanCard.v30p-save-gate .lead-capture-status{color:#fff !important;}
+@media(max-width:760px){
+  #savePlanCard.v30p-save-gate{padding:22px !important;border-radius:24px !important;}
+  #savePlanCard.v30p-save-gate .save-lead-grid{grid-template-columns:1fr;}
+  #savePlanCard .v30p-save-main{width:100%;}
+}
+
+
+/* v30s image placement only — no funnel logic changes */
+.v30n-offer-shot{
+  object-fit: cover !important;
+  object-position: center center !important;
+  background:#fff6fa !important;
+}
+.v16-phone-feature{
+  overflow:hidden !important;
+}
+.v16-phone-feature img[src$="hearty-app-blue-wide-cropped.png"]{
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  border-radius:24px !important;
+  filter:none !important;
+}
+@media(max-width:900px){
+  .v16-phone-feature img[src$="hearty-app-blue-wide-cropped.png"]{
+    min-height:260px !important;
+  }
+}
+
+
+/* v30t — insert wide pink hero image only */
+.v30n-offer-shot,
+.v30q-hero-phone,
+.v30r-site-hero-image {
+  object-fit: cover !important;
+  object-position: center center !important;
+  background: #fff6fa !important;
+}
+img[src$="hearty-hero-phone-wide-pink.png"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 260px !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: 22px !important;
+  background: #fff6fa !important;
+  box-shadow: 0 18px 34px rgba(6,27,51,.12) !important;
+}
+@media(max-width:900px){
+  img[src$="hearty-hero-phone-wide-pink.png"]{
+    height: 230px !important;
+  }
+}
+
+
+/* v30u email gate simplification + pink standout card */
+#savePlanCard.v30p-save-gate{
+  background:
+    radial-gradient(520px 260px at 0% 0%, rgba(255,255,255,.78), transparent 64%),
+    radial-gradient(520px 280px at 100% 0%, rgba(255,255,255,.54), transparent 62%),
+    linear-gradient(135deg,#fff1f7 0%,#ffe3ef 48%,#fff8fb 100%) !important;
+  color:#08233f !important;
+  border:1px solid rgba(246,95,154,.30) !important;
+  box-shadow:0 26px 70px rgba(246,95,154,.18) !important;
+}
+#savePlanCard.v30p-save-gate::after{
+  background:rgba(246,95,154,.12) !important;
+}
+#savePlanCard .v30p-save-kicker{
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(246,95,154,.28) !important;
+  color:#0b4d86 !important;
+}
+#savePlanCard.v30p-save-gate h3{
+  color:#08233f !important;
+  max-width:680px !important;
+}
+#savePlanCard.v30p-save-gate p{
+  color:#40536a !important;
+}
+#savePlanCard.v30p-save-gate .save-field label{
+  color:#08233f !important;
+}
+#savePlanCard.v30p-save-gate .save-field input{
+  background:#fff !important;
+  border-color:rgba(246,95,154,.30) !important;
+  color:#08233f !important;
+}
+#savePlanCard .v30p-optional{
+  color:#6d7c8e !important;
+}
+#savePlanCard .v30p-save-main{
+  background:linear-gradient(135deg,#0c5b97 0%,#2f6df6 48%,#f65f9a 100%) !important;
+  color:#fff !important;
+  box-shadow:0 18px 38px rgba(246,95,154,.22) !important;
+}
+#savePlanCard.v30p-save-gate .lead-capture-status{
+  color:#08233f !important;
+}
+
 </style>
-<meta name="hearty-engine-source" content="3.9.2-v21-day8-cta">
+<meta name="hearty-engine-source" content="3.9.6-v30n-logo-image-spacing-fix">
+<!-- HEARTY_LEADMAGNET_V30N_LOGO_IMAGE_SPACING_FIX -->
 </head>
 <body>
 <div class="page">
@@ -2969,13 +3958,12 @@ body{
 <header class="topbar">
 <div class="shell topbar-inner">
 <a aria-label="Hearty home" class="brand" href="https://hearty.health">
-<img src="assets/hearty-logo.png" alt="Hearty" />
+<img src="assets/hearty-logo.png" alt="Hearty" onerror="this.style.display='none'; if(!this.nextElementSibling){this.insertAdjacentHTML('afterend','<span class=&quot;brand-fallback&quot;>♡ Hearty</span>');}" />
 </a>
-<nav aria-label="Page navigation" class="nav-actions">
+<nav aria-label="Page navigation" class="nav-actions nav-actions-clean">
 <a class="mini-link" href="#generator">Free plan</a>
-<a class="mini-link" href="#pricing">Pricing</a>
-<button class="btn btn-secondary btn-small" data-wizard-open type="button">Build free plan</button>
-<button class="btn btn-primary btn-small buy-link" data-hearty-checkout type="button">Get Hearty — $29</button>
+<a class="mini-link" href="#pricing">What’s included</a>
+<a class="btn btn-primary btn-small nav-buy" href="#pricing">Get Hearty — $29</a>
 </nav>
 </div>
 </header>
@@ -2984,28 +3972,18 @@ body{
 
 <main>
 
-<section class="v13-hero-shell" aria-label="Free 7-day GLP-1 starter plan">
+<section class="v13-hero-shell" aria-label="Free GLP-1 meal ideas + 7-day setup">
   <div class="shell v13-hero-grid">
     <div class="v13-hero-copy">
-      <div class="v12-kicker">Free 7-day GLP-1 starter plan</div>
-      <h1>What should I eat?<br>How much should I eat?<br><span>Start here.</span></h1>
-      <p class="v13-hero-lead">Get a practical starter plan that helps with calories, protein, fibre, portions and what to eat this week — without calorie counting, food weighing or trying to figure GLP-1 eating out alone.</p>
-      <div class="v13-question-stack" aria-label="Questions answered by the free plan">
-        <span>How many calories do I need?</span>
-        <span>How much protein should I aim for?</span>
-        <span>How much fibre should I build toward?</span>
-        <span>What do I actually eat this week?</span>
-      </div>
+      <div class="v12-kicker">Free GLP-1 meal ideas + 7-day setup</div>
+      <h1>Not sure what to eat on <span class="nowrap">GLP-1?</span><span>Start here.</span></h1>
+      <p class="v13-hero-lead">Start with simple meal ideas for low-appetite days, protein and easy shopping. No contact details needed to begin. It takes about a minute — build the plan first, then send yourself the full PDF, shopping list and cheat sheets if you want them.</p>
+      <div class="v30l-hero-helper">Low appetite · protein anchors · easy shopping · no email to start</div>
       <div class="v13-actions">
-        <button class="btn btn-primary" data-wizard-open type="button">Build my free plan</button>
-        <a class="btn btn-secondary" href="#pricing">See full app for $29</a>
+        <button class="btn btn-primary" data-wizard-open type="button">Show me meal ideas</button>
+        <a class="btn btn-secondary" href="#pricing">See what the $29 app includes</a>
       </div>
-      <div class="v13-trust-row">
-        <span>Free starter plan</span>
-        <span>About 2 minutes</span>
-        <span>No food weighing</span>
-        <span>Full app: $29 once-off</span>
-      </div>
+      <div class="v30l-cred-line">Built by Jean du Plessis, nutrition coach · Free plan first · Hearty app optional at $29 once-off</div>
       <div class="v15-rating-row" aria-label="Hearty user ratings">
         <div class="v15-rating-card">
           <div class="v15-stars">★★★★★</div>
@@ -3021,34 +3999,25 @@ body{
       <div class="v13-hero-card-head">
         <div>
           <span class="v13-card-tag">What you get free</span>
-          <h2>Your free plan answers the food questions most GLP-1 users get stuck on.</h2>
-          <p>It is not just a recipe generator. It is a GLP-1 starter plan built around your body, appetite, pace and food preferences.</p>
+          <h2>Start with quick ideas, then turn them into a simple 7-day setup.</h2>
+          <p>Pick what feels hard and what foods you actually eat. Hearty gives you the plan before asking for contact details.</p>
         </div>
       </div>
       <div class="v13-hero-card-body v13-hero-card-stack">
-        <img class="v13-hero-shot" src="assets/hearty-phone-home.png" alt="Hearty app home screen showing protein, hydration, meals and support tools" />
+        <img class="v13-hero-shot v30n-offer-shot" src="assets/hearty-hero-phone-wide-pink.png" alt="Free GLP-1 meal plan setup with simple meal ideas, protein help and easier shopping" />
         <div class="v13-plan-list">
-          <div>Approximate calorie guide</div>
-          <div>Protein guide and simple portions</div>
-          <div>Fibre guide that builds gradually</div>
-          <div>7 days of meals and snack options</div>
-          <div>Low-appetite protein ideas</div>
+          <div>Simple meal ideas</div>
+          <div>Protein anchors</div>
+          <div>Low-appetite options</div>
+          <div>7 days of meals</div>
+          <div>Shopping list when saved</div>
         </div>
       </div>
       <div class="v13-hero-card-footer">
         <div class="v13-mini-banner">Powered by <strong>Hearty</strong> — your GLP-1 Companion app.</div>
-        <button class="btn btn-primary full-width-cta" data-hearty-checkout type="button">Get Hearty — $29 once-off</button>
+        <button class="btn btn-primary full-width-cta buy-cta" data-hearty-checkout type="button">Get Hearty — $29 once-off</button>
       </div>
     </aside>
-  </div>
-</section>
-
-<section class="v13-proof-strip" aria-label="Hearty promise">
-  <div class="shell">
-    <span>No diet-culture rules</span>
-    <span>Built by a nutrition coach</span>
-    <span>Designed for rough days too</span>
-    <span>International app · $29 once-off</span>
   </div>
 </section>
 
@@ -3059,33 +4028,33 @@ body{
     <div class="v13-generator-card">
       <div class="v13-generator-grid">
         <div class="v13-generator-copy">
-          <div class="v12-kicker v13-kicker-light">Build your starter plan</div>
-          <h2>Get your first week of GLP-1 eating structure.</h2>
-          <p>The quiz sizes your plan, then asks what you actually eat. Your result gives you a calorie guide, protein guide, fibre guide and a 7-day starter plan with simple meals.</p>
+          <div class="v12-kicker v13-kicker-light">Start with meal ideas</div>
+          <h2>Get food help before we ask for your email.</h2>
+          <p>Tap a few simple choices, see your meal ideas and 7-day plan on the page, then add your email only if you want the PDF, shopping list and quick protein/low-appetite cheat sheets.</p>
           <div class="v13-includes-grid">
-            <div class="v13-include-card"><span>Calories</span><b>A practical guide range, not a strict tracking rule.</b></div>
-            <div class="v13-include-card"><span>Protein</span><b>Daily target and simple anchors for low-appetite days.</b></div>
-            <div class="v13-include-card"><span>Fibre</span><b>A steady target so digestion support does not become overwhelming.</b></div>
-            <div class="v13-include-card"><span>Portions</span><b>Visual portions so you do not need a scale.</b></div>
-            <div class="v13-include-card"><span>Meals</span><b>7 days of practical meal ideas based on your choices.</b></div>
-            <div class="v13-include-card"><span>Rough days</span><b>Protein snack ideas when full meals feel too much.</b></div>
+            <div class="v13-include-card"><span>Calories</span><b>Easy ideas for low-appetite days.</b></div>
+            <div class="v13-include-card"><span>Protein</span><b>Meals built around foods you choose.</b></div>
+            <div class="v13-include-card"><span>Fibre</span><b>Protein ideas without forcing big meals.</b></div>
+            <div class="v13-include-card"><span>Portions</span><b>Simple portions, no weighing.</b></div>
+            <div class="v13-include-card"><span>Meals</span><b>Your first week organised.</b></div>
+            <div class="v13-include-card"><span>Rough days</span><b>PDF, shopping list and backup snack ideas after the plan.</b></div>
           </div>
         </div>
         <div class="v13-quiz-card">
           <div>
-            <div class="v13-quiz-badge">About 2 minutes</div>
-            <h3>Ready to build it?</h3>
-            <p>Start with your name, appetite pattern, pace and food preferences. Your plan appears on this page as soon as you finish.</p>
+            <div class="v13-quiz-badge">Quick setup</div>
+            <h3>Ready to get ideas?</h3>
+            <p>No name, email or WhatsApp to start. Takes about a minute — tap what feels hard, pick foods you use, and see the plan first.</p>
           </div>
           <div class="v13-quiz-steps">
-            <div><strong>1</strong><div><b>Answer a few quick questions</b><span>Body, appetite, pace and food choices.</span></div></div>
-            <div><strong>2</strong><div><b>See your simple targets</b><span>Calories, protein, fibre and portions.</span></div></div>
-            <div><strong>3</strong><div><b>Get your 7-day starter plan</b><span>Meals, snacks and low-appetite options.</span></div></div>
+            <div><strong>1</strong><div><b>Tap what feels hard</b><span>Low appetite, protein, mornings or meal ideas.</span></div></div>
+            <div><strong>2</strong><div><b>Choose foods you use</b><span>Protein, breakfast and vegetables.</span></div></div>
+            <div><strong>3</strong><div><b>See the plan first</b><span>Email only if you want the PDF.</span></div></div>
           </div>
           <div class="v13-quiz-actions">
-            <button class="btn btn-primary" data-wizard-open type="button">Build my free plan</button>
-            <button class="btn btn-secondary" data-hearty-checkout type="button">Get Hearty — $29 once-off</button>
-            <span class="v13-micro">Free starter plan first · full app available any time</span>
+            <button class="btn btn-primary" data-wizard-open type="button">Show me meal ideas</button>
+            <a class="btn btn-secondary" href="#pricing">See app details — $29</a>
+            <span class="v13-micro v30m-micro">Free plan first. Add email only if you want the PDF, shopping list and cheat sheets.</span>
           </div>
         </div>
       </div>
@@ -3093,39 +4062,40 @@ body{
 
     <section aria-live="polite" class="result-panel" id="resultPanel">
       <div class="result-head">
-        <div><h2 id="resultTitle">Your 7-day GLP-1 starter plan</h2><p id="resultSubtitle">Your personalised starter plan will appear here after you generate it.</p></div>
-        <span class="market-tag" id="marketTag">Free starter plan</span>
+        <div><h2 id="resultTitle">Your 7-day GLP-1 starter plan</h2><p id="resultSubtitle">Your meal ideas and 7-day setup will appear here after you answer the quick taps.</p></div>
+        <span class="market-tag" id="marketTag">Free meal setup</span>
       </div>
-      <div class="save-plan-card" id="savePlanCard" hidden>
-        <h3>Send yourself the plan + shopping lists</h3>
-        <p>Add your email and your full meal-plan PDF will download instantly. It includes the complete 7-day plan, protein quantities, optional boost notes, fibre guidance and a 7-day shopping list. WhatsApp is optional.</p>
-        <div class="shopping-sweetener" aria-label="Plan delivery bonus">
-          <strong>Included when we send it:</strong>
-          <span>7-day shopping list</span>
-          <span>Full plan PDF</span>
-        </div>
+      <div class="days-grid" id="daysGrid"></div>
+      <div class="save-plan-card" id="precisionCard" hidden>
+        <h3>Want a more precise calorie + protein guide?</h3>
+        <p>The free plan above uses a general starter guide. Add age, height, weight and activity only if you want the meal sizing adjusted more closely.</p>
+        <button class="btn btn-secondary btn-small" id="openPrecisionCalculator" type="button">Add details for a more precise guide</button>
+      </div>
+      <div class="save-plan-card v30p-save-gate" id="savePlanCard" hidden>
+        <div class="v30p-save-kicker">Download your plan</div>
+        <h3>Enter your email to download your plan.</h3>
         <div class="save-lead-grid">
-          <div class="save-field"><label for="saveFirstName">First name</label><input id="saveFirstName" type="text" autocomplete="given-name" placeholder="Your first name" /></div>
-          <div class="save-field"><label for="saveEmail">Email</label><input id="saveEmail" type="email" autocomplete="email" placeholder="you@example.com" /></div>
-          <div class="save-field full"><label for="saveWhatsapp">WhatsApp optional</label><input id="saveWhatsapp" type="tel" autocomplete="tel" placeholder="Optional" /></div>
+          <div class="save-field"><label for="saveEmail">Email address</label><input id="saveEmail" type="email" autocomplete="email" placeholder="you@example.com" /></div>
+          <div class="save-field"><label for="saveFirstName">First name <span class="v30p-optional">optional</span></label><input id="saveFirstName" type="text" autocomplete="given-name" placeholder="Your first name" /></div>
+          
         </div>
-        <button class="btn btn-primary btn-small" id="saveLeadDetails" type="button">Download my plan PDF</button>
+        <button class="btn btn-primary btn-small v30p-save-main" id="saveLeadDetails" type="button">Download my plan</button>
         <div class="lead-capture-status" id="leadCaptureStatus" aria-live="polite"></div>
         <div class="post-submit-cta" id="postSubmitCta" aria-live="polite">
           <div class="cta-check">PDF downloaded ✅</div>
           <h3>Don’t start over next week.</h3>
           <p>Your first 7 days are sorted. Hearty helps you keep going after Day 7 with fresh meal ideas, protein guidance, hydration, progress, simple exercise and Support Mode for rough days.</p>
           <div class="post-submit-actions">
-            <button class="btn btn-primary" data-hearty-checkout type="button">Keep going after Day 7</button>
-            <span class="post-submit-micro">Lifetime access · $29 once-off · no subscription</span>
+            <button class="btn btn-primary" data-hearty-checkout type="button">Keep going after Day 7 — $29</button>
+            <span class="post-submit-micro">Lifetime access · $29 once-off · 14-day guarantee</span>
           </div>
         </div>
       </div>
-      <div class="days-grid" id="daysGrid"></div>
+
       <div class="v11-post-plan">
         <div class="sales-card v11-trust-card">
           <h3>Built from real GLP-1 questions</h3>
-          <p>Hearty was built by a nutrition coach with 10 years of real client experience after seeing the same pattern again and again: people lose appetite, feel unsure what is normal, and need practical help between appointments.</p>
+          <p>Hearty was built by <strong>Jean du Plessis</strong>, a nutrition coach with 10 years of real client experience, after seeing the same pattern again and again: people lose appetite, feel unsure what is normal, and need practical help between appointments.</p>
           <p><strong>Your free plan gives you a starting point. The full app helps you keep adjusting as your weeks change.</strong></p>
           <div class="app-feature-mini-grid" aria-label="What you get in the Hearty app">
             <div><strong>Meal planning</strong><span>7-day and 28-day GLP-1 meal structure, snacks and shopping support.</span></div>
@@ -3141,8 +4111,8 @@ body{
           <p>Your first 7 days are a start. Hearty helps you plan the next week, adjust on low-appetite days, track your progress and stay consistent without turning this into a complicated diet.</p>
           <p><span class="support-badge">Support Mode</span> is the rough-day safety net for nausea, fatigue, bloating or low appetite.</p>
           <div class="price-line"><strong>$29 once-off.</strong><br>No subscription · instant access · keep it forever.</div>
-          <div class="v11-urgency-note"><strong>Early access:</strong> Hearty is currently available for $29 once-off while we keep improving the app. Future pricing may increase, but early users keep access.</div>
-          <button class="btn btn-primary full-width-cta buy-cta" data-hearty-checkout="" type="button">Get Hearty — $29 once-off</button>
+          <div class="v11-urgency-note"><strong>14-day money-back guarantee.</strong> If Hearty does not help you feel more organised, email us and we will refund you.</div>
+          <button class="btn btn-primary full-width-cta buy-cta" data-hearty-checkout="" type="button">Keep your GLP-1 routine organised — $29</button>
         </div>
       </div>
 
@@ -3164,7 +4134,7 @@ body{
 
     <div class="v16-app-proof-layout">
       <div class="v16-phone-feature">
-        <img src="assets/hearty-phone-home.png" alt="Hearty app home screen showing protein, hydration, meals and Support Mode" loading="lazy">
+        <img src="assets/hearty-app-blue-wide-cropped.png" alt="Hearty app dashboard showing meals, protein, hydration, symptoms and progress" loading="lazy">
       </div>
 
       <div class="v16-benefit-grid">
@@ -3202,39 +4172,41 @@ body{
     <div class="v16-buy-band">
       <div>
         <div class="v13-price-kicker">Full app access</div>
-        <h3>Get Hearty for $29 once-off.</h3>
-        <p>No subscription. Instant access. Keep the app forever. Use the free starter plan now, or get the full app today.</p>
+        <h3>Keep your GLP-1 routine organised for $29 once-off.</h3>
+        <p>No subscription. Instant access. Keep the app forever. 14-day money-back guarantee if it does not help you feel more organised.</p>
+        <p class="v30d-price-proof">Built from real GLP-1 food questions: low appetite, protein, hydration, rough days and progress.</p>
+        <p class="v30d-price-proof">“The free plan helped me start. The app made it easier to keep the routine going after the first week.”</p>
       </div>
       <div class="v16-buy-actions">
-        <button class="btn btn-primary" data-hearty-checkout type="button">Get Hearty — $29 once-off</button>
-        <button class="btn btn-secondary" data-wizard-open type="button">Build free plan first</button>
+        <button class="btn btn-primary" data-hearty-checkout type="button">Get organised after Day 7 — $29</button>
+        <button class="btn btn-secondary" data-wizard-open type="button">Try free ideas first</button>
       </div>
     </div>
   </div>
 </section>
 
-<section class="v13-proof-section" aria-label="Why Hearty feels different">
+<section class="v13-proof-section v30k-plan-failure-section" aria-label="Why most free plans fail after day one">
   <div class="shell">
+    <div class="v11-section-heading v30k-section-heading"><div class="eyebrow">Why Hearty exists</div><h2>Why most free meal plans fail after day 1</h2><p>A list helps you start. The harder part is having a simple way to keep going when appetite, energy and routine change.</p></div>
     <div class="v13-proof-grid">
       <div class="v13-proof-card">
-        <span class="v13-proof-icon">✓</span>
-        <h3>Not a recipe site</h3>
-        <p>The free plan answers the food questions people keep asking in GLP-1 groups: calories, protein, fibre, portions and what to eat.</p>
+        <span class="v13-proof-icon">1</span>
+        <h3>Protein still needs a plan</h3>
+        <p>Low appetite makes it easy to under-eat. Hearty keeps protein visible without forcing huge meals or perfect days.</p>
       </div>
       <div class="v13-proof-card">
-        <span class="v13-proof-icon">◎</span>
-        <h3>Not another strict diet app</h3>
-        <p>Hearty does not ask you to weigh everything, chase perfect days or feel guilty when appetite is unpredictable.</p>
+        <span class="v13-proof-icon">2</span>
+        <h3>Random recipes do not build a routine</h3>
+        <p>You need repeatable meals, shopping support and simple swaps — not another folder of recipes you never use.</p>
       </div>
       <div class="v13-proof-card">
-        <span class="v13-proof-icon">♥</span>
-        <h3>Built for good days and rough days</h3>
-        <p>Support Mode is the built-in safety net for low appetite, nausea, bloating, low energy and days that need a gentler plan.</p>
+        <span class="v13-proof-icon">3</span>
+        <h3>Rough days need a backup plan</h3>
+        <p>When nausea, bloating or low energy hits, Support Mode helps you soften the plan instead of falling off completely.</p>
       </div>
     </div>
   </div>
 </section>
-
 
 <section class="shell v11-faq" id="faq">
   <div class="v11-section-heading"><div class="eyebrow">Quick questions</div><h2>Before you try Hearty</h2></div>
@@ -3252,12 +4224,12 @@ body{
 <section class="shell v13-final-cta">
   <div>
     <div class="v12-kicker v13-kicker-light">Start simple</div>
-    <h2>Build your free GLP-1 starter plan — or get the full app for $29 once-off.</h2>
-    <p>Use the quiz to get your calorie guide, protein guide, fibre guide and first 7-day meal plan from Hearty.</p>
+    <h2>Build your free GLP-1 meal setup first.</h2>
+    <p>Use the quick setup to get simple GLP-1 meal ideas, protein help and your first 7-day plan from Hearty.</p>
   </div>
   <div class="v13-final-actions">
-    <button class="btn btn-primary" data-wizard-open type="button">Build my free plan</button>
-    <button class="btn btn-secondary" data-hearty-checkout type="button">Get Hearty — $29 once-off</button>
+    <button class="btn btn-primary" data-wizard-open type="button">Show me meal ideas</button>
+    <a class="btn btn-secondary" href="#pricing">See app details — $29</a>
   </div>
 </section>
 
@@ -3271,7 +4243,7 @@ body{
 <strong>Hearty</strong> GLP-1 meals, rough-day support and progress — pay once, use daily
     </footer>
 </div>
-<div class="sticky-mobile-cta" aria-label="Quick action"><button class="btn btn-primary" id="stickyCtaButton" data-wizard-open type="button"><span>Build my free plan</span><small class="sticky-micro">Free quiz · no calorie counting</small></button></div>
+<div class="sticky-mobile-cta" aria-label="Quick action"><button class="btn btn-primary" id="stickyCtaButton" data-wizard-open type="button"><span>Show me meal ideas</span><small class="sticky-micro">Free setup · no email to start</small></button></div>
 <div aria-hidden="true" aria-modal="true" class="wizard-focus-overlay" id="wizardOverlay" role="dialog" aria-label="Free Hearty meal plan wizard">
   <div class="wizard-modal-wrap" role="document">
     <button aria-label="Close meal plan wizard" class="wizard-modal-close" data-wizard-close="" type="button">×</button>
@@ -3282,10 +4254,10 @@ body{
 <div aria-hidden="true" aria-labelledby="savePromptTitle" aria-modal="true" class="save-prompt" id="savePrompt" role="dialog">
 <div class="save-prompt-card">
 <button aria-label="Close" class="save-prompt-close" data-save-prompt-close="" type="button">×</button>
-<h3 id="savePromptTitle">Want this plan sent to you?</h3>
-<p>Add your email and your full meal-plan PDF will download instantly. It includes your 7-day plan, protein quantities and 7-day shopping list. Your plan stays visible here either way.</p>
+<h3 id="savePromptTitle">Want the shopping list + printable extras?</h3>
+<p>Your plan is already visible on the page. Add your email only if you want the PDF, 7-day shopping list, protein cheat sheet and low-appetite snack list.</p>
 <div class="save-prompt-actions">
-<button class="btn btn-primary" data-save-prompt-jump="" type="button">Download my plan PDF</button>
+<button class="btn btn-primary" data-save-prompt-jump="" type="button">Download shopping list + PDF</button>
 <button class="btn btn-secondary" data-save-prompt-close="" type="button">Maybe later</button>
 </div>
 </div>
@@ -3319,34 +4291,7 @@ body{
         priceId: window.HEARTY_PADDLE?.priceId || "pri_01krrpc5hxx3dnak7bxjetm8qp"
       };
 
-
-      const HEARTY_JOTFORM = {
-        formId: window.HEARTY_JOTFORM?.formId || "261731501099051",
-        formUrl: window.HEARTY_JOTFORM?.formUrl || "https://form.jotform.com/261731501099051",
-        submitUrl: window.HEARTY_JOTFORM?.submitUrl || "https://submit.jotform.com/submit/261731501099051/",
-        fieldMap: window.HEARTY_JOTFORM?.fieldMap || {
-          first_name: ["first_name", "q2_firstName", "q2_first_name", "q3_firstName", "q3_first_name", "q3_name", "q4_firstName"],
-          email: ["email", "q3_email", "q4_email", "q5_email"],
-          whatsapp: ["whatsapp", "whatsapp_number", "q4_whatsappNumber", "q4_whatsapp", "q5_whatsappNumber", "q5_whatsapp", "q6_whatsappNumber"],
-          country: ["country", "q5_country", "q6_country", "q7_country"],
-          main_struggle: ["main_struggle", "q6_mainStruggle", "q7_mainStruggle", "q8_mainStruggle"],
-          plan_pace: ["plan_pace", "q7_planPace", "q8_planPace", "q9_planPace"],
-          calorie_guide: ["calorie_guide", "q8_calorieGuide", "q9_calorieGuide", "q10_calorieGuide"],
-          protein_target: ["protein_target", "protein_guide", "q9_proteinTarget", "q10_proteinTarget", "q11_proteinTarget"],
-          fibre_guide: ["fibre_guide", "q10_fibreGuide", "q11_fibreGuide", "q12_fibreGuide"],
-          plan_summary: ["plan_summary", "q11_planSummary", "q12_planSummary", "q13_planSummary"],
-          full_plan_text: ["full_plan_text", "q12_fullPlanText", "q12_fullPlan", "q13_fullPlanText", "q13_fullPlan", "q14_fullPlanText"],
-          full_plan_json: ["full_plan_json", "q13_fullPlanJson", "q13_fullPlanJSON", "q14_fullPlanJson", "q14_fullPlanJSON"],
-          selected_proteins: ["selected_proteins", "q14_selectedProteins", "q15_selectedProteins"],
-          selected_breakfasts: ["selected_breakfasts", "q15_selectedBreakfasts", "q16_selectedBreakfasts"],
-          selected_snacks: ["selected_snacks", "q16_selectedSnacks", "q17_selectedSnacks"],
-          selected_vegetables: ["selected_vegetables", "q17_selectedVegetables", "q18_selectedVegetables"],
-          source_page: ["source_page", "source", "q18_sourcePage", "q19_sourcePage"],
-          generated_date: ["generated_date", "q19_generatedDate", "q20_generatedDate"],
-          buyer_interest: ["buyer_interest", "q20_buyerInterest", "q21_buyerInterest"]
-        }
-      };
-
+      // Jotform removed in v30f. Supabase is now the single source of truth for lead capture.
       const SUPABASE_URL = "https://mdsfcnocvelwqiercyci.supabase.co";
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M";
       const LEADS_TABLE = "meal_plan_leads";
@@ -3360,11 +4305,59 @@ body{
       };
 
       const countryLabels = { ZA:"South Africa", US:"United States", UK:"United Kingdom", AU:"Australia", CA:"Canada", OTHER:"Other" };
+      function detectCountryFromLocale(){
+        const tz = String(Intl.DateTimeFormat().resolvedOptions().timeZone || "").toLowerCase();
+        const lang = String((navigator.languages && navigator.languages[0]) || navigator.language || "").toUpperCase();
+        if(tz.includes("johannesburg") || lang.includes("-ZA")) return "ZA";
+        if(tz.includes("london") || lang.includes("-GB")) return "UK";
+        if(tz.includes("australia") || lang.includes("-AU")) return "AU";
+        if(tz.includes("canada") || lang.includes("-CA")) return "CA";
+        if(tz.includes("america") || lang.includes("-US")) return "US";
+        return "US";
+      }
+      function getFunnelSessionId(){
+        try{
+          const key = "hearty_free_meal_session_v1";
+          let id = sessionStorage.getItem(key) || localStorage.getItem(key);
+          if(!id){ id = `sess_${Date.now()}_${Math.random().toString(16).slice(2)}`; sessionStorage.setItem(key, id); localStorage.setItem(key, id); }
+          return id;
+        } catch(e){ return `sess_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
+      }
+      function trackFunnelEvent(eventName, metadata){
+        const payload = Object.assign({
+          event_name: eventName,
+          session_id: funnelSessionId,
+          source: tracking.utm_source || urlParams.get("src") || "direct",
+          campaign: tracking.utm_campaign || urlParams.get("campaign") || "free_meal_plan",
+          page: window.location.pathname,
+          referrer: document.referrer || "",
+          country: state.country || "",
+          metadata: Object.assign({ timestamp: new Date().toISOString(), tracking_version:"v30e" }, metadata || {})
+        }, {});
+        try { window.trackHeartyEvent?.(eventName, payload.metadata); } catch(e) {}
+        try{
+          if(SUPABASE_URL && SUPABASE_ANON_KEY){
+            fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/hearty_events`, {
+              method:"POST",
+              headers:{ "Content-Type":"application/json", "apikey":SUPABASE_ANON_KEY, "Authorization":`Bearer ${SUPABASE_ANON_KEY}` },
+              body: JSON.stringify(payload),
+              keepalive: true
+            }).catch(() => {});
+          }
+        } catch(e) {}
+      }
+      function trackStepView(step){
+        if(!step || lastTrackedStepId === step.id) return;
+        lastTrackedStepId = step.id;
+        trackFunnelEvent("free_meal_step_view", { step_id:step.id, step_index:state.step + 1, step_total:steps.length });
+      }
       const dayNames = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"];
-      const state = { step:0, firstName:"", email:"", whatsapp:"", units:"metric", sex:"", age:"", heightCm:"", heightFt:"", heightIn:"", weightKg:"", weightLb:"", activity:"", dailyActivity:"", exerciseActivity:"", goal:"", targets:null, targetErrors:[], skippedCalculator:false, country:"US", countrySelected:true, struggleMode:"", proteins:[], breakfast:[], starches:[], vegetables:[], fruits:[], snackPreferences:[], lunchPrep:"" };
+      const state = { step:0, firstName:"", email:"", whatsapp:"", units:"metric", sex:"", age:"", heightCm:"", heightFt:"", heightIn:"", weightKg:"", weightLb:"", activity:"", dailyActivity:"", exerciseActivity:"", goal:"lose", targets:null, targetErrors:[], skippedCalculator:true, country:detectCountryFromLocale(), countrySelected:false, struggleMode:"", proteins:[], breakfast:[], starches:["rice","potato","whole_wheat_wraps"], vegetables:[], fruits:[], snackPreferences:["protein_shake","low_fat_yoghurt","boiled_eggs"], lunchPrep:"leftovers" };
       let latestPlanText = "";
       let latestPlan = [];
       let currentLeadId = "";
+      let lastTrackedStepId = "";
+      const funnelSessionId = getFunnelSessionId();
 
       const root = document.querySelector("[data-wizard-root]");
       const wizardOverlay = document.getElementById("wizardOverlay");
@@ -3374,26 +4367,101 @@ body{
       const toast = document.getElementById("toast");
       const savePrompt = document.getElementById("savePrompt");
       const savePlanCard = document.getElementById("savePlanCard");
+      const precisionCard = document.getElementById("precisionCard");
       const stickyCtaButton = document.getElementById("stickyCtaButton");
       let savePromptTimer = null;
       let savePromptShown = false;
 
+      // v30c safety: keep calorie/protein sizing working when this file is tested locally
+      // or if the external target calculator script fails to load. The live script still wins.
+      if(!window.HeartyTargetCalculator){
+        window.HeartyTargetCalculator = {
+          defaultTargets(){
+            return {
+              skipped:true,
+              tierLabel:"Standard GLP-1 starter guide",
+              tierNote:"A general starter range for simple GLP-1 meals when body details are skipped.",
+              calorieMin:1400,
+              calorieMax:1650,
+              proteinMin:80,
+              proteinMax:105,
+              fatMin:45,
+              fibreMin:20,
+              fibreMax:30
+            };
+          },
+          calculate(input){
+            const errors = [];
+            const units = input.units === "imperial" ? "imperial" : "metric";
+            const sex = input.sex;
+            const age = Number(input.age || 0);
+            let kg = Number(input.weightKg || 0);
+            let cm = Number(input.heightCm || 0);
+
+            if(units === "imperial"){
+              const lb = Number(input.weightLb || 0);
+              const ft = Number(input.heightFt || 0);
+              const inch = Number(input.heightIn || 0);
+              kg = lb ? lb / 2.20462 : kg;
+              cm = (ft || inch) ? ((ft * 12) + inch) * 2.54 : cm;
+            }
+
+            if(!sex) errors.push("Choose the formula Hearty should use.");
+            if(!age || age < 18 || age > 95) errors.push("Add a realistic age.");
+            if(!kg || kg < 35 || kg > 300) errors.push("Add a realistic current weight.");
+            if(!cm || cm < 120 || cm > 230) errors.push("Add a realistic height.");
+            if(!input.dailyActivity) errors.push("Choose your normal daily movement.");
+            if(!input.exerciseActivity) errors.push("Choose your exercise level.");
+            if(errors.length) return { ok:false, errors };
+
+            const bmr = sex === "male"
+              ? (10 * kg) + (6.25 * cm) - (5 * age) + 5
+              : (10 * kg) + (6.25 * cm) - (5 * age) - 161;
+
+            const dailyMap = { mostly_sitting:.00, light_daily:.08, on_feet:.18, physical_job:.30 };
+            const exerciseMap = { none:.00, light_1_2:.04, regular_3_4:.10, hard_5plus:.16, very_hard:.22 };
+            const activity = 1.2 + (dailyMap[input.dailyActivity] || 0) + (exerciseMap[input.exerciseActivity] || 0);
+            const tdee = Math.round(bmr * activity);
+
+            const appetiteSensitive = ["low_appetite","nausea_food_aversion","no_breakfast"].includes(input.struggleMode);
+            let deficit = 0;
+            if(input.goal === "maintain") deficit = 0;
+            else if(input.goal === "faster") deficit = appetiteSensitive ? 0.12 : 0.22;
+            else deficit = appetiteSensitive ? 0.08 : 0.15;
+
+            let center = Math.round(tdee * (1 - deficit));
+            let floorApplied = false;
+            if(center < 1200){ center = 1200; floorApplied = true; }
+            const calorieMin = Math.max(1100, Math.round((center - 100) / 50) * 50);
+            const calorieMax = Math.round((center + 100) / 50) * 50;
+
+            const rawProtein = Math.round(kg * 1.55);
+            const proteinCapped = rawProtein > 120;
+            const proteinCenter = Math.min(120, Math.max(70, rawProtein));
+            const proteinMin = Math.max(60, Math.round((proteinCenter - 10) / 5) * 5);
+            const proteinMax = Math.round((proteinCenter + 10) / 5) * 5;
+            const fatMin = Math.max(35, Math.round((kg * 0.55) / 5) * 5);
+            const fibreMin = appetiteSensitive ? 18 : 22;
+            const fibreMax = appetiteSensitive ? 25 : 30;
+
+            const tierLabel = input.goal === "maintain" ? "Steady structure guide" : (input.goal === "faster" ? "Smaller GLP-1 fat-loss guide" : "Steady GLP-1 fat-loss guide");
+            const tierNote = input.goal === "maintain"
+              ? "This is sized to help you eat consistently when appetite is low or routine feels messy."
+              : "This is sized to support fat loss while still keeping protein and daily structure in the plan.";
+
+            return { ok:true, tdee, bmr:Math.round(bmr), calorieMin, calorieMax, proteinMin, proteinMax, fatMin, fibreMin, fibreMax, tierLabel, tierNote, floorApplied, proteinCapped, appetiteGuardApplied: appetiteSensitive && input.goal === "faster", skipped:false };
+          }
+        };
+      }
+
       const steps = [
-        { id:"introName", kicker:"Welcome", title:"Your GLP-1 Meal Plan Quiz", copy:"Let’s take the thinking out of food this week. Hearty will help you work out how much to eat, how much protein to aim for, and what meals to start with.", type:"introName" },
-        { id:"struggleMode", kicker:"Quick quiz", title:"How is food feeling right now?", copy:"This helps Hearty keep the plan realistic for your current GLP-1 week, not a perfect diet week.", type:"single", key:"struggleMode", options:[["low_appetite","My appetite is low","Smaller meals and gentle protein top-ups"],["protein_hard","Protein is hard","More protein anchors and backup ideas"],["nausea_food_aversion","Nausea or food aversion","Plainer, gentler meal ideas"],["no_breakfast","Mornings are difficult","Lighter first-meal options"],["not_sure_what_to_eat","I’m not sure what to eat","Simple starter structure"],["simple_structure","I just want simple structure","Straightforward repeatable meals"]] },
-        { id:"planPace", kicker:"Plan size", title:"How much should Hearty plan for?", copy:"Choose the pace that fits your current GLP-1 week. If appetite is low, choose the steadier option.", type:"single", key:"goal", options:[["maintain","Keep me steady","For maintenance, low-appetite weeks, or when you just need structure"],["lose","Steady fat loss","A moderate plan size for most GLP-1 users trying to lose weight"],["faster","Faster fat loss","A smaller plan size, only if you are eating well and not struggling with nausea or very low appetite"]] },
-        { id:"calculator", kicker:"Plan size", title:"A few details to size your plan", copy:"Hearty uses this behind the scenes to estimate your plan size. It does not mean you’ll need to track calories or weigh food.", type:"calculator" },
-        { id:"targetResults", kicker:"Your guide", title:"Your calories and protein guide", copy:"These numbers answer the big questions, then Hearty turns them into meals and portions instead of tracking rules.", type:"targetResults" },
-        { id:"country", kicker:"Food setup", title:"Where are you based?", copy:"This helps Hearty use food wording and options that feel familiar where you live.", type:"single", key:"country", options:[["US","United States",""],["ZA","South Africa",""],["UK","United Kingdom",""],["AU","Australia",""],["CA","Canada", ""],["OTHER","Other",""]] },
-        { id:"proteins", kicker:"Food setup", title:"Which proteins do you actually eat?", copy:"Choose at least 2 main-meal proteins you would realistically use. The best plan is the one you can follow on an ordinary week.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["turkey","Turkey","Lean turkey mince, slices or cooked turkey strips"],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""]] },
-        { id:"breakfast", kicker:"Food setup", title:"What kind of breakfast works for you?", copy:"Mornings can be tricky on GLP-1s. Pick what feels doable, even if that means something light.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["egg_toast","Egg on toast / wrap","More filling but still simple"],["protein_shake","Whey protein shake","Easy protein when breakfast is hard"],["smoothie","Protein smoothie","Light option with fruit"],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""],["protein_yoghurt","Protein yoghurt bowl","Higher-protein yoghurt option"],["cottage_cheese_bowl","Cottage cheese fruit bowl","Soft, simple and not too heavy"]] },
-        { id:"starches", kicker:"Food setup", title:"Which starches do you like?", copy:"You do not have to remove every carb. Sensible portions can help meals feel normal and support energy.", type:"multi", key:"starches", options:[["rice","Rice",""],["potato","Potato",""],["sweet_potato","Sweet potato",""],["couscous","Couscous",""],["whole_wheat_pasta","Whole wheat pasta",""],["whole_wheat_wraps","Whole wheat wraps",""],["whole_wheat_bread","Whole wheat bread / toast",""]] },
-        { id:"vegetables", kicker:"Food setup", title:"Which vegetables are you happy to eat?", copy:"Choose at least 5 vegetables. Hearty will keep the plan familiar, not random.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
-        { id:"fruits", kicker:"Food setup", title:"Which fruits do you like?", copy:"Fruit can be useful for lighter meals, snacks and yoghurt bowls when appetite is low.", type:"multi", key:"fruits", allowSkip:true, options:[["apple","Apple",""],["banana","Banana",""],["orange","Orange",""],["grapes","Grapes",""],["peach","Peach",""],["strawberries","Strawberries",""],["blueberries","Blueberries",""],["raspberries","Raspberries",""],["pineapple","Pineapple",""],["pawpaw","Pawpaw / papaya",""],["kiwi","Kiwi fruit",""],["grapefruit","Grapefruit",""]] },
-        { id:"snackPreferences", kicker:"Food setup", title:"Which protein snacks sound useful?", copy:"Protein snacks can be the difference between “I barely ate today” and “I got something useful in.”", type:"multi", key:"snackPreferences", allowSkip:true, dynamicOptions:getSnackOptions },
-        { id:"lunchPrep", kicker:"Meal prep", title:"How do you want to handle lunch?", copy:"Making a larger dinner portion and using it for lunch the next day is one of the easiest ways to reduce daily cooking.", type:"single", key:"lunchPrep", options:[["standalone","Give me a separate lunch each day","More variety, a little more planning"],["leftovers","Use last night’s dinner for lunch","Cook once, eat twice — less prep, less waste"]] },
-        { id:"summary", kicker:"Build plan", title:"Your free plan is ready to generate", copy:"Hearty will now build your 7-day starter plan with simple meals, snack ideas and approximate protein estimates.", type:"summary" }
+        { id:"foodSetup", kicker:"Start here", title:"What kind of food help do you need?", copy:"Takes about a minute. No name, email or WhatsApp needed to start.", type:"combinedSetup" },
+        { id:"proteins", kicker:"Protein", title:"Which proteins do you actually eat?", copy:"Choose at least 2. The best plan is the one you can actually follow.", type:"multi", key:"proteins", options:[["chicken","Chicken",""],["turkey","Turkey","Lean turkey mince, slices or cooked turkey strips"],["beef","Beef",""],["pork","Pork",""],["fish","Fish",""],["seafood","Seafood",""],["canned_tuna","Canned tuna",""],["eggs","Eggs",""]] },
+        { id:"breakfast", kicker:"Mornings", title:"What feels doable in the morning?", copy:"Pick anything that sounds manageable, even if it is light.", type:"multi", key:"breakfast", options:[["eggs","Eggs",""],["egg_toast","Egg on toast / wrap","More filling but still simple"],["protein_shake","Protein shake","Easy protein when breakfast is hard"],["smoothie","Protein smoothie","Light option with fruit"],["all_bran","All Bran / Bran Flakes",""],["oats","Cooked oats",""],["overnight_oats","Overnight oats",""],["yoghurt_bowl","Low-fat yoghurt bowl",""],["protein_yoghurt","Protein yoghurt bowl","Higher-protein yoghurt option"],["cottage_cheese_bowl","Cottage cheese fruit bowl","Soft, simple and not too heavy"]] },
+        { id:"vegetables", kicker:"Simple sides", title:"Which vegetables are easiest for you?", copy:"Choose at least 3. Hearty will keep the plan familiar and top up gently if needed.", type:"multi", key:"vegetables", dynamicOptions:getVegetableOptions },
+        { id:"summary", kicker:"Build plan", title:"Your free setup is ready", copy:"Hearty will now show your 7-day meal ideas on this page. Email is only needed if you want the PDF, shopping list and quick cheat sheets.", type:"summary" }
       ];
+
       function getVegetableOptions(){
         const marrow = state.country === "UK" ? "Courgette" : (state.country === "ZA" ? "Baby marrow" : "Zucchini");
         return [["broccoli","Broccoli",""],["cauliflower","Cauliflower",""],["carrots","Carrots",""],["baby_marrow",marrow,""],["spinach","Spinach",""],["mushrooms","Mushrooms",""],["peppers","Peppers",""],["green_beans","Green beans",""],["corn","Corn",""],["butternut","Butternut",""],["cabbage","Cabbage",""],["lettuce","Lettuce / salad greens",""],["cucumber","Cucumber",""],["tomato","Tomato",""],["onion","Onion",""],["peas","Peas",""],["mixed_veg","Mixed vegetables",""]];
@@ -3409,10 +4477,7 @@ body{
 
       function openWizardModal(){
         if(!wizardOverlay) return;
-        if(!state.country) {
-          state.country = "US";
-          state.countrySelected = true;
-        }
+        if(!state.country) state.country = detectCountryFromLocale();
         wizardOverlay.classList.add("show");
         wizardOverlay.setAttribute("aria-hidden", "false");
         document.body.classList.add("wizard-modal-open");
@@ -3429,6 +4494,7 @@ body{
 
       function render(){
         const step = steps[state.step];
+        trackStepView(step);
         const progress = Math.round(((state.step + 1) / steps.length) * 100);
         const primaryLabel = getPrimaryLabel(step);
         root.innerHTML = `
@@ -3452,16 +4518,16 @@ body{
 
 
       function getPrimaryLabel(step){
-        if(step.type === "introName") return "Start my quiz";
-        if(step.id === "planPace") return "Continue";
-        if(step.type === "calculator") return "Show my guide";
-        if(step.type === "targetResults") return "Build my food plan";
-        if(step.type === "summary") return "Generate my free plan";
+        if(step.id === "foodSetup") return "Choose my foods";
+        if(step.id === "proteins") return "Next";
+        if(step.id === "breakfast") return "Next";
+        if(step.id === "vegetables") return "Review my setup";
+        if(step.type === "summary") return "Show my free meal ideas";
         return "Next";
       }
 
       function renderStepBody(step){
-        if(step.type === "introName") return renderIntroNameStep();
+        if(step.type === "combinedSetup") return renderCombinedSetupStep();
         if(step.type === "calculator") return renderCalculatorStep();
         if(step.type === "targetResults") return renderTargetResultsStep();
         if(step.type === "summary") return renderSummary();
@@ -3475,19 +4541,14 @@ body{
       }
 
 
-      function renderIntroNameStep(){
-        return `<div class="quiz-welcome-card">
-          <p class="friendly-line">This is not a diet form. It is a quick GLP-1 meal-plan quiz so Hearty can size the plan, choose better protein anchors and keep the meals realistic for your appetite.</p>
-          <div class="friendly-field-card">
-            <label for="firstName">First, what should we call you?</label>
-            <input id="firstName" type="text" autocomplete="given-name" value="${escapeAttr(state.firstName)}" placeholder="Your first name" />
-          </div>
-          <ul class="quiz-mini-points">
-            <li>Personalised plan size, not calorie counting</li>
-            <li>Protein guide without weighing food</li>
-            <li>Meals based on foods you actually choose</li>
-          </ul>
-          <p class="quiz-soft-note">You can leave your name blank if you prefer. Email and WhatsApp are only asked later if you choose to save the plan.</p>
+      function renderCombinedSetupStep(){
+        const struggleOptions = [["not_sure_what_to_eat","I’m not sure what to eat","Simple meal ideas and structure"],["low_appetite","My appetite is low","Smaller meals and gentle protein ideas"],["protein_hard","Protein is hard","Easy protein anchors and backup snacks"],["nausea_food_aversion","Nausea or food aversions","Plainer, gentler meal options"],["no_breakfast","Mornings are difficult","Light first-meal ideas"],["simple_structure","I just want a simple routine","Repeatable meals and easy shopping"]];
+        const paceOptions = [["maintain","Keep me steady","For low-appetite weeks or when you just need structure"],["lose","Steady fat loss","A moderate plan size for most GLP-1 users"],["faster","Faster fat loss","Smaller plan size, only if you are eating well"]];
+        const group = (title, key, options) => `<div class="option-subgroup"><h4>${escapeHtml(title)}</h4><div class="option-grid two">${options.map(([value,title,sub]) => `<button class="option-btn ${state[key] === value ? "selected" : ""}" type="button" data-action="select" data-key="${key}" data-value="${value}"><span class="option-main"><span class="option-title">${escapeHtml(title)}</span><span class="option-sub">${escapeHtml(sub)}</span></span><span class="selector-dot" aria-hidden="true"></span></button>`).join("")}</div></div>`;
+        return `<div class="combined-setup-card">
+          ${group("1. What feels hardest?", "struggleMode", struggleOptions)}
+          ${group("2. How should we size it for now?", "goal", paceOptions)}
+          <p class="form-note full">We’ll use a general calorie/protein guide first. After the free plan, you can add age, height and weight if you want a more precise estimate.</p>
         </div>`;
       }
 
@@ -3500,6 +4561,7 @@ body{
         const appetiteLabel = labelForValue("struggleMode", state.struggleMode) || "your appetite";
         return `<div class="calculator-grid">
           <p class="calculator-intro-note">You chose <strong>${escapeHtml(paceLabel)}</strong> and <strong>${escapeHtml(appetiteLabel)}</strong>. These details help Hearty estimate the right plan size behind the scenes.</p>
+          <div class="full v30d-skip-top"><button class="btn btn-secondary btn-small full" type="button" data-action="target-skip">Skip — just give me a general plan</button></div>
           <div class="full"><div class="unit-toggle" aria-label="Unit system"><button class="${!imperial ? "active" : ""}" type="button" data-action="unit-toggle" data-units="metric">Metric</button><button class="${imperial ? "active" : ""}" type="button" data-action="unit-toggle" data-units="imperial">Imperial</button></div></div>
           <div class="field sex-field"><label>Which formula should Hearty use?</label><div class="sex-choice-row" role="group" aria-label="Formula selection"><button class="sex-choice ${state.sex === "female" ? "selected" : ""}" type="button" data-action="select" data-key="sex" data-value="female"><span>Female formula</span></button><button class="sex-choice ${state.sex === "male" ? "selected" : ""}" type="button" data-action="select" data-key="sex" data-value="male"><span>Male formula</span></button></div></div>
           <div class="field"><label for="age">Your age</label><input id="age" type="number" min="18" inputmode="numeric" value="${escapeAttr(state.age)}" placeholder="e.g. 42" /></div>
@@ -3509,7 +4571,7 @@ body{
           <div class="activity-help-card"><strong>Quick tip:</strong> Hearty separates your normal day from workouts because a desk job plus 3 workouts is not the same as a physical job plus 3 workouts. If unsure, choose the lower option. Most GLP-1 users overestimate activity.</div>
           ${errors}
           <p class="form-note full">Hearty uses this only to estimate your meal-plan size. It is not a diagnosis and it does not replace medical advice.</p>
-          <button class="btn btn-secondary btn-small full" type="button" data-action="target-skip">Skip these details — give me a general plan</button>
+          <button class="btn btn-secondary btn-small full" type="button" data-action="target-skip">Skip — just give me a general plan</button>
         </div>`;
       }
 
@@ -3531,20 +4593,14 @@ body{
       function renderSummary(){
         const targets = ensureTargets();
         return `<div class="summary-grid">
-          ${state.firstName ? summaryRow("Name", state.firstName) : ""}
-          ${summaryRow("Plan size", targets?.tierLabel || "Standard GLP-1 meal structure")}
-          ${targets && !targets.skipped ? summaryRow("Daily guide", `~${targets.calorieMin}–${targets.calorieMax} kcal • ~${targets.proteinMin}–${targets.proteinMax}g protein`) : ""}
+          ${summaryRow("Food help", labelForValue("struggleMode", state.struggleMode) || "Simple structure")}
           ${summaryRow("Country", countryLabels[state.country] || "Other")}
-          ${summaryRow("Food right now", labelForValue("struggleMode", state.struggleMode) || "Simple structure")}
-          ${summaryRow("Plan pace", labelForValue("goal", state.goal) || targets?.goalLabel || "Steady fat loss")}
           ${summaryRow("Proteins", listLabels(state.proteins))}
           ${summaryRow("Breakfasts", listLabels(state.breakfast))}
-          ${summaryRow("Starches", listLabels(state.starches))}
           ${summaryRow("Vegetables", listLabels(state.vegetables))}
-          ${summaryRow("Fruit", listLabels(state.fruits))}
-          ${summaryRow("Snacks", listLabels(state.snackPreferences))}
-          ${summaryRow("Lunch prep", labelForValue("lunchPrep", state.lunchPrep) || "Separate lunches")}
-        </div>`;
+          ${summaryRow("Plan style", targets?.tierLabel || "Standard GLP-1 meal structure")}
+        </div>
+        <div class="fibre-support-note"><strong>Next:</strong> You’ll see the meal ideas on this page first. Add your email only if you want the PDF, shopping list and quick cheat sheets.</div>`;
       }
       function summaryRow(label,value){ return `<div class="summary-row"><span>${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`; }
 
@@ -3574,9 +4630,7 @@ body{
               state.targets = window.HeartyTargetCalculator?.defaultTargets ? window.HeartyTargetCalculator.defaultTargets() : null;
               state.skippedCalculator = true;
               state.targetErrors = [];
-              state.step = Math.max(0, steps.findIndex(s => s.id === "country"));
-              render();
-              scrollWizardTop();
+              generateAndShowPlan();
               return;
             }
 
@@ -3600,6 +4654,7 @@ body{
 
             if(action === "back") {
               if(state.step > 0){
+                trackFunnelEvent("free_meal_step_transition", { from_step:steps[state.step]?.id, to_step:steps[state.step-1]?.id, action:"back" });
                 state.step -= 1;
                 render();
                 scrollWizardTop();
@@ -3624,6 +4679,7 @@ body{
                 console.warn("HEARTY_WIZARD_CANNOT_CONTINUE", { step: state.step, stepId: step?.id, state: JSON.parse(JSON.stringify(state)) });
                 return;
               }
+              trackFunnelEvent("free_meal_step_transition", { from_step:step?.id, to_step:steps[Math.min(steps.length - 1, state.step + 1)]?.id, action:"next" });
               state.step = Math.min(steps.length - 1, state.step + 1);
               render();
               scrollWizardTop();
@@ -3633,6 +4689,7 @@ body{
             if(action === "skip") {
               const step = steps[state.step];
               if(step && step.key) state[step.key] = [];
+              trackFunnelEvent("free_meal_step_transition", { from_step:step?.id, to_step:steps[Math.min(steps.length - 1, state.step + 1)]?.id, action:"skip" });
               state.step = Math.min(steps.length - 1, state.step + 1);
               render();
               scrollWizardTop();
@@ -3646,11 +4703,11 @@ body{
             }
           } catch(error) {
             console.error("HEARTY_WIZARD_NAV_ERROR", error, { action, step: state.step, state });
-            alert("Something went wrong in the wizard. Please refresh and try again.");
+            showToast("Something went wrong. Please refresh and try again.");
           }
         };
 
-        ["firstName","email","whatsapp","sex","age","heightCm","heightFt","heightIn","weightKg","weightLb","dailyActivity","exerciseActivity","activity","goal"].forEach(id => {
+        ["firstName","email","sex","age","heightCm","heightFt","heightIn","weightKg","weightLb","dailyActivity","exerciseActivity","activity","goal"].forEach(id => {
           const el = document.getElementById(id);
           if(el) el.addEventListener("input", () => {
             state[id] = el.value.trim();
@@ -3672,7 +4729,7 @@ body{
       }
 
       function saveLeadInputs(){
-        ["firstName","email","whatsapp"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); });
+        ["firstName","email"].forEach(id => { const el = document.getElementById(id); if(el) state[id] = el.value.trim(); });
         saveTargetInputs();
       }
       function saveTargetInputs(){
@@ -3683,9 +4740,10 @@ body{
       }
       function updateNavButton(){ const next = root.querySelector("[data-action='next']"); if(next) next.disabled = !canContinue(steps[state.step]); }
       function canContinue(step){
-        if(step.type === "introName" || step.type === "calculator" || step.type === "targetResults") return true;
+        if(step.type === "calculator" || step.type === "targetResults") return true;
+        if(step.type === "combinedSetup") return Boolean(state.struggleMode && state.goal);
         if(step.key === "proteins") return Array.isArray(state.proteins) && state.proteins.length >= 2;
-        if(step.key === "vegetables") return Array.isArray(state.vegetables) && state.vegetables.length >= 5;
+        if(step.key === "vegetables") return Array.isArray(state.vegetables) && state.vegetables.length >= 3;
         if(step.type === "summary" || step.allowSkip) return true;
         const value = state[step.key];
         return Array.isArray(value) ? value.length > 0 : Boolean(value);
@@ -3897,31 +4955,25 @@ body{
 
       
       function primePostLeadFields(){
-        if(!savePlanCard || !jotformConfigured()) return;
+        if(!savePlanCard) return;
         savePlanCard.hidden = false;
         savePlanCard.classList.remove("v11-hidden-save");
         const nameInput = document.getElementById("saveFirstName");
         const emailInput = document.getElementById("saveEmail");
-        const whatsappInput = document.getElementById("saveWhatsapp");
         if(nameInput && !nameInput.value) nameInput.value = state.firstName || "";
         if(emailInput && !emailInput.value) emailInput.value = state.email || "";
-        if(whatsappInput && !whatsappInput.value) whatsappInput.value = state.whatsapp || "";
       }
 
       function switchStickyCtaToCheckout(){
         if(!stickyCtaButton) return;
-        stickyCtaButton.innerHTML = `<span>Get Hearty — $29</span><small class="sticky-micro">Once-off · no subscription · instant access</small>`;
+        stickyCtaButton.innerHTML = `<span>Get Hearty — $29</span><small class="sticky-micro">Once-off · 14-day guarantee · instant access</small>`;
         stickyCtaButton.setAttribute("href", "#");
         stickyCtaButton.setAttribute("data-hearty-checkout", "");
+        stickyCtaButton.removeAttribute("data-wizard-open");
         stickyCtaButton.setAttribute("aria-label", "Open Hearty checkout");
       }
 
-      function jotformConfigured(){
-        return Boolean(String(HEARTY_JOTFORM?.formId || "").trim() && String(HEARTY_JOTFORM?.submitUrl || "").trim());
-      }
-
       function scheduleSavePrompt(){
-        if(!jotformConfigured()) return;
         if(savePromptTimer) clearTimeout(savePromptTimer);
         const dayCards = Array.from(document.querySelectorAll("#daysGrid .day-card"));
         const finalDay = dayCards[dayCards.length - 1];
@@ -3929,7 +4981,7 @@ body{
           return;
         }
         const showAfterFinalDay = () => {
-          if(savePromptShown || state.email || state.whatsapp || !jotformConfigured()) return;
+          if(savePromptShown || state.email) return;
           openSavePrompt();
           updateLeadEvent({ save_prompt_shown: true, save_prompt_shown_at: new Date().toISOString(), save_prompt_trigger: "after_day_7" });
         };
@@ -3947,7 +4999,7 @@ body{
       }
 
       function openSavePrompt(){
-        if(!savePrompt || !jotformConfigured()) return;
+        if(!savePrompt) return;
         primePostLeadFields();
         savePromptShown = true;
         savePrompt.classList.add("show");
@@ -3962,6 +5014,7 @@ body{
 
       function jumpToSaveCard(){
         closeSavePrompt();
+        if(precisionCard) precisionCard.hidden = false;
         primePostLeadFields();
         savePlanCard?.classList.add("prompted");
         savePlanCard?.scrollIntoView({ behavior:"smooth", block:"center" });
@@ -3976,6 +5029,10 @@ body{
         if(!latestPlan || !latestPlan.length) return;
         latestPlanText = makePlanText(latestPlan);
         renderPlan(latestPlan);
+        renderCountryCorrection();
+        saveLead(latestPlan).then(ok => {
+          trackFunnelEvent("free_meal_lead_record_created", { ok:Boolean(ok), lead_id: currentLeadId || "" });
+        });
         window.trackHeartyEvent?.("free_meal_generated", {
           plan_days: 7,
           country: state.country || "",
@@ -3984,8 +5041,9 @@ body{
           skipped_calculator: Boolean(ensureTargets()?.skipped)
         });
         resultPanel.classList.add("show");
-        marketTag.textContent = "Free starter plan";
+        marketTag.textContent = "Free meal setup";
         updateSalesLinks();
+        if(precisionCard) precisionCard.hidden = false;
         primePostLeadFields();
         savePlanCard?.classList.add("prompted");
         switchStickyCtaToCheckout();
@@ -3994,16 +5052,130 @@ body{
         resultPanel.scrollIntoView({ behavior:"smooth", block:"start" });
       }
 
+      function renderCountryCorrection(){
+        const subtitle = document.getElementById("resultSubtitle");
+        if(!subtitle) return;
+        let holder = document.getElementById("countryCorrection");
+        if(!holder){
+          holder = document.createElement("div");
+          holder.id = "countryCorrection";
+          holder.className = "country-correction";
+          subtitle.insertAdjacentElement("afterend", holder);
+        }
+        holder.innerHTML = `Food wording: <strong>${escapeHtml(countryLabels[state.country] || "Other")}</strong> <button type="button" class="country-change-btn" data-country-toggle>not right? change it</button><span class="country-select-wrap" hidden> <select id="countryCorrectionSelect">${Object.entries(countryLabels).map(([code,label]) => `<option value="${code}" ${state.country === code ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select></span>`;
+      }
+
       function getHeartyEngine(){
         return window.HeartyMealEngine || null;
+      }
+
+      function buildLocalFallbackPlan(){
+        if(!state.targets){
+          state.targets = {
+            tier: 2,
+            tierShortLabel: "Starter plan",
+            tierLabel: "Starter GLP-1 meal structure",
+            calorieMin: 1200,
+            calorieMax: 1500,
+            proteinMin: 75,
+            proteinMax: 100,
+            fibreMin: 18,
+            fibreMax: 25,
+            skipped: true
+          };
+        }
+        const targets = ensureTargets() || state.targets;
+        const snackList = [
+          { title:"Protein yoghurt", protein:"Approx. 12–18g protein", note:"Small bowl or single high-protein yoghurt." },
+          { title:"Cottage cheese bowl", protein:"Approx. 12–18g protein", note:"Add berries or crackers if appetite allows." },
+          { title:"Boiled eggs", protein:"Approx. 6–12g protein", note:"Use 1–2 eggs depending on appetite." },
+          { title:"Tuna crackers", protein:"Approx. 12–18g protein", note:"Small tuna portion with crackers or cucumber." },
+          { title:"Chicken strips", protein:"Approx. 12–18g protein", note:"Use cooked chicken as a small protein anchor." },
+          { title:"Protein shake with water", protein:"Approx. 20–25g protein", note:"Useful when chewing feels hard." }
+        ];
+        const noBreakfast = Boolean(state.explicitNoBreakfast || state.struggleMode === "no_breakfast");
+        const breakfastPool = noBreakfast ? [
+          { name:"No breakfast planned", protein:0, detail:"You said mornings are difficult, so use the first protein anchor when you are ready." }
+        ] : [
+          { name:"Protein oats", protein:24, detail:"Cook oats and stir in protein powder after cooking. Keep the portion small if appetite is low." },
+          { name:"Greek yoghurt bowl", protein:22, detail:"Use Greek yoghurt or high-protein yoghurt with berries. Add a little granola only if you want more energy." },
+          { name:"Egg on toast or wrap", protein:18, detail:"Use eggs or egg whites with toast or a small wrap. Keep it simple and eat the protein first." },
+          { name:"Protein smoothie", protein:25, detail:"Blend protein powder with milk or yoghurt and fruit. Sip slowly if appetite is low." }
+        ];
+        const lunchPool = [
+          { name:"Chicken wrap", protein:28, detail:"Use cooked chicken in a small wrap with salad or cooked veg. Add sauce lightly if tolerated." },
+          { name:"Tuna jacket potato", protein:30, detail:"Use tuna with a potato or crackers. Add cucumber, tomato or salad if tolerated." },
+          { name:"Turkey mince bowl", protein:30, detail:"Use turkey mince with rice or potato and cooked vegetables. Keep portions modest." },
+          { name:"Cottage cheese plate", protein:24, detail:"Use cottage cheese with crackers, fruit or salad for a low-effort meal." }
+        ];
+        const dinnerPool = [
+          { name:"Chicken and rice bowl", protein:32, detail:"Use chicken with rice and cooked vegetables. Make the protein the anchor of the meal." },
+          { name:"Lean mince with potato", protein:30, detail:"Use lean mince with potato or rice and soft cooked vegetables." },
+          { name:"Fish with vegetables", protein:28, detail:"Use fish with potato, rice or toast and gentle cooked vegetables." },
+          { name:"Turkey meatballs", protein:30, detail:"Use turkey meatballs with pasta, rice or vegetables. Keep sauce simple if nausea is active." }
+        ];
+        const morningPool = [
+          { name:"Protein yoghurt", protein:15, detail:"Small high-protein yoghurt. Good when a full meal feels too much." },
+          { name:"Boiled egg snack", protein:8, detail:"Use 1 egg or 2 if appetite allows." },
+          { name:"Cottage cheese spoon bowl", protein:14, detail:"Small portion of cottage cheese with berries or crackers." }
+        ];
+        const afternoonPool = [
+          { name:"Tuna crackers", protein:14, detail:"Small tuna portion with crackers or cucumber." },
+          { name:"Chicken strips", protein:16, detail:"Cooked chicken strips as a simple protein anchor." },
+          { name:"Protein shake", protein:22, detail:"Use one normal serving with water or milk. Do not force it if you feel too full." }
+        ];
+        const pick = (pool, index) => pool[index % pool.length];
+        const days = [];
+        for(let i = 0; i < 7; i++){
+          const breakfast = pick(breakfastPool, i);
+          const morningSnack = pick(morningPool, i + 1);
+          const lunch = pick(lunchPool, i + 2);
+          const afternoonSnack = pick(afternoonPool, i + 3);
+          const dinner = pick(dinnerPool, i + 4);
+          const protein = {
+            breakfast: breakfast.protein || 0,
+            morningSnack: morningSnack.protein || 0,
+            lunch: lunch.protein || 0,
+            afternoonSnack: afternoonSnack.protein || 0,
+            dinner: dinner.protein || 0
+          };
+          const estimatedProteinTotal = protein.breakfast + protein.morningSnack + protein.lunch + protein.afternoonSnack + protein.dinner;
+          const mapped = {
+            day: `Day ${i + 1}`,
+            dayName: dayNames[i] || `Day ${i + 1}`,
+            breakfast: breakfast.name,
+            morningSnack: morningSnack.name,
+            lunch: lunch.name,
+            afternoonSnack: afternoonSnack.name,
+            dinner: dinner.name,
+            protein,
+            recipe: {
+              breakfast: breakfast.detail,
+              morningSnack: morningSnack.detail,
+              lunch: lunch.detail,
+              afternoonSnack: afternoonSnack.detail,
+              dinner: dinner.detail
+            },
+            estimatedProteinTotal,
+            proteinSupport: null,
+            proteinBooster: "",
+            proteinSnackList: snackList,
+            source: "HeartyLocalFallbackV30b"
+          };
+          mapped.proteinSupport = buildProteinSupport(estimatedProteinTotal, targets, mapped, snackList);
+          mapped.proteinBooster = mapped.proteinSupport ? mapped.proteinSupport.text : "";
+          days.push(mapped);
+        }
+        window.__HEARTY_LAST_ENGINE_RESULT__ = { status:"FALLBACK", version:"HeartyLocalFallbackV30b", days };
+        window.__HEARTY_LAST_ENGINE_INPUT__ = { fallback:true, country:state.country, struggleMode:state.struggleMode };
+        return days;
       }
 
       function buildPlan(){
         const engine = getHeartyEngine();
         if(!engine || typeof engine.generatePlan !== "function"){
-          console.error("Final HeartyMealEngine unavailable.");
-          showGateMessages(["The meal planner did not load correctly. Please refresh and try again."]);
-          return null;
+          console.warn("Final HeartyMealEngine unavailable. Using local value-first fallback plan.");
+          return buildLocalFallbackPlan();
         }
 
         const finalInput = buildFinalEngineInput();
@@ -4722,7 +5894,7 @@ body{
           const breakfastHtml = noBreakfastPlan ? "" : mealRow("Breakfast", day.breakfast, day.protein?.breakfast, day.recipe?.breakfast, targets);
           const morningLabel = noBreakfastPlan ? "First protein anchor" : "Morning snack";
           return `<article class="day-card"><h3>${escapeHtml(day.day)}</h3>${breakfastHtml}${mealRow(morningLabel, day.morningSnack, day.protein?.morningSnack, day.recipe?.morningSnack, targets)}${mealRow("Lunch", day.lunch, day.protein?.lunch, day.recipe?.lunch, targets)}${mealRow("Afternoon snack", day.afternoonSnack, day.protein?.afternoonSnack, day.recipe?.afternoonSnack, targets)}${mealRow("Dinner", day.dinner, day.protein?.dinner, day.recipe?.dinner, targets)}${dayTotalRow(day)}${dayFibreSupportRow(day, targets)}</article>`;
-        }).join("") + proteinSnackPanel(plan) + `<div class="nutrition-note"><strong>Protein note:</strong> ${escapeHtml(proteinDisclaimer())}</div>` + `<div class="nutrition-note"><strong>Shake note:</strong> If a protein shake already appears in a day, count it as one protein anchor. You do not need to add another shake unless appetite allows.</div>`;
+        }).join("") + proteinSnackPanel(plan);
       }
 
       function renderTargetPlanPanel(targets){
@@ -4851,20 +6023,53 @@ body{
         return lines.filter(line => line !== "").join("\n");
       }
 
-      // Copy, download and print actions were removed to keep lead capture focused on sending the plan via Jotform.
+      // Save/download actions now use Supabase directly. Jotform has been removed from this funnel.
 
-      document.getElementById("saveLeadDetails")?.addEventListener("click", () => {
+      document.getElementById("saveLeadDetails")?.addEventListener("click", async () => {
         const statusEl = document.getElementById("leadCaptureStatus");
-        const sent = openJotformLeadCapture();
+        const sent = await saveLeadDetailsAndDownload();
         if(sent){
           savePlanCard?.classList.remove("prompted");
-          showToast("Plan sent");
+          showToast("PDF downloading");
         } else if(statusEl && !statusEl.textContent) {
-          statusEl.textContent = "Please add a valid email address so we can send your plan.";
+          statusEl.textContent = "Please add a valid email address so we can save your plan.";
         }
       });
 
+      function openPrecisionCalculator(){
+        if(!wizardOverlay || !root) return;
+        wizardOverlay.classList.add("show");
+        wizardOverlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("wizard-modal-open");
+        root.innerHTML = `<div class="progress-wrap"><div class="progress-meta"><span>Optional precision</span><span>After your free plan</span></div><div class="progress-track"><div class="progress-fill" style="width:100%"></div></div></div><div class="question"><div class="kicker">Optional precision</div><h3>Want a more precise guide?</h3><p class="question-copy">Skip this if you are happy with the general plan. Add details only if you want Hearty to adjust the calorie and protein guide.</p>${renderCalculatorStep()}</div><div class="nav-row"><button class="btn btn-secondary" type="button" data-precision-cancel>Cancel</button><button class="btn btn-primary" type="button" data-precision-apply>Update my plan guide</button></div>`;
+        root.onclick = function(event){
+          const btn = event.target.closest("button");
+          if(!btn || !root.contains(btn)) return;
+          event.preventDefault();
+          if(btn.hasAttribute("data-precision-cancel")){ closeWizardModal(); render(); return; }
+          if(btn.hasAttribute("data-precision-apply")){
+            const targets = calculateTargetsFromState();
+            if(!targets){ openPrecisionCalculator(); return; }
+            state.targets = targets;
+            state.skippedCalculator = false;
+            latestPlan = buildPlan();
+            latestPlanText = makePlanText(latestPlan);
+            renderPlan(latestPlan);
+            renderCountryCorrection();
+            trackFunnelEvent("free_meal_precision_calculated", { skipped:false });
+            closeWizardModal();
+            return;
+          }
+          const action = btn.getAttribute("data-action");
+          if(action === "unit-toggle") { saveTargetInputs(); switchUnits(btn.getAttribute("data-units")); openPrecisionCalculator(); return; }
+          if(action === "select") { state[btn.getAttribute("data-key")] = btn.getAttribute("data-value"); openPrecisionCalculator(); return; }
+          if(action === "target-skip") { state.targets = window.HeartyTargetCalculator?.defaultTargets ? window.HeartyTargetCalculator.defaultTargets() : null; state.skippedCalculator = true; trackFunnelEvent("free_meal_precision_calculated", { skipped:true }); closeWizardModal(); renderCountryCorrection(); return; }
+        };
+      }
+
       document.addEventListener("click", (event) => {
+        const precisionButton = event.target.closest("#openPrecisionCalculator");
+        if(precisionButton){ event.preventDefault(); openPrecisionCalculator(); return; }
         const openButton = event.target.closest("[data-wizard-open], a[href='#generator']");
         if(!openButton) return;
         event.preventDefault();
@@ -4925,24 +6130,12 @@ body{
         const struggle = labelForValue("struggleMode", state.struggleMode) || "Simple structure";
         return [`Plan size: ${targets?.tierLabel || "Standard GLP-1 meal structure"}`, targets ? `Guide: ${targets.calorieMin}-${targets.calorieMax} kcal, ${targets.proteinMin}-${targets.proteinMax}g protein, fat minimum ${targets.fatMin}g, fibre ${targets.fibreMin}-${targets.fibreMax}g` : "", `Country: ${countryLabels[state.country] || "Other"}`, `Main struggle: ${struggle}`].filter(Boolean).join(" | ");
       }
-
-      function jotformFieldNames(key){
-        const mapped = HEARTY_JOTFORM.fieldMap?.[key] || key;
-        return Array.isArray(mapped) ? mapped : [mapped];
-      }
-
-      function addJotformFields(form, key, value){
-        if(value === undefined || value === null || String(value).trim() === "") return;
-        jotformFieldNames(key).forEach(name => addHiddenField(form, name, String(value)));
-      }
-
       function savePostPlanContactInputs(){
         const nameInput = document.getElementById("saveFirstName");
         const emailInput = document.getElementById("saveEmail");
-        const whatsappInput = document.getElementById("saveWhatsapp");
         if(nameInput) state.firstName = nameInput.value.trim();
         if(emailInput) state.email = emailInput.value.trim();
-        if(whatsappInput) state.whatsapp = whatsappInput.value.trim();
+        state.whatsapp = "";
       }
 
       function isValidEmail(email){
@@ -5099,6 +6292,9 @@ body{
             `Guide: ${targets ? `${targets.calorieMin}-${targets.calorieMax} kcal/day, ${targets.proteinMin}-${targets.proteinMax}g protein/day, fat minimum ${targets.fatMin}g/day, ${formatFibreRange(targets)}` : "GLP-1 starter meal structure"}`,
             "",
             "This PDF includes your complete 7-day plan, protein estimates, optional boost notes, fibre guidance and 7-day shopping list.",
+            "",
+            "Quick protein backups: Greek yoghurt/protein yogurt, eggs, cottage cheese, protein shake, tuna/chicken wraps, soup with added protein.",
+            "Low-appetite backups: protein yoghurt, smoothie, soup, egg bites, small wrap, crackers with tuna/chicken.",
             ""
           ].join("\n");
           const blob = makePdfBlobFromText(title, `${intro}${planText}`);
@@ -5118,7 +6314,7 @@ body{
         }
       }
 
-      function buildJotformPayload(){
+      function buildLeadCapturePayload(){
         savePostPlanContactInputs();
         const targets = ensureTargets();
         const planText = latestPlanText || (latestPlan?.length ? makePlanText(latestPlan) : "");
@@ -5126,7 +6322,6 @@ body{
         return {
           first_name: state.firstName || "Friend",
           email: state.email || "",
-          whatsapp: state.whatsapp || "",
           country: countryLabels[state.country] || "Other",
           main_struggle: labelForValue("struggleMode", state.struggleMode) || "Simple structure",
           plan_pace: labelForValue("goal", state.goal) || targets?.goalLabel || "Steady fat loss",
@@ -5146,78 +6341,56 @@ body{
         };
       }
 
-      function ensureJotformFrame(){
-        let frame = document.getElementById("heartyJotformFrame");
-        if(frame) return frame;
-        frame = document.createElement("iframe");
-        frame.name = "heartyJotformFrame";
-        frame.id = "heartyJotformFrame";
-        frame.style.display = "none";
-        frame.setAttribute("aria-hidden", "true");
-        document.body.appendChild(frame);
-        return frame;
-      }
-
-      function showPostSubmitCta(){
-        const cta = document.getElementById("postSubmitCta");
-        if(!cta) return;
-        cta.classList.add("show");
-        cta.removeAttribute("hidden");
-        const saveCard = document.getElementById("savePlanCard");
-        saveCard?.classList.add("submitted");
-        setTimeout(() => {
-          try { cta.scrollIntoView({ behavior:"smooth", block:"center" }); } catch(e) {}
-        }, 220);
-      }
-
-      function openJotformLeadCapture(){
+      async function saveLeadDetailsAndDownload(){
         const statusEl = document.getElementById("leadCaptureStatus");
-        const formId = String(HEARTY_JOTFORM.formId || "").trim();
-        const submitUrl = String(HEARTY_JOTFORM.submitUrl || "").trim();
-        const payload = buildJotformPayload();
-        window.__HEARTY_LAST_JOTFORM_PAYLOAD__ = payload;
+        const payload = buildLeadCapturePayload();
+        window.__HEARTY_LAST_LEAD_CAPTURE_PAYLOAD__ = payload;
 
-        if(!submitUrl || !formId){
-          console.warn("HEARTY_JOTFORM_NOT_CONFIGURED", payload);
-          if(statusEl) statusEl.textContent = "Saving is not connected yet. Please screenshot your plan for now.";
-          return false;
-        }
         if(!isValidEmail(payload.email)){
-          if(statusEl) statusEl.textContent = "Please add a valid email address so we can send your plan.";
+          if(statusEl) statusEl.textContent = "Please add a valid email address so we can save your plan.";
           document.getElementById("saveEmail")?.focus();
           return false;
         }
 
-        ensureJotformFrame();
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = submitUrl;
-        form.target = "heartyJotformFrame";
-        form.style.display = "none";
+        if(statusEl) statusEl.textContent = "Saving your plan...";
+        let savedOk = false;
 
-        addHiddenField(form, "formID", formId);
-        addHiddenField(form, "simple_spc", `${formId}-${formId}`);
-        addHiddenField(form, "event_id", `${Date.now()}_${Math.random().toString(16).slice(2)}`);
-
-        Object.entries(payload).forEach(([key, value]) => addJotformFields(form, key, value));
-
-        document.body.appendChild(form);
         try {
-          form.submit();
-          window.trackHeartyEvent?.("jotform_lead_capture_submitted", { meal_plan_tier: ensureTargets()?.tier || 2 });
-          updateLeadEvent({ email: payload.email, whatsapp: payload.whatsapp, jotform_submitted: true, jotform_submitted_at: new Date().toISOString() });
-          downloadMealPlanPdf(payload);
-          if(statusEl) statusEl.textContent = "Done — your PDF is downloading now. Your plan also stays visible on this page.";
-          closeSavePrompt();
-          showPostSubmitCta();
-          return true;
+          if(!currentLeadId && latestPlan?.length){
+            savedOk = await saveLead(latestPlan);
+          }
+          if(currentLeadId){
+            savedOk = await updateLeadEvent({
+              first_name: payload.first_name,
+              email: payload.email,
+              lead_status: "Email captured"
+            });
+          }
         } catch(error){
-          console.error("HEARTY_JOTFORM_SUBMIT_FAILED", error, payload);
-          if(statusEl) statusEl.textContent = "Something went wrong sending the plan. Please screenshot it for now and try again later.";
-          return false;
-        } finally {
-          setTimeout(() => form.remove(), 3000);
+          savedOk = false;
+          console.warn("HEARTY_SUPABASE_EMAIL_SAVE_FAILED", error, payload);
         }
+
+        window.trackHeartyEvent?.("free_meal_email_submitted", { meal_plan_tier: ensureTargets()?.tier || 2, saved_to_supabase:Boolean(savedOk) });
+        trackFunnelEvent("free_meal_email_submitted", { saved_to_supabase:Boolean(savedOk), email_present:Boolean(payload.email) });
+
+        const pdfOk = downloadMealPlanPdf(payload);
+        closeSavePrompt();
+        showPostSubmitCta();
+
+        if(statusEl){
+          if(savedOk && pdfOk){
+            statusEl.textContent = "Saved — your PDF is downloading now. Your plan also stays visible on this page.";
+          } else if(!savedOk && pdfOk){
+            statusEl.textContent = "Your PDF is downloading now. We could not save your email, so please screenshot the plan too.";
+          } else if(savedOk && !pdfOk){
+            statusEl.textContent = "Saved, but the PDF download failed. Your plan is still visible on this page.";
+          } else {
+            statusEl.textContent = "The PDF download failed and we could not save your email. Your plan is still visible here — please screenshot it for now.";
+          }
+        }
+
+        return Boolean(pdfOk);
       }
 
       async function saveLead(generatedPlan){
@@ -5225,7 +6398,7 @@ body{
         const payload = {
           first_name: state.firstName,
           email: state.email,
-          whatsapp: state.whatsapp,
+          whatsapp: "",
           country: countryLabels[state.country] || "Other",
           market: "INT",
           proteins: state.proteins,
@@ -5266,10 +6439,10 @@ body{
       }
 
       async function updateLeadEvent(fields){
-        if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !currentLeadId) return;
+        if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !currentLeadId) return false;
 
         try {
-          await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?id=eq.${currentLeadId}`, {
+          const response = await fetch(`${SUPABASE_URL.replace(/\/$/,"")}/rest/v1/${LEADS_TABLE}?id=eq.${currentLeadId}`, {
             method:"PATCH",
             headers:{
               "Content-Type":"application/json",
@@ -5278,7 +6451,9 @@ body{
             },
             body: JSON.stringify(fields)
           });
+          return response.ok;
         } catch(err) { console.warn("Lead event update failed", err); }
+        return false;
       }
 
       function labelForValue(key, value){
