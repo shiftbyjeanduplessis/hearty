@@ -5196,7 +5196,7 @@ body.plan-builder-hard-lock{
   </div>
 </div>
 
-<script src="js/hearty-meal-engine.js?v=31d"></script>
+<script src="js/hearty-meal-engine.js?v=locked-new-engine-v2"></script>
 <script src="js/hearty-funnel-v31.js?v=31p"></script>
 
 
@@ -5785,6 +5785,7 @@ body.plan-builder-hard-lock{
       dairy: !(foods.indexOf('greek_yoghurt') !== -1 || foods.indexOf('cottage_cheese') !== -1),
       eggs: foods.indexOf('eggs') === -1,
       legumes: !(foods.indexOf('beans') !== -1 || foods.indexOf('lentils') !== -1 || foods.indexOf('tofu') !== -1 || foods.indexOf('meat_free_mince') !== -1),
+      soy: foods.indexOf('tofu') === -1,
       lamb: true
     };
   }
@@ -5911,6 +5912,7 @@ body.plan-builder-hard-lock{
       supportMode:{ nausea:0, lowAppetite:0, bloating:0, exhaustion:1, proteinIdeas:2 },
       preferredProteinFamilies:mapProteinFamilies(prefs.foods),
       preferredFoodKeys:mapFoodKeys(prefs.foods),
+      strictPreferredFoodKeys:true,
       preferredTags:inferPreferredTags(prefs),
       vegetablePreferences:prefs.veg,
       carbPreferences:prefs.carbs,
@@ -5937,10 +5939,10 @@ body.plan-builder-hard-lock{
     var salad = ['lettuce','spinach','tomato','cucumber','carrot','celery'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
     var cooked = ['broccoli','cauliflower','green_beans','cabbage','baby_marrow','peas','butternut','eggplant','asparagus','mushrooms','onion','peppers','carrot'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
     var soup = ['carrot','onion','celery','cabbage','butternut','peas'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
-    if(role === 'salad') return (salad.length ? salad : labels).slice(0,3).join(', ') || 'selected salad vegetables';
-    if(role === 'soup') return (soup.length ? soup : labels).slice(0,3).join(', ') || 'selected vegetables';
-    if(role === 'cooked') return (cooked.length ? cooked : labels).slice(0,3).join(', ') || 'selected vegetables';
-    return labels.slice(0,3).join(', ') || 'selected vegetables';
+    if(role === 'salad') return (salad.length ? salad : labels).slice(0,2).join(', ') || 'selected salad vegetables';
+    if(role === 'soup') return (soup.length ? soup : labels).slice(0,2).join(', ') || 'selected vegetables';
+    if(role === 'cooked') return (cooked.length ? cooked : labels).slice(0,2).join(', ') || 'selected vegetables';
+    return labels.slice(0,2).join(', ') || 'selected vegetables';
   }
 
   function displayFoodName(component){
@@ -5950,6 +5952,28 @@ body.plan-builder-hard-lock{
     if(food === 'soup_vegetables') return selectedVegText('soup');
     if(food === 'lettuce_cups') return 'lettuce cups';
     return foodName(food);
+  }
+
+  function displayShoppingFoodName(item){
+    var raw = String((item && (item.food || item.name || item.item)) || '').trim();
+    var key = raw.toLowerCase().replace(/_/g,' ');
+    if(key === 'salad vegetables' || key === 'salad_vegetables') return selectedVegText('salad');
+    if(key === 'soup vegetables' || key === 'soup_vegetables') return selectedVegText('soup');
+    if(
+      key === 'mixed vegetables' ||
+      key === 'mixed_vegetables' ||
+      key === 'stir-fry vegetables' ||
+      key === 'stir fry vegetables' ||
+      key === 'stir_fry_vegetables' ||
+      key === 'green vegetables' ||
+      key === 'cooked green vegetables' ||
+      key === 'cooked_green_vegetables' ||
+      key === 'roast vegetables' ||
+      key === 'roast_vegetables'
+    ){
+      return selectedVegText('cooked');
+    }
+    return raw;
   }
 
   function snackTitleFromComponents(components){
@@ -6213,7 +6237,7 @@ body.plan-builder-hard-lock{
   function renderShopping(plan){
     var wrap = qs('shoppingPreview'); if(!wrap || !plan) return;
     var list = flattenShoppingList(plan.shoppingList).slice(0,18);
-    wrap.innerHTML = list.map(function(item){ return '<span>' + esc([item.amount, item.unit, item.food].filter(Boolean).join(' ')) + '</span>'; }).join('');
+    wrap.innerHTML = list.map(function(item){ return '<span>' + esc([item.amount, item.unit, displayShoppingFoodName(item)].filter(Boolean).join(' ')) + '</span>'; }).join('');
   }
 
   function planToText(plan, prefs, input){
@@ -6231,7 +6255,7 @@ body.plan-builder-hard-lock{
       lines.push('');
     });
     var shopping = flattenShoppingList(plan.shoppingList);
-    if(shopping.length){ lines.push('Shopping list preview'); shopping.forEach(function(item){ lines.push('- ' + [item.amount, item.unit, item.food].filter(Boolean).join(' ')); }); }
+    if(shopping.length){ lines.push('Shopping list preview'); shopping.forEach(function(item){ lines.push('- ' + [item.amount, item.unit, displayShoppingFoodName(item)].filter(Boolean).join(' ')); }); }
     return lines.join('\n');
   }
 
@@ -6349,71 +6373,113 @@ body.plan-builder-hard-lock{
 </div>
 
 
-<!-- Hearty minimal Brevo sync patch — no layout/meal-engine changes -->
+<!-- Hearty Brevo-only sync patch — no meal generation logic -->
 <script>
 (function(){
   var HEARTY_BREVO_SYNC_URL = "https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
+  var lastSyncedEmail = "";
 
-  function heartyBrevoSync(email, name){
-    email = String(email || '').trim().toLowerCase();
-    name = String(name || '').trim();
+  function byId(id) { return document.getElementById(id); }
 
-    if(!email || email.indexOf('@') === -1) {
-      return Promise.resolve({ ok:false, skipped:true, reason:'missing_email' });
+  function findEmailField() {
+    return byId('leadEmail') ||
+      document.querySelector('input[type="email"]') ||
+      document.querySelector('input[name="email"]');
+  }
+
+  function findNameField() {
+    return byId('leadName') ||
+      document.querySelector('input[name="name"]') ||
+      document.querySelector('input[name="first_name"]') ||
+      document.querySelector('input[name="firstName"]') ||
+      document.querySelector('input[autocomplete="given-name"]');
+  }
+
+  function readLead() {
+    var emailEl = findEmailField();
+    var nameEl = findNameField();
+    return {
+      email: emailEl ? String(emailEl.value || '').trim().toLowerCase() : '',
+      name: nameEl ? String(nameEl.value || '').trim() : ''
+    };
+  }
+
+  function setLeadStatus(message) {
+    var el = byId('leadStatus');
+    if (el && message) el.textContent = message;
+  }
+
+  function syncLeadToBrevo(reason) {
+    var lead = readLead();
+
+    if (!lead.email || lead.email.indexOf('@') === -1) {
+      console.warn('[Hearty] Brevo sync skipped — missing/invalid email', lead);
+      return Promise.resolve({ ok:false, skipped:true, reason:'invalid_email' });
     }
+
+    if (lead.email === lastSyncedEmail) {
+      console.log('[Hearty] Brevo sync skipped — already synced this email', lead.email);
+      return Promise.resolve({ ok:true, skipped:true, reason:'duplicate_email' });
+    }
+
+    lastSyncedEmail = lead.email;
+
+    var payload = {
+      email: lead.email,
+      name: lead.name || '',
+      firstName: lead.name || '',
+      source: 'free_meal_plan'
+    };
+
+    console.log('[Hearty] Brevo sync start', reason, payload);
+    setLeadStatus('Saving your email...');
 
     return fetch(HEARTY_BREVO_SYNC_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: email,
-        name: name || '',
-        source: 'free_meal_plan'
-      })
+      body: JSON.stringify(payload),
+      keepalive: true
     })
-    .then(function(res){
-      return res.text().then(function(text){
+    .then(function(res) {
+      return res.text().then(function(text) {
         var data = {};
-        try { data = text ? JSON.parse(text) : {}; } catch(e) { data = { raw:text }; }
-        if(!res.ok) throw new Error('Brevo sync failed: ' + res.status + ' ' + text);
+        try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+        if (!res.ok) throw new Error('Brevo sync failed ' + res.status + ': ' + text);
+        console.log('[Hearty] Brevo sync success', data);
+        setLeadStatus('Saved — your plan is downloading.');
         return data;
       });
     })
-    .then(function(data){
-      try { console.log('[Hearty] Brevo sync ok', data); } catch(e) {}
-      return data;
-    })
-    .catch(function(err){
-      try { console.warn('[Hearty] Brevo sync failed', err); } catch(e) {}
+    .catch(function(err) {
+      console.warn('[Hearty] Brevo sync failed', err);
+      setLeadStatus('Your plan is downloading. Email follow-up may take a moment.');
       return { ok:false, error:String(err && err.message ? err.message : err) };
     });
   }
 
-  function currentLead(){
-    var emailEl = document.getElementById('leadEmail') || document.querySelector('input[type="email"]');
-    var nameEl = document.getElementById('leadName') || document.querySelector('input[name="name"], input[name="first_name"], input[name="firstName"]');
-    return {
-      email: emailEl ? emailEl.value : '',
-      name: nameEl ? nameEl.value : ''
-    };
-  }
-
-  function syncCurrentLead(){
-    var lead = currentLead();
-    return heartyBrevoSync(lead.email, lead.name);
-  }
-
-  document.addEventListener('click', function(e){
-    var target = e.target && e.target.closest ? e.target.closest('#downloadPlanBtn,[data-download-plan],[data-save-plan],[data-lead-submit]') : null;
-    if(target) syncCurrentLead();
-  }, true);
-
-  document.addEventListener('submit', function(e){
+  document.addEventListener('submit', function(e) {
     var form = e.target;
-    if(form && (form.id === 'leadCaptureForm' || (form.closest && form.closest('#inlineUnlockPanel')))) {
-      syncCurrentLead();
+    if (!form) return;
+    if (
+      form.id === 'leadCaptureForm' ||
+      form.id === 'inlineLeadForm' ||
+      (form.closest && form.closest('#inlineUnlockPanel')) ||
+      (form.closest && form.closest('#viewerUnlockMount'))
+    ) {
+      syncLeadToBrevo('lead_form_submit');
     }
   }, true);
+
+  document.addEventListener('click', function(e) {
+    var target = e.target && e.target.closest
+      ? e.target.closest('#downloadPlanBtn,[data-download-plan],[data-save-plan],[data-lead-submit]')
+      : null;
+    if (target) syncLeadToBrevo('download_or_save_click');
+  }, true);
+
+  window.heartyBrevoSyncTest = function() {
+    return syncLeadToBrevo('manual_console_test');
+  };
 })();
 </script>
 
