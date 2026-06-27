@@ -160,3 +160,9 @@ v33r: Snack wording cleanup. Output now labels snacks as Snack 1 and Snack 2 ins
 
 
 v33s: Fixed the plan viewer continue flow. The 'Continue to PDF + shopping list' button now opens the email/PDF/shopping unlock panel inside the modal instead of closing the modal and jumping back to the page.
+
+
+v33t: Visual polish only for the intake/setup form. Improved cards, spacing, selected ingredient pills, mobile layout and build CTA styling. No meal logic or PDF/shopping flow changes.
+
+
+v33u: Live Brevo sync added. The funnel now calls the Supabase Edge Function sync-hearty-lead-to-brevo when the lead/download form is submitted or download button is clicked. Brevo API key remains server-side in Supabase secrets.
