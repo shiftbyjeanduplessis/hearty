@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hearty free meal plan</title>
   <link rel="canonical" href="https://hearty.health/free-meal-plan.html">
-  <script>
-    window.location.replace('/free-meal-plan.html');
-  </script>
+  <script>window.location.replace('/free-meal-plan.html');</script>
 </head>
 <body>
   <p>Loading your Hearty free meal plan… <a href="/free-meal-plan.html">Click here if it does not open.</a></p>

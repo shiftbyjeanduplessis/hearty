@@ -1,30 +1,27 @@
-Hearty locked new-engine + Brevo deploy
+DEPLOY THIS ZIP EXACTLY
 
-Upload ONLY:
-- free-meal-plan.html
-- js/hearty-meal-engine.js
+Upload/replace these 3 files at the site root:
 
-Do NOT upload:
-- assets/
-- full-drop folders
-- old app meal engine files
+1. /free-meal-plan.html
+2. /free-meal-plan
+3. /js/hearty-meal-engine.js
 
-What this does:
-- Uses the current working free-meal-plan.html layout.
-- Points the page to js/hearty-meal-engine.js?v=locked-new-engine-v2 so the browser reloads the uploaded engine.
-- Includes the latest finished lead-magnet engine file from this project, not the tiny legacy app/fallback engine.
-- Adds soy/tofu exclusion support so tofu does not appear unless tofu is selected.
-- Keeps lamb excluded where the wrapper says lamb is excluded.
-- Keeps visible vegetables to max 2 names per meal line.
-- Adds the Brevo/Supabase sync endpoint and sends email, name, firstName, source.
+This build:
+- Uses the actual locked project lead-magnet meal engine:
+  hearty-main/hearty-leadmagnet-meal-engine.js
+- Replaces the broken old v33 wrapper adapter.
+- Passes the correct engine input:
+  proteins, breakfastItems, snackProteins, starches, vegetables, region, diet.
+- Hard-resets the default checked foods on first load:
+  eggs, chicken, Greek yoghurt only for proteins.
+- Does not use preferredFoodKeys or the old app-style engine input.
+- Keeps Brevo sync.
+- Keeps /free-meal-plan as redirect safety.
 
-Test after upload:
-1. Hard refresh with Ctrl+F5.
-2. Generate plan with default female / eggs + chicken + Greek yoghurt.
-3. Confirm no tofu/lamb/pork/beef appears unless selected.
-4. Download with a fresh email.
-5. Console should show:
-   [Hearty] Brevo sync start
-   [Hearty] Brevo sync success
-
-Additional v2b check: strictPreferredFoodKeys is enabled so the lead magnet does not pull proteins the user did not select.
+After deploy:
+1. Open https://hearty.health/free-meal-plan.html
+2. Ctrl+F5
+3. Generate default plan.
+4. Console should show:
+   [Hearty] Locked lead-magnet engine used
+5. Default plan should not include tofu, pork, fish, calamari, chickpeas or beans unless those are selected.

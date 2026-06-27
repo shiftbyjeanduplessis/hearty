@@ -5196,7 +5196,7 @@ body.plan-builder-hard-lock{
   </div>
 </div>
 
-<script src="js/hearty-meal-engine.js?v=locked-new-engine-v3"></script>
+<script src="js/hearty-meal-engine.js?v=leadmagnet-v394-locked"></script>
 <script src="js/hearty-funnel-v31.js?v=31p"></script>
 
 
@@ -5713,550 +5713,388 @@ body.plan-builder-hard-lock{
 (function(){
   function qs(id){ return document.getElementById(id); }
   function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
-  function esc(v){ return String(v == null ? '' : v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;"); }
+  function esc(v){
+    return String(v == null ? '' : v)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
+  }
 
-  var foodLabels = {
-    eggs:'Eggs', chicken:'Chicken breast', shredded_chicken:'Shredded chicken', greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese',
-    protein_shake:'Protein shake', tuna:'Tuna', white_fish:'White fish', prawns:'Prawns', calamari:'Calamari', mussels_clams:'Mussels/clams',
-    lean_beef:'Lean beef', lean_mince:'Lean mince', pork:'Lean pork', tofu:'Tofu', beans:'Beans/chickpeas', lentils:'Lentils', meat_free_mince:'Meat-free mince'
+  var DEFAULTS = {
+    proteins:['eggs','chicken','greek_yoghurt'],
+    carbs:['rice','potato','sweet_potato','banana','berries'],
+    veg:['spinach','lettuce','tomato','cucumber','carrot','broccoli'],
+    snacks:['fruit_choice','berries','greek_yoghurt','boiled_eggs','protein_shake','crackers']
   };
-  var carbLabels = { rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles', oats:'Oats', bread:'Bread/toast', wraps:'Wraps/pita', crackers:'Crackers', banana:'Banana', berries:'Berries', fruit_choice:'Other fruit' };
-  var vegLabels = { spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot', peppers:'Peppers', mushrooms:'Mushrooms', onion:'Onion', broccoli:'Broccoli', cauliflower:'Cauliflower', green_beans:'Green beans', cabbage:'Cabbage', baby_marrow:'Baby marrow/zucchini', peas:'Peas', butternut:'Butternut', eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus' };
-  var snackLabels = { fruit_choice:'Fruit', berries:'Berries', banana:'Banana', apple:'Apple', greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', boiled_eggs:'Boiled eggs', protein_shake:'Protein shake', milk:'Low-fat milk', nuts:'Nuts', chia_seeds:'Chia seeds', crackers:'Crackers', toast:'Toast', avocado:'Avocado' };
 
-  var vegDisplayContext = [];
+  var labels = {
+    proteins:{
+      eggs:'Eggs', chicken:'Chicken breast', shredded_chicken:'Shredded chicken',
+      greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', protein_shake:'Protein shake',
+      tuna:'Tuna', white_fish:'White fish', prawns:'Prawns', calamari:'Calamari', mussels_clams:'Mussels / clams',
+      lean_beef:'Lean beef', lean_mince:'Lean mince', pork:'Lean pork',
+      tofu:'Tofu', beans:'Beans / chickpeas', lentils:'Lentils', meat_free_mince:'Meat-free mince'
+    },
+    carbs:{
+      rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles',
+      oats:'Oats', bread:'Bread/toast', wraps:'Wraps/pita', crackers:'Crackers',
+      banana:'Banana', berries:'Berries', fruit_choice:'Fruit'
+    },
+    veg:{
+      spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot',
+      peppers:'Peppers', mushrooms:'Mushrooms', onion:'Onion', broccoli:'Broccoli',
+      cauliflower:'Cauliflower', green_beans:'Green beans', cabbage:'Cabbage',
+      baby_marrow:'Baby marrow/zucchini', peas:'Peas', butternut:'Butternut',
+      eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus'
+    },
+    snacks:{
+      fruit_choice:'Fruit', berries:'Berries', banana:'Banana', apple:'Apple',
+      greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', boiled_eggs:'Boiled eggs',
+      protein_shake:'Protein shake', milk:'Low-fat milk', nuts:'Nuts', chia_seeds:'Chia seeds',
+      crackers:'Crackers', toast:'Toast', avocado:'Avocado'
+    }
+  };
 
-  function checkedValues(id){ return qsa('#'+id+' input:checked').map(function(input){ return input.value; }); }
-  function selectedValue(group){ var btn = document.querySelector('[data-simple-choice="'+group+'"] .selected'); return btn ? btn.dataset.value : ''; }
-  function selectedLabels(values, map, fallback){
-    var names = (values || []).map(function(v){ return map[v]; }).filter(Boolean);
-    return names.length ? names.slice(0,4).join(', ') + (names.length > 4 ? ' +' + (names.length-4) : '') : fallback;
+  var currentNewEnginePlan = null;
+  var currentNewEnginePrefs = null;
+  var currentShopping = [];
+
+  function selectedValue(group){
+    var btn = document.querySelector('[data-simple-choice="'+group+'"] .selected');
+    return btn ? btn.dataset.value : '';
   }
-  function countryValue(){ var select = qs('countrySelect'); return select && select.value ? select.value : 'ZA'; }
 
-  function openPlanBuilderLocked(event){
-    if(event){ event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation(); }
-    var modal = qs('quickSetupPanel');
-    if(!modal) return false;
-    if(modal.parentNode !== document.body) document.body.appendChild(modal);
-    modal.hidden = false;
-    modal.removeAttribute('hidden');
-    modal.classList.add('show');
-    modal.style.setProperty('display','flex','important');
-    document.documentElement.classList.add('plan-builder-root-lock');
-    document.body.classList.add('plan-builder-open','plan-builder-hard-lock');
-    var shell = modal.querySelector('.generator-window-engine');
-    modal.scrollTop = 0;
-    if(shell) shell.scrollTop = 0;
-    return false;
+  function countryValue(){
+    var select = qs('countrySelect');
+    return select && select.value ? select.value : 'ZA';
   }
 
-  function closeBuilder(){
-    var modal = qs('quickSetupPanel');
-    if(modal){ modal.classList.remove('show'); modal.hidden = true; modal.style.display = 'none'; }
-    document.documentElement.classList.remove('plan-builder-root-lock');
-    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
+  function checkedValues(id){
+    return qsa('#'+id+' input:checked').map(function(input){ return input.value; });
   }
 
-  function hasAny(list, values){ return values.some(function(v){ return list.indexOf(v) !== -1; }); }
+  function setCheckedValues(id, values){
+    var set = new Set(values || []);
+    qsa('#'+id+' input').forEach(function(input){
+      input.checked = set.has(input.value);
+      var label = input.closest('.protein-check');
+      if(label) label.classList.toggle('selected', input.checked);
+    });
+  }
 
-  function inferDietFromProteins(foods){
+  function resetDefaultSelections(){
+    if(document.body.dataset.heartyLeadDefaultsLocked === '1') return;
+    document.body.dataset.heartyLeadDefaultsLocked = '1';
+
+    setCheckedValues('proteinFoodGrid', DEFAULTS.proteins);
+    setCheckedValues('carbFoodGrid', DEFAULTS.carbs);
+    setCheckedValues('vegFoodGrid', DEFAULTS.veg);
+    setCheckedValues('snackFoodGrid', DEFAULTS.snacks);
+  }
+
+  function bindSelectionClasses(){
+    qsa('#proteinFoodGrid input,#carbFoodGrid input,#vegFoodGrid input,#snackFoodGrid input').forEach(function(input){
+      if(input.dataset.heartySelectionBound === '1') return;
+      input.dataset.heartySelectionBound = '1';
+      input.addEventListener('change', function(){
+        document.body.dataset.heartyPrefsTouched = '1';
+        var label = input.closest('.protein-check');
+        if(label) label.classList.toggle('selected', input.checked);
+      });
+    });
+  }
+
+  function sexPrefs(){
+    var sex = selectedValue('sex') || 'female';
+    return {
+      sex: sex,
+      proteinMin: sex === 'male' ? 105 : 90,
+      proteinMax: sex === 'male' ? 145 : 125,
+      fibreMin: sex === 'male' ? 25 : 20,
+      fibreMax: sex === 'male' ? 35 : 30,
+      calorieFloor: sex === 'male' ? 1350 : 1150
+    };
+  }
+
+  function inferDiet(foods){
     var meat = ['chicken','shredded_chicken','lean_beef','lean_mince','pork'];
     var fish = ['tuna','white_fish','prawns','calamari','mussels_clams'];
-    if(hasAny(foods, meat)) return 'omnivore';
-    if(hasAny(foods, fish)) return 'pescatarian';
+    if(foods.some(function(f){ return meat.indexOf(f) !== -1; })) return 'omnivore';
+    if(foods.some(function(f){ return fish.indexOf(f) !== -1; })) return 'pescatarian';
     return 'vegetarian';
   }
 
-  function inferEatingStyleLabel(dietType){
-    if(dietType === 'vegetarian') return 'Vegetarian-style';
-    if(dietType === 'pescatarian') return 'Fish/seafood + vegetarian proteins';
-    return 'Omnivore';
+  function selectedLabels(values, map, fallback, max){
+    max = max || 4;
+    var names = (values || []).map(function(v){ return map[v]; }).filter(Boolean);
+    if(!names.length) return fallback;
+    return names.slice(0,max).join(', ') + (names.length > max ? ' +' + (names.length - max) : '');
   }
 
-  function inferExclusionsFromProteins(foods){
-    return {
-      pork: foods.indexOf('pork') === -1,
-      beef: !(foods.indexOf('lean_beef') !== -1 || foods.indexOf('lean_mince') !== -1),
-      chicken: !(foods.indexOf('chicken') !== -1 || foods.indexOf('shredded_chicken') !== -1),
-      fish: !(foods.indexOf('tuna') !== -1 || foods.indexOf('white_fish') !== -1),
-      seafood: !(foods.indexOf('prawns') !== -1 || foods.indexOf('calamari') !== -1 || foods.indexOf('mussels_clams') !== -1 || foods.indexOf('tuna') !== -1 || foods.indexOf('white_fish') !== -1),
-      shellfish: !(foods.indexOf('prawns') !== -1 || foods.indexOf('calamari') !== -1 || foods.indexOf('mussels_clams') !== -1),
-      dairy: !(foods.indexOf('greek_yoghurt') !== -1 || foods.indexOf('cottage_cheese') !== -1),
-      eggs: foods.indexOf('eggs') === -1,
-      legumes: !(foods.indexOf('beans') !== -1 || foods.indexOf('lentils') !== -1 || foods.indexOf('tofu') !== -1 || foods.indexOf('meat_free_mince') !== -1),
-      soy: foods.indexOf('tofu') === -1,
-      lamb: true
-    };
-  }
-
-  function mapProteinFamilies(foods){
-    var families = [];
-    function add(v){ if(families.indexOf(v) === -1) families.push(v); }
-    foods.forEach(function(food){
-      if(['chicken','shredded_chicken'].includes(food)) add('chicken');
-      if(food === 'eggs') add('eggs');
-      if(['greek_yoghurt','cottage_cheese'].includes(food)) add('dairy');
-      if(food === 'protein_shake') add('shake');
-      if(['tuna','white_fish'].includes(food)) add('fish');
-      if(['prawns','calamari','mussels_clams'].includes(food)) add('seafood_add_on');
-      if(['lean_beef','lean_mince'].includes(food)) add('red_meat');
-      if(food === 'pork') add('pork');
-      if(food === 'tofu') add('soy');
-      if(['beans','lentils'].includes(food)) add('legume');
-      if(food === 'meat_free_mince') add('vegetarian_convenience');
-    });
-    return families;
-  }
-
-  function mapFoodKeys(foods){
-    var keys = [];
-    function add(v){ if(keys.indexOf(v) === -1) keys.push(v); }
-    var map = {
-      eggs:['eggs'], chicken:['chicken_breast_cooked'], shredded_chicken:['shredded_chicken_cooked'],
-      greek_yoghurt:['greek_yoghurt'], cottage_cheese:['cottage_cheese'], protein_shake:['protein_powder'],
-      tuna:['tuna_canned_drained'], white_fish:['white_fish_cooked','hake_cooked'],
-      prawns:['prawns_cooked'], calamari:['calamari_cooked'], mussels_clams:['mussels_cooked','clams_cooked'],
-      lean_beef:['lean_beef_strips_cooked'], lean_mince:['lean_beef_mince_cooked'], pork:['lean_pork_loin_cooked'],
-      tofu:['tofu_firm'], beans:['beans_cooked','chickpeas_cooked'], lentils:['lentils_cooked'], meat_free_mince:['meat_free_mince']
-    };
-    foods.forEach(function(food){ (map[food] || []).forEach(add); });
-    return keys;
-  }
-
-  function inferVegTags(veg){
-    var tags = [];
-    function add(v){ if(tags.indexOf(v) === -1) tags.push(v); }
-    var saladVeg = ['lettuce','spinach','tomato','cucumber','carrot','celery'];
-    var stirVeg = ['peppers','mushrooms','onion','baby_marrow','carrot','cabbage'];
-    var plateVeg = ['broccoli','cauliflower','green_beans','cabbage','peas','butternut','asparagus','eggplant'];
-    var soupVeg = ['carrot','onion','celery','cabbage','butternut','peas'];
-    if(veg.some(function(v){ return saladVeg.includes(v); })) add('salad');
-    if(veg.some(function(v){ return stirVeg.includes(v); })) add('stirFry');
-    if(veg.some(function(v){ return plateVeg.includes(v); })) add('plate');
-    if(veg.some(function(v){ return soupVeg.includes(v); })) add('soup');
-    return tags;
-  }
-
-  function inferPreferredTags(prefs){
-    var tags = [];
-    function add(v){ if(tags.indexOf(v) === -1) tags.push(v); }
-    add('simple'); add('light');
-
-    (prefs.carbs || []).forEach(function(carb){
-      if(['rice','potato','sweet_potato','noodles','oats','bread','wraps','crackers'].includes(carb)) add('starch');
-      if(carb === 'wraps') add('wrap');
-      if(['fruit_choice','banana','berries'].includes(carb)) add('fruit');
-    });
-
-    inferVegTags(prefs.veg || []).forEach(add);
-    if((prefs.foods || []).some(function(f){ return ['tuna','greek_yoghurt','cottage_cheese','eggs'].includes(f); })) add('salad');
-    if((prefs.foods || []).some(function(f){ return ['chicken','lean_beef','lean_mince','tofu','prawns','calamari'].includes(f); })) add('plate');
-    if((prefs.foods || []).some(function(f){ return ['prawns','calamari','lean_beef','tofu','chicken'].includes(f); }) && inferVegTags(prefs.veg || []).includes('stirFry')) add('stirFry');
-    if((prefs.foods || []).some(function(f){ return ['lentils','beans'].includes(f); }) && inferVegTags(prefs.veg || []).includes('soup')) add('soup');
-    (prefs.snacks || []).forEach(function(snack){
-      if(['fruit_choice','berries','banana','apple'].includes(snack)) add('fruit');
-      if(['greek_yoghurt','cottage_cheese','milk'].includes(snack)) add('dairy');
-      if(snack === 'boiled_eggs') add('eggs');
-      if(snack === 'protein_shake') add('shake');
-      if(['crackers','toast'].includes(snack)) add('starch');
-      if(['nuts','avocado','chia_seeds'].includes(snack)) add('light');
-    });
-
-    return tags;
-  }
-
-  function builderPrefs(){
-    var sex = selectedValue('sex') || 'female';
+  function readPrefs(){
+    var base = sexPrefs();
     var foods = checkedValues('proteinFoodGrid');
     var carbs = checkedValues('carbFoodGrid');
     var veg = checkedValues('vegFoodGrid');
     var snacks = checkedValues('snackFoodGrid');
 
-    if(!foods.length) foods = ['eggs','chicken','greek_yoghurt'];
-    if(!carbs.length) carbs = ['rice','potato','sweet_potato','banana','berries'];
-    if(!veg.length) veg = ['spinach','lettuce','tomato','cucumber'];
-    if(!snacks.length) snacks = ['fruit_choice','berries','greek_yoghurt'];
+    if(!foods.length) foods = DEFAULTS.proteins.slice();
+    if(!carbs.length) carbs = DEFAULTS.carbs.slice();
+    if(!veg.length) veg = DEFAULTS.veg.slice();
+    if(!snacks.length) snacks = DEFAULTS.snacks.slice();
 
-    var dietType = inferDietFromProteins(foods);
-    var proteinTarget = sex === 'male' ? 120 : 100;
-    var proteinMin = sex === 'male' ? 105 : 90;
-    var proteinMax = sex === 'male' ? 145 : 125;
-    var calorieFloor = sex === 'male' ? 1350 : 1150;
-    var calorieTarget = sex === 'male' ? 1500 : 1280;
-    var fibreMin = sex === 'male' ? 25 : 20;
-    var fibreMax = sex === 'male' ? 35 : 30;
-    var fibreTarget = sex === 'male' ? 28 : 25;
-
-    return {
-      sex:sex, dietType:dietType, eatingStyle:inferEatingStyleLabel(dietType),
-      proteinTarget:proteinTarget, proteinMin:proteinMin, proteinMax:proteinMax,
-      calorieFloor:calorieFloor, calorieTarget:calorieTarget, fibreMin:fibreMin, fibreMax:fibreMax, fibreTarget:fibreTarget,
-      country:countryValue(), foods:foods, carbs:carbs, veg:veg, snacks:snacks,
-      exclusions:inferExclusionsFromProteins(foods),
-      portionProfile:sex === 'male' ? 'larger_appetite_glp1' : 'standard_low_activity_glp1'
-    };
-  }
-
-  function engineInput(prefs){
-    return {
-      country:prefs.country === 'OTHER' ? 'US' : prefs.country,
-      region:prefs.country === 'OTHER' ? 'US' : prefs.country,
-      dietType:prefs.dietType,
-      eatingStyle:prefs.eatingStyle,
-      exclusions:prefs.exclusions,
-      days:7,
-      snacksEnabled:true,
-      portionProfile:prefs.portionProfile,
-      mainStruggle:'protein simple',
-      supportMode:{ nausea:0, lowAppetite:0, bloating:0, exhaustion:1, proteinIdeas:2 },
-      preferredProteinFamilies:mapProteinFamilies(prefs.foods),
-      preferredFoodKeys:mapFoodKeys(prefs.foods),
-      strictPreferredFoodKeys:true,
-      preferredTags:inferPreferredTags(prefs),
-      vegetablePreferences:prefs.veg,
-      carbPreferences:prefs.carbs,
-      snackPreferences:prefs.snacks,
-      personalisationLevel:'lead_magnet_inferred_diet_guardrails',
-      calorieMode:'estimated_suggested_serving'
-    };
-  }
-
-  function foodName(food){
-    return String(food || '').replace(/_/g,' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); })
-      .replace('Greek Yoghurt','Greek yoghurt').replace('Tuna Canned Drained','Tuna').replace('Chicken Breast Cooked','Chicken breast')
-      .replace('Shredded Chicken Cooked','Shredded chicken').replace('Lean Beef Mince Cooked','Lean mince').replace('Lean Beef Strips Cooked','Lean beef strips')
-      .replace('Lean Pork Loin Cooked','Lean pork').replace('White Fish Cooked','White fish').replace('Hake Cooked','Hake')
-      .replace('Cooked Rice','Rice').replace('Cooked Potato','Potato').replace('Sweet Potato Cooked','Sweet potato').replace('Tofu Firm','Firm tofu')
-      .replace('Fruit Choice','fruit').replace('Stock Broth','stock/broth').replace('Light Dressing','light dressing')
-      .replace('Soy Ginger Sauce','soy ginger sauce').replace('Curry Sauce Light','light curry sauce').replace('Tomato Base','tomato base')
-      .replace('Protein Powder','protein powder').replace('Milk Low Fat','low-fat milk').replace('Bread Slice','toast').replace('Chia Seeds','chia seeds');
-  }
-
-  function selectedVegText(role){
-    var veg = vegDisplayContext || [];
-    var labels = veg.map(function(v){ return vegLabels[v]; }).filter(Boolean);
-    var salad = ['lettuce','spinach','tomato','cucumber','carrot','celery'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
-    var cooked = ['broccoli','cauliflower','green_beans','cabbage','baby_marrow','peas','butternut','eggplant','asparagus','mushrooms','onion','peppers','carrot'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
-    var soup = ['carrot','onion','celery','cabbage','butternut','peas'].filter(function(v){ return veg.includes(v); }).map(function(v){ return vegLabels[v]; });
-    if(role === 'salad') return (salad.length ? salad : labels).slice(0,2).join(', ') || 'selected salad vegetables';
-    if(role === 'soup') return (soup.length ? soup : labels).slice(0,2).join(', ') || 'selected vegetables';
-    if(role === 'cooked') return (cooked.length ? cooked : labels).slice(0,2).join(', ') || 'selected vegetables';
-    return labels.slice(0,2).join(', ') || 'selected vegetables';
-  }
-
-  function displayFoodName(component){
-    var food = component && component.food;
-    if(food === 'salad_vegetables') return selectedVegText('salad');
-    if(food === 'stir_fry_vegetables' || food === 'mixed_vegetables' || food === 'cooked_green_vegetables' || food === 'roast_vegetables') return selectedVegText('cooked');
-    if(food === 'soup_vegetables') return selectedVegText('soup');
-    if(food === 'lettuce_cups') return 'lettuce cups';
-    return foodName(food);
-  }
-
-  function displayShoppingFoodName(item){
-    var raw = String((item && (item.food || item.name || item.item)) || '').trim();
-    var key = raw.toLowerCase().replace(/_/g,' ');
-    if(key === 'salad vegetables' || key === 'salad_vegetables') return selectedVegText('salad');
-    if(key === 'soup vegetables' || key === 'soup_vegetables') return selectedVegText('soup');
-    if(
-      key === 'mixed vegetables' ||
-      key === 'mixed_vegetables' ||
-      key === 'stir-fry vegetables' ||
-      key === 'stir fry vegetables' ||
-      key === 'stir_fry_vegetables' ||
-      key === 'green vegetables' ||
-      key === 'cooked green vegetables' ||
-      key === 'cooked_green_vegetables' ||
-      key === 'roast vegetables' ||
-      key === 'roast_vegetables'
-    ){
-      return selectedVegText('cooked');
-    }
-    return raw;
-  }
-
-  function snackTitleFromComponents(components){
-    var names = (components || []).map(function(c){ return displayFoodName(c); }).filter(Boolean);
-    if(!names.length) return 'Simple snack';
-    if(names.length === 1) return names[0] + ' snack';
-    return names.slice(0,2).join(' + ') + ' snack';
-  }
-
-  function makeMeal(title, description, components, input){
-    var meal = {
-      id:'lead_optional_addon_' + title.toLowerCase().replace(/[^a-z0-9]+/g,'_'),
-      title:title,
-      description:description,
-      mealType:'snack',
-      template:'guardrail',
-      proteinFamily:'guardrail',
-      protein:'mixed',
-      tags:['snack','optional_addon'],
-      supportTags:[],
-      components:components,
-      swapGroup:'optional_addon',
-      nutrition:null,
-      nutritionNote:'Estimated for the suggested serving.'
-    };
-    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.calculateMealNutrition === 'function'){
-      meal.nutrition = window.HeartyMealEngine.calculateMealNutrition(meal, input);
-    } else {
-      meal.nutrition = { calories:0, protein:0, carbs:0, fibre:0 };
-    }
-    return meal;
-  }
-
-
-  function isProteinShakeMeal(meal){
-    return !!(meal && Array.isArray(meal.components) && meal.components.some(function(c){ return c.food === 'protein_powder'; }));
-  }
-
-  function lowProteinCalorieSnack(prefs, input){
-    var snackPrefs = prefs.snacks || [];
-    var comps = [];
-    if(snackPrefs.includes('banana')) comps.push({ food:'banana', role:'fruit', amount:1, unit:'item', optional:false });
-    else if(snackPrefs.includes('fruit_choice')) comps.push({ food:'fruit_choice', role:'fruit', amount:1, unit:'item', optional:false });
-    else comps.push({ food:'berries', role:'fruit', amount:160, unit:'g', optional:false });
-
-    if(snackPrefs.includes('nuts')) comps.push({ food:'nuts', role:'fat', amount:20, unit:'g', optional:false });
-    else if(snackPrefs.includes('crackers')) comps.push({ food:'crackers', role:'starch', amount:30, unit:'g', optional:false });
-    else comps.push({ food:'bread_slice', role:'starch', amount:1, unit:'item', optional:false });
-
-    return makeMeal(snackTitleFromComponents(comps), 'Included in the totals.', comps, input);
-  }
-
-  function amountText(component){
-    if(!component) return '';
-    var amount = Math.round(Number(component.amount || 0));
-    if(!amount) return '';
-    return amount + (component.unit === 'item' ? ' item' + (amount > 1 ? 's' : '') : component.unit);
-  }
-
-  function componentLine(meal){
-    if(!meal || !Array.isArray(meal.components)) return '';
-    var grouped = {};
-    meal.components.forEach(function(c){
-      var name = displayFoodName(c);
-      var unit = c.unit || 'g';
-      var key = name + '|' + unit;
-      if(!grouped[key]) grouped[key] = { name:name, unit:unit, amount:0 };
-      grouped[key].amount += Number(c.amount || 0);
+    return Object.assign(base, {
+      country: countryValue(),
+      diet: inferDiet(foods),
+      foods: foods,
+      carbs: carbs,
+      veg: veg,
+      snacks: snacks
     });
-    return Object.keys(grouped).slice(0,6).map(function(key){
-      var item = grouped[key];
-      var amount = Math.round(item.amount);
-      if(!amount) return '';
-      return amount + (item.unit === 'item' ? ' item' + (amount > 1 ? 's' : '') : item.unit) + ' ' + item.name;
-    }).filter(Boolean).join(' · ');
   }
 
-  function dayNutrition(plan, day, input){
-    try{ if(window.HeartyMealEngine && typeof window.HeartyMealEngine.calculateDayNutrition === 'function') return window.HeartyMealEngine.calculateDayNutrition(day, input); }catch(e){}
-    var meals = day.meals || {}; var snacks = meals.snacks || [];
-    return [meals.breakfast, meals.lunch, meals.dinner].concat(snacks).reduce(function(total, meal){
-      var n = meal && meal.nutrition ? meal.nutrition : {};
-      total.calories += Number(n.calories || 0); total.protein += Number(n.protein || 0); total.carbs += Number(n.carbs || 0); total.fibre += Number(n.fibre || 0);
-      return total;
-    }, { calories:0, protein:0, carbs:0, fibre:0 });
+  function addUnique(arr, value){
+    if(value && arr.indexOf(value) === -1) arr.push(value);
   }
 
-  function optionalAddonComponents(prefs, currentNutrition){
-    var snackPrefs = prefs.snacks || [];
-    var needProtein = Math.max(0, prefs.proteinMin - currentNutrition.protein);
-    var needCalories = Math.max(0, prefs.calorieFloor - currentNutrition.calories);
-    var needFibre = Math.max(0, prefs.fibreMin - currentNutrition.fibre);
-    var highProtein = currentNutrition.protein >= prefs.proteinMax;
-    var comps = [];
+  function buildEngineInput(prefs){
+    var proteins = [];
+    var breakfastItems = [];
+    var snackProteins = [];
+    var starches = [];
+    var vegetables = [];
 
-    function addFruit(){
-      if(snackPrefs.includes('banana')) comps.push({ food:'banana', role:'fruit', amount:1, unit:'item', optional:false });
-      else if(snackPrefs.includes('apple')) comps.push({ food:'fruit_choice', role:'fruit', amount:1, unit:'item', optional:false });
-      else if(snackPrefs.includes('fruit_choice')) comps.push({ food:'fruit_choice', role:'fruit', amount:1, unit:'item', optional:false });
-      else comps.push({ food:'berries', role:'fruit', amount:160, unit:'g', optional:false });
-    }
-
-    function addCarbFat(){
-      if(snackPrefs.includes('nuts')) comps.push({ food:'nuts', role:'fat', amount:20, unit:'g', optional:false });
-      else if(snackPrefs.includes('avocado')) comps.push({ food:'avocado', role:'fat', amount:50, unit:'g', optional:false });
-      else if(snackPrefs.includes('chia_seeds')) comps.push({ food:'chia_seeds', role:'fat', amount:12, unit:'g', optional:false });
-      else if(snackPrefs.includes('crackers')) comps.push({ food:'crackers', role:'starch', amount:30, unit:'g', optional:false });
-      else if(snackPrefs.includes('toast')) comps.push({ food:'bread_slice', role:'starch', amount:1, unit:'item', optional:false });
-      else comps.push({ food:'bread_slice', role:'starch', amount:1, unit:'item', optional:false });
-    }
-
-    function addProtein(){
-      if(highProtein) return;
-      if(snackPrefs.includes('protein_shake') && needProtein > 18) comps.push({ food:'protein_powder', role:'protein', amount:1, unit:'item', optional:false });
-      else if(snackPrefs.includes('cottage_cheese')) comps.push({ food:'cottage_cheese', role:'dairy', amount:150, unit:'g', optional:false });
-      else if(snackPrefs.includes('boiled_eggs')) comps.push({ food:'eggs', role:'protein', amount:1, unit:'item', optional:false });
-      else if(snackPrefs.includes('milk')) comps.push({ food:'milk_low_fat', role:'dairy', amount:200, unit:'g', optional:false });
-      else comps.push({ food:'greek_yoghurt', role:'dairy', amount:170, unit:'g', optional:false });
-    }
-
-    if(needProtein > 5) addProtein();
-
-    if(needCalories > 40 || needFibre > 0){
-      addFruit();
-      if(needCalories > 90 || needFibre > 3) addCarbFat();
-    }
-
-    if(!comps.length && (needCalories > 0 || needFibre > 0)){
-      addFruit();
-      addCarbFat();
-    }
-
-    return comps;
-  }
-
-  function applyLeadNutritionGuardrails(plan, prefs, input){
-    if(!plan || !Array.isArray(plan.days)) return plan;
-
-    plan.days.forEach(function(day){
-      if(!day.meals) return;
-      if(!Array.isArray(day.meals.snacks)) day.meals.snacks = [];
-
-      var n = dayNutrition(plan, day, input);
-
-      // If a protein shake pushed the day above range, replace it with a lower-protein calorie/fibre snack.
-      if(n.protein > prefs.proteinMax && day.meals.snacks.some(isProteinShakeMeal)){
-        day.meals.snacks = day.meals.snacks.map(function(snack){
-          return isProteinShakeMeal(snack) ? lowProteinCalorieSnack(prefs, input) : snack;
-        });
-        n = dayNutrition(plan, day, input);
-      }
-
-      var tooLowProtein = n.protein < prefs.proteinMin;
-      var tooLowCalories = n.calories < prefs.calorieFloor;
-      var tooLowFibre = n.fibre < prefs.fibreMin;
-      var alreadyHighProtein = n.protein > prefs.proteinMax;
-
-      // Max one add-on. If protein is high, use calories/fibre only, not protein powder/shake.
-      if(tooLowProtein || tooLowCalories || tooLowFibre){
-        var comps = optionalAddonComponents(prefs, n);
-        if(comps.length){
-          if(alreadyHighProtein){
-            comps = comps.filter(function(c){ return c.food !== 'protein_powder' && c.food !== 'greek_yoghurt' && c.food !== 'cottage_cheese' && c.food !== 'eggs'; });
-            if(!comps.length) comps = [{ food:'fruit_choice', role:'fruit', amount:1, unit:'item', optional:false }, { food:'bread_slice', role:'starch', amount:1, unit:'item', optional:false }];
-          }
-          var addon = makeMeal(snackTitleFromComponents(comps), 'Included in the totals.', comps, input);
-          day.meals.snacks.push(addon);
-        }
-      }
-
-      var finalN = dayNutrition(plan, day, input);
-      day.leadTargets = {
-        caloriesFloor:prefs.calorieFloor,
-        caloriesTarget:prefs.calorieTarget,
-        proteinTarget:prefs.proteinTarget,
-        proteinBand:prefs.proteinMin + '–' + prefs.proteinMax + 'g',
-        fibreTarget:prefs.fibreTarget,
-        fibreMin:prefs.fibreMin,
-        fibreMax:prefs.fibreMax,
-        fibreRange:prefs.fibreMin + '–' + prefs.fibreMax + 'g'
-      };
-      day.flags = day.flags || [];
-      if(finalN.calories >= prefs.calorieFloor) day.flags.push('lead_calorie_floor_met');
-      if(finalN.protein >= prefs.proteinMin && finalN.protein <= prefs.proteinMax) day.flags.push('lead_protein_band_met');
-      if(finalN.fibre >= prefs.fibreMin && finalN.fibre <= prefs.fibreMax) day.flags.push('lead_fibre_range_met');
-      if(finalN.fibre > prefs.fibreMax) day.flags.push('lead_fibre_above_range');
+    (prefs.foods || []).forEach(function(f){
+      if(f === 'eggs'){ addUnique(proteins,'eggs'); addUnique(breakfastItems,'eggs'); addUnique(snackProteins,'boiled_eggs'); }
+      if(f === 'chicken' || f === 'shredded_chicken'){ addUnique(proteins,'chicken'); addUnique(snackProteins,'chicken_strips'); }
+      if(f === 'greek_yoghurt'){ addUnique(proteins,'dairy'); addUnique(breakfastItems,'greek_yoghurt'); addUnique(snackProteins,'yoghurt'); }
+      if(f === 'cottage_cheese'){ addUnique(proteins,'dairy'); addUnique(breakfastItems,'cottage_cheese'); addUnique(snackProteins,'cottage_cheese'); }
+      if(f === 'protein_shake'){ addUnique(proteins,'protein_powder'); addUnique(breakfastItems,'protein_shake'); addUnique(snackProteins,'protein_shake'); }
+      if(f === 'tuna' || f === 'white_fish' || f === 'prawns' || f === 'calamari' || f === 'mussels_clams'){ addUnique(proteins,'fish'); addUnique(snackProteins,'tuna'); }
+      if(f === 'lean_beef' || f === 'lean_mince'){ addUnique(proteins,'beef'); addUnique(snackProteins,'biltong'); }
+      if(f === 'pork'){ addUnique(proteins,'pork'); }
+      if(f === 'tofu'){ addUnique(proteins,'tofu'); addUnique(breakfastItems,'tofu_scramble'); addUnique(snackProteins,'tofu_bites'); }
+      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); addUnique(breakfastItems,'hummus_plate'); addUnique(snackProteins,'hummus'); }
+      if(f === 'lentils'){ addUnique(proteins,'lentils'); addUnique(breakfastItems,'hummus_plate'); addUnique(snackProteins,'hummus'); }
+      if(f === 'meat_free_mince'){ addUnique(proteins,'beans'); addUnique(proteins,'lentils'); }
     });
 
-    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.buildShoppingList === 'function'){
-      plan.shoppingList = window.HeartyMealEngine.buildShoppingList(plan, input);
+    // The locked engine requires enough snack variety. These are safe support options, not main-meal proteins.
+    (prefs.snacks || []).forEach(function(s){
+      if(s === 'greek_yoghurt') { addUnique(proteins,'dairy'); addUnique(snackProteins,'yoghurt'); }
+      if(s === 'cottage_cheese') { addUnique(proteins,'dairy'); addUnique(snackProteins,'cottage_cheese'); }
+      if(s === 'boiled_eggs') { addUnique(proteins,'eggs'); addUnique(snackProteins,'boiled_eggs'); }
+      if(s === 'protein_shake') { addUnique(proteins,'protein_powder'); addUnique(snackProteins,'protein_shake'); }
+      if(s === 'fruit_choice' || s === 'berries' || s === 'banana' || s === 'apple') addUnique(snackProteins,'fruit');
+      if(s === 'crackers' || s === 'toast') addUnique(snackProteins,'wholegrain_crackers');
+    });
+
+    // Default helper options so a low-friction lead magnet does not block on technical gate rules.
+    if(proteins.length < 3) addUnique(proteins,'protein_powder');
+    if(snackProteins.length < 4) {
+      addUnique(snackProteins,'fruit');
+      addUnique(snackProteins,'wholegrain_crackers');
+      if(proteins.indexOf('protein_powder') !== -1) addUnique(snackProteins,'protein_shake');
     }
-    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.calculatePlanNutrition === 'function'){
-      plan.nutrition = window.HeartyMealEngine.calculatePlanNutrition(plan, input);
+    if(!breakfastItems.length){
+      if(proteins.indexOf('eggs') !== -1) addUnique(breakfastItems,'eggs');
+      else if(proteins.indexOf('dairy') !== -1) addUnique(breakfastItems,'greek_yoghurt');
+      else if(proteins.indexOf('protein_powder') !== -1) addUnique(breakfastItems,'protein_shake');
     }
-    return plan;
+
+    (prefs.carbs || []).forEach(function(c){
+      if(c === 'rice') addUnique(starches,'rice');
+      if(c === 'potato') addUnique(starches,'potato');
+      if(c === 'sweet_potato') addUnique(starches,'sweet_potato');
+      if(c === 'wraps') addUnique(starches,'wrap');
+      if(c === 'noodles') addUnique(starches,'pasta');
+    });
+    if(!starches.length) { addUnique(starches,'rice'); addUnique(starches,'potato'); }
+
+    (prefs.veg || []).forEach(function(v){
+      var map = { baby_marrow:'baby marrow', green_beans:'green beans', eggplant:'aubergine' };
+      addUnique(vegetables, map[v] || v.replace(/_/g,' '));
+    });
+    ['spinach','tomato','carrot','lettuce','cucumber'].forEach(function(v){
+      if(vegetables.length < 5) addUnique(vegetables, v);
+    });
+
+    return {
+      region: prefs.country === 'OTHER' ? 'US' : prefs.country,
+      diet: prefs.diet,
+      proteins: proteins,
+      breakfastItems: breakfastItems,
+      snackProteins: snackProteins,
+      starches: starches,
+      vegetables: vegetables,
+      lowerStarch: false,
+      leftoverLunches: false,
+      planTier: prefs.sex === 'male' ? 3 : 2,
+      targets: {
+        proteinMin: prefs.proteinMin,
+        proteinMax: prefs.proteinMax,
+        fibreMin: prefs.fibreMin,
+        fibreMax: prefs.fibreMax,
+        calorieFloor: prefs.calorieFloor
+      }
+    };
+  }
+
+  function proteinMidpoint(value){
+    var nums = String(value || '').match(/\d+/g) || [];
+    if(!nums.length) return 0;
+    nums = nums.map(Number);
+    return nums.reduce(function(a,b){ return a+b; },0) / nums.length;
+  }
+
+  function dayProtein(day){
+    return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
+      .reduce(function(sum, meal){ return sum + proteinMidpoint(meal && meal.protein); }, 0);
   }
 
   function mealRow(label, meal){
-    var n = meal && meal.nutrition ? meal.nutrition : {};
-    return '<div class="full-meal-row full-engine-meal-row"><b>' + esc(label) + '</b><div><strong>' + esc(meal && meal.title ? meal.title : 'Simple protein option') + '</strong><small>' + esc(Math.round(n.protein || 0) + 'g protein · ' + Math.round(n.fibre || 0) + 'g fibre · ±' + Math.round(n.calories || 0) + ' kcal') + (meal && meal.description ? ' · ' + esc(meal.description) : '') + '</small>' + (componentLine(meal) ? '<em class="engine-components">' + esc(componentLine(meal)) + '</em>' : '') + '</div></div>';
+    if(!meal) return '';
+    return '<div class="full-meal-row">' +
+      '<b>' + esc(label) + '</b>' +
+      '<div><strong>' + esc(meal.name || '') + '</strong>' +
+      '<small>' + esc((meal.protein ? 'Approx. ' + meal.protein + ' protein · ' : '') + (meal.detail || '')) + '</small></div>' +
+      '</div>';
   }
 
-  function fibreClass(fibre, min, max){
-    if(fibre >= min && fibre <= max) return 'good';
-    if(fibre > max) return 'ok';
-    if(fibre >= Math.max(15, min - 4)) return 'ok';
-    return 'low';
-  }
-
-  function renderMacroIndicators(n, day){
-    var min = (day.leadTargets && day.leadTargets.fibreMin) || 20;
-    var max = (day.leadTargets && day.leadTargets.fibreMax) || 30;
-    return '<div class="macro-indicator-row">' +
-      '<span class="macro-pill"><b>Protein</b>' + Math.round(n.protein || 0) + 'g</span>' +
-      '<span class="macro-pill"><b>Calories</b>±' + Math.round(n.calories || 0) + '</span>' +
-      '<span class="macro-pill"><b>Carbs</b>' + Math.round(n.carbs || 0) + 'g</span>' +
-      '<span class="macro-pill fibre-' + fibreClass(n.fibre || 0, min, max) + '"><b>Fibre</b>' + Math.round(n.fibre || 0) + 'g</span>' +
-    '</div>';
-  }
-
-  function renderPlan(plan, input){
+  function renderPlan(plan, prefs){
     var target = qs('viewerPlanRows');
-    if(!target || !plan || !Array.isArray(plan.days)) return;
+    if(!target) return;
 
-    var html = plan.days.slice(0,7).map(function(day){
-      var meals = day.meals || {}; var snacks = meals.snacks || []; var n = dayNutrition(plan, day, input);
-      var snackRows = snacks.map(function(snack, index){ return mealRow(index === 0 ? 'Snack 1' : 'Snack 2', snack); }).join('');
-      var targetLine = day.leadTargets ? '<div class="day-target-line">Guide: ' + esc(day.leadTargets.proteinBand) + ' protein · ' + esc(day.leadTargets.fibreRange) + ' fibre · calories usually ±' + esc(day.leadTargets.caloriesFloor) + '+ kcal</div>' : '';
-      return '<article class="full-day-card full-engine-day-card"><h4><span>Day ' + esc(day.dayNumber || '') + '</span><em class="day-protein-total">' + Math.round(n.protein || 0) + 'g protein</em></h4>' + renderMacroIndicators(n, day) + targetLine + '<div class="full-day-meals">' + mealRow('Breakfast', meals.breakfast) + mealRow('Lunch', meals.lunch) + mealRow('Dinner', meals.dinner) + snackRows + '</div></article>';
+    if(!plan || !Array.isArray(plan.days) || !plan.days.length){
+      var msg = plan && plan.messages && plan.messages.length ? plan.messages.join(' ') : 'The plan could not be generated. Please choose a few more proteins and try again.';
+      target.innerHTML = '<article class="full-day-card"><h4><span>Check your choices</span></h4><p>' + esc(msg) + '</p></article>';
+      return;
+    }
+
+    target.innerHTML = plan.days.slice(0,7).map(function(day){
+      var protein = Math.round(dayProtein(day));
+      return '<article class="full-day-card full-engine-day-card">' +
+        '<h4><span>Day ' + esc(day.day || '') + '</span><em class="day-protein-total">±' + protein + 'g protein</em></h4>' +
+        '<div class="day-target-line">Guide: ' + esc(prefs.proteinMin + '–' + prefs.proteinMax + 'g protein · ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g fibre') + '</div>' +
+        '<div class="full-day-meals">' +
+          mealRow('Breakfast', day.breakfast) +
+          mealRow('Snack 1', day.morningSnack) +
+          mealRow('Lunch', day.lunch) +
+          mealRow('Snack 2', day.afternoonSnack) +
+          mealRow('Dinner', day.dinner) +
+        '</div></article>';
     }).join('');
 
-    target.innerHTML = html;
     var hidden = qs('fullPlanRows');
     if(hidden) hidden.innerHTML = '';
     var onscreen = qs('onscreenFullPlan');
-    if(onscreen){
-      onscreen.hidden = true;
-      onscreen.classList.remove('show');
-    }
+    if(onscreen){ onscreen.hidden = true; onscreen.classList.remove('show'); }
   }
 
   function renderChips(prefs){
-    var row = qs('viewerChoiceRow'); if(!row) return;
-    row.innerHTML = '<span>' + esc(prefs.sex === 'male' ? 'Male default' : 'Female default') + '</span>' +
-      '<span>' + esc(prefs.eatingStyle) + '</span>' +
+    var row = qs('viewerChoiceRow');
+    if(!row) return;
+    row.innerHTML =
+      '<span>' + esc(prefs.sex === 'male' ? 'Male default' : 'Female default') + '</span>' +
+      '<span>' + esc(prefs.diet === 'vegetarian' ? 'Vegetarian' : prefs.diet === 'pescatarian' ? 'Pescatarian' : 'Omnivore') + '</span>' +
       '<span>' + esc(prefs.proteinMin + '–' + prefs.proteinMax + 'g protein guide') + '</span>' +
       '<span>' + esc('Fibre guide ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g') + '</span>' +
-      '<span>' + esc('Calories usually ±' + prefs.calorieFloor + '+ kcal') + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.foods, foodLabels, 'Flexible proteins')) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.carbs, carbLabels, 'Flexible carbs/fruit')) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.veg, vegLabels, 'Flexible vegetables')) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.snacks, snackLabels, 'Flexible snacks')) + '</span>';
+      '<span>' + esc(selectedLabels(prefs.foods, labels.proteins, 'Flexible proteins', 4)) + '</span>' +
+      '<span>' + esc(selectedLabels(prefs.carbs, labels.carbs, 'Flexible carbs/fruit', 4)) + '</span>' +
+      '<span>' + esc(selectedLabels(prefs.veg, labels.veg, 'Flexible vegetables', 4)) + '</span>' +
+      '<span>' + esc(selectedLabels(prefs.snacks, labels.snacks, 'Flexible snacks', 4)) + '</span>';
   }
 
-  function flattenShoppingList(list){
-    if(!list) return []; if(Array.isArray(list)) return list;
-    var out = []; Object.keys(list).forEach(function(group){ (list[group] || []).forEach(function(item){ out.push({ group:group, food:item.food || item.name || item.item || '', amount:item.amount || item.quantity || '', unit:item.unit || '' }); }); });
-    return out;
+  function makeShoppingList(prefs, plan){
+    var items = [];
+    function add(text){ if(text && items.indexOf(text) === -1) items.push(text); }
+
+    (prefs.foods || []).forEach(function(f){
+      var name = labels.proteins[f];
+      if(name) add(name);
+    });
+    (prefs.carbs || []).forEach(function(c){
+      var name = labels.carbs[c];
+      if(name) add(name);
+    });
+    (prefs.veg || []).forEach(function(v){
+      var name = labels.veg[v];
+      if(name) add(name);
+    });
+    (prefs.snacks || []).forEach(function(s){
+      var name = labels.snacks[s];
+      if(name) add(name);
+    });
+
+    if(plan && Array.isArray(plan.days)){
+      var text = JSON.stringify(plan.days).toLowerCase();
+      ['stock','herbs','curry spices','tomato','berries','fruit','lemon'].forEach(function(x){
+        if(text.indexOf(x) !== -1) add(x);
+      });
+    }
+
+    return items.slice(0,28);
   }
 
-  function renderShopping(plan){
-    var wrap = qs('shoppingPreview'); if(!wrap || !plan) return;
-    var list = flattenShoppingList(plan.shoppingList).slice(0,18);
-    wrap.innerHTML = list.map(function(item){ return '<span>' + esc([item.amount, item.unit, displayShoppingFoodName(item)].filter(Boolean).join(' ')) + '</span>'; }).join('');
+  function renderShopping(prefs, plan){
+    currentShopping = makeShoppingList(prefs, plan);
+    var wrap = qs('shoppingPreview');
+    if(!wrap) return;
+    wrap.innerHTML = currentShopping.slice(0,18).map(function(item){
+      return '<span>' + esc(item) + '</span>';
+    }).join('');
   }
 
   function planToText(plan, prefs, input){
-    if(!plan || !Array.isArray(plan.days)) return 'Your Hearty meal plan could not be generated.';
-    var lines = ['Hearty 7-day GLP-1 meal plan', 'Setup: ' + (prefs.sex === 'male' ? 'Male' : 'Female') + ', ' + prefs.eatingStyle + ', guide ' + prefs.proteinMin + '–' + prefs.proteinMax + 'g protein/day, fibre ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g, calories usually ±' + prefs.calorieFloor + '+ kcal', ''];
+    if(!plan || !Array.isArray(plan.days) || !plan.days.length) return 'Your Hearty meal plan could not be generated.';
+    var lines = [
+      'Hearty 7-day GLP-1 meal plan',
+      'Setup: ' + (prefs.sex === 'male' ? 'Male' : 'Female') + ', ' + (prefs.diet === 'vegetarian' ? 'Vegetarian' : prefs.diet === 'pescatarian' ? 'Pescatarian' : 'Omnivore') + ', guide ' + prefs.proteinMin + '–' + prefs.proteinMax + 'g protein/day',
+      ''
+    ];
+
     plan.days.slice(0,7).forEach(function(day){
-      var meals = day.meals || {}; var snacks = meals.snacks || []; var n = dayNutrition(plan, day, input);
-      lines.push('Day ' + day.dayNumber + ' — ' + Math.round(n.protein || 0) + 'g protein, ' + Math.round(n.fibre || 0) + 'g fibre, ±' + Math.round(n.calories || 0) + ' kcal');
-      [['Breakfast', meals.breakfast], ['Lunch', meals.lunch], ['Dinner', meals.dinner]].concat(snacks.map(function(s, i){ return [i === 0 ? 'Snack 1' : 'Snack 2', s]; })).forEach(function(pair){
-        var meal = pair[1]; if(!meal) return; var mn = meal.nutrition || {};
-        lines.push(pair[0] + ': ' + meal.title + ' (' + Math.round(mn.protein || 0) + 'g protein, ' + Math.round(mn.fibre || 0) + 'g fibre, ±' + Math.round(mn.calories || 0) + ' kcal)');
-        if(meal.description) lines.push('  ' + meal.description);
-        if(componentLine(meal)) lines.push('  ' + componentLine(meal));
+      lines.push('Day ' + day.day + ' — approx. ' + Math.round(dayProtein(day)) + 'g protein');
+      [['Breakfast', day.breakfast], ['Snack 1', day.morningSnack], ['Lunch', day.lunch], ['Snack 2', day.afternoonSnack], ['Dinner', day.dinner]].forEach(function(pair){
+        var meal = pair[1];
+        if(!meal) return;
+        lines.push(pair[0] + ': ' + meal.name + (meal.protein ? ' (' + meal.protein + ' protein)' : ''));
+        if(meal.detail) lines.push('  ' + meal.detail);
       });
+      if(day.leftoverInstruction) lines.push('  ' + day.leftoverInstruction);
       lines.push('');
     });
-    var shopping = flattenShoppingList(plan.shoppingList);
-    if(shopping.length){ lines.push('Shopping list preview'); shopping.forEach(function(item){ lines.push('- ' + [item.amount, item.unit, displayShoppingFoodName(item)].filter(Boolean).join(' ')); }); }
+
+    if(currentShopping.length){
+      lines.push('Shopping list preview');
+      currentShopping.forEach(function(item){ lines.push('- ' + item); });
+    }
+
     return lines.join('\n');
+  }
+
+  function openViewer(){
+    var modal = qs('planViewerModal');
+    if(!modal) return;
+    if(modal.parentNode !== document.body) document.body.appendChild(modal);
+    modal.hidden = false;
+    modal.removeAttribute('hidden');
+    modal.classList.add('show');
+    modal.style.setProperty('display','flex','important');
+    document.body.classList.add('plan-viewer-open');
+  }
+
+  function closeBuilder(){
+    var modal = qs('quickSetupPanel');
+    if(modal){
+      modal.classList.remove('show');
+      modal.hidden = true;
+      modal.style.display = 'none';
+    }
+    document.documentElement.classList.remove('plan-builder-root-lock');
+    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
   }
 
   function openViewerUnlock(event){
@@ -6271,7 +6109,6 @@ body.plan-builder-hard-lock{
     var bottom = qs('viewerBottomCta');
     if(!mount || !panel) return false;
 
-    // Move the real lead-capture panel into the modal so existing download/email logic still works.
     if(panel.parentNode !== mount) mount.appendChild(panel);
 
     mount.hidden = false;
@@ -6293,61 +6130,96 @@ body.plan-builder-hard-lock{
     return false;
   }
 
-  function openViewer(){
-    var modal = qs('planViewerModal'); if(!modal) return;
-    if(modal.parentNode !== document.body) document.body.appendChild(modal);
-    modal.hidden = false; modal.removeAttribute('hidden'); modal.classList.add('show'); modal.style.setProperty('display','flex','important'); document.body.classList.add('plan-viewer-open');
-  }
+  function buildWithLockedLeadEngine(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
 
-  function buildWithFullEngine(event){
-    if(event){ event.preventDefault(); event.stopPropagation(); if(event.stopImmediatePropagation) event.stopImmediatePropagation(); }
-    if(!window.HeartyMealEngine || typeof window.HeartyMealEngine.generatePlan !== 'function'){ alert('The full meal engine did not load. Please refresh and try again.'); return false; }
-    var prefs = builderPrefs();
-    vegDisplayContext = prefs.veg || [];
-    var input = engineInput(prefs);
+    if(!window.HeartyMealEngine || typeof window.HeartyMealEngine.generatePlan !== 'function'){
+      alert('The Hearty meal engine did not load. Please refresh and try again.');
+      return false;
+    }
+
+    var prefs = readPrefs();
+    var input = buildEngineInput(prefs);
     var plan = window.HeartyMealEngine.generatePlan(input);
-    plan = applyLeadNutritionGuardrails(plan, prefs, input);
-    window.heartyLeadCurrentPlan = plan; window.heartyLeadCurrentInput = input; window.heartyLeadCurrentPrefs = prefs; window.heartyLeadPlanText = function(){ return planToText(plan, prefs, input); };
-    renderChips(prefs); renderPlan(plan, input); renderShopping(plan);
-    var unlock = qs('inlineUnlockPanel'); if(unlock) unlock.classList.remove('show');
-    var mount = qs('viewerUnlockMount'); if(mount){ mount.hidden = true; mount.classList.remove('show'); }
-    var bottom = qs('viewerBottomCta'); if(bottom) bottom.classList.remove('after-unlock');
-    closeBuilder(); openViewer(); return false;
+
+    currentNewEnginePlan = plan;
+    currentNewEnginePrefs = prefs;
+
+    window.heartyLeadCurrentPlan = plan;
+    window.heartyLeadCurrentInput = input;
+    window.heartyLeadCurrentPrefs = prefs;
+    window.heartyLeadPlanText = function(){ return planToText(plan, prefs, input); };
+
+    console.log('[Hearty] Locked lead-magnet engine used', {
+      version: window.HeartyMealEngine.VERSION,
+      source: window.HeartyMealEngine.ENGINE_SOURCE,
+      input: input,
+      status: plan && plan.status,
+      gate: plan && plan.gate
+    });
+
+    renderChips(prefs);
+    renderPlan(plan, prefs);
+    renderShopping(prefs, plan);
+
+    var unlock = qs('inlineUnlockPanel');
+    if(unlock) unlock.classList.remove('show');
+    var mount = qs('viewerUnlockMount');
+    if(mount){ mount.hidden = true; mount.classList.remove('show'); }
+    var bottom = qs('viewerBottomCta');
+    if(bottom) bottom.classList.remove('after-unlock');
+
+    closeBuilder();
+    openViewer();
+    return false;
   }
 
-  function wireFullEngine(){
-    var triggerSelector = '#heroGeneratePlanBtn,#rightTopGenerateBtn,#fullPlanBtn,[data-open-plan-setup],[data-force-open-builder],a[href="#quickSetupPanel"]';
-    qsa(triggerSelector).forEach(function(el){
-      el.setAttribute('href','#quickSetupPanel');
-      el.onclick = openPlanBuilderLocked;
-      el.addEventListener('click', openPlanBuilderLocked, true);
-    });
-    document.addEventListener('click', function(e){
-      var trigger = e.target.closest(triggerSelector);
-      if(trigger) openPlanBuilderLocked(e);
-    }, true);
+  function bindLockedAdapter(){
+    resetDefaultSelections();
+    bindSelectionClasses();
 
     var build = qs('modalBuildPlanBtn');
-    if(build){ build.onclick = buildWithFullEngine; build.addEventListener('click', buildWithFullEngine, true); }
+    if(build && build.dataset.heartyLockedAdapter !== '1'){
+      build.dataset.heartyLockedAdapter = '1';
+      build.onclick = buildWithLockedLeadEngine;
+      build.addEventListener('click', buildWithLockedLeadEngine, true);
+    }
 
     var viewerDownload = qs('viewerDownloadBtn');
-    if(viewerDownload){
+    if(viewerDownload && viewerDownload.dataset.heartyViewerUnlock !== '1'){
+      viewerDownload.dataset.heartyViewerUnlock = '1';
       viewerDownload.onclick = openViewerUnlock;
       viewerDownload.addEventListener('click', openViewerUnlock, true);
     }
 
-    qsa('#proteinFoodGrid input,#carbFoodGrid input,#vegFoodGrid input,#snackFoodGrid input').forEach(function(input){
-      input.addEventListener('change', function(){
-        var label = input.closest('.protein-check');
-        if(label) label.classList.toggle('selected', input.checked);
-      });
-    });
+    var closeViewer = qs('closePlanViewer');
+    if(closeViewer && closeViewer.dataset.heartyCloseViewer !== '1'){
+      closeViewer.dataset.heartyCloseViewer = '1';
+      closeViewer.addEventListener('click', function(){
+        var modal = qs('planViewerModal');
+        if(modal){ modal.classList.remove('show'); modal.hidden = true; modal.style.display = 'none'; }
+        document.body.classList.remove('plan-viewer-open');
+      }, true);
+    }
+
+    window.heartyLockedLeadEngineTest = function(){
+      var prefs = readPrefs();
+      var input = buildEngineInput(prefs);
+      return window.HeartyMealEngine.generatePlan(input);
+    };
   }
 
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireFullEngine); else wireFullEngine();
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindLockedAdapter);
+  else bindLockedAdapter();
+
+  setTimeout(bindLockedAdapter, 300);
+  setTimeout(bindLockedAdapter, 1200);
 })();
 </script>
-
 
 
 
