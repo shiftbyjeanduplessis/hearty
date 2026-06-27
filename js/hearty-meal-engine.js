@@ -1302,7 +1302,9 @@
       shellfish: false,
       dairy: false,
       eggs: false,
-      legumes: false
+      legumes: false,
+      soy: false,
+      lamb: false
     }, raw.exclusions || {});
 
     var rawEating = String(raw.eatingStyle || '').toLowerCase();
@@ -1369,6 +1371,7 @@
       preferredProteinFamilies: Array.isArray(raw.preferredProteinFamilies) ? raw.preferredProteinFamilies : [],
       preferredTags: Array.isArray(raw.preferredTags) ? raw.preferredTags : [],
       preferredFoodKeys: Array.isArray(raw.preferredFoodKeys) ? raw.preferredFoodKeys : [],
+      strictPreferredFoodKeys: raw.strictPreferredFoodKeys === true,
       vegetablePreferences: Array.isArray(raw.vegetablePreferences) ? raw.vegetablePreferences : [],
       carbPreferences: Array.isArray(raw.carbPreferences) ? raw.carbPreferences : [],
       mealStylePreferences: Array.isArray(raw.mealStylePreferences) ? raw.mealStylePreferences : [],
@@ -1468,9 +1471,15 @@
     if (ex.dairy && tags.indexOf('dairy') !== -1) return false;
     if (ex.eggs && tags.indexOf('eggs') !== -1) return false;
     if (ex.legumes && tags.indexOf('legumes') !== -1) return false;
+    if (ex.soy && tags.indexOf('soy') !== -1) return false;
+    if (ex.lamb && tags.indexOf('lamb') !== -1) return false;
 
     if (input.dietType === 'vegetarian' && (tags.indexOf('chicken') !== -1 || tags.indexOf('beef') !== -1 || tags.indexOf('pork') !== -1 || tags.indexOf('fish') !== -1 || tags.indexOf('shellfish') !== -1)) return false;
     if (input.dietType === 'pescatarian' && (tags.indexOf('chicken') !== -1 || tags.indexOf('beef') !== -1 || tags.indexOf('pork') !== -1)) return false;
+
+    if (input.strictPreferredFoodKeys && input.preferredFoodKeys && input.preferredFoodKeys.length && r.protein) {
+      if (input.preferredFoodKeys.indexOf(r.protein) === -1) return false;
+    }
 
     return true;
   }
