@@ -1,19 +1,12 @@
 /*!
- * Hearty Lead-Magnet Meal Engine — Clean Replacement Core
- * Version: 4.1.0-leadmagnet-band-rotation
+ * Hearty Meal Engine — Lead Magnet Alpha
+ * Version: 4.2.0-selected-food-rotation-ledger
  *
- * This replaces the old v3.9.x lead-magnet engine completely.
- * It keeps the public API/shape expected by the current free-meal-plan wrapper:
- *   window.HeartyMealEngine.generatePlan(input)
- *   output.days[].breakfast / morningSnack / lunch / afternoonSnack / dinner
- *
- * Build principles:
- * - selected proteins only; no tofu/fish/pork/beans etc unless selected/mapped in input
- * - realistic meal descriptions; no ingredient dumping
- * - egg breakfasts use 2–3 eggs and max 1–2 vegetables
- * - two snack slots per day
- * - daily protein repair toward the guide
- * - estimated nutrition is included for future wrappers, but the current page displays protein only
+ * Clean core principles:
+ * - Eating style/diet is a hard filter only; it never expands the food pool.
+ * - The engine generates from selected ingredients only.
+ * - Fruit/snack details are preserved so the engine does not invent generic fruit.
+ * - Rotation is enforced with an explicit ledger across dinners, breakfasts and snacks.
  */
 (function(root, factory){
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -21,35 +14,29 @@
 })(typeof self !== 'undefined' ? self : this, function(){
   'use strict';
 
-  var VERSION = '4.1.4-leadmagnet-rotation-repair';
-  var ENGINE_SOURCE = 'clean-engine-protein-band-breakfast-starch-protein-rotation-repair';
+  var VERSION = '4.2.0-selected-food-rotation-ledger';
+  var ENGINE_SOURCE = 'selected-food-only-rotation-ledger-v7-alpha';
+
+  var DINNER_STARCHES = ['rice','potato','sweet_potato','pasta','noodles','wrap'];
+  var CANONICAL_PROTEINS = ['eggs','chicken','beef','pork','fish','dairy','tofu','lentils','beans','chickpeas','protein_powder'];
+  var CANONICAL_SNACKS = ['fruit','yoghurt','cottage_cheese','eggs','protein_powder','tuna','biltong','hummus','crackers','veg_sticks'];
+  var BREAKFAST_PROTEINS = ['eggs','dairy','protein_powder','tofu'];
+  var MAIN_PROTEINS = ['chicken','beef','pork','fish','eggs','tofu','lentils','beans','chickpeas','dairy'];
 
   var REGION = {
-    US: { yoghurt:'yogurt', stock:'broth', fish:'white fish', mince:'lean ground beef', dried:'beef jerky', marrow:'zucchini', fruit:'mandarin' },
-    SA: { yoghurt:'yoghurt', stock:'stock', fish:'hake', mince:'lean beef mince', dried:'biltong', marrow:'baby marrow', fruit:'naartjie' },
-    UK: { yoghurt:'yoghurt', stock:'stock', fish:'cod', mince:'lean beef mince', dried:'lean cooked meat strips', marrow:'courgette', fruit:'clementine' },
-    AU: { yoghurt:'yoghurt', stock:'stock', fish:'white fish', mince:'lean beef mince', dried:'lean beef jerky', marrow:'zucchini', fruit:'mandarin' },
-    CA: { yoghurt:'yogurt', stock:'broth', fish:'white fish', mince:'lean ground beef', dried:'beef jerky', marrow:'zucchini', fruit:'clementine' }
+    US:{ yoghurt:'yogurt', fish:'white fish', mince:'lean ground beef', stock:'broth', marrow:'zucchini' },
+    UK:{ yoghurt:'yoghurt', fish:'cod or haddock', mince:'lean beef mince', stock:'stock', marrow:'courgette' },
+    ZA:{ yoghurt:'yoghurt', fish:'hake', mince:'lean beef mince', stock:'stock', marrow:'baby marrow' },
+    SA:{ yoghurt:'yoghurt', fish:'hake', mince:'lean beef mince', stock:'stock', marrow:'baby marrow' },
+    AU:{ yoghurt:'yoghurt', fish:'white fish', mince:'lean beef mince', stock:'stock', marrow:'zucchini' },
+    CA:{ yoghurt:'yogurt', fish:'white fish', mince:'lean ground beef', stock:'broth', marrow:'zucchini' }
   };
 
-  var STARCH_LABEL = {
-    rice:'½ cup cooked rice',
-    potato:'½ cup cooked potato',
-    sweet_potato:'½ medium sweet potato',
-    pasta:'½ cup cooked pasta',
-    noodles:'½ cup cooked noodles',
-    wrap:'1 small wrap',
-    bread:'1 slice toast',
-    crackers:'4–5 wholegrain crackers'
+  var FOOD_LABELS = {
+    rice:'rice', potato:'potato', sweet_potato:'sweet potato', pasta:'pasta', noodles:'noodles', wrap:'wrap',
+    spinach:'spinach', lettuce:'lettuce', tomato:'tomato', cucumber:'cucumber', carrot:'carrot', peppers:'peppers', mushrooms:'mushrooms', onion:'onion', broccoli:'broccoli', cauliflower:'cauliflower', green_beans:'green beans', cabbage:'cabbage', baby_marrow:'baby marrow', zucchini:'zucchini', courgette:'courgette', peas:'peas', butternut:'butternut', eggplant:'eggplant', celery:'celery', asparagus:'asparagus',
+    berries:'berries', banana:'banana', apple:'apple', pear:'pear', orange_mandarin:'orange or mandarin', grapes:'grapes'
   };
-
-  var DINNER_STARCH_KEYS = ['rice','potato','sweet_potato','pasta','noodles','wrap'];
-
-  var PROTEIN_FAMILIES = ['chicken','turkey','beef','pork','fish','eggs','dairy','protein_powder','tofu','lentils','beans','chickpeas'];
-  var MAIN_FAMILIES = ['chicken','turkey','beef','pork','fish','eggs','tofu','lentils','beans','chickpeas'];
-  var ANIMAL_FAMILIES = ['chicken','turkey','beef','pork'];
-  var FISH_FAMILIES = ['fish'];
-  var LEGUME_FAMILIES = ['lentils','beans','chickpeas'];
 
   function unique(arr){
     var out = [];
@@ -60,789 +47,543 @@
     });
     return out;
   }
+  function clampArray(arr, fallback){ arr = unique(arr); return arr.length ? arr : unique(fallback || []); }
+  function regionKey(v){ v = String(v || 'US').toUpperCase(); return REGION[v] ? v : 'US'; }
+  function rconf(input){ return REGION[input.region] || REGION.US; }
+  function label(key){ return FOOD_LABELS[key] || String(key || '').replace(/_/g,' '); }
+  function round(n){ return Math.round(Number(n || 0)); }
+  function addUnique(arr, value){ if(value && arr.indexOf(value) === -1) arr.push(value); }
 
-  function cap(s){ s = String(s || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function normalizeProteinKey(v){
+    v = String(v || '').trim();
+    var map = {
+      greek_yoghurt:'dairy', greek_yogurt:'dairy', cottage_cheese:'dairy', yoghurt:'dairy', yogurt:'dairy',
+      protein_shake:'protein_powder', tuna:'fish', white_fish:'fish', hake:'fish', cod:'fish', salmon:'fish',
+      prawns:'fish', shrimp:'fish', calamari:'fish', mussels:'fish', clams:'fish', mussels_clams:'fish',
+      meat_free_mince:'beans'
+    };
+    return map[v] || v;
+  }
 
-  function regionKey(v){ return REGION[v] ? v : 'US'; }
-
-  function normalizeVegetableName(v, region){
-    v = String(v || '').trim().replace(/_/g,' ').toLowerCase();
-    if (v === 'zucchini' || v === 'courgette' || v === 'baby marrow') return REGION[region].marrow;
-    if (v === 'green beans') return 'green beans';
-    if (v === 'bell peppers') return 'peppers';
+  function normalizeVegetable(v, region){
+    v = String(v || '').trim();
+    if(v === 'green beans') v = 'green_beans';
+    if(v === 'baby marrow' || v === 'zucchini' || v === 'courgette') v = 'baby_marrow';
     return v;
+  }
+
+  function applyDietFilters(input){
+    var diet = input.diet || 'omnivore';
+    var proteins = unique(input.proteins).filter(function(p){ return CANONICAL_PROTEINS.indexOf(p) !== -1; });
+    var seafood = unique(input.seafood || []);
+    var snacks = unique(input.snacks || []).filter(function(s){ return CANONICAL_SNACKS.indexOf(s) !== -1; });
+
+    function removeProtein(p){ proteins = proteins.filter(function(x){ return x !== p; }); }
+    if(diet === 'no_pork') removeProtein('pork');
+    if(diet === 'no_fish') { removeProtein('fish'); seafood = []; snacks = snacks.filter(function(s){ return s !== 'tuna'; }); }
+    if(diet === 'pescatarian') {
+      proteins = proteins.filter(function(p){ return ['fish','eggs','dairy','tofu','lentils','beans','chickpeas','protein_powder'].indexOf(p) !== -1; });
+      snacks = snacks.filter(function(s){ return s !== 'biltong'; });
+    }
+    if(diet === 'vegetarian') {
+      proteins = proteins.filter(function(p){ return ['eggs','dairy','tofu','lentils','beans','chickpeas','protein_powder'].indexOf(p) !== -1; });
+      seafood = [];
+      snacks = snacks.filter(function(s){ return s !== 'tuna' && s !== 'biltong'; });
+    }
+    input.proteins = proteins;
+    input.seafood = seafood;
+    input.snacks = snacks;
+    return input;
   }
 
   function normalizeInput(raw){
     raw = raw || {};
     var region = regionKey(raw.region || raw.country || 'US');
-    var proteins = unique(raw.proteins || raw.selectedProteins || []);
-    var vegetables = unique((raw.vegetables || []).map(function(v){ return normalizeVegetableName(v, region); }));
-    if (!vegetables.length) vegetables = ['spinach','tomato','carrot','lettuce','cucumber','broccoli'];
-    ['spinach','tomato','carrot','lettuce','cucumber'].forEach(function(v){ if (vegetables.length < 5 && vegetables.indexOf(v) === -1) vegetables.push(v); });
-    var starches = unique(raw.starches || raw.selectedStarches || []);
-    if (!starches.length && !raw.lowerStarch && !raw.lowStarch) starches = ['rice','potato'];
     var targets = raw.targets || {};
-
-    return {
+    var input = {
       region: region,
-      diet: raw.diet || raw.dietType || 'omnivore',
-      proteins: proteins,
-      breakfastItems: unique(raw.breakfastItems || []),
-      snackProteins: unique(raw.snackProteins || raw.snacks || []),
-      starches: starches,
-      vegetables: vegetables,
-      lowerStarch: !!(raw.lowerStarch || raw.lowStarch),
-      leftoverLunches: !!(raw.leftoverLunches || raw.useLeftovers),
-      planTier: Number(raw.planTier || raw.tier || 2),
+      diet: raw.diet || 'omnivore',
+      proteins: unique(raw.proteins || []).map(normalizeProteinKey),
+      seafood: unique(raw.seafood || []),
+      starches: unique(raw.starches || []).filter(function(s){ return DINNER_STARCHES.indexOf(s) !== -1; }),
+      vegetables: unique(raw.vegetables || []).map(function(v){ return normalizeVegetable(v, region); }),
+      snacks: unique(raw.snacks || []),
+      fruit: unique(raw.fruit || raw.fruits || []),
+      proteinDetails: unique(raw.proteinDetails || raw.selectedProteinFoods || raw.foodDetails || []),
+      snackDetails: unique(raw.snackDetails || raw.selectedSnackFoods || []),
+      supportMode: raw.supportMode || 'none',
+      leftoverLunches: raw.leftoverLunches === true,
       targets: {
-        proteinMin: Number(targets.proteinMin || (Number(raw.planTier || 2) >= 3 ? 105 : 90)),
-        proteinMax: Number(targets.proteinMax || (Number(raw.planTier || 2) >= 3 ? 145 : 125)),
-        fibreMin: Number(targets.fibreMin || (Number(raw.planTier || 2) >= 3 ? 25 : 20)),
-        fibreMax: Number(targets.fibreMax || (Number(raw.planTier || 2) >= 3 ? 35 : 30)),
-        calorieFloor: Number(targets.calorieFloor || (Number(raw.planTier || 2) >= 3 ? 1350 : 1150))
+        proteinMin: Number(targets.proteinMin || 90),
+        proteinMax: Number(targets.proteinMax || 125),
+        fibreMin: Number(targets.fibreMin || 20),
+        fibreMax: Number(targets.fibreMax || 30),
+        calorieFloor: Number(targets.calorieFloor || 1150)
       }
     };
+    input.proteins = unique(input.proteins).filter(function(p){ return CANONICAL_PROTEINS.indexOf(p) !== -1; });
+    input.snacks = unique(input.snacks).filter(function(s){ return CANONICAL_SNACKS.indexOf(s) !== -1; });
+    input.fruit = input.fruit.filter(function(f){ return ['berries','banana','apple','pear','orange_mandarin','grapes'].indexOf(f) !== -1; });
+    input.vegetables = input.vegetables.filter(Boolean);
+    return applyDietFilters(input);
   }
 
-  function allowedProteins(input){
-    var set = {};
-    input.proteins.forEach(function(p){ if (PROTEIN_FAMILIES.indexOf(p) !== -1) set[p] = true; });
-
-    if (input.diet === 'vegetarian') {
-      ANIMAL_FAMILIES.concat(FISH_FAMILIES).forEach(function(p){ delete set[p]; });
-    }
-    if (input.diet === 'pescatarian') {
-      ANIMAL_FAMILIES.forEach(function(p){ delete set[p]; });
-    }
-
-    return Object.keys(set).sort();
-  }
-
-  function has(allowed, key){ return allowed.indexOf(key) !== -1; }
-  function hasAny(allowed, list){ return list.some(function(x){ return has(allowed, x); }); }
-
-  function proteinMid(value){
-    var nums = String(value || '').match(/\d+/g) || [];
-    if (!nums.length) return 0;
-    nums = nums.map(Number);
-    return nums.reduce(function(a,b){ return a+b; },0) / nums.length;
-  }
-
-  function estimateFromProtein(proteinText, kind){
-    var p = Math.round(proteinMid(proteinText));
-    var base = { protein:p, fibre:3, carbs:15, calories:Math.round(p * 8 + 130) };
-    if (kind === 'breakfast') { base.carbs = 18; base.fibre = 4; base.calories = Math.round(p * 9 + 150); }
-    if (kind === 'snack') { base.carbs = 10; base.fibre = 2; base.calories = Math.round(p * 8 + 80); }
-    if (kind === 'lunch') { base.carbs = 18; base.fibre = 6; base.calories = Math.round(p * 8 + 190); }
-    if (kind === 'dinner') { base.carbs = 30; base.fibre = 7; base.calories = Math.round(p * 8 + 260); }
-    return { protein:base.protein, carbs:base.carbs, fibre:base.fibre, calories:base.calories, confidence:'estimated' };
-  }
-
-  function meal(name, protein, detail, type, tags){
-    return {
-      name: name,
-      title: name,
-      protein: protein,
-      detail: detail,
-      description: detail,
-      type: type || 'other',
-      proteinFamily: type || 'other',
-      tags: tags || [],
-      nutrition: estimateFromProtein(protein, tags && tags[0] || 'meal'),
-      nutritionNote: 'Estimated for the suggested serving.'
-    };
-  }
-
-  function pickFrom(arr, index){
-    if (!arr || !arr.length) return '';
-    return arr[Math.abs(index || 0) % arr.length];
-  }
-
-  function vegPool(input, context){
-    var v = input.vegetables || [];
-    var r = REGION[input.region];
-    var contextSets = {
-      breakfast:['spinach','tomato','mushrooms','peppers','onion',r.marrow],
-      salad:['lettuce','tomato','cucumber','carrot','peppers','spinach'],
-      soup:['carrot','spinach','broccoli','cauliflower','green beans',r.marrow,'mushrooms','onion'],
-      cooked:['carrot','broccoli','cauliflower','green beans',r.marrow,'mushrooms','spinach','peppers','cabbage'],
-      stirfry:['peppers','carrot','broccoli','green beans',r.marrow,'mushrooms','cabbage','spinach'],
-      curry:['spinach','carrot','peppers','mushrooms',r.marrow,'green beans','cauliflower'],
-      side:['broccoli','green beans','carrot','cauliflower','spinach',r.marrow,'mushrooms']
-    };
-    var allowed = contextSets[context] || contextSets.cooked;
-    var out = v.filter(function(x){ return allowed.indexOf(x) !== -1; });
-    return out.length ? out : allowed;
-  }
-
-  function joinReadable(list){
-    list = (list || []).filter(Boolean);
-    if (!list.length) return '';
-    if (list.length === 1) return list[0];
-    if (list.length === 2) return list[0] + ' and ' + list[1];
-    return list.slice(0,-1).join(', ') + ' and ' + list[list.length-1];
-  }
-
-  function vegList(input, context, start, count){
-    var source = vegPool(input, context);
-    var out = [];
-    var i;
-    // Meal realism cap: breakfast stays simple, lunch/dinner never dump long veg lists.
-    count = Math.max(1, Math.min(count || 2, context === 'breakfast' ? 2 : context === 'salad' ? 1 : 2));
-    for (i=0; out.length < count && i < source.length * 2; i++) {
-      var item = source[(start + i) % source.length];
-      if (out.indexOf(item) === -1) out.push(item);
-    }
-    return joinReadable(out);
-  }
-
-
-
-  function saladExtras(input, start, count){
-    var source = vegPool(input, 'salad').filter(function(v){ return ['lettuce','tomato'].indexOf(v) === -1; });
-    if (!source.length) source = ['cucumber','carrot','peppers','spinach'];
-    var out = [];
-    count = Math.max(1, Math.min(count || 1, 2));
-    for (var i=0; out.length < count && i < source.length * 2; i++) {
-      var item = source[(start + i) % source.length];
-      if (out.indexOf(item) === -1) out.push(item);
-    }
-    return joinReadable(out);
-  }
-
-  function selectedStarch(input, day, preferred){
-    if (input.lowerStarch) return '';
-    var starches = (input.starches || []).filter(function(s){ return STARCH_LABEL[s] && DINNER_STARCH_KEYS.indexOf(s) !== -1; });
-    if (!starches.length) return '';
-    if (preferred && starches.indexOf(preferred) !== -1) return preferred;
-    return starches[day % starches.length];
-  }
-
-  function starchPhrase(input, day, preferred){
-    var s = selectedStarch(input, day, preferred);
-    return s ? STARCH_LABEL[s] : '';
-  }
-
-  function withStarch(base, input, day, preferred){
-    var s = starchPhrase(input, day, preferred);
-    return s ? base + ' Serve with ' + s + '.' : base + ' No added starch.';
-  }
-
-  function gateCheck(raw){
-    var input = normalizeInput(raw);
-    var allowed = allowedProteins(input);
-    var main = allowed.filter(function(p){ return MAIN_FAMILIES.indexOf(p) !== -1; });
-    var failures = [];
+  function gateCheck(input){
     var messages = [];
-    if (!allowed.length) { failures.push('no_proteins'); messages.push('Please choose at least a few protein options.'); }
-    if (!main.length && !hasAny(allowed, ['dairy','protein_powder'])) { failures.push('no_main_proteins'); messages.push('Please choose at least one main-meal protein.'); }
-    return {
-      status: failures.length ? 'BLOCKED' : 'ALLOWED',
-      allowed: allowed,
-      mainMealProteins: main,
-      failures: failures,
-      messages: messages
+    var breakfastOk = input.proteins.some(function(p){ return BREAKFAST_PROTEINS.indexOf(p) !== -1; });
+    var snackCount = input.snacks.length + input.fruit.length;
+    if(input.proteins.length < 3) messages.push('Choose at least 3 protein foods.');
+    if(input.starches.length < 3) messages.push('Choose at least 3 carb/starch options.');
+    if(input.starches.filter(function(s){ return DINNER_STARCHES.indexOf(s) !== -1; }).length < 2) messages.push('Choose at least 2 dinner starch options.');
+    if(input.vegetables.length < 5) messages.push('Choose at least 5 vegetables.');
+    if(snackCount < 3) messages.push('Choose at least 3 snack/fruit options.');
+    if(!breakfastOk) messages.push('Include at least one breakfast-friendly protein: eggs, yoghurt/cottage cheese, protein shake or tofu.');
+    return messages;
+  }
+
+  function blankCounters(){ return { dinnerProtein:{}, dinnerStarch:{}, breakfast:{}, snack:{}, fruit:{}, lunchProtein:{}, dayDairy:{}, shakeCount:0, repairs:[], warnings:[], usedFallback:false }; }
+  function inc(obj,key){ if(!key) return; obj[key] = (obj[key] || 0) + 1; }
+  function count(obj,key){ return obj[key] || 0; }
+
+  function pickRotating(candidates, ledger, opts){
+    opts = opts || {};
+    candidates = unique(candidates).filter(Boolean);
+    if(!candidates.length) return '';
+    var avoid = opts.avoid || [];
+    var caps = opts.caps || {};
+    var filtered = candidates.filter(function(c){ return avoid.indexOf(c) === -1 && (!caps[c] || count(ledger,c) < caps[c]); });
+    if(!filtered.length) filtered = candidates.filter(function(c){ return !caps[c] || count(ledger,c) < caps[c]; });
+    if(!filtered.length) filtered = candidates.slice();
+    filtered.sort(function(a,b){ return count(ledger,a) - count(ledger,b) || candidates.indexOf(a) - candidates.indexOf(b); });
+    return filtered[0];
+  }
+
+  function vegPool(input, type, day, max){
+    var pool = input.vegetables.slice();
+    var breakfastAllowed = ['spinach','tomato','mushrooms','peppers','onion'];
+    var saladAllowed = ['lettuce','tomato','cucumber','carrot','peppers','spinach'];
+    var cookedAllowed = ['peppers','green_beans','broccoli','mushrooms','baby_marrow','cabbage','cauliflower','carrot','onion','spinach','tomato'];
+    if(type === 'breakfast') pool = pool.filter(function(v){ return breakfastAllowed.indexOf(v) !== -1; });
+    else if(type === 'salad') pool = pool.filter(function(v){ return saladAllowed.indexOf(v) !== -1; });
+    else pool = pool.filter(function(v){ return cookedAllowed.indexOf(v) !== -1; });
+    if(!pool.length) pool = input.vegetables.slice();
+    var start = (day - 1) % Math.max(1,pool.length);
+    var rotated = pool.slice(start).concat(pool.slice(0,start));
+    return unique(rotated).slice(0, max || 3);
+  }
+
+  function vegText(keys){
+    keys = unique(keys).filter(Boolean).map(label);
+    if(!keys.length) return 'mixed vegetables';
+    if(keys.length === 1) return keys[0];
+    if(keys.length === 2) return keys[0] + ' and ' + keys[1];
+    return keys.slice(0,-1).join(', ') + ' and ' + keys[keys.length - 1];
+  }
+
+  function ingredient(item, amount, group, extra){
+    var out = { item:item, amount:amount, group:group || 'Pantry and flavour' };
+    if(extra) Object.keys(extra).forEach(function(k){ out[k] = extra[k]; });
+    return out;
+  }
+
+  function nutrition(protein, carbs, fibre, calories){ return { protein:round(protein), carbs:round(carbs), fibre:round(fibre), calories:round(calories), confidence:'estimated' }; }
+  function meal(id, day, slot, title, proteinSource, starchSource, vegetables, ingredients, description, nut, tags){
+    return { id:id, day:day, slot:slot, title:title, proteinSource:proteinSource || null, starchSource:starchSource || null, vegetables:unique(vegetables || []), ingredients:ingredients || [], description:description || '', nutrition:nut || nutrition(0,0,0,0), isLeftover:false, leftoverFromDay:null, tags:tags || [] };
+  }
+
+  function starchIngredient(starch){
+    var map = {
+      rice: ingredient('rice','½ cup cooked','Carbs and starches',{qtyCupsCooked:.5}),
+      potato: ingredient('potato','½ cup cooked','Carbs and starches',{qtyCupsCooked:.5}),
+      sweet_potato: ingredient('sweet potato','½ medium','Carbs and starches',{unitCount:.5}),
+      pasta: ingredient('pasta','½ cup cooked','Carbs and starches',{qtyCupsCooked:.5}),
+      noodles: ingredient('noodles','½ cup cooked','Carbs and starches',{qtyCupsCooked:.5}),
+      wrap: ingredient('small wrap','1','Carbs and starches',{unitCount:1})
     };
+    return map[starch] || null;
+  }
+  function starchText(starch){
+    var map = { rice:'½ cup cooked rice', potato:'½ cup cooked potato', sweet_potato:'½ medium sweet potato', pasta:'½ cup cooked pasta', noodles:'½ cup cooked noodles', wrap:'1 small wrap' };
+    return map[starch] || '';
   }
 
-  function breakfastOptions(input, allowed){
-    var r = REGION[input.region];
-    var out = [];
-    var b = input.breakfastItems || [];
-    function selected(keys){ return keys.some(function(k){ return b.indexOf(k) !== -1; }); }
-
-    if (has(allowed,'eggs') && (!b.length || selected(['eggs']))) {
-      out.push(function(day){ return meal('Vegetable scrambled eggs','20–26g','2–3 eggs scrambled with ' + vegList(input,'breakfast',day,2) + '.', 'eggs', ['breakfast']); });
-      out.push(function(day){ return meal('Vegetable omelette','20–26g','2–3 eggs cooked with ' + vegList(input,'breakfast',day+1,2) + '.', 'eggs', ['breakfast']); });
-    }
-    if (has(allowed,'dairy') && (!b.length || selected(['greek_yoghurt','greek_yogurt','yoghurt','yogurt']))) {
-      out.push(function(){ return meal('High-protein ' + r.yoghurt + ' bowl','18–24g','1 cup Greek-style ' + r.yoghurt + ' with berries or fruit and cinnamon.', 'dairy', ['breakfast']); });
-    }
-    if (has(allowed,'dairy') && selected(['cottage_cheese'])) {
-      out.push(function(){ return meal('Cottage cheese breakfast plate','18–24g','Cottage cheese with tomato, herbs and wholegrain crackers or fruit.', 'dairy', ['breakfast']); });
-    }
-    if (has(allowed,'protein_powder') && selected(['protein_shake'])) {
-      out.push(function(){ return meal('Protein shake breakfast','20–25g','Protein shake prepared with water or milk, plus fruit if desired.', 'protein_powder', ['breakfast']); });
-    }
-    if (has(allowed,'tofu') && selected(['tofu_scramble'])) {
-      out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day+2,2) + ', plus mild spices.', 'tofu', ['breakfast']); });
-    }
-
-    if (!out.length) {
-      if (has(allowed,'eggs')) out.push(function(day){ return meal('Vegetable omelette','20–26g','2–3 eggs cooked with ' + vegList(input,'breakfast',day,2) + '.', 'eggs', ['breakfast']); });
-      else if (has(allowed,'dairy')) out.push(function(){ return meal('High-protein ' + r.yoghurt + ' bowl','18–24g','1 cup Greek-style ' + r.yoghurt + ' with berries or fruit and cinnamon.', 'dairy', ['breakfast']); });
-      else if (has(allowed,'tofu')) out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day,2) + ', plus mild spices.', 'tofu', ['breakfast']); });
-      else if (has(allowed,'protein_powder')) out.push(function(){ return meal('Protein shake breakfast','20–25g','Protein shake prepared with water or milk.', 'protein_powder', ['breakfast']); });
-    }
-    return out;
+  function selectedFishName(input, preferTuna){
+    var d = input.proteinDetails || [];
+    if(preferTuna && d.indexOf('tuna') !== -1) return 'tuna';
+    if(d.indexOf('white_fish') !== -1) return rconf(input).fish;
+    if(d.indexOf('tuna') !== -1) return 'tuna';
+    return rconf(input).fish;
+  }
+  function selectedDairyName(input, preferCottage){
+    var d = input.proteinDetails.concat(input.snackDetails || []);
+    if(preferCottage && d.indexOf('cottage_cheese') !== -1) return 'cottage cheese';
+    if(d.indexOf('greek_yoghurt') !== -1 || d.indexOf('greek_yogurt') !== -1) return 'Greek-style ' + rconf(input).yoghurt;
+    if(d.indexOf('cottage_cheese') !== -1) return 'cottage cheese';
+    return 'Greek-style ' + rconf(input).yoghurt;
   }
 
-  function lunchOptions(input, allowed){
-    var r = REGION[input.region];
-    var out = [];
-    if (has(allowed,'chicken')) {
-      out.push(function(day){ return meal('Chicken salad plate','30–38g','120–150g cooked chicken with lettuce, tomato and ' + saladExtras(input,day,1) + '. No added starch.', 'chicken', ['lunch']); });
-      out.push(function(day){ return meal('Chicken vegetable soup bowl','30–38g','120–150g cooked chicken simmered with ' + vegList(input,'soup',day,3) + ' and ' + r.stock + '. No added starch.', 'chicken', ['lunch']); });
+  function makeBreakfast(input, day, ledger){
+    var candidates = input.proteins.filter(function(p){ return BREAKFAST_PROTEINS.indexOf(p) !== -1; });
+    var p = pickRotating(candidates, ledger.breakfast, { avoid:[ledger.lastBreakfast] });
+    inc(ledger.breakfast, p); ledger.lastBreakfast = p;
+    var veg = vegPool(input,'breakfast',day, p === 'eggs' ? 2 : 2);
+    var fruit = pickFruit(input, ledger);
+    var reg = rconf(input);
+    if(p === 'eggs'){
+      return meal('d'+day+'-breakfast',day,'breakfast','2–3 egg vegetable scramble','eggs',null,veg,[ingredient('eggs','3','Protein',{unitCount:3})].concat(veg.map(function(v){return ingredient(label(v),'small amount','Vegetables');})), '2–3 eggs scrambled with ' + vegText(veg) + '.', nutrition(24,6,2,250), ['breakfast']);
     }
-    if (has(allowed,'turkey')) {
-      out.push(function(day){ return meal('Turkey salad plate','28–36g','120–150g cooked turkey with lettuce, tomato and ' + saladExtras(input,day,1) + '. No added starch.', 'turkey', ['lunch']); });
-    }
-    if (has(allowed,'fish')) {
-      out.push(function(day){ return meal('Tuna salad bowl','24–32g','Tuna with lettuce, tomato, lemon, herbs and ' + saladExtras(input,day,1) + '. No added starch.', 'fish', ['lunch']); });
-      out.push(function(day){ return meal(cap(r.fish) + ' vegetable plate','28–36g','A portion of ' + r.fish + ' with lemon herbs and ' + vegList(input,'side',day,3) + '. No added starch.', 'fish', ['lunch']); });
-    }
-    if (has(allowed,'beef')) {
-      out.push(function(day){ return meal(cap(r.mince) + ' vegetable bowl','30–38g','120–150g ' + r.mince + ' cooked with tomato, herbs and ' + vegList(input,'cooked',day,3) + '. No added starch.', 'beef', ['lunch']); });
-    }
-    if (has(allowed,'pork')) {
-      out.push(function(day){ return meal('Lean pork vegetable bowl','28–36g','A portion of lean pork fillet/loin strips with tomato herbs and ' + vegList(input,'cooked',day,3) + '. No added starch.', 'pork', ['lunch']); });
-    }
-    if (has(allowed,'eggs')) {
-      out.push(function(day){ return meal('Boiled egg vegetable plate','18–26g','2–3 boiled eggs with lettuce, tomato and ' + saladExtras(input,day,1) + '. No added starch.', 'eggs', ['lunch']); });
-      out.push(function(day){ return meal('Egg salad bowl','18–26g','2–3 boiled eggs with tomato, herbs and ' + saladExtras(input,day+1,1) + '. No added starch.', 'eggs', ['lunch']); });
-    }
-    if (has(allowed,'dairy')) {
-      out.push(function(day){ return meal('Cottage cheese protein plate','18–25g','Cottage cheese with tomato, lettuce, herbs and ' + saladExtras(input,day,1) + '. No added starch.', 'dairy', ['lunch']); });
-    }
-    if (has(allowed,'tofu')) {
-      out.push(function(day){ return meal('Tofu vegetable bowl','24–34g','Tofu-style protein with lettuce, tomato, lemon-herb dressing and ' + saladExtras(input,day,1) + '. No added starch.', 'tofu', ['lunch']); });
-    }
-    if (has(allowed,'lentils')) {
-      out.push(function(day){ return meal('Lentil vegetable soup bowl','20–30g','Lentils simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '. No added starch. Lentils stay in the meal because they are the protein source.', 'lentils', ['lunch','legume']); });
-    }
-    if (has(allowed,'beans')) {
-      out.push(function(day){ return meal('Bean chilli vegetable bowl','20–30g','Beans cooked with tomato, mild spices and ' + vegList(input,'cooked',day,3) + '. No added starch. Beans stay in the meal because they are the protein source.', 'beans', ['lunch','legume']); });
-    }
-    if (has(allowed,'chickpeas')) {
-      out.push(function(day){ return meal('Chickpea vegetable bowl','20–30g','Chickpeas with tomato, lettuce, herbs and ' + saladExtras(input,day,1) + '. No added starch. Chickpeas stay in the meal because they are the protein source.', 'chickpeas', ['lunch','legume']); });
-    }
-    return out;
-  }
-
-  function dinnerOptionSets(input, allowed){
-    var r = REGION[input.region];
-    function chickenSoup(day){ return meal('Chicken vegetable soup with rice','32–40g',withStarch('120–150g chicken simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'rice'), 'chicken', ['dinner']); }
-    function chickenCurry(day){ return meal('Chicken curry with rice','32–40g',withStarch('120–150g chicken cooked with onion, garlic, ginger, tomato, mild curry spices, ' + vegList(input,'curry',day,2) + '.', input, day, 'rice'), 'chicken', ['dinner']); }
-    function chickenStir(day){ return meal('Chicken stir-fry with rice','32–40g',withStarch('120–150g chicken strips stir-fried with ' + vegList(input,'stirfry',day,2) + ', plus garlic-ginger sauce.', input, day, 'rice'), 'chicken', ['dinner']); }
-    function chickenPlate(day){ return meal('Grilled chicken plate','32–40g',withStarch('120–150g grilled chicken with ' + vegList(input,'side',day,3) + '.', input, day, 'sweet_potato'), 'chicken', ['dinner']); }
-    function roastChicken(day){ return meal('Roast-style chicken plate','34–42g',withStarch('A portion of roast-style chicken with green vegetables and carrots.', input, day, 'potato'), 'chicken', ['dinner']); }
-
-    function fishPlate(day){ return meal('Grilled ' + r.fish + ' plate','30–38g',withStarch('A portion of ' + r.fish + ' with lemon, herbs and ' + vegList(input,'side',day,3) + '.', input, day, 'rice'), 'fish', ['dinner']); }
-    function fishSoup(day){ return meal(cap(r.fish) + ' vegetable soup with potato','30–38g',withStarch('A portion of ' + r.fish + ' simmered gently with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'potato'), 'fish', ['dinner']); }
-
-    function beefStew(day){ return meal('Lean beef stew with rice','32–40g',withStarch('120–150g lean beef cooked with tomato, herbs, ' + vegList(input,'soup',day,2) + '.', input, day, 'rice'), 'beef', ['dinner']); }
-    function beefBolognese(day){ return meal(cap(r.mince) + ' bolognese with pasta','32–40g',withStarch('120–150g ' + r.mince + ' cooked with onion, garlic, chopped tomato, grated carrot, mushrooms and Italian herbs.', input, day, 'pasta'), 'beef', ['dinner']); }
-    function beefBurgerBowl(day){ return meal('Lean beef burger bowl','32–40g','120–150g lean beef mince served burger-bowl style with lettuce, tomato, cucumber and a light dressing. No added starch.', 'beef', ['dinner']); }
-
-    function porkStir(day){ return meal('Lean pork stir-fry with sweet-and-sour sauce and rice','30–38g',withStarch('120–150g lean pork fillet/loin strips stir-fried with ' + vegList(input,'stirfry',day,2) + '. Sauce: garlic, ginger, vinegar/lemon, tomato paste, water and a small amount of sweetener.', input, day, 'rice'), 'pork', ['dinner']); }
-    function porkStew(day){ return meal('Tomato pork stew with rice','30–38g',withStarch('A portion of lean pork fillet/loin strips simmered in tomato, herbs and ' + vegList(input,'soup',day,3) + '.', input, day, 'rice'), 'pork', ['dinner']); }
-
-    function eggFrittata(day){ return meal('2–3 egg vegetable frittata','22–30g',withStarch('2–3 eggs baked with ' + vegList(input,'breakfast',day,2) + ', plus herbs.', input, day, 'sweet_potato'), 'eggs', ['dinner']); }
-    function omeletteLight(day){ return meal('2–3 egg omelette and salad','20–28g','2–3 eggs cooked with ' + vegList(input,'breakfast',day,2) + ' and served with a small salad. No added starch.', 'eggs', ['dinner']); }
-
-    function tofuStir(day){ return meal('Tofu-style stir-fry with rice','26–36g',withStarch('Tofu-style protein stir-fried with ' + vegList(input,'stirfry',day,2) + ', plus garlic-ginger sauce.', input, day, 'rice'), 'tofu', ['dinner']); }
-    function tofuBake(day){ return meal('Tofu tomato bake with rice','26–36g',withStarch('Tofu-style protein baked or simmered in tomato, onion, garlic, herbs and ' + vegList(input,'cooked',day,3) + '.', input, day, 'rice'), 'tofu', ['dinner']); }
-    function tofuCurry(day){ return meal('Tofu curry with rice','26–36g',withStarch('Tofu-style protein cooked with tomato, mild curry spices and ' + vegList(input,'curry',day,3) + '.', input, day, 'rice'), 'tofu', ['dinner']); }
-
-    function lentilSoup(day){ return meal('Lentil vegetable soup with potato','22–32g',withStarch('Lentils simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'potato') + ' Lentils stay in the meal because they are the protein source.', 'lentils', ['dinner','legume']); }
-    function lentilStew(day){ return meal('Lentil and vegetable stew with sweet potato','20–30g',withStarch('Lentils simmered with tomato, herbs and ' + vegList(input,'soup',day,3) + '.', input, day, 'sweet_potato') + ' Lentils stay in the meal because they are the protein source.', 'lentils', ['dinner','legume']); }
-    function beanChilli(day){ return meal('Bean and vegetable chilli with rice','22–32g',withStarch('Beans cooked with tomato, mild spices, herbs, ' + vegList(input,'cooked',day,2) + '.', input, day, 'rice') + ' Beans stay in the meal because they are the protein source.', 'beans', ['dinner','legume']); }
-    function chickpeaStew(day){ return meal('Chickpea and vegetable stew with rice','20–30g',withStarch('Chickpeas simmered with onion, garlic, tomato, herbs and ' + vegList(input,'cooked',day,3) + '.', input, day, 'rice') + ' Chickpeas stay in the meal because they are the protein source.', 'chickpeas', ['dinner','legume']); }
-
-    var sets = [[],[],[],[],[],[],[]];
-    if (has(allowed,'chicken')) { sets[0].push(chickenSoup); sets[1].push(chickenCurry); sets[2].push(chickenStir); sets[3].push(chickenPlate); sets[4].push(chickenStir); sets[5].push(chickenSoup); sets[6].push(roastChicken); }
-    if (has(allowed,'fish')) { sets[0].push(fishSoup); sets[2].push(fishPlate); sets[3].push(fishPlate); sets[4].push(fishPlate); sets[5].push(fishSoup); sets[6].push(fishPlate); }
-    if (has(allowed,'beef')) { sets[1].push(beefStew); sets[3].push(beefStew); sets[4].push(beefBolognese, beefBurgerBowl); sets[6].push(beefStew); }
-    if (has(allowed,'pork')) { sets[1].push(porkStew); sets[2].push(porkStir); sets[3].push(porkStir); sets[6].push(porkStir); }
-    if (has(allowed,'eggs')) { sets[3].push(eggFrittata); sets[5].push(omeletteLight); sets[6].push(eggFrittata); }
-    if (has(allowed,'tofu')) { sets[1].push(tofuCurry); sets[2].push(tofuStir); sets[3].push(tofuBake); sets[4].push(tofuStir); sets[5].push(tofuBake); sets[6].push(tofuBake); }
-    if (has(allowed,'lentils')) { sets[0].push(lentilSoup); sets[1].push(lentilStew); sets[5].push(lentilSoup); sets[6].push(lentilStew); }
-    if (has(allowed,'beans')) { sets[1].push(beanChilli); sets[4].push(beanChilli); sets[6].push(beanChilli); }
-    if (has(allowed,'chickpeas')) { sets[1].push(chickpeaStew); sets[4].push(chickpeaStew); sets[6].push(chickpeaStew); }
-
-    return sets;
-  }
-
-  function snackOptions(input, allowed){
-    var r = REGION[input.region];
-    var selected = input.snackProteins || [];
-    function wants(keys){ return !selected.length || keys.some(function(k){ return selected.indexOf(k) !== -1; }); }
-    var out = [];
-    if (has(allowed,'dairy') && wants(['yoghurt','greek_yoghurt','greek_yogurt'])) out.push(function(){ return meal('Plain ' + r.yoghurt + ' with berries','12–18g','¾–1 cup plain ' + r.yoghurt + ' with berries or fruit.', 'dairy', ['snack']); });
-    if (has(allowed,'dairy') && wants(['cottage_cheese','wholegrain_crackers'])) out.push(function(){ return meal('Wholegrain crackers with cottage cheese','10–16g','4–5 wholegrain crackers with a small amount of cottage cheese.', 'dairy', ['snack']); });
-    if (has(allowed,'eggs') && wants(['boiled_eggs'])) out.push(function(){ return meal('Boiled egg snack','7–14g','1–2 boiled eggs with tomato or carrot sticks.', 'eggs', ['snack']); });
-    if (has(allowed,'chicken') && wants(['chicken_strips'])) out.push(function(){ return meal('Cooked chicken strips','12–18g','Small portion cooked chicken strips with lemon and cucumber or carrot sticks.', 'chicken', ['snack']); });
-    if (has(allowed,'fish') && wants(['tuna'])) out.push(function(){ return meal('Tuna bites','12–18g','Small portion tuna with cherry tomatoes, lemon and herbs.', 'fish', ['snack']); });
-    if (has(allowed,'beef') && wants(['biltong','jerky','dried_meat'])) out.push(function(){ return meal(cap(r.dried) + ' snack','12–18g','25–30g ' + r.dried + ' with pepper or carrot sticks.', 'beef', ['snack']); });
-    if (has(allowed,'tofu') && wants(['tofu_bites','tofu'])) out.push(function(){ return meal('Tofu protein bites','12–18g','Small portion tofu-style protein with tomato, lemon and herbs.', 'tofu', ['snack']); });
-    if (has(allowed,'protein_powder') && wants(['protein_shake'])) out.push(function(){ return meal('Protein shake','20–25g','Use if protein is difficult to reach from meals.', 'protein_powder', ['snack']); });
-    if (hasAny(allowed, LEGUME_FAMILIES) && wants(['hummus'])) out.push(function(){ return meal('Hummus with vegetable sticks','5–8g','2–3 tablespoons hummus with carrot or cucumber sticks.', 'legumes', ['snack']); });
-
-    // Light snacks are allowed only as second snacks or when protein is already on track.
-    out.push(function(day){ return meal(cap(r.fruit) + ' or berries','0–2g','1 small ' + r.fruit + ' or a small handful of berries.', 'fruit', ['snack','light']); });
-    out.push(function(){ return meal('Apple slices','0–2g','1 small apple sliced slowly if appetite is low.', 'fruit', ['snack','light']); });
-    return out;
-  }
-
-  function pickNonRepeating(options, day, avoidTypes, counts){
-    if (!options.length) return null;
-    avoidTypes = avoidTypes || [];
-    counts = counts || {};
-    var best = null, bestScore = 999999;
-    options.forEach(function(fn, idx){
-      var m = fn(day);
-      var type = m.type || 'other';
-      var score = idx + (counts[type] || 0) * 14;
-      if (avoidTypes.indexOf(type) !== -1) score += 550;
-      if (m.tags && m.tags.indexOf('light') !== -1) score += 25;
-      if (score < bestScore) { best = m; bestScore = score; }
-    });
-    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
-    return best;
-  }
-
-  function pickDinnerOption(options, day, avoidTypes, counts, input, allowed, legumeDinnerCount){
-    if (!options.length) return null;
-    avoidTypes = avoidTypes || [];
-    counts = counts || {};
-    var hasNonLegume = options.some(function(fn){ var m = fn(day); return LEGUME_FAMILIES.indexOf(m.type) === -1; });
-    var animalOrEggOrTofuAvailable = hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu']));
-    var best = null, bestScore = 999999;
-    options.forEach(function(fn, idx){
-      var m = fn(day);
-      var type = m.type || 'other';
-      var isLegume = LEGUME_FAMILIES.indexOf(type) !== -1;
-      var score = idx * 0.1 + (counts[type] || 0) * 18;
-      if (avoidTypes.indexOf(type) !== -1) score += 800;
-      if (isLegume && input.diet !== 'vegetarian' && animalOrEggOrTofuAvailable && hasNonLegume) score += 140 + (legumeDinnerCount || 0) * 700;
-      if (isLegume && avoidTypes.some(function(t){ return LEGUME_FAMILIES.indexOf(t) !== -1; })) score += 900;
-      if (score < bestScore) { best = m; bestScore = score; }
-    });
-    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
-    return best;
-  }
-
-  function buildBreakfasts(input, allowed){
-    var opts = breakfastOptions(input, allowed);
-    var counts = {};
-    var out = [];
-    for (var day=0; day<7; day++) out.push(pickNonRepeating(opts, day, day ? [out[day-1].type] : [], counts));
-    return out;
-  }
-
-  function buildLunches(input, allowed, breakfasts){
-    var opts = lunchOptions(input, allowed);
-    var counts = {};
-    var out = [];
-    for (var day=0; day<7; day++) {
-      var avoid = [breakfasts[day] && breakfasts[day].type];
-      if (day && out[day-1]) avoid.push(out[day-1].type);
-      out.push(pickNonRepeating(opts, day, avoid, counts));
-    }
-    return out;
-  }
-
-  function buildDinners(input, allowed, lunches){
-    var sets = dinnerOptionSets(input, allowed);
-    var counts = {};
-    var out = [];
-    var legumeDinnerCount = 0;
-    for (var day=0; day<7; day++) {
-      var opts = sets[day] && sets[day].length ? sets[day] : sets.reduce(function(a,b){ return a.concat(b); }, []);
-      var avoid = [lunches[day] && lunches[day].type];
-      if (day && out[day-1]) avoid.push(out[day-1].type);
-      if (day > 1 && out[day-2]) avoid.push(out[day-2].type);
-
-      // Anti-legume stacking: if lunch or recent dinner is a legume, strongly avoid legume dinner where alternatives exist.
-      if (lunches[day] && LEGUME_FAMILIES.indexOf(lunches[day].type) !== -1) avoid = avoid.concat(LEGUME_FAMILIES);
-
-      var chosen = pickDinnerOption(opts, day, avoid, counts, input, allowed, legumeDinnerCount);
-      if (chosen && LEGUME_FAMILIES.indexOf(chosen.type) !== -1) legumeDinnerCount++;
-      out.push(chosen);
-    }
-    return out;
-  }
-
-  function buildSnacks(input, allowed, breakfasts, lunches, dinners){
-    var opts = snackOptions(input, allowed);
-    var out = [];
-    var counts = {};
-    var shakeWeek = 0;
-    for (var day=0; day<7; day++) {
-      var fixedTypes = [breakfasts[day] && breakfasts[day].type, lunches[day] && lunches[day].type, dinners[day] && dinners[day].type].filter(Boolean);
-      var snack1 = chooseSnack(opts, day, fixedTypes, counts, false, shakeWeek);
-      if (snack1 && snack1.type === 'protein_powder') shakeWeek++;
-      var totalBefore = proteinMid(breakfasts[day] && breakfasts[day].protein) + proteinMid(snack1 && snack1.protein) + proteinMid(lunches[day] && lunches[day].protein) + proteinMid(dinners[day] && dinners[day].protein);
-      var needProtein = totalBefore < (input.targets.proteinMin - 10);
-      var snack2 = chooseSnack(opts, day+3, fixedTypes.concat([snack1 && snack1.type]), counts, !needProtein, shakeWeek);
-      if (snack2 && snack2.type === 'protein_powder') shakeWeek++;
-      out.push([snack1, snack2]);
-    }
-    return out;
-  }
-
-  function chooseSnack(opts, day, avoidTypes, counts, preferLight, shakeWeek){
-    var best = null, bestScore = 999999;
-    opts.forEach(function(fn, idx){
-      var m = fn(day);
-      var type = m.type || 'other';
-      var isLight = m.tags && m.tags.indexOf('light') !== -1;
-      var score = idx + (counts[type] || 0) * 12;
-      if (avoidTypes.indexOf(type) !== -1) score += 420;
-      if (preferLight && isLight) score -= 80;
-      if (!preferLight && isLight) score += 80;
-      if (type === 'protein_powder' && shakeWeek >= 2) score += 10000;
-      if (type === 'dairy' && avoidTypes.indexOf('dairy') !== -1) score += 120;
-      if (score < bestScore) { best = m; bestScore = score; }
-    });
-    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
-    return best;
-  }
-
-  function dayProtein(day){
-    return proteinMid(day.breakfast && day.breakfast.protein) + proteinMid(day.morningSnack && day.morningSnack.protein) + proteinMid(day.lunch && day.lunch.protein) + proteinMid(day.afternoonSnack && day.afternoonSnack.protein) + proteinMid(day.dinner && day.dinner.protein);
-  }
-
-  function proteinBoostMeal(m){
-    if (!m) return;
-    if (m.type === 'eggs') m.protein = '24–30g';
-    else if (m.type === 'dairy') m.protein = '22–28g';
-    else if (m.type === 'tofu') m.protein = '28–36g';
-    else if (LEGUME_FAMILIES.indexOf(m.type) !== -1) m.protein = '24–32g';
-    else if (['chicken','turkey','beef','pork','fish'].indexOf(m.type) !== -1) m.protein = '34–42g';
-    m.nutrition = estimateFromProtein(m.protein, (m.tags && m.tags[0]) || 'meal');
-  }
-
-  function bestProteinSnack(allowed, avoidTypes){
-    avoidTypes = avoidTypes || [];
-    var order = [];
-    if (has(allowed,'dairy')) order.push(function(){ return meal('Wholegrain crackers with cottage cheese','12–18g','4–5 wholegrain crackers with cottage cheese.', 'dairy', ['snack']); });
-    if (has(allowed,'eggs')) order.push(function(){ return meal('Boiled egg snack','12–18g','2 boiled eggs with tomato or carrot sticks.', 'eggs', ['snack']); });
-    if (has(allowed,'chicken')) order.push(function(){ return meal('Cooked chicken strips','14–20g','Small portion cooked chicken strips with lemon and cucumber or carrot sticks.', 'chicken', ['snack']); });
-    if (has(allowed,'fish')) order.push(function(){ return meal('Tuna bites','14–20g','Small portion tuna with cherry tomatoes, lemon and herbs.', 'fish', ['snack']); });
-    if (has(allowed,'beef')) order.push(function(){ return meal(cap(REGION.US.dried).replace('Beef jerky', 'Beef jerky') + ' snack','14–20g','25–30g biltong or beef jerky with pepper or carrot sticks.', 'beef', ['snack']); });
-    if (has(allowed,'tofu')) order.push(function(){ return meal('Tofu protein bites','14–20g','Small portion tofu-style protein with tomato, lemon and herbs.', 'tofu', ['snack']); });
-    if (has(allowed,'protein_powder')) order.push(function(){ return meal('Protein shake','20–25g','Use if protein is difficult to reach from meals.', 'protein_powder', ['snack']); });
-    var fallbackNonShake = null;
-    var fallbackAny = null;
-    for (var i=0;i<order.length;i++) {
-      var candidate = order[i]();
-      if (!fallbackAny) fallbackAny = candidate;
-      if (candidate.type !== 'protein_powder' && !fallbackNonShake) fallbackNonShake = candidate;
-      if (candidate.type !== 'protein_powder' && avoidTypes.indexOf(candidate.type) === -1) return candidate;
-    }
-    // If all useful snacks clash with the day, repeat a normal food before using another shake.
-    return fallbackNonShake || fallbackAny || null;
-  }
-
-  function lightFruitSnack(input){
-    var r = REGION[input.region];
-    return meal(cap(r.fruit) + ' or berries','0–2g','1 small ' + r.fruit + ' or a small handful of berries.', 'fruit', ['snack','light']);
-  }
-
-  function fixSameDaySnackClash(day, input, allowed){
-    if (!day.morningSnack || !day.afternoonSnack) return day;
-    if (day.morningSnack.name !== day.afternoonSnack.name && day.morningSnack.type !== day.afternoonSnack.type) return day;
-    var avoid = [day.breakfast && day.breakfast.type, day.morningSnack && day.morningSnack.type, day.lunch && day.lunch.type, day.dinner && day.dinner.type].filter(Boolean);
-    var replacement = bestProteinSnack(allowed, avoid);
-    if (replacement && replacement.type !== day.morningSnack.type && replacement.name !== day.morningSnack.name) {
-      day.afternoonSnack = replacement;
-    } else if (dayProtein(day) >= (input.targets.proteinMin || 90)) {
-      day.afternoonSnack = lightFruitSnack(input);
-    }
-    return day;
-  }
-
-  function repairProtein(day, input, allowed){
-    var min = input.targets.proteinMin || 90;
-    var max = input.targets.proteinMax || 125;
-
-    // Low protein repair: preserve main meals, upgrade weak pieces first.
-    if (dayProtein(day) < min) {
-      proteinBoostMeal(day.breakfast);
-    }
-    if (dayProtein(day) < min && day.afternoonSnack && proteinMid(day.afternoonSnack.protein) < 12) {
-      day.afternoonSnack = bestProteinSnack(allowed, [day.breakfast && day.breakfast.type, day.morningSnack && day.morningSnack.type, day.lunch && day.lunch.type, day.dinner && day.dinner.type].filter(Boolean)) || day.afternoonSnack;
-    }
-    if (dayProtein(day) < min && day.morningSnack && proteinMid(day.morningSnack.protein) < 12) {
-      day.morningSnack = bestProteinSnack(allowed, [day.breakfast && day.breakfast.type, day.afternoonSnack && day.afternoonSnack.type, day.lunch && day.lunch.type, day.dinner && day.dinner.type].filter(Boolean)) || day.morningSnack;
-    }
-    if (dayProtein(day) < min) proteinBoostMeal(day.lunch);
-    if (dayProtein(day) < min) proteinBoostMeal(day.dinner);
-    if (dayProtein(day) < min && day.afternoonSnack && day.afternoonSnack.type === 'fruit') {
-      day.afternoonSnack = bestProteinSnack(allowed, [day.breakfast && day.breakfast.type, day.morningSnack && day.morningSnack.type].filter(Boolean)) || day.afternoonSnack;
-    }
-
-    // High protein soft cap: if too high, replace one snack with fruit first.
-    if (dayProtein(day) > max) {
-      if (day.afternoonSnack && proteinMid(day.afternoonSnack.protein) >= 10) day.afternoonSnack = lightFruitSnack(input);
-    }
-    if (dayProtein(day) > max && day.morningSnack && proteinMid(day.morningSnack.protein) >= 14) {
-      day.morningSnack = lightFruitSnack(input);
-    }
-
-    fixSameDaySnackClash(day, input, allowed);
-    return day;
-  }
-
-  function inferDinnerStarch(mealObj){
-    var t = ((mealObj && mealObj.name) || '') + ' ' + ((mealObj && mealObj.detail) || '');
-    t = t.toLowerCase();
-    if (/sweet potato/.test(t)) return 'sweet_potato';
-    if (/\bpotato\b/.test(t)) return 'potato';
-    if (/\bpasta\b/.test(t)) return 'pasta';
-    if (/\bnoodles\b/.test(t)) return 'noodles';
-    if (/\bwrap\b/.test(t)) return 'wrap';
-    if (/\brice\b/.test(t)) return 'rice';
-    return '';
-  }
-
-  function starchNameForTitle(key){
-    return key === 'sweet_potato' ? 'sweet potato' : key === 'wrap' ? 'small wrap' : key;
-  }
-
-  function starchServePhrase(key){
-    return STARCH_LABEL[key] || '';
-  }
-
-  function replaceDinnerStarch(mealObj, next){
-    if (!mealObj || !next) return mealObj;
-    var titleStarch = starchNameForTitle(next);
-    var phrase = starchServePhrase(next);
-    var name = mealObj.name || '';
-    var detail = mealObj.detail || '';
-    var hasTitleStarch = /(with|and) (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)/i.test(name);
-    var hasServe = /Serve with (½ cup cooked rice|½ cup cooked potato|½ medium sweet potato|½ cup cooked pasta|½ cup cooked noodles|1 small wrap)\./i.test(detail);
-    if (hasTitleStarch) {
-      name = name.replace(/with (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)/i, 'with ' + titleStarch);
-      name = name.replace(/and (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)$/i, 'and ' + titleStarch);
-    } else if (!/(No added starch|no added starch)/.test(detail)) {
-      name = name + ' with ' + titleStarch;
-    }
-    if (hasServe) {
-      detail = detail.replace(/Serve with (½ cup cooked rice|½ cup cooked potato|½ medium sweet potato|½ cup cooked pasta|½ cup cooked noodles|1 small wrap)\./i, 'Serve with ' + phrase + '.');
-    } else {
-      detail = detail.replace(/\s*No added starch\.?/i, '').trim();
-      detail = detail.replace(/\s*$/, ' Serve with ' + phrase + '.');
-    }
-    mealObj.name = mealObj.title = name;
-    mealObj.detail = mealObj.description = detail;
-    mealObj.starch = next;
-    return mealObj;
-  }
-
-  function chooseRotatedStarch(input, current, dayIndex, used){
-    var available = (input.starches || []).filter(function(s){ return STARCH_LABEL[s] && DINNER_STARCH_KEYS.indexOf(s) !== -1; });
-    if (!available.length) return current || '';
-    if (available.length === 1) return available[0];
-    var caps = { pasta:1, noodles:1, wrap:2, rice:3, potato:3, sweet_potato:3 };
-    var best = null, bestScore = 999999;
-    available.forEach(function(s, idx){
-      var score = idx * 0.05 + (used.counts[s] || 0) * 20;
-      if (used.last1 === s) score += 200;
-      if (used.last2 === s) score += 100;
-      if ((used.counts[s] || 0) >= (caps[s] || 2)) score += 500;
-      if (s === current) score -= 10;
-      if ((s === 'pasta' || s === 'noodles') && (used.counts[s] || 0) > 0) score += 350;
-      if (score < bestScore) { best = s; bestScore = score; }
-    });
-    return best || current || available[dayIndex % available.length];
-  }
-
-  function enforceStarchRotation(days, input){
-    var used = { counts:{}, last1:'', last2:'' };
-    days.forEach(function(dayObj, idx){
-      var m = dayObj.dinner;
-      var current = inferDinnerStarch(m);
-      if (!current && input.lowerStarch) return;
-      var next = chooseRotatedStarch(input, current, idx, used);
-      replaceDinnerStarch(m, next);
-      used.counts[next] = (used.counts[next] || 0) + 1;
-      used.last2 = used.last1;
-      used.last1 = next;
-    });
-    return days;
-  }
-
-  function chooseLunchReplacement(input, allowed, dayObj, idx, days, counts){
-    var opts = lunchOptions(input, allowed);
-    var avoid = [dayObj.breakfast && dayObj.breakfast.type, dayObj.dinner && dayObj.dinner.type];
-    if (idx > 0 && days[idx-1] && days[idx-1].dinner) avoid.push(days[idx-1].dinner.type);
-    if (idx > 0 && days[idx-1] && days[idx-1].lunch) avoid.push(days[idx-1].lunch.type);
-    var best = null, bestScore = 999999;
-    var animalOrEggOrTofuAvailable = hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu','dairy']));
-    opts.forEach(function(fn, optIdx){
-      var m = fn(idx);
-      var type = m.type || 'other';
-      var isLegume = LEGUME_FAMILIES.indexOf(type) !== -1;
-      var score = optIdx * 0.1 + (counts[type] || 0) * 18;
-      if (avoid.indexOf(type) !== -1) score += 900;
-      if (isLegume && input.diet !== 'vegetarian' && animalOrEggOrTofuAvailable) score += 180;
-      if (score < bestScore) { best = m; bestScore = score; }
-    });
-    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
-    return best;
-  }
-
-  function enforceMainProteinRotation(days, input, allowed){
-    var counts = {};
-    days.forEach(function(dayObj, idx){
-      if (!dayObj || !dayObj.lunch) return;
-      var lunchType = dayObj.lunch.type;
-      var sameDayClash = dayObj.dinner && dayObj.dinner.type === lunchType;
-      var previousDinnerClash = idx > 0 && days[idx-1] && days[idx-1].dinner && days[idx-1].dinner.type === lunchType;
-      var previousLunchClash = idx > 0 && days[idx-1] && days[idx-1].lunch && days[idx-1].lunch.type === lunchType;
-      var legumeOverload = input.diet !== 'vegetarian' && LEGUME_FAMILIES.indexOf(lunchType) !== -1 && (counts.lentils || 0) + (counts.beans || 0) + (counts.chickpeas || 0) >= 1 && hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu','dairy']));
-      if (sameDayClash || previousDinnerClash || previousLunchClash || legumeOverload) {
-        var replacement = chooseLunchReplacement(input, allowed, dayObj, idx, days, counts);
-        if (replacement) dayObj.lunch = replacement;
-      } else {
-        counts[lunchType] = (counts[lunchType] || 0) + 1;
+    if(p === 'dairy'){
+      var dairy = selectedDairyName(input, false);
+      if(dairy === 'cottage cheese'){
+        return meal('d'+day+'-breakfast',day,'breakfast','Cottage cheese fruit plate','dairy',null,[],[ingredient('cottage cheese','200g','Dairy',{qtyGrams:200}), ingredient(label(fruit),'1 serving','Fruit',{unitCount:1})], 'Cottage cheese with ' + label(fruit) + ' and cinnamon.', nutrition(24,24,4,270), ['breakfast']);
       }
+      return meal('d'+day+'-breakfast',day,'breakfast','High-protein '+reg.yoghurt+' bowl','dairy',null,[],[ingredient(dairy,'1 cup / 200g','Dairy',{qtyGrams:200}), ingredient(label(fruit),'1 serving','Fruit',{unitCount:1})], '1 cup high-protein ' + reg.yoghurt + ' with ' + label(fruit) + ' and cinnamon.', nutrition(23,26,4,280), ['breakfast']);
+    }
+    if(p === 'protein_powder'){
+      inc(ledger,'shakeCount');
+      return meal('d'+day+'-breakfast',day,'breakfast','Protein shake breakfast','protein_powder',null,[],[ingredient('protein powder','1 scoop','Protein',{scoops:1}), ingredient(label(fruit),'1 serving','Fruit',{unitCount:1})], 'Protein shake blended with water or milk and ' + label(fruit) + '.', nutrition(25,22,3,240), ['breakfast','shake']);
+    }
+    return meal('d'+day+'-breakfast',day,'breakfast','Tofu scramble','tofu',null,veg,[ingredient('tofu','150g','Protein',{qtyGrams:150})].concat(veg.map(function(v){return ingredient(label(v),'small amount','Vegetables');})), 'Tofu scramble with ' + vegText(veg) + '.', nutrition(22,10,4,260), ['breakfast']);
+  }
+
+  function pickFruit(input, ledger){
+    var fruits = input.fruit && input.fruit.length ? input.fruit : [];
+    if(!fruits.length && input.snacks.indexOf('fruit') !== -1) fruits = ['apple'];
+    if(!fruits.length) fruits = ['apple'];
+    var f = pickRotating(fruits, ledger.fruit, { avoid:[ledger.lastFruit] });
+    inc(ledger.fruit, f); ledger.lastFruit = f;
+    return f;
+  }
+
+  function snackCandidates(input){
+    var out = [];
+    if(input.fruit.length || input.snacks.indexOf('fruit') !== -1) out.push('fruit');
+    input.snacks.forEach(function(s){ addUnique(out, s); });
+    return out;
+  }
+
+  function setSnackKey(m, key){ if(m) m.snackKey = key; return m; }
+
+  function makeSnack(input, day, slot, ledger, preferProtein, avoidKeys){
+    avoidKeys = avoidKeys || [];
+    var candidates = snackCandidates(input).filter(function(s){ return avoidKeys.indexOf(s) === -1; });
+    var proteinSnacks = candidates.filter(function(s){ return ['yoghurt','cottage_cheese','eggs','protein_powder','tuna','biltong'].indexOf(s) !== -1; });
+    var lightSnacks = candidates.filter(function(s){ return proteinSnacks.indexOf(s) === -1; });
+    var pool = preferProtein && proteinSnacks.length ? proteinSnacks : candidates;
+    if(!pool.length) pool = ['fruit'];
+    var key = pickRotating(pool, ledger.snack, { avoid:[ledger.lastSnack] });
+    inc(ledger.snack, key); ledger.lastSnack = key;
+    var id = 'd'+day+'-'+slot;
+    var fruit = null, reg = rconf(input);
+    if(key === 'fruit'){
+      fruit = pickFruit(input, ledger);
+      return setSnackKey(meal(id,day,slot,capFirst(label(fruit)),'fruit',null,[],[ingredient(label(fruit),'1 small serving','Fruit',{unitCount:1})], '1 small serving of ' + label(fruit) + '.', nutrition(1,16,3,70), ['snack','fruit']), key);
+    }
+    if(key === 'yoghurt'){
+      fruit = pickFruit(input, ledger);
+      return setSnackKey(meal(id,day,slot,'Greek '+reg.yoghurt+' with '+label(fruit),'dairy',null,[],[ingredient('Greek-style '+reg.yoghurt,'150g','Dairy',{qtyGrams:150}), ingredient(label(fruit),'small serving','Fruit',{unitCount:.5})], 'Greek-style ' + reg.yoghurt + ' with ' + label(fruit) + '.', nutrition(16,18,3,170), ['snack','dairy']), key);
+    }
+    if(key === 'cottage_cheese') return setSnackKey(meal(id,day,slot,'Cottage cheese snack','dairy',null,[],[ingredient('cottage cheese','100g','Dairy',{qtyGrams:100}), ingredient('wholegrain crackers','3–4','Carbs and starches',{unitCount:4})], 'Cottage cheese with a few wholegrain crackers.', nutrition(14,16,2,160), ['snack','dairy']), key);
+    if(key === 'eggs') return setSnackKey(meal(id,day,slot,'Boiled egg snack','eggs',null,[],[ingredient('eggs','2','Protein',{unitCount:2})], '2 boiled eggs with salt, pepper or herbs.', nutrition(13,1,0,145), ['snack']), key);
+    if(key === 'protein_powder') { inc(ledger,'shakeCount'); return setSnackKey(meal(id,day,slot,'Protein shake','protein_powder',null,[],[ingredient('protein powder','1 scoop','Protein',{scoops:1})], '1 scoop protein powder mixed with water or milk.', nutrition(23,5,1,130), ['snack','shake']), key); }
+    if(key === 'tuna') return setSnackKey(meal(id,day,slot,'Tuna bites','fish',null,[],[ingredient('tuna','½ tin','Protein',{qtyGrams:70})], 'Small portion of tuna with lemon and herbs.', nutrition(17,0,0,90), ['snack']), key);
+    if(key === 'biltong') return setSnackKey(meal(id,day,slot,'Biltong or lean jerky','beef',null,[],[ingredient('biltong / lean jerky','30g','Protein',{qtyGrams:30})], 'Small portion of biltong or lean jerky.', nutrition(15,2,0,100), ['snack']), key);
+    if(key === 'hummus') return setSnackKey(meal(id,day,slot,'Hummus with veg sticks','chickpeas',null,['carrot','cucumber'],[ingredient('hummus','2 tbsp','Protein',{qtyGrams:40}), ingredient('veg sticks','1 cup','Vegetables')], 'Hummus with vegetable sticks.', nutrition(6,12,4,120), ['snack']), key);
+    if(key === 'crackers') return setSnackKey(meal(id,day,slot,'Wholegrain crackers','crackers',null,[],[ingredient('wholegrain crackers','4–5','Carbs and starches',{unitCount:5})], 'A small serving of wholegrain crackers.', nutrition(4,18,2,110), ['snack']), key);
+    return setSnackKey(meal(id,day,slot,'Veg sticks','veg_sticks',null,['carrot','cucumber'],[ingredient('veg sticks','1 cup','Vegetables')], 'Crunchy vegetable sticks.', nutrition(1,8,3,45), ['snack']), key);
+  }
+
+  function capFirst(s){ s = String(s || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+  function dinnerCandidates(input){
+    var out = input.proteins.filter(function(p){ return MAIN_PROTEINS.indexOf(p) !== -1 && p !== 'protein_powder'; });
+    if(input.seafood.length) addUnique(out,'seafood');
+    return out;
+  }
+
+  function proteinCaps(input){
+    return { chicken:4, pork:2, tofu: input.diet === 'vegetarian' ? 7 : 3, seafood:2 };
+  }
+
+  function chooseDinnerProtein(input, day, ledger){
+    var candidates = dinnerCandidates(input);
+    return pickRotating(candidates, ledger.dinnerProtein, { avoid:[ledger.lastDinnerProtein, ledger.prevDinnerProtein], caps: proteinCaps(input) });
+  }
+  function chooseDinnerStarch(input, day, ledger){
+    var caps = { pasta:1, noodles:1, wrap:2, rice:3, potato:3, sweet_potato:3 };
+    return pickRotating(input.starches, ledger.dinnerStarch, { avoid:[ledger.lastDinnerStarch, ledger.prevDinnerStarch], caps:caps });
+  }
+
+  function makeMainMeal(input, day, slot, protein, starch, ledger, rhythm){
+    var isDinner = slot === 'dinner';
+    var reg = rconf(input);
+    var id = 'd'+day+'-'+slot;
+    var vegType = rhythm === 'Soup' || rhythm === 'Curry / stew' ? 'cooked' : (rhythm === 'Grill / plate' || rhythm === 'Light dinner' ? 'salad' : 'cooked');
+    var veg = vegPool(input, vegType, day + (slot === 'lunch' ? 2 : 0), rhythm === 'Soup' || rhythm === 'Curry / stew' ? 3 : 2);
+    var starchIng = starch ? starchIngredient(starch) : null;
+    var starchPhrase = starch ? ' Serve with ' + starchText(starch) + '.' : ' No added starch.';
+    var baseIngredients = veg.map(function(v){ return ingredient(label(v),'½ cup','Vegetables'); });
+    var title = '', desc = '', pgrams = isDinner ? 36 : 32, calories = isDinner ? 410 : 360, carbs = starch ? 36 : 14, fibre = starch ? 6 : 4;
+    var ingredients = [];
+    var proteinSource = protein;
+
+    function finish(t, d, protItem, amount, group, extra){
+      title = t; desc = d + starchPhrase;
+      ingredients = [ingredient(protItem, amount, group || 'Protein', extra || {})].concat(starchIng ? [starchIng] : []).concat(baseIngredients);
+    }
+
+    if(protein === 'chicken') finish(chickenTitle(rhythm, starch), chickenDesc(rhythm, 'chicken', veg), 'chicken breast/strips', isDinner ? '150g' : '120g', 'Protein', {qtyGrams:isDinner?150:120});
+    else if(protein === 'beef') finish(beefTitle(rhythm, starch), beefDesc(rhythm, reg.mince, veg), reg.mince, isDinner ? '150g' : '120g', 'Protein', {qtyGrams:isDinner?150:120});
+    else if(protein === 'pork') finish(porkTitle(rhythm, starch), porkDesc(rhythm, veg), 'lean pork fillet/loin strips', isDinner ? '150g' : '120g', 'Protein', {qtyGrams:isDinner?150:120});
+    else if(protein === 'fish'){
+      var fish = selectedFishName(input, !isDinner);
+      var grams = fish === 'tuna' ? (isDinner ? '1 tin' : '¾ tin') : (isDinner ? '150g' : '120g');
+      finish(fishTitle(rhythm, fish, starch), fishDesc(rhythm, fish, veg, reg), fish, grams, 'Protein', {qtyGrams:isDinner?150:120});
+      pgrams = fish === 'tuna' ? (isDinner ? 36 : 28) : (isDinner ? 34 : 30);
+    }
+    else if(protein === 'seafood'){
+      var seafood = pickRotating(input.seafood.length ? input.seafood : ['prawns'], ledger.dinnerProtein, { avoid:[ledger.lastSeafood] });
+      ledger.lastSeafood = seafood;
+      var seafoodName = seafood === 'prawns' ? 'prawns' : seafood === 'calamari' ? 'calamari strips' : seafood;
+      finish(seafoodTitle(rhythm, seafoodName, starch), seafoodDesc(rhythm, seafoodName, veg), seafoodName, isDinner ? '150g' : '120g', 'Protein', {qtyGrams:isDinner?150:120});
+      proteinSource = 'seafood'; pgrams = isDinner ? 32 : 28;
+    }
+    else if(protein === 'eggs'){
+      pgrams = isDinner ? 26 : 22; calories = isDinner ? 340 : 290;
+      finish('2–3 egg vegetable frittata' + (starch ? ' with ' + label(starch) : ''), '2–3 eggs baked with ' + vegText(veg) + ' and herbs.', 'eggs', '3', 'Protein', {unitCount:3});
+    }
+    else if(protein === 'dairy'){
+      pgrams = isDinner ? 24 : 22; calories = 300;
+      var dairy = selectedDairyName(input, true);
+      finish('Cottage cheese protein plate', capFirst(dairy) + ' with ' + vegText(veg) + ', herbs and lemon.', dairy, '200g', 'Dairy', {qtyGrams:200});
+    }
+    else if(protein === 'tofu'){
+      pgrams = isDinner ? 28 : 24;
+      finish(tofuTitle(rhythm, starch), 'Tofu cooked with ' + vegText(veg) + ', garlic, ginger and mild seasoning.', 'tofu', isDinner ? '180g' : '150g', 'Protein', {qtyGrams:isDinner?180:150});
+    }
+    else if(protein === 'lentils'){
+      pgrams = isDinner ? 28 : 24; carbs += 15; fibre += 6;
+      finish(lentilTitle(rhythm, starch), 'Lentils simmered with ' + vegText(veg) + ', tomato, herbs and ' + reg.stock + '.', 'lentils', isDinner ? '1 cup cooked' : '¾ cup cooked', 'Protein', {qtyGrams:isDinner?200:150});
+    }
+    else {
+      pgrams = isDinner ? 28 : 24; carbs += 15; fibre += 7;
+      var legume = protein === 'chickpeas' ? 'chickpeas' : 'beans';
+      finish(legumeTitle(rhythm, legume, starch), capFirst(legume) + ' cooked with ' + vegText(veg) + ', tomato, herbs and mild spices.', legume, isDinner ? '1 cup cooked' : '¾ cup cooked', 'Protein', {qtyGrams:isDinner?200:150});
+      proteinSource = protein || 'beans';
+    }
+
+    return meal(id, day, slot, title, proteinSource, starch || null, veg, ingredients, desc, nutrition(pgrams, carbs, fibre, calories), [slot, rhythm]);
+  }
+
+  function chickenTitle(rhythm, starch){ return rhythm === 'Soup' ? 'Chicken vegetable soup' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Curry / stew' ? 'Chicken curry' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Stir-fry' ? 'Chicken stir-fry' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Fun food' ? 'Chicken taco-style bowl' : rhythm === 'Light dinner' ? 'Light chicken plate' : rhythm === 'Sunday / hearty meal' ? 'Roast-style chicken plate' : 'Grilled chicken plate'; }
+  function chickenDesc(rhythm, p, veg){ return rhythm === 'Soup' ? 'Chicken simmered gently with ' + vegText(veg) + ' in broth.' : rhythm === 'Curry / stew' ? 'Chicken cooked with tomato, mild curry spices and ' + vegText(veg) + '.' : rhythm === 'Stir-fry' ? 'Chicken strips stir-fried with ' + vegText(veg) + ' and garlic-ginger sauce.' : 'Chicken served with ' + vegText(veg) + ' and simple seasoning.'; }
+  function beefTitle(rhythm, starch){ return rhythm === 'Soup' || rhythm === 'Curry / stew' ? 'Lean beef stew' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Stir-fry' ? 'Lean beef stir-fry' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Fun food' ? 'Lean beef burger bowl' : rhythm === 'Sunday / hearty meal' ? 'Lean beef cottage-pie style bowl' : 'Lean beef vegetable bowl'; }
+  function beefDesc(rhythm, mince, veg){ return capFirst(mince) + ' cooked with tomato, herbs and ' + vegText(veg) + '.'; }
+  function porkTitle(rhythm, starch){ return rhythm === 'Stir-fry' ? 'Lean pork stir-fry' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Curry / stew' || rhythm === 'Soup' ? 'Lean pork tomato stew' + (starch ? ' with ' + label(starch) : '') : 'Lean pork vegetable plate' + (starch ? ' with ' + label(starch) : ''); }
+  function porkDesc(rhythm, veg){ return 'Lean pork fillet/loin strips cooked with ' + vegText(veg) + ' and mild seasoning.'; }
+  function fishTitle(rhythm, fish, starch){ return fish === 'tuna' ? 'Tuna vegetable bowl' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Soup' ? capFirst(fish) + ' vegetable soup' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Stir-fry' ? capFirst(fish) + ' stir-fry' + (starch ? ' with ' + label(starch) : '') : 'Baked ' + fish + ' plate' + (starch ? ' with ' + label(starch) : ''); }
+  function fishDesc(rhythm, fish, veg, reg){ return fish === 'tuna' ? 'Tuna mixed with lemon, herbs and ' + vegText(veg) + '.' : capFirst(fish) + ' cooked gently with ' + vegText(veg) + (rhythm === 'Soup' ? ' in ' + reg.stock : '') + '.'; }
+  function seafoodTitle(rhythm, seafood, starch){ return capFirst(seafood) + (rhythm === 'Stir-fry' ? ' stir-fry' : rhythm === 'Curry / stew' ? ' curry' : ' plate') + (starch ? ' with ' + label(starch) : ''); }
+  function seafoodDesc(rhythm, seafood, veg){ return capFirst(seafood) + ' cooked with ' + vegText(veg) + ' and mild seasoning.'; }
+  function tofuTitle(rhythm, starch){ return rhythm === 'Stir-fry' ? 'Tofu stir-fry' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Curry / stew' ? 'Tofu curry' + (starch ? ' with ' + label(starch) : '') : 'Tofu vegetable bowl' + (starch ? ' with ' + label(starch) : ''); }
+  function lentilTitle(rhythm, starch){ return rhythm === 'Soup' ? 'Lentil vegetable soup' + (starch ? ' with ' + label(starch) : '') : rhythm === 'Curry / stew' ? 'Lentil curry' + (starch ? ' with ' + label(starch) : '') : 'Lentil vegetable bowl' + (starch ? ' with ' + label(starch) : ''); }
+  function legumeTitle(rhythm, legume, starch){ return capFirst(legume) + (rhythm === 'Fun food' ? ' chilli-style bowl' : rhythm === 'Curry / stew' ? ' curry' : ' vegetable bowl') + (starch ? ' with ' + label(starch) : ''); }
+
+  function makeDinner(input, day, ledger){
+    var rhythmList = ['Soup','Curry / stew','Stir-fry','Grill / plate','Fun food','Light dinner','Sunday / hearty meal'];
+    var rhythm = rhythmList[(day - 1) % rhythmList.length];
+    var protein = chooseDinnerProtein(input, day, ledger);
+    var starch = chooseDinnerStarch(input, day, ledger);
+    inc(ledger.dinnerProtein, protein); ledger.prevDinnerProtein = ledger.lastDinnerProtein; ledger.lastDinnerProtein = protein;
+    inc(ledger.dinnerStarch, starch); ledger.prevDinnerStarch = ledger.lastDinnerStarch; ledger.lastDinnerStarch = starch;
+    return makeMainMeal(input, day, 'dinner', protein, starch, ledger, rhythm);
+  }
+
+  function makeLunch(input, day, ledger, dinnerProtein){
+    var candidates = dinnerCandidates(input).concat(input.proteins.filter(function(p){ return p === 'dairy'; }));
+    candidates = unique(candidates).filter(function(p){ return p !== dinnerProtein; });
+    if(!candidates.length) candidates = dinnerCandidates(input);
+    var protein = pickRotating(candidates, ledger.lunchProtein, { avoid:[dinnerProtein, ledger.lastLunchProtein] });
+    inc(ledger.lunchProtein, protein); ledger.lastLunchProtein = protein;
+    var starch = null;
+    // Lunches are lighter by default. Use a selected wrap/rice sometimes if it helps variety.
+    if(input.starches.indexOf('wrap') !== -1 && day % 3 === 0) starch = 'wrap';
+    return makeMainMeal(input, day, 'lunch', protein, starch, ledger, 'Grill / plate');
+  }
+
+  function cloneLeftoverLunch(sourceDinner, day){
+    var copy = JSON.parse(JSON.stringify(sourceDinner));
+    copy.id = 'd' + day + '-lunch';
+    copy.day = day; copy.slot = 'lunch';
+    copy.title = sourceDinner.title + ' (leftover)';
+    copy.description = 'Leftover ' + sourceDinner.title.toLowerCase() + ' from Day ' + sourceDinner.day + ' dinner.';
+    copy.isLeftover = true; copy.leftoverFromDay = sourceDinner.day;
+    return copy;
+  }
+
+  function calculateMealNutrition(meal){ return meal && meal.nutrition ? meal.nutrition : nutrition(0,0,0,0); }
+  function calculateDayNutrition(day){
+    var meals = [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner];
+    var total = meals.reduce(function(acc,m){ var n = calculateMealNutrition(m); acc.protein += Number(n.protein||0); acc.carbs += Number(n.carbs||0); acc.fibre += Number(n.fibre||0); acc.calories += Number(n.calories||0); return acc; }, {protein:0,carbs:0,fibre:0,calories:0});
+    return nutrition(total.protein,total.carbs,total.fibre,total.calories);
+  }
+  function calculatePlanNutrition(plan){
+    var days = (plan && plan.days) || [];
+    return days.map(calculateDayNutrition);
+  }
+
+  function dayMeals(day){ return [day.breakfast,day.morningSnack,day.lunch,day.afternoonSnack,day.dinner]; }
+  function replaceSnackWithProtein(day, input, ledger, slot){
+    var current = day[slot];
+    if(current && current.nutrition && current.nutrition.protein >= 10) return false;
+    var otherSlot = slot === 'afternoonSnack' ? 'morningSnack' : 'afternoonSnack';
+    var avoid = [];
+    if(day[otherSlot] && day[otherSlot].snackKey) avoid.push(day[otherSlot].snackKey);
+    if(current && current.snackKey) avoid.push(current.snackKey);
+    var meal = makeSnack(input, day.day, slot, ledger, true, avoid);
+    if(meal.nutrition.protein <= (current && current.nutrition ? current.nutrition.protein : 0)) return false;
+    day[slot] = meal; return true;
+  }
+  function boostMainMeal(mealObj, grams){
+    if(!mealObj || !mealObj.nutrition) return false;
+    mealObj.nutrition.protein += grams || 5;
+    mealObj.nutrition.calories += (grams || 5) * 8;
+    mealObj.description = mealObj.description.replace(/120g/g,'150g').replace(/120–150g/g,'150g');
+    return true;
+  }
+  function proteinRepair(days, input, ledger){
+    days.forEach(function(day){
+      day.nutrition = calculateDayNutrition(day);
+      var safety = 0;
+      while(day.nutrition.protein < input.targets.proteinMin && safety++ < 5){
+        if(replaceSnackWithProtein(day,input,ledger,'afternoonSnack') || replaceSnackWithProtein(day,input,ledger,'morningSnack')){
+          ledger.repairs.push('Day ' + day.day + ': upgraded a snack to meet minimum protein.');
+        } else if(boostMainMeal(day.dinner, 5)){
+          ledger.repairs.push('Day ' + day.day + ': increased dinner protein portion to meet minimum protein.');
+        } else if(boostMainMeal(day.breakfast, 5)){
+          ledger.repairs.push('Day ' + day.day + ': increased breakfast protein to meet minimum protein.');
+        } else break;
+        day.nutrition = calculateDayNutrition(day);
+      }
+      if(day.nutrition.protein > input.targets.proteinMax){
+        var light = makeSnack(input, day.day, 'afternoonSnack', ledger, false, ['protein_powder','tuna','biltong']);
+        if(light.nutrition.protein < day.afternoonSnack.nutrition.protein){
+          day.afternoonSnack = light;
+          ledger.repairs.push('Day ' + day.day + ': reduced optional snack protein to stay inside protein guide.');
+          day.nutrition = calculateDayNutrition(day);
+        }
+      }
+      if(day.nutrition.protein < input.targets.proteinMin) ledger.warnings.push('Day ' + day.day + ': selections were too narrow to fully repair protein without adding unselected foods.');
     });
-    return days;
+  }
+
+  function validatePlan(plan, input){
+    input = normalizeInput(input || plan.inputSummary || {});
+    var warnings = (plan.validation && plan.validation.warnings ? plan.validation.warnings.slice() : []);
+    var repairs = (plan.validation && plan.validation.repairs ? plan.validation.repairs.slice() : []);
+    var passed = true;
+    (plan.days || []).forEach(function(day){
+      dayMeals(day).forEach(function(m){
+        if(!m || !m.title || !m.description) { passed = false; warnings.push('Day ' + day.day + ': missing meal title or description.'); }
+        if(m.title && /mandarin or berries|lentils stay/i.test(m.title + ' ' + m.description)) { passed = false; warnings.push('Day ' + day.day + ': blocked old template wording detected.'); }
+        if(m.slot === 'breakfast' && /hummus|fruit-only/i.test(m.title)) { passed = false; warnings.push('Day ' + day.day + ': invalid breakfast template detected.'); }
+      });
+      var n = calculateDayNutrition(day);
+      day.nutrition = n;
+      if(n.protein < input.targets.proteinMin || n.protein > input.targets.proteinMax) passed = false;
+    });
+    return { passed: passed, warnings: unique(warnings), repairs: unique(repairs) };
   }
 
   function buildShoppingList(plan, input){
-    var groups = { proteins:[], vegetables:[], fruit:[], starches:[], dairy:[], snacks:[], sauces_extras:[], pantry:[] };
-    function add(g, x){ if (x && groups[g].indexOf(x) === -1) groups[g].push(x); }
-    var allowed = plan.gate ? plan.gate.allowed : allowedProteins(input);
-    if (has(allowed,'chicken')) add('proteins','chicken breast');
-    if (has(allowed,'eggs')) add('proteins','eggs');
-    if (has(allowed,'dairy')) { add('dairy','Greek-style ' + REGION[input.region].yoghurt); add('dairy','cottage cheese'); }
-    if (has(allowed,'fish')) add('proteins', REGION[input.region].fish + ' or tuna');
-    if (has(allowed,'beef')) add('proteins', REGION[input.region].mince);
-    if (has(allowed,'pork')) add('proteins','lean pork fillet/loin strips');
-    if (has(allowed,'tofu')) add('proteins','tofu-style protein');
-    if (has(allowed,'lentils')) add('proteins','lentils');
-    if (has(allowed,'beans')) add('proteins','beans');
-    if (has(allowed,'chickpeas')) add('proteins','chickpeas');
-    (input.vegetables || []).forEach(function(v){ add('vegetables', v); });
-    (input.starches || []).forEach(function(s){ add('starches', STARCH_LABEL[s] ? STARCH_LABEL[s].replace(/^½ cup cooked /,'').replace(/^½ medium /,'') : s); });
-    add('fruit','berries or fruit of your choice');
-    add('sauces_extras','lemon'); add('sauces_extras','herbs'); add('sauces_extras','garlic'); add('sauces_extras','mild spices');
-    return groups;
-  }
-
-  function validatePlan(plan, rawInput){
-    var input = normalizeInput(rawInput || plan.input || {});
-    var allowed = allowedProteins(input);
-    var warnings = [];
-    function warnIf(cond, msg){ if (cond) warnings.push(msg); }
-    var mealTypes = [];
-    (plan.days || []).forEach(function(day){ ['breakfast','morningSnack','lunch','afternoonSnack','dinner'].forEach(function(k){ if(day[k] && day[k].type) mealTypes.push(day[k].type); }); });
-
-    if (!has(allowed,'tofu')) warnIf(mealTypes.indexOf('tofu') !== -1, 'tofu appeared without being selected');
-    if (!has(allowed,'pork')) warnIf(mealTypes.indexOf('pork') !== -1, 'pork appeared without being selected');
-    if (!has(allowed,'fish')) warnIf(mealTypes.indexOf('fish') !== -1, 'fish appeared without being selected');
-    if (!has(allowed,'beans')) warnIf(mealTypes.indexOf('beans') !== -1, 'beans appeared without being selected');
-    if (!has(allowed,'chickpeas')) warnIf(mealTypes.indexOf('chickpeas') !== -1, 'chickpeas appeared without being selected');
-    if (!has(allowed,'lentils')) warnIf(mealTypes.indexOf('lentils') !== -1, 'lentils appeared without being selected');
-    plan.days.forEach(function(day){
-      var p = dayProtein(day);
-      warnIf(p < input.targets.proteinMin, 'Day ' + day.day + ' protein is below the target band: approx ' + Math.round(p) + 'g');
-      [day.breakfast, day.lunch, day.dinner].forEach(function(m){
-        if (!m) return;
-        warnIf(m.type === 'eggs' && !/2–3|2-3/.test(m.detail), 'Egg meal missing 2–3 egg wording: ' + m.name);
-        warnIf(m.tags && m.tags.indexOf('breakfast') !== -1 && /scrambled|omelette|tofu scramble/i.test(m.name) && ((m.detail.match(/,/g) || []).length >= 2), 'Breakfast-style meal may have too many vegetables: ' + m.name);
+    var groups = { 'Protein':{}, 'Dairy':{}, 'Vegetables':{}, 'Fruit':{}, 'Carbs and starches':{}, 'Pantry and flavour':{} };
+    function add(group, item, amount, meta){
+      group = groups[group] ? group : 'Pantry and flavour';
+      item = String(item || '').trim(); if(!item) return;
+      var key = item.toLowerCase();
+      if(!groups[group][key]) groups[group][key] = { item:item, grams:0, units:0, scoops:0, cups:0, count:0, examples:[] };
+      var row = groups[group][key]; row.count += 1;
+      meta = meta || {};
+      if(meta.qtyGrams) row.grams += Number(meta.qtyGrams||0);
+      if(meta.unitCount) row.units += Number(meta.unitCount||0);
+      if(meta.scoops) row.scoops += Number(meta.scoops||0);
+      if(meta.qtyCupsCooked) row.cups += Number(meta.qtyCupsCooked||0);
+      if(amount && row.examples.length < 2) row.examples.push(amount);
+    }
+    ((plan && plan.days) || []).forEach(function(day){
+      dayMeals(day).forEach(function(m){
+        (m && m.ingredients || []).forEach(function(i){ add(i.group, i.item, i.amount, i); });
       });
     });
-
-    var starchSeen = {};
-    var lastStarch = '';
-    var beforeLastStarch = '';
-    plan.days.forEach(function(day){
-      var st = inferDinnerStarch(day.dinner);
-      if (!st) return;
-      warnIf(st === lastStarch, 'Dinner starch repeats on consecutive days: ' + st);
-      warnIf(st === beforeLastStarch && (input.starches || []).length > 2, 'Dinner starch repeats within three days: ' + st);
-      starchSeen[st] = (starchSeen[st] || 0) + 1;
-      beforeLastStarch = lastStarch;
-      lastStarch = st;
+    var out = {};
+    Object.keys(groups).forEach(function(group){
+      out[group] = Object.keys(groups[group]).sort().map(function(k){
+        var r = groups[group][k];
+        var qty = '';
+        if(r.grams) qty = '±' + Math.ceil((r.grams * 1.1) / 50) * 50 + 'g';
+        else if(r.scoops) qty = r.scoops + ' scoop' + (r.scoops === 1 ? '' : 's');
+        else if(r.units) qty = Math.ceil(r.units) + ' item' + (Math.ceil(r.units) === 1 ? '' : 's');
+        else if(r.cups) qty = '±' + Math.ceil(r.cups) + ' cups cooked';
+        else qty = r.count + ' use' + (r.count === 1 ? '' : 's');
+        return { item:r.item, qty:qty, quantity:qty, notes:'' };
+      });
     });
-    warnIf((starchSeen.pasta || 0) > 1, 'Pasta appears more than once in the week.');
-    warnIf((starchSeen.noodles || 0) > 1, 'Noodles appear more than once in the week.');
-
-    return { passed: warnings.length === 0, warnings: warnings };
+    if(!out['Pantry and flavour'].length){
+      out['Pantry and flavour'] = ['garlic','lemon','mixed herbs','mild spices','olive oil or cooking spray'].map(function(x){ return {item:x, qty:'as needed', notes:''}; });
+    }
+    return out;
   }
 
   function generatePlan(raw){
     var input = normalizeInput(raw);
     var gate = gateCheck(input);
-    if (gate.status === 'BLOCKED') return { status:'BLOCKED', gate:gate, messages:gate.messages, days:[] };
-    var allowed = gate.allowed;
-    var breakfasts = buildBreakfasts(input, allowed);
-    var lunches = buildLunches(input, allowed, breakfasts);
-    var dinners = buildDinners(input, allowed, lunches);
-    var snacks = buildSnacks(input, allowed, breakfasts, lunches, dinners);
-    var days = [];
-    for (var i=0; i<7; i++) {
-      var d = {
-        day: i + 1,
-        dayNumber: i + 1,
-        breakfast: breakfasts[i],
-        morningSnack: snacks[i] && snacks[i][0],
-        lunch: lunches[i],
-        afternoonSnack: snacks[i] && snacks[i][1],
-        dinner: dinners[i]
-      };
-      days.push(d);
+    if(gate.length){
+      return { status:'BLOCKED', version:VERSION, source:ENGINE_SOURCE, inputSummary:input, days:[], shoppingList:{}, gate:gate, messages:gate, validation:{passed:false,warnings:gate,repairs:[]} };
     }
-    enforceMainProteinRotation(days, input, allowed);
-    days.forEach(function(d){ repairProtein(d, input, allowed); });
-    enforceStarchRotation(days, input);
-    days.forEach(function(dayObj){
-      dayObj.totalProtein = Math.round(dayProtein(dayObj));
-      dayObj.nutrition = calculateDayNutrition(dayObj, input);
-    });
-    var plan = {
-      status:'ALLOWED',
-      version:VERSION,
-      source:ENGINE_SOURCE,
-      gate:gate,
-      inputSummary:{ region:input.region, diet:input.diet, targets:input.targets, selectedProteins:allowed },
-      days:days,
-      messages:[],
-      shoppingList:null,
-      validation:null
-    };
-    plan.shoppingList = buildShoppingList(plan, input);
-    plan.validation = validatePlan(plan, input);
+    var ledger = blankCounters();
+    var days = [];
+    for(var d=1; d<=7; d++){
+      var day = { day:d, title:'Day ' + d, proteinGuide:{min:input.targets.proteinMin,max:input.targets.proteinMax}, fibreGuide:{min:input.targets.fibreMin,max:input.targets.fibreMax} };
+      day.breakfast = makeBreakfast(input,d,ledger);
+      day.morningSnack = makeSnack(input,d,'morningSnack',ledger,true,[]);
+      day.dinner = makeDinner(input,d,ledger);
+      day.lunch = input.leftoverLunches && d > 1 ? cloneLeftoverLunch(days[d-2].dinner, d) : makeLunch(input,d,ledger,day.dinner.proteinSource);
+      day.afternoonSnack = makeSnack(input,d,'afternoonSnack',ledger,false,[day.morningSnack && day.morningSnack.snackKey]);
+      day.nutrition = calculateDayNutrition(day);
+      days.push(day);
+    }
+    proteinRepair(days,input,ledger);
+    days.forEach(function(day){ day.nutrition = calculateDayNutrition(day); });
+    var plan = { status:'ALLOWED', version:VERSION, source:ENGINE_SOURCE, inputSummary:input, days:days, shoppingList:null, validation:{passed:true,warnings:ledger.warnings,repairs:ledger.repairs} };
+    plan.validation = validatePlan(plan,input);
+    plan.validation.repairs = unique((plan.validation.repairs || []).concat(ledger.repairs));
+    plan.validation.warnings = unique((plan.validation.warnings || []).concat(ledger.warnings));
+    plan.shoppingList = buildShoppingList(plan,input);
     return plan;
   }
 
-  function calculateMealNutrition(mealObj){ return mealObj && mealObj.nutrition ? mealObj.nutrition : estimateFromProtein(mealObj && mealObj.protein, 'meal'); }
-  function calculateDayNutrition(day){
-    var meals = [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner].filter(Boolean);
-    var out = { protein:0, carbs:0, fibre:0, calories:0, confidence:'estimated' };
-    meals.forEach(function(m){ var n = calculateMealNutrition(m); out.protein += n.protein || proteinMid(m.protein); out.carbs += n.carbs || 0; out.fibre += n.fibre || 0; out.calories += n.calories || 0; });
-    out.protein = Math.round(out.protein); out.carbs = Math.round(out.carbs); out.fibre = Math.round(out.fibre); out.calories = Math.round(out.calories);
-    return out;
-  }
-  function calculatePlanNutrition(plan){
-    var out = { protein:0, carbs:0, fibre:0, calories:0, confidence:'estimated' };
-    (plan.days || []).forEach(function(d){ var n = calculateDayNutrition(d); out.protein += n.protein; out.carbs += n.carbs; out.fibre += n.fibre; out.calories += n.calories; });
-    var days = Math.max(1, (plan.days || []).length);
-    out.dailyAverage = { protein:Math.round(out.protein/days), carbs:Math.round(out.carbs/days), fibre:Math.round(out.fibre/days), calories:Math.round(out.calories/days), confidence:'estimated' };
-    return out;
+  function swapMeal(plan, dayIndex, mealType, input){
+    input = normalizeInput(input || plan.inputSummary || {});
+    if(!plan || !Array.isArray(plan.days) || dayIndex < 0 || dayIndex > 6) return plan;
+    var ledger = blankCounters();
+    var day = plan.days[dayIndex];
+    var oldTitle = day[mealType] && day[mealType].title;
+    var replacement = null;
+    if(mealType === 'breakfast') replacement = makeBreakfast(input, day.day, ledger);
+    else if(mealType === 'morningSnack' || mealType === 'afternoonSnack') replacement = makeSnack(input, day.day, mealType, ledger, mealType === 'morningSnack', []);
+    else if(mealType === 'dinner') replacement = makeDinner(input, day.day, ledger);
+    else if(mealType === 'lunch') replacement = makeLunch(input, day.day, ledger, day.dinner && day.dinner.proteinSource);
+    if(!replacement || replacement.title === oldTitle){
+      plan.validation = plan.validation || {passed:true,warnings:[],repairs:[]};
+      plan.validation.warnings = unique((plan.validation.warnings || []).concat(['No valid alternative meal was available for that swap.']));
+      return plan;
+    }
+    day[mealType] = replacement;
+    day.nutrition = calculateDayNutrition(day);
+    plan.shoppingList = buildShoppingList(plan,input);
+    plan.validation = validatePlan(plan,input);
+    return plan;
   }
 
-  function swapMeal(plan){ return plan; }
-
-  return {
-    VERSION: VERSION,
-    ENGINE_SOURCE: ENGINE_SOURCE,
-    version: VERSION,
-    source: ENGINE_SOURCE,
-    generatePlan: generatePlan,
-    gateCheck: gateCheck,
-    validatePlan: validatePlan,
-    buildShoppingList: buildShoppingList,
-    calculateMealNutrition: calculateMealNutrition,
-    calculateDayNutrition: calculateDayNutrition,
-    calculatePlanNutrition: calculatePlanNutrition,
-    swapMeal: swapMeal,
-    _internal: { normalizeInput: normalizeInput, allowedProteins: allowedProteins, proteinMid: proteinMid }
-  };
+  return { VERSION:VERSION, ENGINE_SOURCE:ENGINE_SOURCE, version:VERSION, source:ENGINE_SOURCE, generatePlan:generatePlan, validatePlan:validatePlan, buildShoppingList:buildShoppingList, calculateMealNutrition:calculateMealNutrition, calculateDayNutrition:calculateDayNutrition, calculatePlanNutrition:calculatePlanNutrition, swapMeal:swapMeal };
 });

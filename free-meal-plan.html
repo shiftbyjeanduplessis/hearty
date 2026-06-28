@@ -5217,7 +5217,7 @@ body.plan-builder-hard-lock{
   </div>
 </div>
 
-<script src="js/hearty-meal-engine.js?v=leadmagnet-v394-locked"></script>
+<script src="js/hearty-meal-engine.js?v=420-selected-rotation"></script>
 
 
 
@@ -5332,16 +5332,21 @@ body.plan-builder-hard-lock{
         <div class="engine-builder-card engine-builder-wide">
           <label class="engine-card-label">6. Fruit and snacks you like</label>
           <div class="food-pref-grid engine-snack-grid full-choice-grid" id="snackFoodGrid" aria-label="Fruit and snacks you like">
-            <label class="protein-check"><input type="checkbox" value="fruit_choice"><span>Fruit</span></label>
             <label class="protein-check"><input type="checkbox" value="berries"><span>Berries</span></label>
             <label class="protein-check"><input type="checkbox" value="banana"><span>Banana</span></label>
             <label class="protein-check"><input type="checkbox" value="apple"><span>Apple</span></label>
+            <label class="protein-check"><input type="checkbox" value="pear"><span>Pear</span></label>
+            <label class="protein-check"><input type="checkbox" value="orange_mandarin"><span>Orange / mandarin</span></label>
+            <label class="protein-check"><input type="checkbox" value="grapes"><span>Grapes</span></label>
             <label class="protein-check"><input type="checkbox" value="greek_yoghurt"><span>Greek yoghurt</span></label>
             <label class="protein-check"><input type="checkbox" value="cottage_cheese"><span>Cottage cheese</span></label>
             <label class="protein-check"><input type="checkbox" value="boiled_eggs"><span>Boiled eggs</span></label>
             <label class="protein-check"><input type="checkbox" value="protein_shake"><span>Protein shake</span></label>
+            <label class="protein-check"><input type="checkbox" value="tuna"><span>Tuna</span></label>
+            <label class="protein-check"><input type="checkbox" value="biltong"><span>Biltong / jerky</span></label>
+            <label class="protein-check"><input type="checkbox" value="hummus"><span>Hummus</span></label>
             <label class="protein-check"><input type="checkbox" value="crackers"><span>Crackers</span></label>
-            <label class="protein-check"><input type="checkbox" value="toast"><span>Toast</span></label>
+            <label class="protein-check"><input type="checkbox" value="veg_sticks"><span>Veg sticks</span></label>
           </div>
           <small>These guide snacks and balancing snacks. Hearty still keeps portions GLP-1 friendly.</small>
         </div>
@@ -5540,8 +5545,7 @@ body.plan-builder-hard-lock{
       tofu:'Tofu', beans:'Beans / chickpeas', lentils:'Lentils', meat_free_mince:'Meat-free mince'
     },
     carbs:{
-      rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles',
-      oats:'Oats', bread:'Bread/toast', wraps:'Wraps/pita', crackers:'Crackers'
+      rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles', wraps:'Wraps/pita', pasta:'Pasta'
     },
     veg:{
       spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot',
@@ -5551,10 +5555,10 @@ body.plan-builder-hard-lock{
       eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus'
     },
     snacks:{
-      fruit_choice:'Fruit', berries:'Berries', banana:'Banana', apple:'Apple',
+      berries:'Berries', banana:'Banana', apple:'Apple', pear:'Pear', orange_mandarin:'Orange / mandarin', grapes:'Grapes',
       greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', boiled_eggs:'Boiled eggs',
-      protein_shake:'Protein shake', tuna:'Tuna', biltong:'Biltong', hummus:'Hummus',
-      crackers:'Crackers', toast:'Toast', veg_sticks:'Veg sticks'
+      protein_shake:'Protein shake', tuna:'Tuna', biltong:'Biltong / jerky', hummus:'Hummus',
+      crackers:'Crackers', veg_sticks:'Veg sticks'
     }
   };
 
@@ -5605,6 +5609,7 @@ body.plan-builder-hard-lock{
         if(!btn || !group.contains(btn)) return;
         group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('selected', b === btn); });
         document.body.dataset.heartyPrefsTouched = '1';
+        if(group.getAttribute('data-simple-choice') === 'diet') applyDietFilters();
       });
     });
   }
@@ -5617,6 +5622,34 @@ body.plan-builder-hard-lock{
         document.body.dataset.heartyPrefsTouched = '1';
         var label = input.closest('.protein-check');
         if(label) label.classList.toggle('selected', input.checked);
+      });
+    });
+  }
+
+  function isAllowedForDiet(value, diet, gridId){
+    diet = diet || 'omnivore';
+    var meatProteins = ['chicken','beef','pork'];
+    var fishProteins = ['tuna','white_fish','prawns','calamari','mussels_clams'];
+    var animalSnackOnly = ['biltong'];
+    if(diet === 'no_pork' && value === 'pork') return false;
+    if(diet === 'no_fish' && (fishProteins.indexOf(value) !== -1 || value === 'tuna')) return false;
+    if(diet === 'pescatarian' && (meatProteins.indexOf(value) !== -1 || animalSnackOnly.indexOf(value) !== -1)) return false;
+    if(diet === 'vegetarian' && (meatProteins.indexOf(value) !== -1 || fishProteins.indexOf(value) !== -1 || value === 'tuna' || animalSnackOnly.indexOf(value) !== -1)) return false;
+    return true;
+  }
+
+  function applyDietFilters(){
+    var diet = selectedValue('diet') || 'omnivore';
+    ['proteinFoodGrid','snackFoodGrid'].forEach(function(gridId){
+      qsa('#' + gridId + ' input').forEach(function(input){
+        var allowed = isAllowedForDiet(input.value, diet, gridId);
+        var label = input.closest('.protein-check');
+        input.disabled = !allowed;
+        if(label) label.hidden = !allowed;
+        if(!allowed){
+          input.checked = false;
+          if(label) label.classList.remove('selected');
+        }
       });
     });
   }
@@ -5836,10 +5869,16 @@ body.plan-builder-hard-lock{
     return out.length ? out : ['The meal engine blocked this plan. Please adjust your selections and try again.'];
   }
 
+  function canonicalFruitKey(value){
+    var v = String(value || '').trim();
+    var map = { berries:'berries', banana:'banana', apple:'apple', pear:'pear', orange_mandarin:'orange_mandarin', orange:'orange_mandarin', mandarin:'orange_mandarin', grapes:'grapes' };
+    return map[v] || '';
+  }
+
   function canonicalSnackKey(value){
     var v = String(value || '').trim();
     var map = {
-      fruit_choice:'fruit', berries:'fruit', banana:'fruit', apple:'fruit', other_fruit:'fruit',
+      berries:'fruit', banana:'fruit', apple:'fruit', pear:'fruit', orange_mandarin:'fruit', grapes:'fruit',
       greek_yoghurt:'yoghurt', greek_yogurt:'yoghurt', plain_yoghurt:'yoghurt', plain_yogurt:'yoghurt',
       cottage_cheese:'cottage_cheese',
       boiled_eggs:'eggs', egg:'eggs', eggs:'eggs',
@@ -5847,7 +5886,7 @@ body.plan-builder-hard-lock{
       tuna_tin:'tuna', tuna_can:'tuna', tuna:'tuna',
       beef_jerky:'biltong', biltong_jerky:'biltong', jerky:'biltong', biltong:'biltong',
       hummus:'hummus',
-      crackers:'crackers', toast:'crackers', wholegrain_crackers:'crackers',
+      crackers:'crackers', wholegrain_crackers:'crackers',
       veggie_sticks:'veg_sticks', veg_sticks:'veg_sticks'
     };
     var key = map[v] || v;
@@ -5859,6 +5898,7 @@ body.plan-builder-hard-lock{
     var proteins = [];
     var seafood = [];
     var snacks = [];
+    var fruit = [];
     var starches = [];
     var vegetables = [];
 
@@ -5884,12 +5924,14 @@ body.plan-builder-hard-lock{
     });
 
     (prefs.snacks || []).forEach(function(rawSnack){
+      var fruitKey = canonicalFruitKey(rawSnack);
       var key = canonicalSnackKey(rawSnack);
+      if(fruitKey){ addUnique(fruit, fruitKey); addUnique(snacks, 'fruit'); return; }
       if(key === 'yoghurt' || key === 'cottage_cheese') addUnique(proteins,'dairy');
       if(key === 'eggs') addUnique(proteins,'eggs');
       if(key === 'protein_powder') addUnique(proteins,'protein_powder');
       if(key === 'tuna') addUnique(proteins,'fish');
-      addUnique(snacks,key);
+      if(key) addUnique(snacks,key);
     });
 
     (prefs.carbs || []).forEach(function(c){
@@ -5914,6 +5956,9 @@ body.plan-builder-hard-lock{
       starches: starches,
       vegetables: vegetables,
       snacks: snacks,
+      fruit: fruit,
+      proteinDetails: uniqueValues(prefs.foods || []),
+      snackDetails: uniqueValues(prefs.snacks || []),
       supportMode: 'none',
       leftoverLunches: false,
       targets: {
@@ -6157,6 +6202,7 @@ body.plan-builder-hard-lock{
   function bindLockedAdapter(){
     resetDefaultSelections();
     bindSimpleChoices();
+    applyDietFilters();
     bindSelectionClasses();
 
     var build = qs('modalBuildPlanBtn');
