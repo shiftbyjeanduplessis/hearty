@@ -21,8 +21,8 @@
 })(typeof self !== 'undefined' ? self : this, function(){
   'use strict';
 
-  var VERSION = '4.1.0-leadmagnet-band-rotation';
-  var ENGINE_SOURCE = 'clean-engine-protein-band-breakfast-starch-protein-rotation';
+  var VERSION = '4.1.4-leadmagnet-rotation-repair';
+  var ENGINE_SOURCE = 'clean-engine-protein-band-breakfast-starch-protein-rotation-repair';
 
   var REGION = {
     US: { yoghurt:'yogurt', stock:'broth', fish:'white fish', mince:'lean ground beef', dried:'beef jerky', marrow:'zucchini', fruit:'mandarin' },
@@ -42,6 +42,8 @@
     bread:'1 slice toast',
     crackers:'4–5 wholegrain crackers'
   };
+
+  var DINNER_STARCH_KEYS = ['rice','potato','sweet_potato','pasta','noodles','wrap'];
 
   var PROTEIN_FAMILIES = ['chicken','turkey','beef','pork','fish','eggs','dairy','protein_powder','tofu','lentils','beans','chickpeas'];
   var MAIN_FAMILIES = ['chicken','turkey','beef','pork','fish','eggs','tofu','lentils','beans','chickpeas'];
@@ -163,7 +165,7 @@
     var contextSets = {
       breakfast:['spinach','tomato','mushrooms','peppers','onion',r.marrow],
       salad:['lettuce','tomato','cucumber','carrot','peppers','spinach'],
-      soup:['carrot','spinach','tomato','onion','broccoli','cauliflower','green beans',r.marrow,'mushrooms'],
+      soup:['carrot','spinach','broccoli','cauliflower','green beans',r.marrow,'mushrooms','onion'],
       cooked:['carrot','broccoli','cauliflower','green beans',r.marrow,'mushrooms','spinach','peppers','cabbage'],
       stirfry:['peppers','carrot','broccoli','green beans',r.marrow,'mushrooms','cabbage','spinach'],
       curry:['spinach','carrot','peppers','mushrooms',r.marrow,'green beans','cauliflower'],
@@ -174,17 +176,25 @@
     return out.length ? out : allowed;
   }
 
+  function joinReadable(list){
+    list = (list || []).filter(Boolean);
+    if (!list.length) return '';
+    if (list.length === 1) return list[0];
+    if (list.length === 2) return list[0] + ' and ' + list[1];
+    return list.slice(0,-1).join(', ') + ' and ' + list[list.length-1];
+  }
+
   function vegList(input, context, start, count){
     var source = vegPool(input, context);
     var out = [];
     var i;
     // Meal realism cap: breakfast stays simple, lunch/dinner never dump long veg lists.
-    count = Math.max(1, Math.min(count || 2, context === 'breakfast' ? 2 : context === 'salad' ? 2 : 3));
+    count = Math.max(1, Math.min(count || 2, context === 'breakfast' ? 2 : context === 'salad' ? 1 : 2));
     for (i=0; out.length < count && i < source.length * 2; i++) {
       var item = source[(start + i) % source.length];
       if (out.indexOf(item) === -1) out.push(item);
     }
-    return out.join(', ');
+    return joinReadable(out);
   }
 
 
@@ -198,12 +208,12 @@
       var item = source[(start + i) % source.length];
       if (out.indexOf(item) === -1) out.push(item);
     }
-    return out.join(', ');
+    return joinReadable(out);
   }
 
   function selectedStarch(input, day, preferred){
     if (input.lowerStarch) return '';
-    var starches = (input.starches || []).filter(function(s){ return STARCH_LABEL[s]; });
+    var starches = (input.starches || []).filter(function(s){ return STARCH_LABEL[s] && DINNER_STARCH_KEYS.indexOf(s) !== -1; });
     if (!starches.length) return '';
     if (preferred && starches.indexOf(preferred) !== -1) return preferred;
     return starches[day % starches.length];
@@ -256,13 +266,13 @@
       out.push(function(){ return meal('Protein shake breakfast','20–25g','Protein shake prepared with water or milk, plus fruit if desired.', 'protein_powder', ['breakfast']); });
     }
     if (has(allowed,'tofu') && selected(['tofu_scramble'])) {
-      out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day+2,2) + ' and mild spices.', 'tofu', ['breakfast']); });
+      out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day+2,2) + ', plus mild spices.', 'tofu', ['breakfast']); });
     }
 
     if (!out.length) {
       if (has(allowed,'eggs')) out.push(function(day){ return meal('Vegetable omelette','20–26g','2–3 eggs cooked with ' + vegList(input,'breakfast',day,2) + '.', 'eggs', ['breakfast']); });
       else if (has(allowed,'dairy')) out.push(function(){ return meal('High-protein ' + r.yoghurt + ' bowl','18–24g','1 cup Greek-style ' + r.yoghurt + ' with berries or fruit and cinnamon.', 'dairy', ['breakfast']); });
-      else if (has(allowed,'tofu')) out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day,2) + '.', 'tofu', ['breakfast']); });
+      else if (has(allowed,'tofu')) out.push(function(day){ return meal('Tofu scramble','20–28g','Tofu-style protein cooked with ' + vegList(input,'breakfast',day,2) + ', plus mild spices.', 'tofu', ['breakfast']); });
       else if (has(allowed,'protein_powder')) out.push(function(){ return meal('Protein shake breakfast','20–25g','Protein shake prepared with water or milk.', 'protein_powder', ['breakfast']); });
     }
     return out;
@@ -299,7 +309,7 @@
       out.push(function(day){ return meal('Tofu vegetable bowl','24–34g','Tofu-style protein with lettuce, tomato, lemon-herb dressing and ' + saladExtras(input,day,1) + '. No added starch.', 'tofu', ['lunch']); });
     }
     if (has(allowed,'lentils')) {
-      out.push(function(day){ return meal('Lentil vegetable soup bowl','20–30g','Lentils simmered with ' + vegList(input,'soup',day,3) + ' and ' + r.stock + '. No added starch. Lentils stay in the meal because they are the protein source.', 'lentils', ['lunch','legume']); });
+      out.push(function(day){ return meal('Lentil vegetable soup bowl','20–30g','Lentils simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '. No added starch. Lentils stay in the meal because they are the protein source.', 'lentils', ['lunch','legume']); });
     }
     if (has(allowed,'beans')) {
       out.push(function(day){ return meal('Bean chilli vegetable bowl','20–30g','Beans cooked with tomato, mild spices and ' + vegList(input,'cooked',day,3) + '. No added starch. Beans stay in the meal because they are the protein source.', 'beans', ['lunch','legume']); });
@@ -312,32 +322,32 @@
 
   function dinnerOptionSets(input, allowed){
     var r = REGION[input.region];
-    function chickenSoup(day){ return meal('Chicken vegetable soup','32–40g','120–150g chicken simmered with ' + vegList(input,'soup',day,3) + ' and ' + r.stock + '.', 'chicken', ['dinner']); }
-    function chickenCurry(day){ return meal('Chicken curry with rice','32–40g',withStarch('120–150g chicken cooked with onion, garlic, ginger, tomato, mild curry spices and ' + vegList(input,'curry',day,3) + '.', input, day, 'rice'), 'chicken', ['dinner']); }
-    function chickenStir(day){ return meal('Chicken stir-fry with rice','32–40g',withStarch('120–150g chicken strips stir-fried with ' + vegList(input,'stirfry',day,3) + ' and garlic-ginger sauce.', input, day, 'rice'), 'chicken', ['dinner']); }
+    function chickenSoup(day){ return meal('Chicken vegetable soup with rice','32–40g',withStarch('120–150g chicken simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'rice'), 'chicken', ['dinner']); }
+    function chickenCurry(day){ return meal('Chicken curry with rice','32–40g',withStarch('120–150g chicken cooked with onion, garlic, ginger, tomato, mild curry spices, ' + vegList(input,'curry',day,2) + '.', input, day, 'rice'), 'chicken', ['dinner']); }
+    function chickenStir(day){ return meal('Chicken stir-fry with rice','32–40g',withStarch('120–150g chicken strips stir-fried with ' + vegList(input,'stirfry',day,2) + ', plus garlic-ginger sauce.', input, day, 'rice'), 'chicken', ['dinner']); }
     function chickenPlate(day){ return meal('Grilled chicken plate','32–40g',withStarch('120–150g grilled chicken with ' + vegList(input,'side',day,3) + '.', input, day, 'sweet_potato'), 'chicken', ['dinner']); }
     function roastChicken(day){ return meal('Roast-style chicken plate','34–42g',withStarch('A portion of roast-style chicken with green vegetables and carrots.', input, day, 'potato'), 'chicken', ['dinner']); }
 
     function fishPlate(day){ return meal('Grilled ' + r.fish + ' plate','30–38g',withStarch('A portion of ' + r.fish + ' with lemon, herbs and ' + vegList(input,'side',day,3) + '.', input, day, 'rice'), 'fish', ['dinner']); }
-    function fishSoup(day){ return meal(cap(r.fish) + ' vegetable soup','28–36g','A portion of ' + r.fish + ' simmered gently with ' + vegList(input,'soup',day,3) + ' and ' + r.stock + '.', 'fish', ['dinner']); }
+    function fishSoup(day){ return meal(cap(r.fish) + ' vegetable soup with potato','30–38g',withStarch('A portion of ' + r.fish + ' simmered gently with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'potato'), 'fish', ['dinner']); }
 
-    function beefStew(day){ return meal('Lean beef stew with rice','32–40g',withStarch('120–150g lean beef cooked with tomato, herbs and ' + vegList(input,'soup',day,3) + '.', input, day, 'rice'), 'beef', ['dinner']); }
+    function beefStew(day){ return meal('Lean beef stew with rice','32–40g',withStarch('120–150g lean beef cooked with tomato, herbs, ' + vegList(input,'soup',day,2) + '.', input, day, 'rice'), 'beef', ['dinner']); }
     function beefBolognese(day){ return meal(cap(r.mince) + ' bolognese with pasta','32–40g',withStarch('120–150g ' + r.mince + ' cooked with onion, garlic, chopped tomato, grated carrot, mushrooms and Italian herbs.', input, day, 'pasta'), 'beef', ['dinner']); }
     function beefBurgerBowl(day){ return meal('Lean beef burger bowl','32–40g','120–150g lean beef mince served burger-bowl style with lettuce, tomato, cucumber and a light dressing. No added starch.', 'beef', ['dinner']); }
 
-    function porkStir(day){ return meal('Lean pork stir-fry with sweet-and-sour sauce and rice','30–38g',withStarch('120–150g lean pork fillet/loin strips stir-fried with ' + vegList(input,'stirfry',day,3) + '. Sauce: garlic, ginger, vinegar/lemon, tomato paste, water and a small amount of sweetener.', input, day, 'rice'), 'pork', ['dinner']); }
+    function porkStir(day){ return meal('Lean pork stir-fry with sweet-and-sour sauce and rice','30–38g',withStarch('120–150g lean pork fillet/loin strips stir-fried with ' + vegList(input,'stirfry',day,2) + '. Sauce: garlic, ginger, vinegar/lemon, tomato paste, water and a small amount of sweetener.', input, day, 'rice'), 'pork', ['dinner']); }
     function porkStew(day){ return meal('Tomato pork stew with rice','30–38g',withStarch('A portion of lean pork fillet/loin strips simmered in tomato, herbs and ' + vegList(input,'soup',day,3) + '.', input, day, 'rice'), 'pork', ['dinner']); }
 
-    function eggFrittata(day){ return meal('2–3 egg vegetable frittata','22–30g',withStarch('2–3 eggs baked with ' + vegList(input,'breakfast',day,2) + ' and herbs.', input, day, 'sweet_potato'), 'eggs', ['dinner']); }
+    function eggFrittata(day){ return meal('2–3 egg vegetable frittata','22–30g',withStarch('2–3 eggs baked with ' + vegList(input,'breakfast',day,2) + ', plus herbs.', input, day, 'sweet_potato'), 'eggs', ['dinner']); }
     function omeletteLight(day){ return meal('2–3 egg omelette and salad','20–28g','2–3 eggs cooked with ' + vegList(input,'breakfast',day,2) + ' and served with a small salad. No added starch.', 'eggs', ['dinner']); }
 
-    function tofuStir(day){ return meal('Tofu-style stir-fry with rice','26–36g',withStarch('Tofu-style protein stir-fried with ' + vegList(input,'stirfry',day,3) + ' and garlic-ginger sauce.', input, day, 'rice'), 'tofu', ['dinner']); }
+    function tofuStir(day){ return meal('Tofu-style stir-fry with rice','26–36g',withStarch('Tofu-style protein stir-fried with ' + vegList(input,'stirfry',day,2) + ', plus garlic-ginger sauce.', input, day, 'rice'), 'tofu', ['dinner']); }
     function tofuBake(day){ return meal('Tofu tomato bake with rice','26–36g',withStarch('Tofu-style protein baked or simmered in tomato, onion, garlic, herbs and ' + vegList(input,'cooked',day,3) + '.', input, day, 'rice'), 'tofu', ['dinner']); }
     function tofuCurry(day){ return meal('Tofu curry with rice','26–36g',withStarch('Tofu-style protein cooked with tomato, mild curry spices and ' + vegList(input,'curry',day,3) + '.', input, day, 'rice'), 'tofu', ['dinner']); }
 
-    function lentilSoup(day){ return meal('Lentil vegetable soup','20–30g','Lentils simmered with ' + vegList(input,'soup',day,3) + ' and ' + r.stock + '. Lentils stay in the meal because they are the protein source.', 'lentils', ['dinner','legume']); }
+    function lentilSoup(day){ return meal('Lentil vegetable soup with potato','22–32g',withStarch('Lentils simmered with ' + vegList(input,'soup',day,2) + ' in ' + r.stock + '.', input, day, 'potato') + ' Lentils stay in the meal because they are the protein source.', 'lentils', ['dinner','legume']); }
     function lentilStew(day){ return meal('Lentil and vegetable stew with sweet potato','20–30g',withStarch('Lentils simmered with tomato, herbs and ' + vegList(input,'soup',day,3) + '.', input, day, 'sweet_potato') + ' Lentils stay in the meal because they are the protein source.', 'lentils', ['dinner','legume']); }
-    function beanChilli(day){ return meal('Bean and vegetable chilli with rice','20–30g',withStarch('Beans cooked with tomato, mild spices, herbs and ' + vegList(input,'cooked',day,3) + '.', input, day, 'rice') + ' Beans stay in the meal because they are the protein source.', 'beans', ['dinner','legume']); }
+    function beanChilli(day){ return meal('Bean and vegetable chilli with rice','22–32g',withStarch('Beans cooked with tomato, mild spices, herbs, ' + vegList(input,'cooked',day,2) + '.', input, day, 'rice') + ' Beans stay in the meal because they are the protein source.', 'beans', ['dinner','legume']); }
     function chickpeaStew(day){ return meal('Chickpea and vegetable stew with rice','20–30g',withStarch('Chickpeas simmered with onion, garlic, tomato, herbs and ' + vegList(input,'cooked',day,3) + '.', input, day, 'rice') + ' Chickpeas stay in the meal because they are the protein source.', 'chickpeas', ['dinner','legume']); }
 
     var sets = [[],[],[],[],[],[],[]];
@@ -383,9 +393,30 @@
     options.forEach(function(fn, idx){
       var m = fn(day);
       var type = m.type || 'other';
-      var score = idx + (counts[type] || 0) * 10;
-      if (avoidTypes.indexOf(type) !== -1) score += 90;
+      var score = idx + (counts[type] || 0) * 14;
+      if (avoidTypes.indexOf(type) !== -1) score += 550;
       if (m.tags && m.tags.indexOf('light') !== -1) score += 25;
+      if (score < bestScore) { best = m; bestScore = score; }
+    });
+    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
+    return best;
+  }
+
+  function pickDinnerOption(options, day, avoidTypes, counts, input, allowed, legumeDinnerCount){
+    if (!options.length) return null;
+    avoidTypes = avoidTypes || [];
+    counts = counts || {};
+    var hasNonLegume = options.some(function(fn){ var m = fn(day); return LEGUME_FAMILIES.indexOf(m.type) === -1; });
+    var animalOrEggOrTofuAvailable = hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu']));
+    var best = null, bestScore = 999999;
+    options.forEach(function(fn, idx){
+      var m = fn(day);
+      var type = m.type || 'other';
+      var isLegume = LEGUME_FAMILIES.indexOf(type) !== -1;
+      var score = idx * 0.1 + (counts[type] || 0) * 18;
+      if (avoidTypes.indexOf(type) !== -1) score += 800;
+      if (isLegume && input.diet !== 'vegetarian' && animalOrEggOrTofuAvailable && hasNonLegume) score += 140 + (legumeDinnerCount || 0) * 700;
+      if (isLegume && avoidTypes.some(function(t){ return LEGUME_FAMILIES.indexOf(t) !== -1; })) score += 900;
       if (score < bestScore) { best = m; bestScore = score; }
     });
     if (best) counts[best.type] = (counts[best.type] || 0) + 1;
@@ -416,16 +447,19 @@
     var sets = dinnerOptionSets(input, allowed);
     var counts = {};
     var out = [];
+    var legumeDinnerCount = 0;
     for (var day=0; day<7; day++) {
       var opts = sets[day] && sets[day].length ? sets[day] : sets.reduce(function(a,b){ return a.concat(b); }, []);
       var avoid = [lunches[day] && lunches[day].type];
       if (day && out[day-1]) avoid.push(out[day-1].type);
       if (day > 1 && out[day-2]) avoid.push(out[day-2].type);
 
-      // Vegetarian anti-legume stacking: if lunch is a legume, avoid legume dinner where alternatives exist.
+      // Anti-legume stacking: if lunch or recent dinner is a legume, strongly avoid legume dinner where alternatives exist.
       if (lunches[day] && LEGUME_FAMILIES.indexOf(lunches[day].type) !== -1) avoid = avoid.concat(LEGUME_FAMILIES);
 
-      out.push(pickNonRepeating(opts, day, avoid, counts));
+      var chosen = pickDinnerOption(opts, day, avoid, counts, input, allowed, legumeDinnerCount);
+      if (chosen && LEGUME_FAMILIES.indexOf(chosen.type) !== -1) legumeDinnerCount++;
+      out.push(chosen);
     }
     return out;
   }
@@ -578,9 +612,20 @@
     var phrase = starchServePhrase(next);
     var name = mealObj.name || '';
     var detail = mealObj.detail || '';
-    name = name.replace(/with (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)/i, 'with ' + titleStarch);
-    name = name.replace(/and (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)$/i, 'and ' + titleStarch);
-    detail = detail.replace(/Serve with (½ cup cooked rice|½ cup cooked potato|½ medium sweet potato|½ cup cooked pasta|½ cup cooked noodles|1 small wrap)\./i, 'Serve with ' + phrase + '.');
+    var hasTitleStarch = /(with|and) (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)/i.test(name);
+    var hasServe = /Serve with (½ cup cooked rice|½ cup cooked potato|½ medium sweet potato|½ cup cooked pasta|½ cup cooked noodles|1 small wrap)\./i.test(detail);
+    if (hasTitleStarch) {
+      name = name.replace(/with (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)/i, 'with ' + titleStarch);
+      name = name.replace(/and (rice|potato|sweet potato|pasta|noodles|small wrap|wrap)$/i, 'and ' + titleStarch);
+    } else if (!/(No added starch|no added starch)/.test(detail)) {
+      name = name + ' with ' + titleStarch;
+    }
+    if (hasServe) {
+      detail = detail.replace(/Serve with (½ cup cooked rice|½ cup cooked potato|½ medium sweet potato|½ cup cooked pasta|½ cup cooked noodles|1 small wrap)\./i, 'Serve with ' + phrase + '.');
+    } else {
+      detail = detail.replace(/\s*No added starch\.?/i, '').trim();
+      detail = detail.replace(/\s*$/, ' Serve with ' + phrase + '.');
+    }
     mealObj.name = mealObj.title = name;
     mealObj.detail = mealObj.description = detail;
     mealObj.starch = next;
@@ -588,7 +633,7 @@
   }
 
   function chooseRotatedStarch(input, current, dayIndex, used){
-    var available = (input.starches || []).filter(function(s){ return STARCH_LABEL[s]; });
+    var available = (input.starches || []).filter(function(s){ return STARCH_LABEL[s] && DINNER_STARCH_KEYS.indexOf(s) !== -1; });
     if (!available.length) return current || '';
     if (available.length === 1) return available[0];
     var caps = { pasta:1, noodles:1, wrap:2, rice:3, potato:3, sweet_potato:3 };
@@ -610,12 +655,51 @@
     days.forEach(function(dayObj, idx){
       var m = dayObj.dinner;
       var current = inferDinnerStarch(m);
-      if (!current) return;
+      if (!current && input.lowerStarch) return;
       var next = chooseRotatedStarch(input, current, idx, used);
       replaceDinnerStarch(m, next);
       used.counts[next] = (used.counts[next] || 0) + 1;
       used.last2 = used.last1;
       used.last1 = next;
+    });
+    return days;
+  }
+
+  function chooseLunchReplacement(input, allowed, dayObj, idx, days, counts){
+    var opts = lunchOptions(input, allowed);
+    var avoid = [dayObj.breakfast && dayObj.breakfast.type, dayObj.dinner && dayObj.dinner.type];
+    if (idx > 0 && days[idx-1] && days[idx-1].dinner) avoid.push(days[idx-1].dinner.type);
+    if (idx > 0 && days[idx-1] && days[idx-1].lunch) avoid.push(days[idx-1].lunch.type);
+    var best = null, bestScore = 999999;
+    var animalOrEggOrTofuAvailable = hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu','dairy']));
+    opts.forEach(function(fn, optIdx){
+      var m = fn(idx);
+      var type = m.type || 'other';
+      var isLegume = LEGUME_FAMILIES.indexOf(type) !== -1;
+      var score = optIdx * 0.1 + (counts[type] || 0) * 18;
+      if (avoid.indexOf(type) !== -1) score += 900;
+      if (isLegume && input.diet !== 'vegetarian' && animalOrEggOrTofuAvailable) score += 180;
+      if (score < bestScore) { best = m; bestScore = score; }
+    });
+    if (best) counts[best.type] = (counts[best.type] || 0) + 1;
+    return best;
+  }
+
+  function enforceMainProteinRotation(days, input, allowed){
+    var counts = {};
+    days.forEach(function(dayObj, idx){
+      if (!dayObj || !dayObj.lunch) return;
+      var lunchType = dayObj.lunch.type;
+      var sameDayClash = dayObj.dinner && dayObj.dinner.type === lunchType;
+      var previousDinnerClash = idx > 0 && days[idx-1] && days[idx-1].dinner && days[idx-1].dinner.type === lunchType;
+      var previousLunchClash = idx > 0 && days[idx-1] && days[idx-1].lunch && days[idx-1].lunch.type === lunchType;
+      var legumeOverload = input.diet !== 'vegetarian' && LEGUME_FAMILIES.indexOf(lunchType) !== -1 && (counts.lentils || 0) + (counts.beans || 0) + (counts.chickpeas || 0) >= 1 && hasAny(allowed, ANIMAL_FAMILIES.concat(['fish','eggs','tofu','dairy']));
+      if (sameDayClash || previousDinnerClash || previousLunchClash || legumeOverload) {
+        var replacement = chooseLunchReplacement(input, allowed, dayObj, idx, days, counts);
+        if (replacement) dayObj.lunch = replacement;
+      } else {
+        counts[lunchType] = (counts[lunchType] || 0) + 1;
+      }
     });
     return days;
   }
@@ -703,11 +787,10 @@
         afternoonSnack: snacks[i] && snacks[i][1],
         dinner: dinners[i]
       };
-      d = repairProtein(d, input, allowed);
-      d.totalProtein = Math.round(dayProtein(d));
-      d.nutrition = calculateDayNutrition(d, input);
       days.push(d);
     }
+    enforceMainProteinRotation(days, input, allowed);
+    days.forEach(function(d){ repairProtein(d, input, allowed); });
     enforceStarchRotation(days, input);
     days.forEach(function(dayObj){
       dayObj.totalProtein = Math.round(dayProtein(dayObj));

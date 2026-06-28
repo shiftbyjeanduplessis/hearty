@@ -5218,7 +5218,6 @@ body.plan-builder-hard-lock{
 </div>
 
 <script src="js/hearty-meal-engine.js?v=leadmagnet-v394-locked"></script>
-<script src="js/hearty-funnel-v31.js?v=31p"></script>
 
 
 
@@ -5245,6 +5244,18 @@ body.plan-builder-hard-lock{
           <small>This sets the default portion range. Food style is inferred from your selected proteins.</small>
         </div>
 
+        <div class="engine-builder-card">
+          <label class="engine-card-label">2. Eating style / avoidances</label>
+          <div class="engine-pill-row" data-simple-choice="diet">
+            <button type="button" class="engine-choice-pill selected" data-value="omnivore">Omnivore</button>
+            <button type="button" class="engine-choice-pill" data-value="no_pork">No pork</button>
+            <button type="button" class="engine-choice-pill" data-value="no_fish">No fish</button>
+            <button type="button" class="engine-choice-pill" data-value="pescatarian">Pescatarian</button>
+            <button type="button" class="engine-choice-pill" data-value="vegetarian">Vegetarian</button>
+          </div>
+          <small>This is passed directly to the meal engine so exclusions are handled before generation.</small>
+        </div>
+
         <select class="country-select engine-country-select hidden-country-select" id="countrySelect" aria-label="Country">
           <option value="US">United States</option>
           <option value="UK">United Kingdom</option>
@@ -5259,7 +5270,7 @@ body.plan-builder-hard-lock{
 
       <div class="engine-builder-preferences simplified-preferences">
         <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">2. Protein foods you like</label>
+          <label class="engine-card-label">3. Protein foods you like</label>
           <div class="protein-check-grid engine-protein-grid full-choice-grid" id="proteinFoodGrid" aria-label="Protein foods you like">
             <label class="protein-check"><input type="checkbox" value="eggs"><span>Eggs</span></label>
             <label class="protein-check"><input type="checkbox" value="chicken"><span>Chicken</span></label>
@@ -5282,22 +5293,19 @@ body.plan-builder-hard-lock{
         </div>
 
         <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">3. Carbs and starches</label>
+          <label class="engine-card-label">4. Carbs and starches</label>
           <div class="food-pref-grid engine-carb-grid full-choice-grid" id="carbFoodGrid" aria-label="Carbs and starches you are okay with">
             <label class="protein-check"><input type="checkbox" value="rice"><span>Rice</span></label>
             <label class="protein-check"><input type="checkbox" value="potato"><span>Potato</span></label>
             <label class="protein-check"><input type="checkbox" value="sweet_potato"><span>Sweet potato</span></label>
             <label class="protein-check"><input type="checkbox" value="noodles"><span>Noodles</span></label>
-            <label class="protein-check"><input type="checkbox" value="oats"><span>Oats</span></label>
-            <label class="protein-check"><input type="checkbox" value="bread"><span>Bread / toast</span></label>
             <label class="protein-check"><input type="checkbox" value="wraps"><span>Wraps / pita</span></label>
-            <label class="protein-check"><input type="checkbox" value="crackers"><span>Crackers</span></label>
           </div>
           <small>Used for sides and breakfasts. Fruit is selected in the snack section below.</small>
         </div>
 
         <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">4. Vegetables you like</label>
+          <label class="engine-card-label">5. Vegetables you like</label>
           <div class="food-pref-grid engine-veg-grid full-choice-grid" id="vegFoodGrid" aria-label="Vegetables you like">
             <label class="protein-check"><input type="checkbox" value="spinach"><span>Spinach</span></label>
             <label class="protein-check"><input type="checkbox" value="lettuce"><span>Lettuce</span></label>
@@ -5322,7 +5330,7 @@ body.plan-builder-hard-lock{
         </div>
 
         <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">5. Fruit and snacks you like</label>
+          <label class="engine-card-label">6. Fruit and snacks you like</label>
           <div class="food-pref-grid engine-snack-grid full-choice-grid" id="snackFoodGrid" aria-label="Fruit and snacks you like">
             <label class="protein-check"><input type="checkbox" value="fruit_choice"><span>Fruit</span></label>
             <label class="protein-check"><input type="checkbox" value="berries"><span>Berries</span></label>
@@ -5332,12 +5340,8 @@ body.plan-builder-hard-lock{
             <label class="protein-check"><input type="checkbox" value="cottage_cheese"><span>Cottage cheese</span></label>
             <label class="protein-check"><input type="checkbox" value="boiled_eggs"><span>Boiled eggs</span></label>
             <label class="protein-check"><input type="checkbox" value="protein_shake"><span>Protein shake</span></label>
-            <label class="protein-check"><input type="checkbox" value="milk"><span>Low-fat milk</span></label>
-            <label class="protein-check"><input type="checkbox" value="nuts"><span>Nuts</span></label>
-            <label class="protein-check"><input type="checkbox" value="chia_seeds"><span>Chia seeds</span></label>
             <label class="protein-check"><input type="checkbox" value="crackers"><span>Crackers</span></label>
             <label class="protein-check"><input type="checkbox" value="toast"><span>Toast</span></label>
-            <label class="protein-check"><input type="checkbox" value="avocado"><span>Avocado</span></label>
           </div>
           <small>These guide snacks and balancing snacks. Hearty still keeps portions GLP-1 friendly.</small>
         </div>
@@ -5371,60 +5375,6 @@ body.plan-builder-hard-lock{
   function qs(id){ return document.getElementById(id); }
   function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
 
-  var builderState = {
-    style:'standard',
-    sex:'female',
-    protein:100,
-    country:'ZA',
-    foods:[],
-    carbs:[],
-    veg:[],
-    mealStyles:['quick','warm_dinners'],
-    avoids:[]
-  };
-
-  var labels = {
-    foods:{
-      chicken:'Chicken', eggs:'Eggs', greek_yoghurt:'Yoghurt/cottage cheese', tuna_salmon:'Tuna/salmon', fish:'Fish',
-      beef:'Beef', lean_mince:'Beef', protein_shake:'Protein shake', tofu_beans:'Tofu/beans', tofu:'Tofu', beans:'Beans', lentils:'Lentils', biltong_jerky:'Biltong/jerky'
-    },
-    avoids:{ chicken:'Chicken', eggs:'Eggs', dairy:'Dairy', fish:'Fish/seafood', beef:'Beef', legumes:'Beans/tofu' },
-    carbs:{ potato:'Potato/sweet potato', rice:'Rice', wraps:'Wraps/pita', oats_cereal:'Oats/cereal', fruit:'Fruit' },
-    veg:{ leafy_greens:'Leafy greens', tomato_cucumber:'Tomato/cucumber', carrots:'Carrots', peppers:'Peppers', baby_marrow:'Baby marrow', broccoli_cauliflower:'Broccoli/cauliflower', mushrooms_onions:'Mushrooms/onions', mixed_frozen:'Mixed frozen veg' },
-    mealStyles:{ quick:'Quick meals', warm_dinners:'Warm dinners', bowls:'Bowls', wraps_salads:'Wraps/salads', no_cook:'No-cook', meal_prep:'Meal prep' },
-    countries:{ ZA:'South Africa', US:'United States', UK:'United Kingdom', AU:'Australia', CA:'Canada', OTHER:'Other' }
-  };
-
-  function styleLabel(v){ return v === 'vegetarian' ? 'Vegetarian' : v === 'no_seafood' ? 'No seafood' : 'Omnivore'; }
-  function sexLabel(v){ return v === 'male' ? 'Male' : 'Female'; }
-  function countryLabel(v){ return labels.countries[v] || 'Local food list'; }
-
-  function selectedLabels(values, labelMap, fallback){
-    var names = (values || []).map(function(v){ return labelMap[v]; }).filter(Boolean);
-    return names.length ? names.slice(0,3).join(', ') + (names.length > 3 ? ' +' + (names.length-3) : '') : fallback;
-  }
-
-
-  function calculatedProtein(){
-    return builderState.sex === 'male' ? 120 : 100;
-  }
-
-  function syncCalculatedProtein(){
-    builderState.protein = calculatedProtein();
-  }
-
-  function syncPills(){
-    syncCalculatedProtein();
-    if(qs('pillSex')) qs('pillSex').textContent = sexLabel(builderState.sex);
-    if(qs('pillStyle')) qs('pillStyle').textContent = styleLabel(builderState.style);
-    if(qs('pillProtein')) qs('pillProtein').textContent = builderState.protein + 'g protein target';
-    if(qs('pillCountry')) qs('pillCountry').textContent = countryLabel(builderState.country);
-    if(qs('pillProteinFoods')){
-      var names = builderState.foods.map(function(v){ return labels.foods[v]; }).filter(Boolean);
-      qs('pillProteinFoods').textContent = names.length ? names.slice(0,3).join(', ') + (names.length > 3 ? ' +' + (names.length-3) : '') : 'Any protein';
-    }
-  }
-
   function openPlanBuilder(event){
     if(event){
       event.preventDefault();
@@ -5439,7 +5389,6 @@ body.plan-builder-hard-lock{
     modal.classList.add('show');
     modal.style.setProperty('display','flex','important');
     document.body.classList.add('plan-builder-open');
-    syncPills();
     return false;
   }
 
@@ -5450,7 +5399,8 @@ body.plan-builder-hard-lock{
       modal.hidden = true;
       modal.style.display = 'none';
     }
-    document.body.classList.remove('plan-builder-open');
+    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
+    document.documentElement.classList.remove('plan-builder-root-lock');
   }
 
   function openPlanViewer(){
@@ -5474,156 +5424,6 @@ body.plan-builder-hard-lock{
     document.body.classList.remove('plan-viewer-open');
   }
 
-  function pushToMealEngine(){
-    syncCalculatedProtein();
-    if(!window.heartyBuilder) return;
-    if(window.heartyBuilder.setChoice){
-      window.heartyBuilder.setChoice('appetite', 'normal');
-      window.heartyBuilder.setChoice('sex', builderState.sex);
-      window.heartyBuilder.setChoice('style', builderState.style === 'vegetarian' ? 'vegetarian' : (builderState.style === 'no_seafood' ? 'no_seafood' : 'standard'));
-    }
-    if(window.heartyBuilder.setProtein) window.heartyBuilder.setProtein(builderState.protein);
-    if(window.heartyBuilder.setCountry) window.heartyBuilder.setCountry(builderState.country);
-    if(window.heartyBuilder.setPrefs) window.heartyBuilder.setPrefs({ foods: builderState.foods, carbs: builderState.carbs, veg: builderState.veg, mealStyles: builderState.mealStyles, avoids: builderState.avoids, style: builderState.style });
-  }
-
-  function esc(v){
-    return String(v == null ? '' : v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
-  }
-
-
-  function fallbackPlanHtml(){
-    var useVeg = builderState.style === 'vegetarian';
-    var noSeafood = builderState.style === 'no_seafood' || builderState.avoids.includes('fish');
-    var avoid = {};
-    builderState.avoids.forEach(function(v){ avoid[v] = true; });
-
-    var proteinPool = builderState.foods.filter(function(f){
-      if(avoid.chicken && f === 'chicken') return false;
-      if(avoid.eggs && f === 'eggs') return false;
-      if(avoid.dairy && f === 'greek_yoghurt') return false;
-      if((avoid.fish || noSeafood) && f === 'tuna_salmon') return false;
-      if(avoid.beef && (f === 'beef' || f === 'lean_mince' || f === 'lean_beef')) return false;
-      if(avoid.legumes && f === 'tofu_beans') return false;
-      if(useVeg && ['chicken','tuna_salmon','fish','beef','lean_mince','lean_beef','pork','biltong_jerky'].includes(f)) return false;
-      return true;
-    });
-    if(!proteinPool.length) proteinPool = useVeg ? ['eggs','greek_yoghurt','tofu_beans'] : ['chicken','eggs','greek_yoghurt'];
-
-    var proteinNames = {
-      chicken:'chicken',
-      eggs:'eggs',
-      greek_yoghurt:'Greek yoghurt or cottage cheese',
-      tuna_salmon:'tuna or salmon',
-      fish:'fish',
-      beef:'beef',
-      lean_mince:'beef',
-      protein_shake:'protein shake',
-      tofu_beans:'tofu or beans',
-      biltong_jerky:'biltong or jerky'
-    };
-
-    var carbNames = { potato:'sweet potato', rice:'rice', wraps:'wrap', oats_cereal:'oats', fruit:'fruit' };
-    var vegNames = { leafy_greens:'leafy greens', tomato_cucumber:'tomato and cucumber', carrots:'carrots', peppers:'peppers', baby_marrow:'baby marrow', broccoli_cauliflower:'broccoli or cauliflower', mushrooms_onions:'mushrooms and onions', mixed_frozen:'mixed frozen veg' };
-    var styles = builderState.mealStyles || ['quick','warm_dinners'];
-    var carbs = (builderState.carbs && builderState.carbs.length ? builderState.carbs : ['potato','rice','wraps']);
-    var vegs = (builderState.veg && builderState.veg.length ? builderState.veg : ['leafy_greens','tomato_cucumber','carrots']);
-    function pick(i){ return proteinNames[proteinPool[i % proteinPool.length]] || 'protein'; }
-    function carb(i){ return carbNames[carbs[i % carbs.length]] || 'simple starch'; }
-    function veg(i){ return vegNames[vegs[i % vegs.length]] || 'vegetables'; }
-    function dinnerWord(i){
-      if(styles.includes('bowls')) return 'bowl';
-      if(styles.includes('meal_prep')) return 'meal-prep plate';
-      return 'plate';
-    }
-
-    var days = [];
-    for(var i=0;i<7;i++){
-      var p1 = pick(i), p2 = pick(i+1), p3 = pick(i+2);
-      var breakfast = p1.indexOf('yoghurt') !== -1 || p1.indexOf('cottage') !== -1 ? p1 + ' bowl with ' + carb(i+1) : p1 + ' breakfast with ' + veg(i);
-      var lunch = styles.includes('wraps_salads') ? p2 + ' wrap or salad with ' + veg(i+1) : p2 + ' bowl with ' + veg(i+1);
-      var dinner = p3 + ' ' + dinnerWord(i) + ' with ' + veg(i+2) + ' and ' + carb(i+2);
-      if(styles.includes('no_cook') && i % 2 === 1) dinner = p3 + ' no-cook plate with ' + veg(i+2) + ' and ' + carb(i+2);
-      days.push({
-        breakfast: breakfast,
-        lunch: lunch,
-        dinner: dinner,
-        snack: 'easy backup protein option'
-      });
-    }
-
-    return days.map(function(day, idx){
-      return '<article class="full-day-card"><h4><span>Day '+(idx+1)+'</span><em class="day-protein-total">±100g protein</em></h4><div class="full-day-meals">' +
-        '<div class="full-meal-row"><b>Breakfast</b><div><strong>'+esc(day.breakfast)+'</strong><small>Simple protein start</small></div></div>' +
-        '<div class="full-meal-row"><b>Lunch</b><div><strong>'+esc(day.lunch)+'</strong><small>Easy anchor meal</small></div></div>' +
-        '<div class="full-meal-row"><b>Dinner</b><div><strong>'+esc(day.dinner)+'</strong><small>Normal food, GLP-1 friendly portion</small></div></div>' +
-        '<div class="full-meal-row"><b>Backup</b><div><strong>'+esc(day.snack)+'</strong><small>For lower appetite moments</small></div></div>' +
-      '</div></article>';
-    }).join('');
-  }
-
-  function renderViewerFromPagePlan(){
-    var source = qs('fullPlanRows');
-    var target = qs('viewerPlanRows');
-    if(!target) return;
-
-    if(window.heartyBuilder && window.heartyBuilder.showOnscreenPlan){
-      window.heartyBuilder.showOnscreenPlan();
-    }
-
-    if(source && source.innerHTML.trim()){
-      target.innerHTML = source.innerHTML;
-    } else {
-      target.innerHTML = fallbackPlanHtml();
-    }
-
-    var row = qs('viewerChoiceRow');
-    if(row){
-      var foods = builderState.foods.map(function(v){ return labels.foods[v]; }).filter(Boolean).slice(0,4).join(', ') || 'Any protein';
-      var carbs = selectedLabels(builderState.carbs, labels.carbs, 'Flexible carbs');
-      var veg = selectedLabels(builderState.veg, labels.veg, 'Flexible veg');
-      var mealStyle = selectedLabels(builderState.mealStyles, labels.mealStyles, 'Simple meals');
-      row.innerHTML =
-        '<span>' + esc(sexLabel(builderState.sex)) + '</span>' +
-        '<span>' + esc(styleLabel(builderState.style)) + '</span>' +
-        '<span>' + esc(builderState.protein + 'g target') + '</span>' +
-        '<span>' + esc(foods) + '</span>' +
-        '<span>' + esc(carbs) + '</span>' +
-        '<span>' + esc(veg) + '</span>' +
-        '<span>' + esc(mealStyle) + '</span>' +
-        '<span>' + esc(countryLabel(builderState.country)) + '</span>';
-    }
-  }
-
-  function buildPlanAndShowViewer(event){
-    if(event) event.preventDefault();
-    pushToMealEngine();
-
-    var tool = qs('tool');
-    var onscreen = qs('onscreenFullPlan');
-    var unlock = qs('inlineUnlockPanel');
-    if(tool) tool.classList.add('expanded');
-    if(onscreen){
-      onscreen.hidden = false;
-      onscreen.removeAttribute('hidden');
-      onscreen.classList.add('show');
-    }
-    if(unlock) unlock.classList.remove('show');
-
-    renderViewerFromPagePlan();
-    closePlanBuilder();
-    openPlanViewer();
-  }
-
-  function continueToEmail(){
-    closePlanViewer();
-    var unlock = qs('inlineUnlockPanel');
-    if(unlock){
-      unlock.classList.add('show');
-      setTimeout(function(){ unlock.scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
-    }
-  }
-
   function bind(){
     var builder = qs('quickSetupPanel');
     if(builder && builder.parentNode !== document.body) document.body.appendChild(builder);
@@ -5637,85 +5437,57 @@ body.plan-builder-hard-lock{
       el.addEventListener('click', openPlanBuilder, true);
     });
     document.addEventListener('click', function(e){
-      var trigger = e.target.closest(triggerSelector);
+      var trigger = e.target.closest && e.target.closest(triggerSelector);
       if(trigger) openPlanBuilder(e);
     }, true);
 
-    qsa('[data-simple-choice]').forEach(function(group){
-      group.addEventListener('click', function(e){
-        var btn = e.target.closest('button');
-        if(!btn) return;
-        var key = group.dataset.simpleChoice;
-        var value = btn.dataset.value;
-        group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('selected', b === btn); });
-        builderState[key] = value;
-        syncPills();
-      });
-    });
-
-    qsa('#proteinFoodGrid input').forEach(function(input){
-      input.addEventListener('change', function(){
-        var label = input.closest('.protein-check');
-        if(label) label.classList.toggle('selected', input.checked);
-        builderState.foods = qsa('#proteinFoodGrid input:checked').map(function(i){ return i.value; });
-        syncPills();
-      });
-    });
-
-
-    function bindCheckboxGroup(selector, key){
-      qsa(selector + ' input').forEach(function(input){
-        input.addEventListener('change', function(){
-          var label = input.closest('.protein-check');
-          if(label) label.classList.toggle('selected', input.checked);
-          builderState[key] = qsa(selector + ' input:checked').map(function(i){ return i.value; });
-          syncPills();
-        });
-      });
-    }
-    bindCheckboxGroup('#carbFoodGrid', 'carbs');
-    bindCheckboxGroup('#vegFoodGrid', 'veg');
-    bindCheckboxGroup('#mealStyleGrid', 'mealStyles');
-
-    qsa('#avoidFoodGrid input').forEach(function(input){
-      input.addEventListener('change', function(){
-        var label = input.closest('.protein-check');
-        if(label) label.classList.toggle('selected', input.checked);
-        builderState.avoids = qsa('#avoidFoodGrid input:checked').map(function(i){ return i.value; });
-        syncPills();
-      });
-    });
-
     var country = qs('countrySelect');
-    if(country){
-      builderState.country = country.value || builderState.country;
-      country.addEventListener('change', function(){ builderState.country = country.value; syncPills(); });
+    if(country && country.dataset.heartyCountryListener !== '1'){
+      country.dataset.heartyCountryListener = '1';
+      country.addEventListener('change', function(){
+        document.body.dataset.heartyCountry = country.value || '';
+      });
     }
-
-    var build = qs('modalBuildPlanBtn');
-    if(build) build.addEventListener('click', buildPlanAndShowViewer);
 
     var close = qs('closePlanSetup');
-    if(close) close.addEventListener('click', closePlanBuilder);
+    if(close && close.dataset.heartyCloseBuilder !== '1'){
+      close.dataset.heartyCloseBuilder = '1';
+      close.addEventListener('click', closePlanBuilder, true);
+    }
 
     var cancel = qs('modalCancelPlanBtn');
-    if(cancel) cancel.addEventListener('click', closePlanBuilder);
+    if(cancel && cancel.dataset.heartyCancelBuilder !== '1'){
+      cancel.dataset.heartyCancelBuilder = '1';
+      cancel.addEventListener('click', closePlanBuilder, true);
+    }
 
     var closeViewer = qs('closePlanViewer');
-    if(closeViewer) closeViewer.addEventListener('click', closePlanViewer);
-
-    var viewerDownload = qs('viewerDownloadBtn');
-    if(viewerDownload) viewerDownload.addEventListener('click', continueToEmail);
+    if(closeViewer && closeViewer.dataset.heartyCloseViewerBasic !== '1'){
+      closeViewer.dataset.heartyCloseViewerBasic = '1';
+      closeViewer.addEventListener('click', closePlanViewer, true);
+    }
 
     var viewerEdit = qs('viewerEditBtn');
-    if(viewerEdit) viewerEdit.addEventListener('click', function(){ closePlanViewer(); openPlanBuilder(); });
+    if(viewerEdit && viewerEdit.dataset.heartyViewerEdit !== '1'){
+      viewerEdit.dataset.heartyViewerEdit = '1';
+      viewerEdit.addEventListener('click', function(e){
+        if(e){ e.preventDefault(); e.stopPropagation(); }
+        closePlanViewer();
+        openPlanBuilder(e);
+      }, true);
+    }
 
     document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape'){ closePlanViewer(); closePlanBuilder(); }
+      if(e.key === 'Escape'){
+        closePlanViewer();
+        closePlanBuilder();
+      }
     });
 
-    syncPills();
     window.heartyOpenPlanSetup = openPlanBuilder;
+    window.heartyClosePlanSetup = closePlanBuilder;
+    window.heartyOpenPlanViewer = openPlanViewer;
+    window.heartyClosePlanViewer = closePlanViewer;
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
@@ -5752,7 +5524,7 @@ body.plan-builder-hard-lock{
     proteins: 3,
     carbs: 3,
     veg: 5,
-    snacks: 4,
+    snacks: 3,
     dinnerStarches: 2
   };
 
@@ -5781,8 +5553,8 @@ body.plan-builder-hard-lock{
     snacks:{
       fruit_choice:'Fruit', berries:'Berries', banana:'Banana', apple:'Apple',
       greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', boiled_eggs:'Boiled eggs',
-      protein_shake:'Protein shake', milk:'Low-fat milk', nuts:'Nuts', chia_seeds:'Chia seeds',
-      crackers:'Crackers', toast:'Toast', avocado:'Avocado'
+      protein_shake:'Protein shake', tuna:'Tuna', biltong:'Biltong', hummus:'Hummus',
+      crackers:'Crackers', toast:'Toast', veg_sticks:'Veg sticks'
     }
   };
 
@@ -5822,6 +5594,19 @@ body.plan-builder-hard-lock{
     setCheckedValues('carbFoodGrid', []);
     setCheckedValues('vegFoodGrid', []);
     setCheckedValues('snackFoodGrid', []);
+  }
+
+  function bindSimpleChoices(){
+    qsa('[data-simple-choice]').forEach(function(group){
+      if(group.dataset.heartySimpleChoiceBound === '1') return;
+      group.dataset.heartySimpleChoiceBound = '1';
+      group.addEventListener('click', function(e){
+        var btn = e.target.closest && e.target.closest('button');
+        if(!btn || !group.contains(btn)) return;
+        group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('selected', b === btn); });
+        document.body.dataset.heartyPrefsTouched = '1';
+      });
+    });
   }
 
   function bindSelectionClasses(){
@@ -5877,19 +5662,17 @@ body.plan-builder-hard-lock{
     return map[v] || v;
   }
 
-  function inferDiet(foods){
-    var meat = ['chicken','shredded_chicken','chicken_breast','beef','lean_beef','lean_mince','ground_beef','pork'];
-    var fish = ['tuna','white_fish','prawns','calamari','mussels_clams'];
-    if(foods.some(function(f){ return meat.indexOf(f) !== -1; })) return 'omnivore';
-    if(foods.some(function(f){ return fish.indexOf(f) !== -1; })) return 'pescatarian';
-    return 'vegetarian';
-  }
-
   function selectedLabels(values, map, fallback, max){
     max = max || 4;
     var names = (values || []).map(function(v){ return map[v]; }).filter(Boolean);
     if(!names.length) return fallback;
     return names.slice(0,max).join(', ') + (names.length > max ? ' +' + (names.length - max) : '');
+  }
+
+
+  function dietLabel(diet){
+    var map = { omnivore:'Omnivore', no_pork:'No pork', no_fish:'No fish', pescatarian:'Pescatarian', vegetarian:'Vegetarian' };
+    return map[diet] || 'Omnivore';
   }
 
   function readPrefs(){
@@ -5902,7 +5685,7 @@ body.plan-builder-hard-lock{
 
     return Object.assign(base, {
       country: countryValue(),
-      diet: inferDiet(foods),
+      diet: selectedValue('diet') || 'omnivore',
       foods: foods,
       carbs: carbs,
       veg: veg,
@@ -5912,6 +5695,82 @@ body.plan-builder-hard-lock{
 
   function addUnique(arr, value){
     if(value && arr.indexOf(value) === -1) arr.push(value);
+  }
+
+  function mealProteinNumber(meal){
+    if(!meal) return 0;
+    if(meal.nutrition && Number.isFinite(Number(meal.nutrition.protein))) return Number(meal.nutrition.protein);
+    return 0;
+  }
+
+  function mealProteinLabel(meal){
+    var n = mealProteinNumber(meal);
+    if(n) return '~' + Math.round(n) + 'g';
+    return '';
+  }
+
+  function ingredientsLine(meal){
+    if(!meal || !Array.isArray(meal.ingredients) || !meal.ingredients.length) return '';
+    return meal.ingredients.map(function(i){
+      if(!i) return '';
+      var amount = i.amount ? String(i.amount).trim() + ' ' : '';
+      return amount + String(i.item || '').trim();
+    }).filter(Boolean).join(', ');
+  }
+
+  function mealTitle(meal){
+    return meal && meal.title ? meal.title : '';
+  }
+
+  function mealDescription(meal){
+    if(!meal) return '';
+    var desc = meal.description || '';
+    var ing = ingredientsLine(meal);
+    if(ing && desc) return desc + ' Ingredients: ' + ing + '.';
+    if(ing) return 'Ingredients: ' + ing + '.';
+    return desc;
+  }
+
+  function normaliseShoppingRows(list){
+    var rows = [];
+    function push(cat, item, qty, notes){
+      if(!item) return;
+      rows.push({
+        cat: cat || 'Shopping',
+        item: String(item || ''),
+        qty: String(qty || ''),
+        notes: String(notes || '')
+      });
+    }
+    if(!list) return rows;
+    if(Array.isArray(list)){
+      list.forEach(function(r){
+        if(typeof r === 'string') push('Shopping', r, '', '');
+        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+      });
+      return rows;
+    }
+    Object.keys(list).forEach(function(cat){
+      var value = list[cat];
+      if(Array.isArray(value)){
+        value.forEach(function(r){
+          if(typeof r === 'string') push(cat, r, '', '');
+          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+        });
+      } else if(value && typeof value === 'object'){
+        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
+      }
+    });
+    return rows;
+  }
+
+  function getEngineShoppingRows(plan, input){
+    var shopping = plan && plan.shoppingList;
+    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.buildShoppingList === 'function'){
+      try{ shopping = window.HeartyMealEngine.buildShoppingList(plan, input || window.heartyLeadCurrentInput || {}); }
+      catch(e){ console.warn('[Hearty] Engine shopping list failed; using plan.shoppingList fallback', e); }
+    }
+    return normaliseShoppingRows(shopping);
   }
 
   function validateMinimumSelections(prefs){
@@ -5949,10 +5808,57 @@ body.plan-builder-hard-lock{
     box.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
+  function engineBlockedMessages(plan){
+    if(!plan) return ['The meal engine blocked this plan. Please choose a few more foods.'];
+    var out = [];
+    function add(msg){
+      if(!msg) return;
+      if(Array.isArray(msg)){ msg.forEach(add); return; }
+      if(typeof msg === 'string'){ out.push(msg); return; }
+      if(typeof msg === 'object'){
+        add(msg.message || msg.text || msg.reason || msg.label || msg.title);
+        if(Array.isArray(msg.messages)) add(msg.messages);
+        if(Array.isArray(msg.issues)) add(msg.issues);
+        if(Array.isArray(msg.errors)) add(msg.errors);
+      }
+    }
+    add(plan.gate);
+    add(plan.messages);
+    add(plan.message);
+    add(plan.errors);
+    add(plan.validation && plan.validation.warnings);
+    var seen = {};
+    out = out.map(function(x){ return String(x || '').trim(); }).filter(function(x){
+      if(!x || seen[x]) return false;
+      seen[x] = true;
+      return true;
+    });
+    return out.length ? out : ['The meal engine blocked this plan. Please adjust your selections and try again.'];
+  }
+
+  function canonicalSnackKey(value){
+    var v = String(value || '').trim();
+    var map = {
+      fruit_choice:'fruit', berries:'fruit', banana:'fruit', apple:'fruit', other_fruit:'fruit',
+      greek_yoghurt:'yoghurt', greek_yogurt:'yoghurt', plain_yoghurt:'yoghurt', plain_yogurt:'yoghurt',
+      cottage_cheese:'cottage_cheese',
+      boiled_eggs:'eggs', egg:'eggs', eggs:'eggs',
+      protein_shake:'protein_powder', protein_powder:'protein_powder',
+      tuna_tin:'tuna', tuna_can:'tuna', tuna:'tuna',
+      beef_jerky:'biltong', biltong_jerky:'biltong', jerky:'biltong', biltong:'biltong',
+      hummus:'hummus',
+      crackers:'crackers', toast:'crackers', wholegrain_crackers:'crackers',
+      veggie_sticks:'veg_sticks', veg_sticks:'veg_sticks'
+    };
+    var key = map[v] || v;
+    var allowed = ['fruit','yoghurt','cottage_cheese','eggs','protein_powder','tuna','biltong','hummus','crackers','veg_sticks'];
+    return allowed.indexOf(key) !== -1 ? key : '';
+  }
+
   function buildEngineInput(prefs){
     var proteins = [];
-    var breakfastItems = [];
-    var snackProteins = [];
+    var seafood = [];
+    var snacks = [];
     var starches = [];
     var vegetables = [];
 
@@ -5960,61 +5866,56 @@ body.plan-builder-hard-lock{
       var f = canonicalFormFoodKey(rawFood);
       var proteinFamily = canonicalProteinKey(f);
 
-      if(proteinFamily === 'eggs'){ addUnique(proteins,'eggs'); addUnique(breakfastItems,'eggs'); addUnique(snackProteins,'boiled_eggs'); return; }
-      if(proteinFamily === 'chicken'){ addUnique(proteins,'chicken'); addUnique(snackProteins,'chicken_strips'); return; }
-      if(proteinFamily === 'dairy'){ addUnique(proteins,'dairy'); if(f === 'cottage_cheese') addUnique(breakfastItems,'cottage_cheese'); else addUnique(breakfastItems,'greek_yoghurt'); addUnique(snackProteins, f === 'cottage_cheese' ? 'cottage_cheese' : 'yoghurt'); return; }
-      if(proteinFamily === 'protein_powder'){ addUnique(proteins,'protein_powder'); addUnique(breakfastItems,'protein_shake'); addUnique(snackProteins,'protein_shake'); return; }
-      if(proteinFamily === 'fish'){ addUnique(proteins,'fish'); addUnique(snackProteins,'tuna'); return; }
-      if(proteinFamily === 'beef'){ addUnique(proteins,'beef'); addUnique(snackProteins,'biltong'); return; }
+      if(f === 'prawns' || f === 'shrimp'){ addUnique(seafood,'prawns'); return; }
+      if(f === 'calamari'){ addUnique(seafood,'calamari'); return; }
+      if(f === 'mussels_clams'){ addUnique(seafood,'mussels'); addUnique(seafood,'clams'); return; }
+
+      if(proteinFamily === 'eggs'){ addUnique(proteins,'eggs'); return; }
+      if(proteinFamily === 'chicken'){ addUnique(proteins,'chicken'); return; }
+      if(proteinFamily === 'dairy'){ addUnique(proteins,'dairy'); return; }
+      if(proteinFamily === 'protein_powder'){ addUnique(proteins,'protein_powder'); return; }
+      if(proteinFamily === 'fish'){ addUnique(proteins,'fish'); return; }
+      if(proteinFamily === 'beef'){ addUnique(proteins,'beef'); return; }
       if(proteinFamily === 'pork'){ addUnique(proteins,'pork'); return; }
-      if(proteinFamily === 'tofu'){ addUnique(proteins,'tofu'); addUnique(breakfastItems,'tofu_scramble'); addUnique(snackProteins,'tofu_bites'); return; }
-      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); addUnique(snackProteins,'hummus'); return; }
-      if(f === 'lentils'){ addUnique(proteins,'lentils'); addUnique(snackProteins,'hummus'); return; }
+      if(proteinFamily === 'tofu'){ addUnique(proteins,'tofu'); return; }
+      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); return; }
+      if(f === 'lentils'){ addUnique(proteins,'lentils'); return; }
       if(f === 'meat_free_mince'){ addUnique(proteins,'beans'); addUnique(proteins,'lentils'); return; }
     });
 
-    // The locked engine requires enough snack variety. These are safe support options, not main-meal proteins.
-    (prefs.snacks || []).forEach(function(s){
-      if(s === 'greek_yoghurt') { addUnique(proteins,'dairy'); addUnique(snackProteins,'yoghurt'); }
-      if(s === 'cottage_cheese') { addUnique(proteins,'dairy'); addUnique(snackProteins,'cottage_cheese'); }
-      if(s === 'boiled_eggs') { addUnique(proteins,'eggs'); addUnique(snackProteins,'boiled_eggs'); }
-      if(s === 'protein_shake') { addUnique(proteins,'protein_powder'); addUnique(snackProteins,'protein_shake'); }
-      if(s === 'fruit_choice' || s === 'berries' || s === 'banana' || s === 'apple') addUnique(snackProteins,'fruit');
-      if(s === 'crackers' || s === 'toast') addUnique(snackProteins,'wholegrain_crackers');
+    (prefs.snacks || []).forEach(function(rawSnack){
+      var key = canonicalSnackKey(rawSnack);
+      if(key === 'yoghurt' || key === 'cottage_cheese') addUnique(proteins,'dairy');
+      if(key === 'eggs') addUnique(proteins,'eggs');
+      if(key === 'protein_powder') addUnique(proteins,'protein_powder');
+      if(key === 'tuna') addUnique(proteins,'fish');
+      addUnique(snacks,key);
     });
-
-    // No wrapper-added helper foods. The engine receives only foods the user selected.
-    if(!breakfastItems.length){
-      if(proteins.indexOf('eggs') !== -1) addUnique(breakfastItems,'eggs');
-      else if(proteins.indexOf('dairy') !== -1) addUnique(breakfastItems,'greek_yoghurt');
-      else if(proteins.indexOf('protein_powder') !== -1) addUnique(breakfastItems,'protein_shake');
-      else if(proteins.indexOf('tofu') !== -1) addUnique(breakfastItems,'tofu_scramble');
-    }
 
     (prefs.carbs || []).forEach(function(c){
       if(c === 'rice') addUnique(starches,'rice');
       if(c === 'potato') addUnique(starches,'potato');
       if(c === 'sweet_potato') addUnique(starches,'sweet_potato');
       if(c === 'wraps') addUnique(starches,'wrap');
-      if(c === 'noodles') addUnique(starches,'pasta');
+      if(c === 'noodles') addUnique(starches,'noodles');
+      if(c === 'pasta') addUnique(starches,'pasta');
     });
 
     (prefs.veg || []).forEach(function(v){
-      var map = { baby_marrow:'baby marrow', green_beans:'green beans', eggplant:'aubergine' };
-      addUnique(vegetables, map[v] || v.replace(/_/g,' '));
+      var map = { baby_marrow:'baby_marrow', green_beans:'green_beans', eggplant:'eggplant' };
+      addUnique(vegetables, map[v] || v);
     });
 
     return {
       region: prefs.country === 'OTHER' ? 'US' : prefs.country,
       diet: prefs.diet,
       proteins: proteins,
-      breakfastItems: breakfastItems,
-      snackProteins: snackProteins,
+      seafood: seafood,
       starches: starches,
       vegetables: vegetables,
-      lowerStarch: false,
+      snacks: snacks,
+      supportMode: 'none',
       leftoverLunches: false,
-      planTier: prefs.sex === 'male' ? 3 : 2,
       targets: {
         proteinMin: prefs.proteinMin,
         proteinMax: prefs.proteinMax,
@@ -6033,16 +5934,19 @@ body.plan-builder-hard-lock{
   }
 
   function dayProtein(day){
+    if(day && day.nutrition && Number.isFinite(Number(day.nutrition.protein))) return Number(day.nutrition.protein);
     return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
-      .reduce(function(sum, meal){ return sum + proteinMidpoint(meal && meal.protein); }, 0);
+      .reduce(function(sum, meal){ return sum + mealProteinNumber(meal); }, 0);
   }
 
   function mealRow(label, meal){
     if(!meal) return '';
+    var protein = mealProteinLabel(meal);
+    var detail = mealDescription(meal);
     return '<div class="full-meal-row">' +
       '<b>' + esc(label) + '</b>' +
-      '<div><strong>' + esc(meal.name || '') + '</strong>' +
-      '<small>' + esc((meal.protein ? 'Approx. ' + meal.protein + ' protein · ' : '') + (meal.detail || '')) + '</small></div>' +
+      '<div><strong>' + esc(mealTitle(meal)) + '</strong>' +
+      '<small>' + esc((protein ? 'Approx. ' + protein + ' protein · ' : '') + detail) + '</small></div>' +
       '</div>';
   }
 
@@ -6081,52 +5985,26 @@ body.plan-builder-hard-lock{
     if(!row) return;
     row.innerHTML =
       '<span>' + esc(prefs.sex === 'male' ? 'Male default' : 'Female default') + '</span>' +
-      '<span>' + esc(prefs.diet === 'vegetarian' ? 'Vegetarian' : prefs.diet === 'pescatarian' ? 'Pescatarian' : 'Omnivore') + '</span>' +
+      '<span>' + esc(dietLabel(prefs.diet)) + '</span>' +
       '<span>' + esc(prefs.proteinMin + '–' + prefs.proteinMax + 'g protein guide') + '</span>' +
       '<span>' + esc('Fibre guide ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g') + '</span>' +
       '<span>' + esc(selectedLabels(prefs.foods, labels.proteins, 'Flexible proteins', 4)) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.carbs, labels.carbs, 'Flexible carbs/fruit', 4)) + '</span>' +
+      '<span>' + esc(selectedLabels(prefs.carbs, labels.carbs, 'Flexible carbs/starches', 4)) + '</span>' +
       '<span>' + esc(selectedLabels(prefs.veg, labels.veg, 'Flexible vegetables', 4)) + '</span>' +
       '<span>' + esc(selectedLabels(prefs.snacks, labels.snacks, 'Flexible snacks', 4)) + '</span>';
   }
 
-  function makeShoppingList(prefs, plan){
-    var items = [];
-    function add(text){ if(text && items.indexOf(text) === -1) items.push(text); }
-
-    (prefs.foods || []).forEach(function(f){
-      var name = labels.proteins[f];
-      if(name) add(name);
-    });
-    (prefs.carbs || []).forEach(function(c){
-      var name = labels.carbs[c];
-      if(name) add(name);
-    });
-    (prefs.veg || []).forEach(function(v){
-      var name = labels.veg[v];
-      if(name) add(name);
-    });
-    (prefs.snacks || []).forEach(function(s){
-      var name = labels.snacks[s];
-      if(name) add(name);
-    });
-
-    if(plan && Array.isArray(plan.days)){
-      var text = JSON.stringify(plan.days).toLowerCase();
-      ['stock','herbs','curry spices','tomato','berries','fruit','lemon'].forEach(function(x){
-        if(text.indexOf(x) !== -1) add(x);
-      });
-    }
-
-    return items.slice(0,28);
-  }
-
   function renderShopping(prefs, plan){
-    currentShopping = makeShoppingList(prefs, plan);
+    currentShopping = getEngineShoppingRows(plan, window.heartyLeadCurrentInput || buildEngineInput(prefs));
     var wrap = qs('shoppingPreview');
     if(!wrap) return;
-    wrap.innerHTML = currentShopping.slice(0,18).map(function(item){
-      return '<span>' + esc(item) + '</span>';
+    if(!currentShopping.length){
+      wrap.innerHTML = '<span>Shopping list will be built from the generated meals.</span>';
+      return;
+    }
+    wrap.innerHTML = currentShopping.slice(0,18).map(function(row){
+      var label = row.item + (row.qty ? ' — ' + row.qty : '');
+      return '<span>' + esc(label) + '</span>';
     }).join('');
   }
 
@@ -6134,7 +6012,7 @@ body.plan-builder-hard-lock{
     if(!plan || !Array.isArray(plan.days) || !plan.days.length) return 'Your Hearty meal plan could not be generated.';
     var lines = [
       'Hearty 7-day GLP-1 meal plan',
-      'Setup: ' + (prefs.sex === 'male' ? 'Male' : 'Female') + ', ' + (prefs.diet === 'vegetarian' ? 'Vegetarian' : prefs.diet === 'pescatarian' ? 'Pescatarian' : 'Omnivore') + ', guide ' + prefs.proteinMin + '–' + prefs.proteinMax + 'g protein/day',
+      'Setup: ' + (prefs.sex === 'male' ? 'Male' : 'Female') + ', ' + dietLabel(prefs.diet) + ', guide ' + prefs.proteinMin + '–' + prefs.proteinMax + 'g protein/day',
       ''
     ];
 
@@ -6143,8 +6021,10 @@ body.plan-builder-hard-lock{
       [['Breakfast', day.breakfast], ['Snack 1', day.morningSnack], ['Lunch', day.lunch], ['Snack 2', day.afternoonSnack], ['Dinner', day.dinner]].forEach(function(pair){
         var meal = pair[1];
         if(!meal) return;
-        lines.push(pair[0] + ': ' + meal.name + (meal.protein ? ' (' + meal.protein + ' protein)' : ''));
-        if(meal.detail) lines.push('  ' + meal.detail);
+        var protein = mealProteinLabel(meal);
+        lines.push(pair[0] + ': ' + mealTitle(meal) + (protein ? ' (' + protein + ' protein)' : ''));
+        var desc = mealDescription(meal);
+        if(desc) lines.push('  ' + desc);
       });
       if(day.leftoverInstruction) lines.push('  ' + day.leftoverInstruction);
       lines.push('');
@@ -6152,7 +6032,7 @@ body.plan-builder-hard-lock{
 
     if(currentShopping.length){
       lines.push('Shopping list preview');
-      currentShopping.forEach(function(item){ lines.push('- ' + item); });
+      currentShopping.forEach(function(row){ lines.push('- ' + row.cat + ': ' + row.item + (row.qty ? ' — ' + row.qty : '')); });
     }
 
     return lines.join('\n');
@@ -6236,6 +6116,12 @@ body.plan-builder-hard-lock{
     var input = buildEngineInput(prefs);
     var plan = window.HeartyMealEngine.generatePlan(input);
 
+    if(plan && plan.status === 'BLOCKED'){
+      console.warn('[Hearty] Meal engine blocked generation', { input: input, gate: plan.gate, messages: plan.messages });
+      showGateMessage(engineBlockedMessages(plan));
+      return false;
+    }
+
     currentNewEnginePlan = plan;
     currentNewEnginePrefs = prefs;
 
@@ -6270,6 +6156,7 @@ body.plan-builder-hard-lock{
 
   function bindLockedAdapter(){
     resetDefaultSelections();
+    bindSimpleChoices();
     bindSelectionClasses();
 
     var build = qs('modalBuildPlanBtn');
@@ -6470,9 +6357,37 @@ body.plan-builder-hard-lock{
     nums = nums.map(Number);
     return nums.reduce(function(a,b){ return a+b; },0) / nums.length;
   }
+  function mealProteinNumber(meal){
+    if(!meal) return 0;
+    if(meal.nutrition && Number.isFinite(Number(meal.nutrition.protein))) return Number(meal.nutrition.protein);
+    return 0;
+  }
+  function mealProteinLabel(meal){
+    var n = mealProteinNumber(meal);
+    if(n) return '~' + Math.round(n) + 'g';
+    return '';
+  }
+  function ingredientsLine(meal){
+    if(!meal || !Array.isArray(meal.ingredients) || !meal.ingredients.length) return '';
+    return meal.ingredients.map(function(i){
+      if(!i) return '';
+      var amount = i.amount ? String(i.amount).trim() + ' ' : '';
+      return amount + String(i.item || '').trim();
+    }).filter(Boolean).join(', ');
+  }
+  function mealTitle(meal){ return meal && meal.title ? meal.title : ''; }
+  function mealDescription(meal){
+    if(!meal) return '';
+    var desc = meal.description || '';
+    var ing = ingredientsLine(meal);
+    if(ing && desc) return desc + ' Ingredients: ' + ing + '.';
+    if(ing) return 'Ingredients: ' + ing + '.';
+    return desc;
+  }
   function dayProtein(day){
+    if(day && day.nutrition && Number.isFinite(Number(day.nutrition.protein))) return Number(day.nutrition.protein);
     return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
-      .reduce(function(sum, meal){ return sum + proteinMidpoint(meal && meal.protein); }, 0);
+      .reduce(function(sum, meal){ return sum + mealProteinNumber(meal); }, 0);
   }
   function allMeals(plan){
     var out = [];
@@ -6482,69 +6397,88 @@ body.plan-builder-hard-lock{
     return out;
   }
   function countText(plan, re){
-    return allMeals(plan).filter(function(x){ return re.test(((x.meal.name || '') + ' ' + (x.meal.detail || '')).toLowerCase()); }).length;
+    return allMeals(plan).filter(function(x){ return re.test((mealTitle(x.meal) + ' ' + mealDescription(x.meal)).toLowerCase()); }).length;
   }
-  function addRow(rows, cat, item, qty, notes){
-    if(!item || !qty) return;
-    rows.push({cat:cat, item:item, qty:qty, notes:notes || ''});
-  }
-  function buildShoppingRows(plan, prefs){
-    prefs = prefs || window.heartyLeadCurrentPrefs || {};
+  function normaliseShoppingRows(list){
     var rows = [];
-    var meals = allMeals(plan);
-    var types = {};
-    meals.forEach(function(x){ var t = x.meal.type || x.meal.proteinFamily || ''; types[t] = (types[t] || 0) + 1; });
-
-    var eggMeals = countText(plan, /\begg\b|\beggs\b|omelette|frittata/);
-    if(eggMeals) addRow(rows,'Proteins','Eggs', Math.max(6, eggMeals * 2) + '-' + Math.max(9, eggMeals * 3) + ' eggs', 'Breakfasts, egg meals and boiled-egg snacks');
-    if(types.chicken) addRow(rows,'Proteins','Chicken', (types.chicken * 120) + '-' + (types.chicken * 150) + 'g', 'Cooked portions for meals/snacks');
-    if(types.fish) addRow(rows,'Proteins','Tuna / white fish / seafood', Math.max(2, types.fish) + ' portions or tins', 'Use the seafood/fish you selected');
-    if(types.beef) addRow(rows,'Proteins','Beef', (types.beef * 120) + '-' + (types.beef * 150) + 'g plus snack portion if needed', 'Use the beef option you selected');
-    if(types.pork) addRow(rows,'Proteins','Pork', (types.pork * 120) + '-' + (types.pork * 150) + 'g', 'Use the pork option you selected');
-    if(types.tofu) addRow(rows,'Proteins','Tofu-style protein', (types.tofu * 180) + '-' + (types.tofu * 220) + 'g', 'Meals and tofu protein bites');
-    if(types.lentils) addRow(rows,'Proteins','Lentils', Math.max(1, types.lentils) + ' tin(s) or cooked portions', 'Rinse if canned');
-    if(types.beans) addRow(rows,'Proteins','Beans', Math.max(1, types.beans) + ' tin(s) or cooked portions', 'For chilli/bowls');
-    if(types.chickpeas) addRow(rows,'Proteins','Chickpeas', Math.max(1, types.chickpeas) + ' tin(s) or cooked portions', 'For stew/bowls');
-    if(types.dairy || countText(plan,/yoghurt|yogurt/)) addRow(rows,'Dairy','Greek-style yoghurt', '750g-1kg', 'Breakfast bowls and yoghurt snacks');
-    if(countText(plan,/cottage cheese/)) addRow(rows,'Dairy','Cottage cheese', '400-500g', 'Snack plates/crackers');
-    if(types.protein_powder) addRow(rows,'Snacks','Protein powder', types.protein_powder + ' serving(s)', 'Only if selected/needed');
-
-    [
-      ['Rice', /\brice\b/, '250-500g dry rice'],
-      ['Potatoes', /\bpotato\b/, '1kg'],
-      ['Sweet potatoes', /sweet potato/, '1kg'],
-      ['Pasta/noodles', /pasta|noodles/, '250-500g dry'],
-      ['Wraps/pita', /small wrap|\bwrap\b/, '1 pack']
-    ].forEach(function(row){ if(countText(plan,row[1])) addRow(rows,'Starches',row[0],row[2],'Use the portions shown in the plan'); });
-
-    var vegLabelMap = { spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot', peppers:'Peppers', mushrooms:'Mushrooms', onion:'Onion', broccoli:'Broccoli', cauliflower:'Cauliflower', green_beans:'Green beans', cabbage:'Cabbage', baby_marrow:'Baby marrow/zucchini', peas:'Peas', butternut:'Butternut', eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus' };
-    var selectedVeg = (prefs.veg || []).map(function(v){ return vegLabelMap[v] || String(v).replace(/_/g,' '); });
-    if(!selectedVeg.length) selectedVeg = ['Spinach','Tomato','Cucumber','Carrot','Broccoli'];
-    selectedVeg.slice(0,10).forEach(function(v){ addRow(rows,'Vegetables',v,'300-500g or 1 bag/bunch','Used across the 7 days'); });
-
-    var snackSelections = prefs.snacks || [];
-    if(snackSelections.indexOf('fruit_choice') !== -1 || countText(plan,/fruit|mandarin|naartjie|clementine|apple/)) addRow(rows,'Fruit','Fruit of your choice', '7 small pieces', 'For fruit snacks and yoghurt bowls');
-    if(snackSelections.indexOf('berries') !== -1 || countText(plan,/berries/)) addRow(rows,'Fruit','Berries', '300-500g', 'Fresh or frozen');
-    if(snackSelections.indexOf('banana') !== -1) addRow(rows,'Fruit','Bananas', '3-4', 'Optional breakfasts/snacks');
-    if(snackSelections.indexOf('apple') !== -1 || countText(plan,/apple slices/)) addRow(rows,'Fruit','Apples', '3-4', 'Snack option');
-    if(snackSelections.indexOf('crackers') !== -1 || countText(plan,/crackers/)) addRow(rows,'Snacks','Wholegrain crackers', '1 box', 'For cottage cheese snacks');
-    if(snackSelections.indexOf('nuts') !== -1) addRow(rows,'Snacks','Nuts', '150-200g', 'Small portions');
-    if(snackSelections.indexOf('chia_seeds') !== -1) addRow(rows,'Pantry','Chia seeds', '150-200g', 'Optional fibre add-on');
-
-    addRow(rows,'Pantry','Lemon, herbs, garlic, mild spices', '1 small set', 'For dressings, curries and soups');
-    addRow(rows,'Pantry','Tomato paste / chopped tomato', '2-4 tins or tubs', 'For stews, curries and bolognese-style meals');
-    addRow(rows,'Pantry','Stock/broth', '1 pack or cubes', 'For soups/stews');
+    function push(cat, item, qty, notes){
+      if(!item) return;
+      rows.push({cat:cat || 'Shopping', item:String(item || ''), qty:String(qty || ''), notes:String(notes || '')});
+    }
+    if(!list) return rows;
+    if(Array.isArray(list)){
+      list.forEach(function(r){
+        if(typeof r === 'string') push('Shopping', r, '', '');
+        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+      });
+      return rows;
+    }
+    Object.keys(list).forEach(function(cat){
+      var value = list[cat];
+      if(Array.isArray(value)){
+        value.forEach(function(r){
+          if(typeof r === 'string') push(cat, r, '', '');
+          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+        });
+      } else if(value && typeof value === 'object'){
+        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
+      }
+    });
     return rows;
   }
+  function engineShoppingList(plan, input){
+    var shopping = null;
+    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.buildShoppingList === 'function'){
+      shopping = window.HeartyMealEngine.buildShoppingList(plan, input || window.heartyLeadCurrentInput || {});
+    } else if(plan && plan.shoppingList) {
+      shopping = plan.shoppingList;
+    }
+    return shopping || {};
+  }
+
+  function shoppingRowsByGroup(list){
+    var rows = [];
+    var groupOrder = ['Protein','Dairy','Vegetables','Fruit','Carbs and starches','Pantry and flavour','Proteins','Carbs/starches','Carbs','Starches','Pantry'];
+    var used = {};
+    function push(cat, item, qty, notes){
+      if(!item) return;
+      rows.push({cat:cat || 'Shopping', item:String(item || ''), qty:String(qty || ''), notes:String(notes || '')});
+    }
+    function readGroup(cat, value){
+      used[cat] = true;
+      if(Array.isArray(value)){
+        value.forEach(function(r){
+          if(typeof r === 'string') push(cat, r, '', '');
+          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+        });
+      } else if(value && typeof value === 'object'){
+        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
+      }
+    }
+    if(Array.isArray(list)){
+      list.forEach(function(r){
+        if(typeof r === 'string') push('Shopping', r, '', '');
+        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
+      });
+      return rows;
+    }
+    if(!list || typeof list !== 'object') return rows;
+    groupOrder.forEach(function(cat){ if(Object.prototype.hasOwnProperty.call(list, cat)) readGroup(cat, list[cat]); });
+    Object.keys(list).forEach(function(cat){ if(!used[cat]) readGroup(cat, list[cat]); });
+    return rows;
+  }
+
   function buildFallbackHtml(plan, prefs){
     var days = Array.isArray(plan && plan.days) ? plan.days.slice(0,7) : [];
     var setup = prefs || window.heartyLeadCurrentPrefs || {};
     var guide = (setup.proteinMin && setup.proteinMax) ? (setup.proteinMin + '-' + setup.proteinMax + 'g protein · ' + (setup.fibreMin || 20) + '-' + (setup.fibreMax || 30) + 'g fibre') : 'protein-focused';
     function mealHtml(label, meal){
       if(!meal) return '';
-      return '<div class="meal"><b>' + esc(label) + '</b><strong>' + esc(meal.name || '') + '</strong><span>' + esc((meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '')) + '</span></div>';
+      var protein = mealProteinLabel(meal);
+      return '<div class="meal"><b>' + esc(label) + '</b><strong>' + esc(mealTitle(meal)) + '</strong><span>' + esc((protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal)) + '</span></div>';
     }
-    var rows = buildShoppingRows(plan, setup).map(function(r){ return '<tr><td>' + esc(r.cat) + '</td><td>' + esc(r.item) + '</td><td>' + esc(r.qty) + '</td><td>' + esc(r.notes) + '</td></tr>'; }).join('');
+    var input = window.heartyLeadCurrentInput || {};
+    var rows = shoppingRowsByGroup(engineShoppingList(plan, input)).map(function(r){ return '<tr><td>' + esc(r.cat) + '</td><td>' + esc(r.item) + '</td><td>' + esc(r.qty) + '</td><td>' + esc(r.notes) + '</td></tr>'; }).join('');
     return '<!doctype html><html><head><meta charset="utf-8"><title>Hearty 7-day GLP-1 meal plan</title><style>body{font-family:Arial,sans-serif;color:#102a43;margin:24px;line-height:1.35}.shell{border:1px solid #cfddea;padding:24px;max-width:900px;margin:0 auto}.brand{font-size:30px;font-weight:900;color:#0c5b97}.day{break-inside:avoid;border:1px solid #d8e5ef;border-radius:12px;padding:14px;margin:12px 0}.day h2{margin:0 0 6px}.meal{display:grid;grid-template-columns:95px 1fr;gap:4px 12px;border-top:1px solid #edf3f8;padding:7px 0}.meal b{color:#0c5b97;text-transform:uppercase;font-size:12px}.meal strong,.meal span{grid-column:2}table{width:100%;border-collapse:collapse}td,th{border:1px solid #d8e5ef;padding:7px;text-align:left;vertical-align:top}th{background:#eaf6ff}</style></head><body><div class="shell"><div class="brand">Hearty</div><h1>Your 7-day GLP-1 meal plan</h1><p>Guide: ' + esc(guide) + '</p>' + days.map(function(day){ return '<section class="day"><h2>Day ' + esc(day.day || '') + ' - ~' + Math.round(dayProtein(day)) + 'g protein</h2>' + mealHtml('Breakfast',day.breakfast) + mealHtml('Snack 1',day.morningSnack) + mealHtml('Lunch',day.lunch) + mealHtml('Snack 2',day.afternoonSnack) + mealHtml('Dinner',day.dinner) + '</section>'; }).join('') + '<h2>7-day shopping list</h2><table><thead><tr><th>Category</th><th>Item</th><th>Quantity</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table></div></body></html>';
   }
   function fallbackDownloadHtml(plan, prefs){
@@ -6632,8 +6566,9 @@ body.plan-builder-hard-lock{
   }
   function mealHeight(doc, meal, contentW){
     if(!meal) return 0;
-    var detail = (meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '');
-    var nameLines = linesFor(doc, meal.name || '', contentW - 31, 8.8, 'bold').length;
+    var protein = mealProteinLabel(meal);
+    var detail = (protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal);
+    var nameLines = linesFor(doc, mealTitle(meal), contentW - 31, 8.8, 'bold').length;
     var detailLines = linesFor(doc, detail, contentW - 31, 7.7, 'normal').length;
     return 4.5 + nameLines * 3.6 + detailLines * 3.25;
   }
@@ -6644,14 +6579,15 @@ body.plan-builder-hard-lock{
   }
   function drawMeal(doc, label, meal, x, y, contentW){
     if(!meal) return y;
-    var detail = (meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '');
+    var protein = mealProteinLabel(meal);
+    var detail = (protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal);
     var labelW = 25;
     setFont(doc, 7.2, 'bold', [12,91,151]);
     doc.text(label.toUpperCase(), x, y + 3);
     var tx = x + labelW + 4;
     var tw = contentW - labelW - 4;
     setFont(doc, 8.8, 'bold', [7,29,53]);
-    var nameLines = linesFor(doc, meal.name || '', tw, 8.8, 'bold');
+    var nameLines = linesFor(doc, mealTitle(meal), tw, 8.8, 'bold');
     doc.text(nameLines, tx, y + 3);
     var cursor = y + 3 + nameLines.length * 3.6;
     setFont(doc, 7.7, 'normal', [65,90,114]);
@@ -6693,7 +6629,8 @@ body.plan-builder-hard-lock{
     doc.addPage();
     addPageFrame(doc);
   }
-  function drawShoppingList(doc, rows, startPageY){
+  function drawShoppingList(doc, shoppingList, startPageY){
+    var rows = shoppingRowsByGroup(shoppingList);
     newPage(doc);
     var y = 17;
     setFont(doc, 18, 'bold', [7,29,53]);
@@ -6755,7 +6692,8 @@ body.plan-builder-hard-lock{
         if(y + needed > 276){ newPage(doc); y = 17; }
         y = drawDay(doc, day, 14, y, 180, guide);
       });
-      drawShoppingList(doc, buildShoppingRows(plan, prefs), y);
+      var input = window.heartyLeadCurrentInput || {};
+      drawShoppingList(doc, engineShoppingList(plan, input), y);
       var pages = doc.getNumberOfPages();
       for(var p = 1; p <= pages; p++){
         doc.setPage(p);
