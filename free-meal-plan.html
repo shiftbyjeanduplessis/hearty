@@ -5261,8 +5261,7 @@ body.plan-builder-hard-lock{
           <label class="engine-card-label">2. Protein foods you like</label>
           <div class="protein-check-grid engine-protein-grid full-choice-grid" id="proteinFoodGrid" aria-label="Protein foods you like">
             <label class="protein-check"><input type="checkbox" value="eggs"><span>Eggs</span></label>
-            <label class="protein-check"><input type="checkbox" value="chicken"><span>Chicken breast</span></label>
-            <label class="protein-check"><input type="checkbox" value="shredded_chicken"><span>Shredded chicken</span></label>
+            <label class="protein-check"><input type="checkbox" value="chicken"><span>Chicken</span></label>
             <label class="protein-check"><input type="checkbox" value="greek_yoghurt"><span>Greek yoghurt</span></label>
             <label class="protein-check"><input type="checkbox" value="cottage_cheese"><span>Cottage cheese</span></label>
             <label class="protein-check"><input type="checkbox" value="protein_shake"><span>Protein shake</span></label>
@@ -5271,9 +5270,8 @@ body.plan-builder-hard-lock{
             <label class="protein-check"><input type="checkbox" value="prawns"><span>Prawns</span></label>
             <label class="protein-check"><input type="checkbox" value="calamari"><span>Calamari</span></label>
             <label class="protein-check"><input type="checkbox" value="mussels_clams"><span>Mussels / clams</span></label>
-            <label class="protein-check"><input type="checkbox" value="lean_beef"><span>Lean beef</span></label>
-            <label class="protein-check"><input type="checkbox" value="lean_mince"><span>Lean mince</span></label>
-            <label class="protein-check"><input type="checkbox" value="pork"><span>Lean pork</span></label>
+            <label class="protein-check"><input type="checkbox" value="beef"><span>Beef</span></label>
+            <label class="protein-check"><input type="checkbox" value="pork"><span>Pork</span></label>
             <label class="protein-check"><input type="checkbox" value="tofu"><span>Tofu</span></label>
             <label class="protein-check"><input type="checkbox" value="beans"><span>Beans / chickpeas</span></label>
             <label class="protein-check"><input type="checkbox" value="lentils"><span>Lentils</span></label>
@@ -5389,8 +5387,8 @@ body.plan-builder-hard-lock{
 
   var labels = {
     foods:{
-      chicken:'Chicken', eggs:'Eggs', greek_yoghurt:'Yoghurt/cottage cheese', tuna_salmon:'Tuna/salmon',
-      lean_mince:'Lean mince', protein_shake:'Protein shake', tofu_beans:'Tofu/beans', biltong_jerky:'Biltong/jerky'
+      chicken:'Chicken', eggs:'Eggs', greek_yoghurt:'Yoghurt/cottage cheese', tuna_salmon:'Tuna/salmon', fish:'Fish',
+      beef:'Beef', lean_mince:'Beef', protein_shake:'Protein shake', tofu_beans:'Tofu/beans', tofu:'Tofu', beans:'Beans', lentils:'Lentils', biltong_jerky:'Biltong/jerky'
     },
     avoids:{ chicken:'Chicken', eggs:'Eggs', dairy:'Dairy', fish:'Fish/seafood', beef:'Beef', legumes:'Beans/tofu' },
     carbs:{ potato:'Potato/sweet potato', rice:'Rice', wraps:'Wraps/pita', oats_cereal:'Oats/cereal', fruit:'Fruit' },
@@ -5507,9 +5505,9 @@ body.plan-builder-hard-lock{
       if(avoid.eggs && f === 'eggs') return false;
       if(avoid.dairy && f === 'greek_yoghurt') return false;
       if((avoid.fish || noSeafood) && f === 'tuna_salmon') return false;
-      if(avoid.beef && f === 'lean_mince') return false;
+      if(avoid.beef && (f === 'beef' || f === 'lean_mince' || f === 'lean_beef')) return false;
       if(avoid.legumes && f === 'tofu_beans') return false;
-      if(useVeg && ['chicken','tuna_salmon','lean_mince','biltong_jerky'].includes(f)) return false;
+      if(useVeg && ['chicken','tuna_salmon','fish','beef','lean_mince','lean_beef','pork','biltong_jerky'].includes(f)) return false;
       return true;
     });
     if(!proteinPool.length) proteinPool = useVeg ? ['eggs','greek_yoghurt','tofu_beans'] : ['chicken','eggs','greek_yoghurt'];
@@ -5519,7 +5517,9 @@ body.plan-builder-hard-lock{
       eggs:'eggs',
       greek_yoghurt:'Greek yoghurt or cottage cheese',
       tuna_salmon:'tuna or salmon',
-      lean_mince:'lean mince',
+      fish:'fish',
+      beef:'beef',
+      lean_mince:'beef',
       protein_shake:'protein shake',
       tofu_beans:'tofu or beans',
       biltong_jerky:'biltong or jerky'
@@ -5763,10 +5763,10 @@ body.plan-builder-hard-lock{
 
   var labels = {
     proteins:{
-      eggs:'Eggs', chicken:'Chicken breast', shredded_chicken:'Shredded chicken',
+      eggs:'Eggs', chicken:'Chicken', shredded_chicken:'Chicken',
       greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', protein_shake:'Protein shake',
       tuna:'Tuna', white_fish:'White fish', prawns:'Prawns', calamari:'Calamari', mussels_clams:'Mussels / clams',
-      lean_beef:'Lean beef', lean_mince:'Lean mince', pork:'Lean pork',
+      beef:'Beef', lean_beef:'Beef', lean_mince:'Beef', pork:'Pork',
       tofu:'Tofu', beans:'Beans / chickpeas', lentils:'Lentils', meat_free_mince:'Meat-free mince'
     },
     carbs:{
@@ -5851,8 +5851,37 @@ body.plan-builder-hard-lock{
     };
   }
 
+  function uniqueValues(values){
+    var out = [];
+    (values || []).forEach(function(v){ if(v && out.indexOf(v) === -1) out.push(v); });
+    return out;
+  }
+
+  function canonicalProteinKey(value){
+    var v = String(value || '').trim();
+    var map = {
+      chicken_breast:'chicken', cooked_chicken:'chicken', shredded_chicken:'chicken', grilled_chicken:'chicken',
+      lean_beef:'beef', lean_mince:'beef', lean_beef_mince:'beef', ground_beef:'beef', beef_mince:'beef', beef_strips:'beef',
+      lean_pork:'pork', pork_fillet:'pork', pork_strips:'pork',
+      tuna_salmon:'fish', tuna:'fish', white_fish:'fish', hake:'fish', cod:'fish', salmon:'fish', prawns:'fish', shrimp:'fish', calamari:'fish', mussels_clams:'fish',
+      greek_yoghurt:'dairy', greek_yogurt:'dairy', plain_yoghurt:'dairy', plain_yogurt:'dairy', cottage_cheese:'dairy',
+      protein_shake:'protein_powder'
+    };
+    return map[v] || v;
+  }
+
+  function canonicalFormFoodKey(value){
+    var v = String(value || '').trim();
+    var map = {
+      chicken_breast:'chicken', cooked_chicken:'chicken', shredded_chicken:'chicken', grilled_chicken:'chicken',
+      lean_beef:'beef', lean_mince:'beef', lean_beef_mince:'beef', ground_beef:'beef', beef_mince:'beef', beef_strips:'beef',
+      lean_pork:'pork', pork_fillet:'pork', pork_strips:'pork'
+    };
+    return map[v] || v;
+  }
+
   function inferDiet(foods){
-    var meat = ['chicken','shredded_chicken','lean_beef','lean_mince','pork'];
+    var meat = ['chicken','shredded_chicken','chicken_breast','beef','lean_beef','lean_mince','ground_beef','pork'];
     var fish = ['tuna','white_fish','prawns','calamari','mussels_clams'];
     if(foods.some(function(f){ return meat.indexOf(f) !== -1; })) return 'omnivore';
     if(foods.some(function(f){ return fish.indexOf(f) !== -1; })) return 'pescatarian';
@@ -5868,7 +5897,7 @@ body.plan-builder-hard-lock{
 
   function readPrefs(){
     var base = sexPrefs();
-    var foods = checkedValues('proteinFoodGrid');
+    var foods = uniqueValues(checkedValues('proteinFoodGrid').map(canonicalFormFoodKey));
     var carbs = checkedValues('carbFoodGrid');
     var veg = checkedValues('vegFoodGrid');
     var snacks = checkedValues('snackFoodGrid');
@@ -5930,19 +5959,21 @@ body.plan-builder-hard-lock{
     var starches = [];
     var vegetables = [];
 
-    (prefs.foods || []).forEach(function(f){
-      if(f === 'eggs'){ addUnique(proteins,'eggs'); addUnique(breakfastItems,'eggs'); addUnique(snackProteins,'boiled_eggs'); }
-      if(f === 'chicken' || f === 'shredded_chicken'){ addUnique(proteins,'chicken'); addUnique(snackProteins,'chicken_strips'); }
-      if(f === 'greek_yoghurt'){ addUnique(proteins,'dairy'); addUnique(breakfastItems,'greek_yoghurt'); addUnique(snackProteins,'yoghurt'); }
-      if(f === 'cottage_cheese'){ addUnique(proteins,'dairy'); addUnique(breakfastItems,'cottage_cheese'); addUnique(snackProteins,'cottage_cheese'); }
-      if(f === 'protein_shake'){ addUnique(proteins,'protein_powder'); addUnique(breakfastItems,'protein_shake'); addUnique(snackProteins,'protein_shake'); }
-      if(f === 'tuna' || f === 'white_fish' || f === 'prawns' || f === 'calamari' || f === 'mussels_clams'){ addUnique(proteins,'fish'); addUnique(snackProteins,'tuna'); }
-      if(f === 'lean_beef' || f === 'lean_mince'){ addUnique(proteins,'beef'); addUnique(snackProteins,'biltong'); }
-      if(f === 'pork'){ addUnique(proteins,'pork'); }
-      if(f === 'tofu'){ addUnique(proteins,'tofu'); addUnique(breakfastItems,'tofu_scramble'); addUnique(snackProteins,'tofu_bites'); }
-      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); addUnique(breakfastItems,'hummus_plate'); addUnique(snackProteins,'hummus'); }
-      if(f === 'lentils'){ addUnique(proteins,'lentils'); addUnique(breakfastItems,'hummus_plate'); addUnique(snackProteins,'hummus'); }
-      if(f === 'meat_free_mince'){ addUnique(proteins,'beans'); addUnique(proteins,'lentils'); }
+    (prefs.foods || []).forEach(function(rawFood){
+      var f = canonicalFormFoodKey(rawFood);
+      var proteinFamily = canonicalProteinKey(f);
+
+      if(proteinFamily === 'eggs'){ addUnique(proteins,'eggs'); addUnique(breakfastItems,'eggs'); addUnique(snackProteins,'boiled_eggs'); return; }
+      if(proteinFamily === 'chicken'){ addUnique(proteins,'chicken'); addUnique(snackProteins,'chicken_strips'); return; }
+      if(proteinFamily === 'dairy'){ addUnique(proteins,'dairy'); if(f === 'cottage_cheese') addUnique(breakfastItems,'cottage_cheese'); else addUnique(breakfastItems,'greek_yoghurt'); addUnique(snackProteins, f === 'cottage_cheese' ? 'cottage_cheese' : 'yoghurt'); return; }
+      if(proteinFamily === 'protein_powder'){ addUnique(proteins,'protein_powder'); addUnique(breakfastItems,'protein_shake'); addUnique(snackProteins,'protein_shake'); return; }
+      if(proteinFamily === 'fish'){ addUnique(proteins,'fish'); addUnique(snackProteins,'tuna'); return; }
+      if(proteinFamily === 'beef'){ addUnique(proteins,'beef'); addUnique(snackProteins,'biltong'); return; }
+      if(proteinFamily === 'pork'){ addUnique(proteins,'pork'); return; }
+      if(proteinFamily === 'tofu'){ addUnique(proteins,'tofu'); addUnique(breakfastItems,'tofu_scramble'); addUnique(snackProteins,'tofu_bites'); return; }
+      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); addUnique(snackProteins,'hummus'); return; }
+      if(f === 'lentils'){ addUnique(proteins,'lentils'); addUnique(snackProteins,'hummus'); return; }
+      if(f === 'meat_free_mince'){ addUnique(proteins,'beans'); addUnique(proteins,'lentils'); return; }
     });
 
     // The locked engine requires enough snack variety. These are safe support options, not main-meal proteins.
@@ -6418,7 +6449,7 @@ body.plan-builder-hard-lock{
 </script>
 
 
-<!-- Hearty direct PDF download handoff - wrapper only, no engine changes -->
+<!-- Hearty direct PDF download handoff - direct jsPDF, no popup window -->
 <script>
 (function(){
   function esc(v){
@@ -6428,6 +6459,13 @@ body.plan-builder-hard-lock{
       .replaceAll('>','&gt;')
       .replaceAll('"','&quot;')
       .replaceAll("'",'&#039;');
+  }
+  function cleanText(v){
+    return String(v == null ? '' : v)
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/[\u00a0]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
   function proteinMidpoint(value){
     var nums = String(value || '').match(/\d+/g) || [];
@@ -6439,19 +6477,12 @@ body.plan-builder-hard-lock{
     return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
       .reduce(function(sum, meal){ return sum + proteinMidpoint(meal && meal.protein); }, 0);
   }
-  function mealHtml(label, meal){
-    if(!meal) return '';
-    return '<div class="pdf-meal-row"><div class="pdf-meal-label">' + esc(label) + '</div><div class="pdf-meal-copy"><strong>' + esc(meal.name || '') + '</strong><span>' + esc((meal.protein ? 'Approx. ' + meal.protein + ' protein · ' : '') + (meal.detail || '')) + '</span></div></div>';
-  }
   function allMeals(plan){
     var out = [];
     (plan && Array.isArray(plan.days) ? plan.days : []).forEach(function(day){
       ['breakfast','morningSnack','lunch','afternoonSnack','dinner'].forEach(function(k){ if(day[k]) out.push({slot:k, meal:day[k]}); });
     });
     return out;
-  }
-  function countType(plan, type){
-    return allMeals(plan).filter(function(x){ return (x.meal.type || x.meal.proteinFamily) === type; }).length;
   }
   function countText(plan, re){
     return allMeals(plan).filter(function(x){ return re.test(((x.meal.name || '') + ' ' + (x.meal.detail || '')).toLowerCase()); }).length;
@@ -6468,91 +6499,59 @@ body.plan-builder-hard-lock{
     meals.forEach(function(x){ var t = x.meal.type || x.meal.proteinFamily || ''; types[t] = (types[t] || 0) + 1; });
 
     var eggMeals = countText(plan, /\begg\b|\beggs\b|omelette|frittata/);
-    if(eggMeals) addRow(rows,'Proteins','Eggs', Math.max(6, eggMeals * 2) + '–' + Math.max(9, eggMeals * 3) + ' eggs', 'Breakfasts, egg meals and boiled-egg snacks');
-    if(types.chicken) addRow(rows,'Proteins','Chicken breast / cooked chicken strips', (types.chicken * 120) + '–' + (types.chicken * 150) + 'g', 'Cooked portions for meals/snacks');
+    if(eggMeals) addRow(rows,'Proteins','Eggs', Math.max(6, eggMeals * 2) + '-' + Math.max(9, eggMeals * 3) + ' eggs', 'Breakfasts, egg meals and boiled-egg snacks');
+    if(types.chicken) addRow(rows,'Proteins','Chicken', (types.chicken * 120) + '-' + (types.chicken * 150) + 'g', 'Cooked portions for meals/snacks');
     if(types.fish) addRow(rows,'Proteins','Tuna / white fish / seafood', Math.max(2, types.fish) + ' portions or tins', 'Use the seafood/fish you selected');
-    if(types.beef) addRow(rows,'Proteins','Lean beef mince / lean beef / biltong', (types.beef * 120) + '–' + (types.beef * 150) + 'g plus snack portion if needed', 'Choose lean options');
-    if(types.pork) addRow(rows,'Proteins','Lean pork fillet/loin strips', (types.pork * 120) + '–' + (types.pork * 150) + 'g', 'No fatty pork cuts');
-    if(types.tofu) addRow(rows,'Proteins','Tofu-style protein', (types.tofu * 180) + '–' + (types.tofu * 220) + 'g', 'Meals and tofu protein bites');
+    if(types.beef) addRow(rows,'Proteins','Beef', (types.beef * 120) + '-' + (types.beef * 150) + 'g plus snack portion if needed', 'Use the beef option you selected');
+    if(types.pork) addRow(rows,'Proteins','Pork', (types.pork * 120) + '-' + (types.pork * 150) + 'g', 'Use the pork option you selected');
+    if(types.tofu) addRow(rows,'Proteins','Tofu-style protein', (types.tofu * 180) + '-' + (types.tofu * 220) + 'g', 'Meals and tofu protein bites');
     if(types.lentils) addRow(rows,'Proteins','Lentils', Math.max(1, types.lentils) + ' tin(s) or cooked portions', 'Rinse if canned');
     if(types.beans) addRow(rows,'Proteins','Beans', Math.max(1, types.beans) + ' tin(s) or cooked portions', 'For chilli/bowls');
     if(types.chickpeas) addRow(rows,'Proteins','Chickpeas', Math.max(1, types.chickpeas) + ' tin(s) or cooked portions', 'For stew/bowls');
-    if(types.dairy || countText(plan,/yoghurt|yogurt/)) addRow(rows,'Dairy','Greek-style yoghurt', '750g–1kg', 'Breakfast bowls and yoghurt snacks');
-    if(countText(plan,/cottage cheese/)) addRow(rows,'Dairy','Cottage cheese', '400–500g', 'Snack plates/crackers');
+    if(types.dairy || countText(plan,/yoghurt|yogurt/)) addRow(rows,'Dairy','Greek-style yoghurt', '750g-1kg', 'Breakfast bowls and yoghurt snacks');
+    if(countText(plan,/cottage cheese/)) addRow(rows,'Dairy','Cottage cheese', '400-500g', 'Snack plates/crackers');
     if(types.protein_powder) addRow(rows,'Snacks','Protein powder', types.protein_powder + ' serving(s)', 'Only if selected/needed');
 
-    var starchCounts = [
-      ['Rice', /½ cup cooked rice|\brice\b/, '250–500g dry rice'],
-      ['Potatoes', /½ cup cooked potato|\bpotato\b/, '1kg'],
+    [
+      ['Rice', /\brice\b/, '250-500g dry rice'],
+      ['Potatoes', /\bpotato\b/, '1kg'],
       ['Sweet potatoes', /sweet potato/, '1kg'],
-      ['Pasta/noodles', /pasta|noodles/, '250–500g dry'],
+      ['Pasta/noodles', /pasta|noodles/, '250-500g dry'],
       ['Wraps/pita', /small wrap|\bwrap\b/, '1 pack']
-    ];
-    starchCounts.forEach(function(row){ if(countText(plan,row[1])) addRow(rows,'Starches',row[0],row[2],'Use the portions shown in the plan'); });
+    ].forEach(function(row){ if(countText(plan,row[1])) addRow(rows,'Starches',row[0],row[2],'Use the portions shown in the plan'); });
 
     var vegLabelMap = { spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot', peppers:'Peppers', mushrooms:'Mushrooms', onion:'Onion', broccoli:'Broccoli', cauliflower:'Cauliflower', green_beans:'Green beans', cabbage:'Cabbage', baby_marrow:'Baby marrow/zucchini', peas:'Peas', butternut:'Butternut', eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus' };
     var selectedVeg = (prefs.veg || []).map(function(v){ return vegLabelMap[v] || String(v).replace(/_/g,' '); });
     if(!selectedVeg.length) selectedVeg = ['Spinach','Tomato','Cucumber','Carrot','Broccoli'];
-    selectedVeg.slice(0,10).forEach(function(v){ addRow(rows,'Vegetables',v,'300–500g or 1 bag/bunch','Used across the 7 days'); });
+    selectedVeg.slice(0,10).forEach(function(v){ addRow(rows,'Vegetables',v,'300-500g or 1 bag/bunch','Used across the 7 days'); });
 
     var snackSelections = prefs.snacks || [];
     if(snackSelections.indexOf('fruit_choice') !== -1 || countText(plan,/fruit|mandarin|naartjie|clementine|apple/)) addRow(rows,'Fruit','Fruit of your choice', '7 small pieces', 'For fruit snacks and yoghurt bowls');
-    if(snackSelections.indexOf('berries') !== -1 || countText(plan,/berries/)) addRow(rows,'Fruit','Berries', '300–500g', 'Fresh or frozen');
-    if(snackSelections.indexOf('banana') !== -1) addRow(rows,'Fruit','Bananas', '3–4', 'Optional breakfasts/snacks');
-    if(snackSelections.indexOf('apple') !== -1 || countText(plan,/apple slices/)) addRow(rows,'Fruit','Apples', '3–4', 'Snack option');
+    if(snackSelections.indexOf('berries') !== -1 || countText(plan,/berries/)) addRow(rows,'Fruit','Berries', '300-500g', 'Fresh or frozen');
+    if(snackSelections.indexOf('banana') !== -1) addRow(rows,'Fruit','Bananas', '3-4', 'Optional breakfasts/snacks');
+    if(snackSelections.indexOf('apple') !== -1 || countText(plan,/apple slices/)) addRow(rows,'Fruit','Apples', '3-4', 'Snack option');
     if(snackSelections.indexOf('crackers') !== -1 || countText(plan,/crackers/)) addRow(rows,'Snacks','Wholegrain crackers', '1 box', 'For cottage cheese snacks');
-    if(snackSelections.indexOf('nuts') !== -1) addRow(rows,'Snacks','Nuts', '150–200g', 'Small portions');
-    if(snackSelections.indexOf('chia_seeds') !== -1) addRow(rows,'Pantry','Chia seeds', '150–200g', 'Optional fibre add-on');
+    if(snackSelections.indexOf('nuts') !== -1) addRow(rows,'Snacks','Nuts', '150-200g', 'Small portions');
+    if(snackSelections.indexOf('chia_seeds') !== -1) addRow(rows,'Pantry','Chia seeds', '150-200g', 'Optional fibre add-on');
 
     addRow(rows,'Pantry','Lemon, herbs, garlic, mild spices', '1 small set', 'For dressings, curries and soups');
-    addRow(rows,'Pantry','Tomato paste / chopped tomato', '2–4 tins or tubs', 'For stews, curries and bolognese-style meals');
+    addRow(rows,'Pantry','Tomato paste / chopped tomato', '2-4 tins or tubs', 'For stews, curries and bolognese-style meals');
     addRow(rows,'Pantry','Stock/broth', '1 pack or cubes', 'For soups/stews');
     return rows;
   }
-  function shoppingTableHtml(plan, prefs){
-    var rows = buildShoppingRows(plan, prefs);
-    if(!rows.length) return '';
-    return '<section class="pdf-shopping"><h2>7-day shopping list</h2><p class="pdf-shopping-note">Quantities are practical estimates for the suggested servings. Adjust up or down for your household.</p><table class="pdf-shopping-table"><thead><tr><th>Category</th><th>Item</th><th>Quantity</th><th>Notes</th></tr></thead><tbody>' + rows.map(function(r){
-      return '<tr class="pdf-shopping-row"><td>' + esc(r.cat) + '</td><td>' + esc(r.item) + '</td><td>' + esc(r.qty) + '</td><td>' + esc(r.notes) + '</td></tr>';
-    }).join('') + '</tbody></table></section>';
-  }
-  function buildPdfInnerHtml(plan, prefs){
+  function buildFallbackHtml(plan, prefs){
     var days = Array.isArray(plan && plan.days) ? plan.days.slice(0,7) : [];
     var setup = prefs || window.heartyLeadCurrentPrefs || {};
-    var guide = (setup.proteinMin && setup.proteinMax) ? (setup.proteinMin + '–' + setup.proteinMax + 'g protein · ' + (setup.fibreMin || 20) + '–' + (setup.fibreMax || 30) + 'g fibre') : 'protein-focused';
-    var logo = 'assets/hearty-logo-header-transparent-clean.png';
-    return '<div class="pdf-shell"><section class="pdf-header"><img class="pdf-logo" src="' + esc(logo) + '" alt="Hearty"><div><h1>Your 7-day GLP-1 meal plan</h1><p>A simple protein-focused starter plan from Hearty. Estimates are for the suggested serving.</p><span>Guide: ' + esc(guide) + '</span></div></section>' +
-      '<section class="pdf-days">' + days.map(function(day){
-        var total = Math.round(dayProtein(day));
-        return '<article class="pdf-day"><div class="pdf-day-head"><h2>Day ' + esc(day.day || '') + '</h2><strong>±' + esc(total) + 'g protein</strong></div><p class="pdf-guide-line">Guide: ' + esc(guide) + '</p>' +
-          mealHtml('Breakfast', day.breakfast) + mealHtml('Snack 1', day.morningSnack) + mealHtml('Lunch', day.lunch) + mealHtml('Snack 2', day.afternoonSnack) + mealHtml('Dinner', day.dinner) + '</article>';
-      }).join('') + '</section>' + shoppingTableHtml(plan, setup) + '<footer>Hearty · Your GLP-1 Companion · www.hearty.health</footer></div>';
-  }
-  function ensurePdfStyles(){
-    if(document.getElementById('heartyPdfDownloadStyles')) return;
-    var css = '@page{size:A4;margin:9mm} .hearty-pdf-export{position:fixed;left:-99999px;top:0;width:190mm;background:#fff;color:#102a43;font-family:Inter,Arial,sans-serif;font-size:9.5px;line-height:1.28}.pdf-shell{border:1px solid #cfddea;padding:8mm;background:#fff}.pdf-header{display:grid;grid-template-columns:42mm 1fr;gap:8mm;align-items:center;border-bottom:2px solid #0c5b97;padding-bottom:5mm;margin-bottom:5mm;break-inside:avoid;page-break-inside:avoid}.pdf-logo{width:40mm;height:auto}.pdf-header h1{margin:0 0 2mm;font-size:24px;line-height:1.02;letter-spacing:-.04em;color:#071d35}.pdf-header p{margin:0 0 3mm;color:#52677c;font-size:10.5px}.pdf-header span{display:inline-block;border-radius:999px;background:#eaf6ff;color:#0b4c84;padding:5px 8px;font-weight:900}.pdf-days{display:block}.pdf-day{break-inside:avoid;page-break-inside:avoid;border:1px solid #d8e5ef;border-radius:9px;padding:4mm;margin:0 0 4mm;background:#fff}.pdf-day-head{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #d8e5ef;padding-bottom:2mm;margin-bottom:2mm}.pdf-day-head h2{font-size:16px;line-height:1;margin:0;color:#071d35;font-weight:900}.pdf-day-head strong{font-size:10px;color:#0b4c84;background:#eaf6ff;border-radius:999px;padding:4px 7px;white-space:nowrap}.pdf-guide-line{font-weight:800;color:#607387;margin:0 0 2mm}.pdf-meal-row{display:grid;grid-template-columns:19mm 1fr;gap:3mm;border-top:1px solid #edf3f8;padding:1.8mm 0;break-inside:avoid;page-break-inside:avoid}.pdf-meal-row:first-of-type{border-top:0}.pdf-meal-label{font-weight:900;color:#0c5b97;text-transform:uppercase;font-size:8px;letter-spacing:.06em}.pdf-meal-copy strong{display:block;font-size:10px;color:#071d35;margin-bottom:1mm}.pdf-meal-copy span{display:block;color:#415a72}.pdf-shopping{break-before:page;page-break-before:always;margin-top:3mm}.pdf-shopping h2{font-size:18px;margin:0 0 2mm;color:#071d35}.pdf-shopping-note{margin:0 0 3mm;color:#607387;font-weight:700}.pdf-shopping-table{width:100%;border-collapse:collapse;font-size:8.8px}.pdf-shopping-table th{background:#eaf6ff;color:#0b4c84;text-align:left;font-weight:900}.pdf-shopping-table th,.pdf-shopping-table td{border:1px solid #d8e5ef;padding:5px;vertical-align:top}.pdf-shopping-row{break-inside:avoid;page-break-inside:avoid}footer{margin-top:5mm;border-top:1px solid #d8e5ef;padding-top:3mm;text-align:center;color:#8a9baa;font-size:8.5px}';
-    var style = document.createElement('style');
-    style.id = 'heartyPdfDownloadStyles';
-    style.textContent = css;
-    document.head.appendChild(style);
-  }
-  function loadHtml2Pdf(){
-    if(window.html2pdf) return Promise.resolve(window.html2pdf);
-    return new Promise(function(resolve, reject){
-      var existing = document.querySelector('script[data-hearty-html2pdf]');
-      if(existing){ existing.addEventListener('load', function(){ resolve(window.html2pdf); }); existing.addEventListener('error', reject); return; }
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-      s.async = true;
-      s.dataset.heartyHtml2pdf = '1';
-      s.onload = function(){ window.html2pdf ? resolve(window.html2pdf) : reject(new Error('PDF library loaded but did not initialise')); };
-      s.onerror = function(){ reject(new Error('Could not load PDF library')); };
-      document.head.appendChild(s);
-    });
+    var guide = (setup.proteinMin && setup.proteinMax) ? (setup.proteinMin + '-' + setup.proteinMax + 'g protein · ' + (setup.fibreMin || 20) + '-' + (setup.fibreMax || 30) + 'g fibre') : 'protein-focused';
+    function mealHtml(label, meal){
+      if(!meal) return '';
+      return '<div class="meal"><b>' + esc(label) + '</b><strong>' + esc(meal.name || '') + '</strong><span>' + esc((meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '')) + '</span></div>';
+    }
+    var rows = buildShoppingRows(plan, setup).map(function(r){ return '<tr><td>' + esc(r.cat) + '</td><td>' + esc(r.item) + '</td><td>' + esc(r.qty) + '</td><td>' + esc(r.notes) + '</td></tr>'; }).join('');
+    return '<!doctype html><html><head><meta charset="utf-8"><title>Hearty 7-day GLP-1 meal plan</title><style>body{font-family:Arial,sans-serif;color:#102a43;margin:24px;line-height:1.35}.shell{border:1px solid #cfddea;padding:24px;max-width:900px;margin:0 auto}.brand{font-size:30px;font-weight:900;color:#0c5b97}.day{break-inside:avoid;border:1px solid #d8e5ef;border-radius:12px;padding:14px;margin:12px 0}.day h2{margin:0 0 6px}.meal{display:grid;grid-template-columns:95px 1fr;gap:4px 12px;border-top:1px solid #edf3f8;padding:7px 0}.meal b{color:#0c5b97;text-transform:uppercase;font-size:12px}.meal strong,.meal span{grid-column:2}table{width:100%;border-collapse:collapse}td,th{border:1px solid #d8e5ef;padding:7px;text-align:left;vertical-align:top}th{background:#eaf6ff}</style></head><body><div class="shell"><div class="brand">Hearty</div><h1>Your 7-day GLP-1 meal plan</h1><p>Guide: ' + esc(guide) + '</p>' + days.map(function(day){ return '<section class="day"><h2>Day ' + esc(day.day || '') + ' - ~' + Math.round(dayProtein(day)) + 'g protein</h2>' + mealHtml('Breakfast',day.breakfast) + mealHtml('Snack 1',day.morningSnack) + mealHtml('Lunch',day.lunch) + mealHtml('Snack 2',day.afternoonSnack) + mealHtml('Dinner',day.dinner) + '</section>'; }).join('') + '<h2>7-day shopping list</h2><table><thead><tr><th>Category</th><th>Item</th><th>Quantity</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table></div></body></html>';
   }
   function fallbackDownloadHtml(plan, prefs){
-    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Hearty 7-day GLP-1 meal plan</title></head><body>' + buildPdfInnerHtml(plan,prefs) + '</body></html>';
-    var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    var blob = new Blob([buildFallbackHtml(plan,prefs)], {type:'text/html;charset=utf-8'});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'hearty-7-day-glp1-meal-plan.html';
@@ -6560,39 +6559,224 @@ body.plan-builder-hard-lock{
     a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
-  function downloadStyledPdf(){
+  function loadJsPdf(){
+    if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+    return new Promise(function(resolve, reject){
+      var existing = document.querySelector('script[data-hearty-jspdf]');
+      if(existing){ existing.addEventListener('load', function(){ window.jspdf && window.jspdf.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF library loaded but did not initialise')); }); existing.addEventListener('error', reject); return; }
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.async = true;
+      s.dataset.heartyJspdf = '1';
+      s.onload = function(){ window.jspdf && window.jspdf.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF library loaded but did not initialise')); };
+      s.onerror = function(){ reject(new Error('Could not load PDF library')); };
+      document.head.appendChild(s);
+    });
+  }
+  function loadLogoDataUrl(){
+    return new Promise(function(resolve){
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){
+        try{
+          var canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || img.width;
+          canvas.height = img.naturalHeight || img.height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0);
+          resolve(canvas.toDataURL('image/png'));
+        } catch(e){ resolve(null); }
+      };
+      img.onerror = function(){ resolve(null); };
+      img.src = 'assets/hearty-logo-header-transparent-clean.png';
+    });
+  }
+  function setFont(doc, size, style, color){
+    doc.setFont('helvetica', style || 'normal');
+    doc.setFontSize(size);
+    if(color) doc.setTextColor(color[0], color[1], color[2]);
+    else doc.setTextColor(16,42,67);
+  }
+  function linesFor(doc, text, width, size, style){
+    setFont(doc, size, style || 'normal');
+    return doc.splitTextToSize(cleanText(text), width);
+  }
+  function addPageFrame(doc){
+    doc.setDrawColor(207,221,234);
+    doc.setLineWidth(0.35);
+    doc.rect(8,8,194,281);
+  }
+  function addPageFooter(doc, pageNum){
+    setFont(doc, 7.5, 'normal', [120,140,155]);
+    doc.text('Hearty - Your GLP-1 Companion - www.hearty.health', 105, 286, {align:'center'});
+    doc.text(String(pageNum), 195, 286, {align:'right'});
+  }
+  function drawFirstHeader(doc, logoData, guide){
+    var y = 16;
+    if(logoData){
+      try{ doc.addImage(logoData, 'PNG', 14, y, 42, 16); }
+      catch(e){ setFont(doc, 24, 'bold', [12,91,151]); doc.text('Hearty', 14, y + 12); }
+    } else {
+      setFont(doc, 24, 'bold', [12,91,151]); doc.text('Hearty', 14, y + 12);
+    }
+    setFont(doc, 22, 'bold', [7,29,53]);
+    doc.text('Your 7-day GLP-1 meal plan', 64, y + 6);
+    setFont(doc, 9.5, 'normal', [82,103,124]);
+    var intro = doc.splitTextToSize('A simple protein-focused starter plan from Hearty. Estimates are for the suggested serving.', 124);
+    doc.text(intro, 64, y + 13);
+    doc.setFillColor(234,246,255);
+    doc.roundedRect(64, y + 21, 78, 7, 3, 3, 'F');
+    setFont(doc, 8.3, 'bold', [11,76,132]);
+    doc.text('Guide: ' + cleanText(guide), 67, y + 25.6);
+    doc.setDrawColor(12,91,151);
+    doc.setLineWidth(0.6);
+    doc.line(14, y + 34, 196, y + 34);
+    return y + 42;
+  }
+  function mealHeight(doc, meal, contentW){
+    if(!meal) return 0;
+    var detail = (meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '');
+    var nameLines = linesFor(doc, meal.name || '', contentW - 31, 8.8, 'bold').length;
+    var detailLines = linesFor(doc, detail, contentW - 31, 7.7, 'normal').length;
+    return 4.5 + nameLines * 3.6 + detailLines * 3.25;
+  }
+  function dayBlockHeight(doc, day, contentW){
+    var h = 11 + 5;
+    [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner].forEach(function(meal){ h += mealHeight(doc, meal, contentW); });
+    return Math.max(42, h + 4);
+  }
+  function drawMeal(doc, label, meal, x, y, contentW){
+    if(!meal) return y;
+    var detail = (meal.protein ? 'Approx. ' + meal.protein + ' protein - ' : '') + (meal.detail || '');
+    var labelW = 25;
+    setFont(doc, 7.2, 'bold', [12,91,151]);
+    doc.text(label.toUpperCase(), x, y + 3);
+    var tx = x + labelW + 4;
+    var tw = contentW - labelW - 4;
+    setFont(doc, 8.8, 'bold', [7,29,53]);
+    var nameLines = linesFor(doc, meal.name || '', tw, 8.8, 'bold');
+    doc.text(nameLines, tx, y + 3);
+    var cursor = y + 3 + nameLines.length * 3.6;
+    setFont(doc, 7.7, 'normal', [65,90,114]);
+    var detailLines = linesFor(doc, detail, tw, 7.7, 'normal');
+    doc.text(detailLines, tx, cursor);
+    cursor += detailLines.length * 3.25 + 1.8;
+    doc.setDrawColor(237,243,248);
+    doc.setLineWidth(0.2);
+    doc.line(x, cursor, x + contentW, cursor);
+    return cursor + 1.4;
+  }
+  function drawDay(doc, day, x, y, contentW, guide){
+    var h = dayBlockHeight(doc, day, contentW);
+    doc.setFillColor(255,255,255);
+    doc.setDrawColor(216,229,239);
+    doc.setLineWidth(0.35);
+    doc.roundedRect(x, y, contentW, h, 3, 3, 'FD');
+    var innerX = x + 4;
+    var innerW = contentW - 8;
+    setFont(doc, 14, 'bold', [7,29,53]);
+    doc.text('Day ' + cleanText(day.day || ''), innerX, y + 7.5);
+    doc.setFillColor(234,246,255);
+    doc.roundedRect(x + contentW - 45, y + 3, 39, 7, 3, 3, 'F');
+    setFont(doc, 8, 'bold', [11,76,132]);
+    doc.text('~' + Math.round(dayProtein(day)) + 'g protein', x + contentW - 25.5, y + 7.7, {align:'center'});
+    setFont(doc, 7.8, 'bold', [96,115,135]);
+    doc.text('Guide: ' + cleanText(guide), innerX, y + 13);
+    doc.setDrawColor(216,229,239);
+    doc.line(innerX, y + 15.5, innerX + innerW, y + 15.5);
+    var cursor = y + 18.5;
+    cursor = drawMeal(doc, 'Breakfast', day.breakfast, innerX, cursor, innerW);
+    cursor = drawMeal(doc, 'Snack 1', day.morningSnack, innerX, cursor, innerW);
+    cursor = drawMeal(doc, 'Lunch', day.lunch, innerX, cursor, innerW);
+    cursor = drawMeal(doc, 'Snack 2', day.afternoonSnack, innerX, cursor, innerW);
+    cursor = drawMeal(doc, 'Dinner', day.dinner, innerX, cursor, innerW);
+    return y + h + 4;
+  }
+  function newPage(doc){
+    doc.addPage();
+    addPageFrame(doc);
+  }
+  function drawShoppingList(doc, rows, startPageY){
+    newPage(doc);
+    var y = 17;
+    setFont(doc, 18, 'bold', [7,29,53]);
+    doc.text('7-day shopping list', 14, y);
+    y += 6;
+    setFont(doc, 8.2, 'normal', [96,115,135]);
+    doc.text(doc.splitTextToSize('Quantities are practical estimates for the suggested servings. Adjust up or down for your household.', 180), 14, y);
+    y += 9;
+    var widths = [28, 55, 43, 54];
+    function tableHead(){
+      doc.setFillColor(234,246,255);
+      doc.rect(14, y, 180, 7, 'F');
+      setFont(doc, 7.8, 'bold', [11,76,132]);
+      var labels = ['Category','Item','Quantity','Notes'];
+      var cx = 14;
+      labels.forEach(function(label, i){ doc.text(label, cx + 2, y + 4.7); cx += widths[i]; });
+      doc.setDrawColor(216,229,239);
+      doc.rect(14, y, 180, 7);
+      y += 7;
+    }
+    tableHead();
+    rows.forEach(function(r){
+      var cols = [r.cat, r.item, r.qty, r.notes].map(cleanText);
+      setFont(doc, 7.2, 'normal', [16,42,67]);
+      var lineCols = cols.map(function(c, i){ return doc.splitTextToSize(c, widths[i] - 4); });
+      var rowH = Math.max.apply(null, lineCols.map(function(ls){ return ls.length * 3.1 + 3.5; }));
+      if(y + rowH > 276){
+        newPage(doc);
+        y = 17;
+        tableHead();
+      }
+      var x = 14;
+      doc.setDrawColor(216,229,239);
+      doc.rect(14, y, 180, rowH);
+      lineCols.forEach(function(lines, i){
+        doc.text(lines, x + 2, y + 4.5);
+        if(i < widths.length - 1) doc.line(x + widths[i], y, x + widths[i], y + rowH);
+        x += widths[i];
+      });
+      y += rowH;
+    });
+  }
+  async function downloadStyledPdf(){
     var plan = window.heartyLeadCurrentPlan;
-    var prefs = window.heartyLeadCurrentPrefs;
+    var prefs = window.heartyLeadCurrentPrefs || {};
     if(!plan || !Array.isArray(plan.days) || !plan.days.length){ alert('Please generate your meal plan first.'); return false; }
     var status = document.getElementById('leadStatus');
     if(status) status.textContent = 'Preparing your PDF download...';
-    ensurePdfStyles();
-    var node = document.createElement('div');
-    node.className = 'hearty-pdf-export';
-    node.innerHTML = buildPdfInnerHtml(plan, prefs);
-    document.body.appendChild(node);
-    return loadHtml2Pdf().then(function(html2pdf){
-      return html2pdf().set({
-        margin: [8,8,8,8],
-        filename: 'hearty-7-day-glp1-meal-plan.pdf',
-        image: { type: 'jpeg', quality: 0.96 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css','legacy'], avoid: ['.pdf-day','.pdf-meal-row','.pdf-shopping-row'] }
-      }).from(node).save();
-    }).then(function(){
-      if(status) status.textContent = 'Downloaded — check your downloads folder.';
+    try{
+      var jsPDF = await loadJsPdf();
+      var logoData = await loadLogoDataUrl();
+      var doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
+      addPageFrame(doc);
+      var guide = (prefs.proteinMin && prefs.proteinMax) ? (prefs.proteinMin + '-' + prefs.proteinMax + 'g protein · ' + (prefs.fibreMin || 20) + '-' + (prefs.fibreMax || 30) + 'g fibre') : '90-125g protein · 20-30g fibre';
+      var y = drawFirstHeader(doc, logoData, guide);
+      var days = plan.days.slice(0,7);
+      days.forEach(function(day){
+        var needed = dayBlockHeight(doc, day, 180);
+        if(y + needed > 276){ newPage(doc); y = 17; }
+        y = drawDay(doc, day, 14, y, 180, guide);
+      });
+      drawShoppingList(doc, buildShoppingRows(plan, prefs), y);
+      var pages = doc.getNumberOfPages();
+      for(var p = 1; p <= pages; p++){
+        doc.setPage(p);
+        addPageFrame(doc);
+        addPageFooter(doc, p);
+      }
+      doc.save('hearty-7-day-glp1-meal-plan.pdf');
+      if(status) status.textContent = 'Downloaded - check your downloads folder.';
       var post = document.getElementById('postSubmit');
       if(post) post.classList.add('show');
-    }).catch(function(err){
-      console.warn('[Hearty] PDF download failed; downloading HTML fallback', err);
+    } catch(err){
+      console.warn('[Hearty] Direct PDF failed; downloading HTML fallback', err);
       fallbackDownloadHtml(plan, prefs);
       if(status) status.textContent = 'Downloaded a styled plan file. If PDF download is blocked, open it and save/print as PDF.';
       var post = document.getElementById('postSubmit');
       if(post) post.classList.add('show');
-    }).finally(function(){
-      setTimeout(function(){ if(node && node.parentNode) node.parentNode.removeChild(node); }, 500);
-    }), false;
+    }
+    return false;
   }
   document.addEventListener('click', function(e){
     var target = e.target && e.target.closest ? e.target.closest('#downloadPlanBtn') : null;
@@ -6605,7 +6789,6 @@ body.plan-builder-hard-lock{
   window.heartyDownloadStyledPlanPdf = downloadStyledPdf;
 })();
 </script>
-
 
 </body>
 </html>
