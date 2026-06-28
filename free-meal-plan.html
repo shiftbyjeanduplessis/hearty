@@ -4717,6 +4717,7 @@ body.plan-builder-hard-lock{
 
 
 /* v33k — visible sex selector + nutrition guardrails + fruit/snacks */
+/* v33v/v4.1.3 — fruit removed from carb/starch section; fruit lives only in snack section */
 #quickSetupPanel .simplified-top-grid{
   position:sticky!important;
   top:0!important;
@@ -5281,8 +5282,8 @@ body.plan-builder-hard-lock{
         </div>
 
         <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">3. Carbs, starches and fruit</label>
-          <div class="food-pref-grid engine-carb-grid full-choice-grid" id="carbFoodGrid" aria-label="Carbs, starches and fruit you are okay with">
+          <label class="engine-card-label">3. Carbs and starches</label>
+          <div class="food-pref-grid engine-carb-grid full-choice-grid" id="carbFoodGrid" aria-label="Carbs and starches you are okay with">
             <label class="protein-check"><input type="checkbox" value="rice"><span>Rice</span></label>
             <label class="protein-check"><input type="checkbox" value="potato"><span>Potato</span></label>
             <label class="protein-check"><input type="checkbox" value="sweet_potato"><span>Sweet potato</span></label>
@@ -5291,11 +5292,8 @@ body.plan-builder-hard-lock{
             <label class="protein-check"><input type="checkbox" value="bread"><span>Bread / toast</span></label>
             <label class="protein-check"><input type="checkbox" value="wraps"><span>Wraps / pita</span></label>
             <label class="protein-check"><input type="checkbox" value="crackers"><span>Crackers</span></label>
-            <label class="protein-check"><input type="checkbox" value="banana"><span>Banana</span></label>
-            <label class="protein-check"><input type="checkbox" value="berries"><span>Berries</span></label>
-            <label class="protein-check"><input type="checkbox" value="fruit_choice"><span>Other fruit</span></label>
           </div>
-          <small>Used for sides, breakfasts and fruit options. Portions stay GLP-1 friendly.</small>
+          <small>Used for sides and breakfasts. Fruit is selected in the snack section below.</small>
         </div>
 
         <div class="engine-builder-card engine-builder-wide">
@@ -5771,8 +5769,7 @@ body.plan-builder-hard-lock{
     },
     carbs:{
       rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles',
-      oats:'Oats', bread:'Bread/toast', wraps:'Wraps/pita', crackers:'Crackers',
-      banana:'Banana', berries:'Berries', fruit_choice:'Fruit'
+      oats:'Oats', bread:'Bread/toast', wraps:'Wraps/pita', crackers:'Crackers'
     },
     veg:{
       spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot',
@@ -5927,7 +5924,7 @@ body.plan-builder-hard-lock{
 
     if(foods.length < MINIMUMS.proteins) issues.push('Choose at least ' + MINIMUMS.proteins + ' protein foods.');
     if(!hasBreakfastAnchor) issues.push('Include at least one breakfast-friendly protein: eggs, Greek yoghurt, cottage cheese, protein shake or tofu.');
-    if(carbs.length < MINIMUMS.carbs) issues.push('Choose at least ' + MINIMUMS.carbs + ' carbs, starches or fruit options.');
+    if(carbs.length < MINIMUMS.carbs) issues.push('Choose at least ' + MINIMUMS.carbs + ' carb/starch options.');
     var dinnerStarchCount = carbs.filter(function(c){ return DINNER_STARCH_OPTIONS.indexOf(c) !== -1; }).length;
     if(dinnerStarchCount < MINIMUMS.dinnerStarches) issues.push('Choose at least ' + MINIMUMS.dinnerStarches + ' dinner starch options: rice, potato, sweet potato, noodles or wraps.');
     if(veg.length < MINIMUMS.veg) issues.push('Choose at least ' + MINIMUMS.veg + ' vegetables.');
