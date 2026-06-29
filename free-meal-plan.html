@@ -11,7 +11,7 @@
 <meta content="A simple GLP-1 app for meals, protein, symptoms, hydration, movement and progress — with a free 7-day meal plan to start." property="og:description"/>
 <meta content="website" property="og:type"/>
 <meta content="https://www.hearty.health/free-meal-plan.html" property="og:url"/>
-<meta content="https://www.hearty.health/assets/free-meal-planner-share.png" property="og:image"/>
+<meta content="assets/free-meal-planner-share.png" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
@@ -4969,6 +4969,109 @@ body.plan-builder-hard-lock{
 #quickSetupPanel .simplified-top-grid{grid-template-columns:1fr!important;}
 #quickSetupPanel .hidden-country-select{display:none!important;}
 #quickSetupPanel .country-snack-option[hidden]{display:none!important;}
+
+
+/* v33c — app-first hero + flip app section phone to right */
+.hero-left .hero-primary-path,
+.hero-left .hero-primary-path-strong{
+  display:none!important;
+}
+.hero-app-phone-proof{
+  position:relative!important;
+  z-index:2!important;
+  display:grid!important;
+  grid-template-columns:118px 1fr!important;
+  gap:14px!important;
+  align-items:center!important;
+  max-width:560px!important;
+  margin:20px 0 16px!important;
+  padding:14px 16px!important;
+  border-radius:24px!important;
+  background:linear-gradient(180deg,#ffffff,#f7fbff)!important;
+  border:1px solid rgba(12,91,151,.12)!important;
+  box-shadow:0 16px 34px rgba(7,31,61,.06)!important;
+}
+.hero-app-phone-proof img{
+  width:108px!important;
+  max-height:170px!important;
+  object-fit:contain!important;
+  justify-self:center!important;
+  filter:drop-shadow(0 16px 18px rgba(7,31,61,.16))!important;
+}
+.hero-app-phone-proof strong{
+  display:block!important;
+  color:#071d35!important;
+  font-size:1rem!important;
+  line-height:1.22!important;
+  margin-bottom:5px!important;
+}
+.hero-app-phone-proof span{
+  display:block!important;
+  color:#526a80!important;
+  font-size:.92rem!important;
+  line-height:1.43!important;
+  font-weight:730!important;
+}
+.hero-app-bridge.app-sell-section .stronger-app-sell{
+  grid-template-columns:minmax(0,1fr) 360px!important;
+  gap:42px!important;
+}
+.hero-app-bridge.app-sell-section .app-sell-copy{
+  order:1!important;
+}
+.hero-app-bridge.app-sell-section .app-phone-column{
+  order:2!important;
+}
+.hero-app-bridge.app-sell-section .app-phone-card{
+  justify-self:center!important;
+}
+@media(max-width:1100px){
+  .hero-app-bridge.app-sell-section .stronger-app-sell{
+    grid-template-columns:1fr!important;
+  }
+  .hero-app-bridge.app-sell-section .app-sell-copy{order:1!important;}
+  .hero-app-bridge.app-sell-section .app-phone-column{order:2!important;}
+}
+@media(max-width:760px){
+  .hero-app-phone-proof{
+    grid-template-columns:86px 1fr!important;
+    gap:12px!important;
+    margin:16px 0 14px!important;
+    padding:12px!important;
+    border-radius:20px!important;
+  }
+  .hero-app-phone-proof img{
+    width:78px!important;
+    max-height:132px!important;
+  }
+  .hero-app-phone-proof strong{font-size:.95rem!important;}
+  .hero-app-phone-proof span{font-size:.84rem!important;}
+}
+
+
+/* v33d — use small existing app phone in top hero */
+.hero-app-phone-proof{
+  display:grid!important;
+  grid-template-columns:104px 1fr!important;
+  max-width:560px!important;
+  margin:18px 0 14px!important;
+  padding:12px 14px!important;
+}
+.hero-app-phone-proof img{
+  width:94px!important;
+  max-height:150px!important;
+  object-fit:contain!important;
+}
+@media(max-width:760px){
+  .hero-app-phone-proof{
+    grid-template-columns:76px 1fr!important;
+  }
+  .hero-app-phone-proof img{
+    width:68px!important;
+    max-height:112px!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -4989,9 +5092,9 @@ body.plan-builder-hard-lock{
 <div class="kicker">Complete GLP-1 companion app</div>
 <h1>One simple app for your <span class="hero-accent">GLP-1 routine.</span></h1>
 <p class="lead">Hearty helps with meals, protein, hydration, symptoms, home and gym exercise and progress — so you are not trying to manage everything in your head.</p>
-<div aria-label="Choose how to start with Hearty" class="hero-primary-path hero-primary-path-strong">
-<a class="btn btn-primary hero-plan-cta" data-force-open-builder="" data-open-plan-setup="" href="#quickSetupPanel" id="heroGeneratePlanBtn">Generate my free GLP-1 plan</a>
-<a class="btn btn-secondary" data-hearty-checkout="" href="#pricing">Get Hearty — $29 once-off</a>
+<div aria-label="Hearty app preview" class="hero-app-phone-proof">
+  <img alt="Hearty app dashboard preview on a phone" src="assets/hearty-phone-app-preview-match-site.png"/>
+  <div><strong>It’s an app, not just a meal plan.</strong><span>Start free with the meal plan on the right, then use Hearty as your daily GLP-1 companion.</span></div>
 </div>
 <div aria-label="What Hearty helps with" class="hero-answer-chips app-chips">
 <div class="hero-answer-chip"><span>Meals + protein</span></div>
@@ -5058,12 +5161,6 @@ body.plan-builder-hard-lock{
 </div>
 <div class="hero-app-bridge app-sell-section" id="app">
 <div class="app-sell-layout stronger-app-sell">
-<div class="app-phone-column">
-<div class="premium-phone app-phone-card">
-<img alt="Hearty app dashboard preview" src="assets/hearty-phone-app-preview-match-site.png"/>
-<div class="phone-caption">Easy install on your phone</div>
-</div>
-</div>
 <div class="app-sell-copy">
 <div class="kicker">The full Hearty app</div>
 <h2><span class="app-headline-bright">Your Complete GLP-1 companion</span></h2>
@@ -5081,6 +5178,12 @@ body.plan-builder-hard-lock{
 <a class="btn btn-secondary" href="#tool">Try the free meal plan first</a>
 </div>
 <div class="bridge-trust"><span>Lifetime access</span><span>No subscription</span><span>14-day money-back guarantee</span></div>
+</div>
+<div class="app-phone-column">
+<div class="premium-phone app-phone-card">
+<img alt="Hearty app dashboard preview" src="assets/hearty-phone-app-preview-match-site.png"/>
+<div class="phone-caption">Easy install on your phone</div>
+</div>
 </div>
 </div>
 </div>
@@ -5204,7 +5307,7 @@ body.plan-builder-hard-lock{
 </div>
 </div>
 </div>
-<script src="js/hearty-meal-engine-v30.js?v=30-mvp-no-egg-snack-on-egg-breakfast"></script>
+<script src="js/hearty-meal-engine-v30.js?v=30-mvp-no-egg-snack-on-egg-breakfast-small-phone"></script>
 <div aria-label="Build your GLP-1 meal plan" aria-live="polite" aria-modal="true" class="quick-setup-panel plan-generator-window" hidden="" id="quickSetupPanel" role="dialog">
 <div class="generator-window generator-window-engine generator-window-simple-builder">
 <div class="generator-window-top engine-builder-top">
