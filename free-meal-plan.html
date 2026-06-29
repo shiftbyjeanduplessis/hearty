@@ -5072,6 +5072,48 @@ body.plan-builder-hard-lock{
   }
 }
 
+
+
+/* v34 — mobile viewer, gate, email and checkout hotfix */
+body.plan-builder-open .sticky-cta,
+body.plan-viewer-open .sticky-cta{display:none!important;}
+.builder-gate-message{font-size:.94rem!important;line-height:1.35!important;max-width:100%!important;}
+.builder-gate-message.show{display:block!important;}
+#viewerUnlockMount.show{display:block!important;margin-top:16px!important;}
+.viewer-unlock-card{background:#fff!important;border:1px solid rgba(12,91,151,.14)!important;border-radius:24px!important;padding:18px!important;box-shadow:0 16px 36px rgba(7,31,61,.10)!important;color:#071d35!important;}
+.viewer-unlock-card h3{margin:0 0 6px!important;font-size:1.35rem!important;letter-spacing:-.035em!important;color:#071d35!important;}
+.viewer-unlock-card p{margin:0 0 14px!important;color:#53697d!important;font-weight:760!important;line-height:1.45!important;}
+.viewer-email-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;margin-bottom:12px!important;}
+.viewer-email-grid label{display:grid!important;gap:7px!important;font-weight:950!important;color:#173452!important;font-size:.88rem!important;}
+.viewer-email-grid input{width:100%!important;min-height:52px!important;border-radius:16px!important;border:1px solid rgba(12,91,151,.18)!important;background:#fff!important;padding:0 14px!important;color:#071d35!important;}
+.viewer-email-status{min-height:22px;margin-top:10px!important;color:#0b4c84!important;font-weight:850!important;}
+.checkout-fallback.show{display:flex!important;}
+@media(max-width:980px){
+  .viewer-plan-grid,.full-plan-grid{grid-template-columns:1fr!important;gap:14px!important;}
+  .plan-viewer-modal{padding:0!important;align-items:stretch!important;justify-content:stretch!important;background:#071d35!important;}
+  .plan-viewer-shell{width:100%!important;max-width:none!important;min-height:100dvh!important;max-height:100dvh!important;border-radius:0!important;padding:18px 14px calc(112px + env(safe-area-inset-bottom))!important;overflow:auto!important;}
+  .plan-viewer-top{display:grid!important;grid-template-columns:1fr auto!important;gap:12px!important;margin-bottom:14px!important;}
+  .plan-viewer-top h2{font-size:1.78rem!important;line-height:1.05!important;letter-spacing:-.045em!important;}
+  .plan-viewer-top p{font-size:.98rem!important;line-height:1.42!important;}
+  .viewer-choice-row{margin-bottom:12px!important;}
+  .full-day-card{padding:16px!important;border-radius:22px!important;}
+  .viewer-plan-grid .full-day-card{background:#fff!important;}
+  .full-day-card h4{margin-bottom:10px!important;}
+  .day-nutrition-line{font-size:.92rem!important;line-height:1.35!important;color:#4d6378!important;font-weight:850!important;margin-bottom:8px!important;}
+  .full-day-meals{gap:0!important;}
+  .full-meal-row{grid-template-columns:1fr!important;gap:4px!important;padding:11px 0!important;}
+  .full-meal-row b{font-size:.78rem!important;letter-spacing:.10em!important;line-height:1.15!important;}
+  .full-meal-row strong{font-size:1.05rem!important;line-height:1.25!important;}
+  .full-meal-row small{font-size:.96rem!important;line-height:1.44!important;margin-top:5px!important;}
+  .viewer-bottom-cta{position:sticky!important;bottom:0!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;padding:12px!important;margin-top:14px!important;border-radius:22px!important;}
+  .viewer-bottom-cta .btn{width:100%!important;min-height:54px!important;font-size:.98rem!important;}
+  .viewer-bottom-cta.after-unlock{display:none!important;}
+  .viewer-email-grid{grid-template-columns:1fr!important;}
+  .viewer-unlock-card{padding:16px!important;border-radius:22px!important;}
+  .builder-gate-message{font-size:.92rem!important;padding:12px!important;border-radius:16px!important;}
+  .builder-gate-message ul{margin-top:6px!important;}
+}
+
 </style>
 </head>
 <body>
@@ -5307,7 +5349,7 @@ body.plan-builder-hard-lock{
 </div>
 </div>
 </div>
-<script src="js/hearty-meal-engine-v30.js?v=30-mvp-no-egg-snack-on-egg-breakfast-small-phone"></script>
+<script src="js/hearty-meal-engine-v30.js?v=30-mvp-no-egg-snack-on-egg-breakfast-mobile-email-paddle-v2"></script>
 <div aria-label="Build your GLP-1 meal plan" aria-live="polite" aria-modal="true" class="quick-setup-panel plan-generator-window" hidden="" id="quickSetupPanel" role="dialog">
 <div class="generator-window generator-window-engine generator-window-simple-builder">
 <div class="generator-window-top engine-builder-top">
@@ -6027,5 +6069,233 @@ body.plan-builder-hard-lock{
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
-</script></body>
+</script>
+<script>
+(function(){
+  'use strict';
+  var BREVO_SYNC_URL = 'https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var PADDLE_TOKEN = 'live_516a138666d2aaaca6729c439ba';
+  var PADDLE_PRICE_ID = 'pri_01krrpc5hxx3dnak7bxjetm8qp';
+  var PADDLE_SUCCESS_URL = 'https://hearty.health/login';
+  var paddleReady = false;
+  var lastCheckoutAttempt = 0;
+
+  function qs(id){ return document.getElementById(id); }
+  function closest(el, sel){ return el && el.closest ? el.closest(sel) : null; }
+  function setText(id, msg){ var el=qs(id); if(el) el.textContent=msg || ''; }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim()); }
+  function esc(v){ return String(v == null ? '' : v); }
+
+  function cleanDescription(text){
+    var s = String(text || '');
+    s = s.replace(/\.\s*Mix with the low-calorie dressing and serve chilled\.?/gi, '. Serve chilled.');
+    s = s.replace(/\.\s*Mix with the low-calorie yoghurt dressing and serve chilled\.?/gi, '. Serve chilled.');
+    s = s.replace(/low-calorie mayo-style yoghurt dressing/gi, 'low-calorie yoghurt dressing');
+    s = s.replace(/\s{2,}/g, ' ').trim();
+    return s;
+  }
+
+  function patchEngineRender(){
+    var E = window.HeartyMealEngineV30 || window.HeartyMealEngine;
+    if(!E || !E.renderMeal || E.__heartyCleanDescriptionPatch) return;
+    var old = E.renderMeal;
+    E.renderMeal = function(recipe, country){
+      var rendered = old.call(E, recipe, country) || {};
+      if(rendered.description) rendered.description = cleanDescription(rendered.description);
+      if(rendered.portion) rendered.portion = cleanDescription(rendered.portion);
+      return rendered;
+    };
+    E.__heartyCleanDescriptionPatch = true;
+  }
+
+  function showGateBriefly(){
+    var gate = qs('builderGateMessage');
+    if(!gate || gate.hidden || !gate.classList.contains('show')) return;
+    clearTimeout(gate.__heartyHideTimer);
+    gate.__heartyHideTimer = setTimeout(function(){
+      gate.hidden = true;
+      gate.classList.remove('show');
+    }, 3000);
+  }
+
+  function watchGate(){
+    var gate = qs('builderGateMessage');
+    if(!gate || gate.__heartyWatched) return;
+    gate.__heartyWatched = true;
+    new MutationObserver(showGateBriefly).observe(gate, { attributes:true, childList:true, subtree:true });
+  }
+
+  function getCurrentPlan(){ return window.heartyLeadCurrentPlan || []; }
+  function getCurrentPrefs(){ return window.heartyLeadCurrentPrefs || {}; }
+  function mealKeys(){ return ['breakfast','lunch','dinner','snack']; }
+  function renderMeal(recipe, country){
+    var E = window.HeartyMealEngineV30 || window.HeartyMealEngine;
+    if(!recipe) return { title:'', description:'' };
+    if(E && typeof E.renderMeal === 'function'){
+      var r = E.renderMeal(recipe, country) || {};
+      return { title:r.title || recipe.render_template || recipe.name || '', description:cleanDescription(r.description || r.portion || recipe.instruction || '') };
+    }
+    return { title:recipe.render_template || recipe.name || '', description:cleanDescription(recipe.instruction || '') };
+  }
+  function nutritionLine(day){
+    var E = window.HeartyMealEngineV30 || window.HeartyMealEngine;
+    if(day && day.nutritionSummary) return day.nutritionSummary;
+    if(E && typeof E.renderDailyNutritionSummary === 'function'){
+      var estimate = day && day.nutrition_estimate ? day.nutrition_estimate : (E.estimateDayNutrition ? E.estimateDayNutrition(day, getCurrentPrefs().country) : null);
+      return E.renderDailyNutritionSummary(estimate);
+    }
+    return '';
+  }
+  function collectShoppingItems(days){
+    var map = {};
+    (days || []).forEach(function(day){
+      mealKeys().forEach(function(key){
+        var meal = day && day[key];
+        var list = meal && Array.isArray(meal.shopping_list_items) ? meal.shopping_list_items : [];
+        list.forEach(function(item){ var name=String(item||'').trim(); if(name) map[name.toLowerCase()] = name; });
+      });
+    });
+    return Object.keys(map).sort().map(function(k){ return map[k]; });
+  }
+  function buildPlanText(){
+    var plan = getCurrentPlan();
+    var prefs = getCurrentPrefs();
+    var lines = ['Hearty 7-day GLP-1 meal plan',''];
+    (plan || []).slice(0,7).forEach(function(day){
+      lines.push('Day ' + (day.day || ''));
+      var n = nutritionLine(day); if(n) lines.push(n);
+      mealKeys().forEach(function(key){
+        var r = renderMeal(day && day[key], prefs.country);
+        if(r.title){
+          lines.push(key.charAt(0).toUpperCase() + key.slice(1) + ': ' + r.title);
+          if(r.description) lines.push('  ' + r.description);
+        }
+      });
+      lines.push('');
+    });
+    lines.push('Shopping list');
+    collectShoppingItems(plan).forEach(function(name){ lines.push('- ' + name); });
+    return lines.join('\n');
+  }
+
+  function getLeadFromViewerOrInline(){
+    var email = (qs('viewerLeadEmail') && qs('viewerLeadEmail').value) || (qs('leadEmail') && qs('leadEmail').value) || '';
+    var name = (qs('viewerLeadName') && qs('viewerLeadName').value) || (qs('leadName') && qs('leadName').value) || '';
+    return { email:String(email||'').trim().toLowerCase(), name:String(name||'').trim() };
+  }
+  function mirrorLeadToInline(lead){
+    if(qs('leadEmail')) qs('leadEmail').value = lead.email || '';
+    if(qs('leadName')) qs('leadName').value = lead.name || '';
+  }
+  function syncLead(lead){
+    if(!validEmail(lead.email)) return Promise.resolve({ok:false, skipped:true});
+    return fetch(BREVO_SYNC_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ email:lead.email, name:lead.name || '', firstName:lead.name || '', source:'free_meal_plan' }),
+      keepalive:true
+    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, body:t }; }); })
+      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+  }
+  function downloadTextFile(){
+    var blob = new Blob([buildPlanText()], { type:'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'hearty-7-day-glp1-meal-plan.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 700);
+  }
+  function showViewerEmailPanel(){
+    var mount = qs('viewerUnlockMount');
+    if(!mount) return;
+    mount.hidden = false;
+    mount.classList.add('show');
+    if(!mount.innerHTML.trim()){
+      mount.innerHTML = '<div class="viewer-unlock-card"><h3>Download your plan</h3><p>Enter your email and your 7-day meal plan plus shopping list will download immediately.</p><div class="viewer-email-grid"><label>Email address<input id="viewerLeadEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>First name <span class="micro">optional</span><input id="viewerLeadName" type="text" autocomplete="given-name" placeholder="Your first name"></label></div><button class="btn btn-primary" id="viewerEmailDownloadBtn" type="button">Download PDF + shopping list</button><div class="viewer-email-status" id="viewerEmailStatus"></div></div>';
+      var oldEmail = qs('leadEmail'); if(oldEmail && qs('viewerLeadEmail')) qs('viewerLeadEmail').value = oldEmail.value || '';
+      var oldName = qs('leadName'); if(oldName && qs('viewerLeadName')) qs('viewerLeadName').value = oldName.value || '';
+    }
+    var cta = qs('viewerBottomCta'); if(cta) cta.classList.add('after-unlock');
+    if(mount.scrollIntoView) mount.scrollIntoView({ behavior:'smooth', block:'center' });
+    setTimeout(function(){ var e=qs('viewerLeadEmail'); if(e) e.focus(); }, 150);
+  }
+  function finishDownload(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
+    var lead = getLeadFromViewerOrInline();
+    var statusId = qs('viewerEmailStatus') ? 'viewerEmailStatus' : 'leadStatus';
+    if(!validEmail(lead.email)){
+      setText(statusId, 'Enter a valid email address first.');
+      var field = qs('viewerLeadEmail') || qs('leadEmail'); if(field) field.focus();
+      return false;
+    }
+    mirrorLeadToInline(lead);
+    setText(statusId, 'Saving your email and preparing your download...');
+    syncLead(lead).then(function(){
+      downloadTextFile();
+      setText(statusId, 'Downloaded — check your downloads folder.');
+      var post = qs('postSubmit'); if(post) post.classList.add('show');
+    });
+    return false;
+  }
+
+  function getCookie(name){
+    var parts = String(document.cookie || '').split(';');
+    for(var i=0;i<parts.length;i++){
+      var p = parts[i].trim();
+      if(p.indexOf(name + '=') === 0) return decodeURIComponent(p.slice(name.length + 1));
+    }
+    return '';
+  }
+  function affiliateKey(){ return new URLSearchParams(window.location.search).get('aff') || getCookie('partnero_partner'); }
+  function initPaddle(){
+    if(paddleReady) return true;
+    if(!window.Paddle || !window.Paddle.Initialize) return false;
+    try{ window.Paddle.Initialize({ token:PADDLE_TOKEN }); paddleReady = true; return true; }
+    catch(err){ console.warn('[Hearty] Paddle init failed', err); return false; }
+  }
+  function showCheckoutFallback(){
+    var f = qs('checkoutFallback');
+    if(f){ f.classList.add('show'); f.setAttribute('aria-hidden','false'); }
+  }
+  function hideCheckoutFallback(){
+    var f = qs('checkoutFallback');
+    if(f){ f.classList.remove('show'); f.setAttribute('aria-hidden','true'); }
+  }
+  function openCheckout(){
+    lastCheckoutAttempt = Date.now();
+    if(!initPaddle() || !window.Paddle.Checkout || !window.Paddle.Checkout.open){ showCheckoutFallback(); return false; }
+    var opts = { items:[{ priceId:PADDLE_PRICE_ID, quantity:1 }], settings:{ displayMode:'overlay', theme:'light', locale:'en', successUrl:PADDLE_SUCCESS_URL } };
+    var aff = affiliateKey(); if(aff) opts.customData = { customer_key:aff };
+    try{ window.Paddle.Checkout.open(opts); return true; }
+    catch(err){ console.warn('[Hearty] Paddle checkout failed', err); showCheckoutFallback(); return false; }
+  }
+
+  function bindHotfixEvents(){
+    document.addEventListener('click', function(e){
+      var t = closest(e.target, '#viewerDownloadBtn');
+      if(t){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); showViewerEmailPanel(); return false; }
+      var d = closest(e.target, '#viewerEmailDownloadBtn,#downloadPlanBtn');
+      if(d){ return finishDownload(e); }
+      var c = closest(e.target, '[data-hearty-checkout],[data-hearty-checkout-nav],[data-paddle-checkout]');
+      if(c){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); openCheckout(); return false; }
+      var close = closest(e.target, '#closeFallback'); if(close){ e.preventDefault(); hideCheckoutFallback(); return false; }
+      var retry = closest(e.target, '#retryCheckout'); if(retry){ e.preventDefault(); hideCheckoutFallback(); setTimeout(openCheckout, 60); return false; }
+    }, true);
+  }
+
+  function init(){
+    patchEngineRender();
+    watchGate();
+    bindHotfixEvents();
+    setTimeout(initPaddle, 500);
+    window.heartyOpenCheckout = openCheckout;
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+
+</body>
 </html>
