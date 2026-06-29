@@ -5306,6 +5306,72 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
   .onscreen-full-plan .full-meal-row small{font-size:.96rem!important;line-height:1.45!important;color:#53697d!important;}
 }
 
+
+
+/* v37 — mobile builder action block: stop covering checklist */
+@media(max-width:760px){
+  #quickSetupPanel .engine-builder-foot,
+  #quickSetupPanel .simplified-foot,
+  #quickSetupPanel .single-action-foot{
+    position:static!important;
+    bottom:auto!important;
+    z-index:auto!important;
+    margin:14px 0 0!important;
+    padding:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    display:block!important;
+  }
+  #quickSetupPanel .engine-builder-actions,
+  #quickSetupPanel .single-action-foot .engine-builder-actions{
+    position:static!important;
+    bottom:auto!important;
+    z-index:auto!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    padding:10px!important;
+    border-radius:18px!important;
+    background:rgba(7,29,53,.42)!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    box-shadow:none!important;
+  }
+  #quickSetupPanel .engine-builder-button-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  #quickSetupPanel .engine-builder-note{
+    display:none!important;
+  }
+  #quickSetupPanel .generator-build-btn,
+  #quickSetupPanel .generator-cancel-btn{
+    width:100%!important;
+    min-height:44px!important;
+    height:44px!important;
+    padding:0 14px!important;
+    border-radius:999px!important;
+    font-size:.9rem!important;
+    line-height:1!important;
+  }
+  #quickSetupPanel .generator-window-engine{
+    padding-bottom:18px!important;
+  }
+  #builderGateMessage.builder-gate-message.show{
+    position:fixed!important;
+    left:14px!important;
+    right:14px!important;
+    bottom:calc(18px + env(safe-area-inset-bottom))!important;
+    z-index:2147483647!important;
+    padding:9px 11px!important;
+    border-radius:14px!important;
+    font-size:.82rem!important;
+    line-height:1.22!important;
+    max-height:96px!important;
+    overflow:hidden!important;
+  }
+}
 </style>
 </head>
 <body>
