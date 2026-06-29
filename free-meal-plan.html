@@ -1,17 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Hearty — GLP-1 Companion App + Free Meal Plan</title>
-<meta name="description" content="Hearty is a simple GLP-1 companion app for meals, protein, symptoms, hydration, movement and progress. Start with a free 7-day meal plan." />
-<link rel="canonical" href="https://www.hearty.health/free-meal-plan.html" />
-<meta property="og:title" content="Hearty — Your GLP-1 Companion App" />
-<meta property="og:description" content="A simple GLP-1 app for meals, protein, symptoms, hydration, movement and progress — with a free 7-day meal plan to start." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://www.hearty.health/free-meal-plan.html" />
-<meta property="og:image" content="https://www.hearty.health/assets/free-meal-planner-share.png" />
-<meta name="twitter:card" content="summary_large_image" />
+<meta content="Hearty is a simple GLP-1 companion app for meals, protein, symptoms, hydration, movement and progress. Start with a free 7-day meal plan." name="description"/>
+<link href="https://www.hearty.health/free-meal-plan.html" rel="canonical"/>
+<meta content="Hearty — Your GLP-1 Companion App" property="og:title"/>
+<meta content="A simple GLP-1 app for meals, protein, symptoms, hydration, movement and progress — with a free 7-day meal plan to start." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="https://www.hearty.health/free-meal-plan.html" property="og:url"/>
+<meta content="https://www.hearty.health/assets/free-meal-planner-share.png" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <style>
 :root{
@@ -4963,1311 +4964,408 @@ body.plan-builder-hard-lock{
 .builder-gate-message li{margin:3px 0!important}
 .print-pdf-note{font-size:.82rem;color:#617487;font-weight:760;margin-top:8px;line-height:1.35}
 
+
+/* Hearty wrapper UI cleanup: country is hidden/internal; selections are individual foods */
+#quickSetupPanel .simplified-top-grid{grid-template-columns:1fr!important;}
+#quickSetupPanel .hidden-country-select{display:none!important;}
+#quickSetupPanel .country-snack-option[hidden]{display:none!important;}
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="shell">
-    <a class="brand brand-logo-site" href="/" aria-label="Hearty home"><img src="assets/hearty-logo-header-transparent-clean.png" alt="Hearty" /></a>
-    <nav class="nav" aria-label="Page navigation">
-      <a class="nav-hide" href="#tool">Free plan</a>
-      <a class="nav-hide" href="#app">App features</a>
-      <a class="btn nav-buy" href="#pricing" data-hearty-checkout-nav>Get Hearty — $29</a>
-    </nav>
-  </div>
+<div class="shell">
+<a aria-label="Hearty home" class="brand brand-logo-site" href="/"><img alt="Hearty" src="assets/hearty-logo-header-transparent-clean.png"/></a>
+<nav aria-label="Page navigation" class="nav">
+<a class="nav-hide" href="#tool">Free plan</a>
+<a class="nav-hide" href="#app">App features</a>
+<a class="btn nav-buy" data-hearty-checkout-nav="" href="#pricing">Get Hearty — $29</a>
+</nav>
+</div>
 </header>
-
 <main>
 <section class="hero" id="top">
-  <div class="shell hero-stage">
-    <div class="hero-left">
-      <div class="kicker">Complete GLP-1 companion app</div>
-      <h1>One simple app for your <span class="hero-accent">GLP-1 routine.</span></h1>
-      <p class="lead">Hearty helps with meals, protein, hydration, symptoms, home and gym exercise and progress — so you are not trying to manage everything in your head.</p>
-      <div class="hero-primary-path hero-primary-path-strong" aria-label="Choose how to start with Hearty">
-        <a class="btn btn-primary hero-plan-cta" href="#quickSetupPanel" id="heroGeneratePlanBtn" data-force-open-builder data-open-plan-setup>Generate my free GLP-1 plan</a>
-        <a class="btn btn-secondary" href="#pricing" data-hearty-checkout>Get Hearty — $29 once-off</a>
-      </div>
-      <div class="hero-answer-chips app-chips" aria-label="What Hearty helps with">
-        <div class="hero-answer-chip"><span>Meals + protein</span></div>
-        <div class="hero-answer-chip"><span>Support Mode</span></div>
-        <div class="hero-answer-chip"><span>Progress tracking</span></div>
-      </div>
-      <div class="hero-free-card app-summary-card" aria-label="Hearty app summary">
-        <strong>Free plan first. Full app after.</strong>
-        <span>The meal plan is the starting point. The paid app is the daily system for staying consistent when appetite, symptoms and real life change.</span>
-      </div>
-    </div>
-
-    <div class="plan-panel" id="tool" aria-label="Hearty 7-day meal setup tool">
-      <div class="plan-card">
-        <div class="clean-plan-intro clean-plan-intro-open">
-          <div class="plan-hero-kicker">FREE 7-DAY STARTER PLAN</div>
-          <h2>Your free GLP-1 meal plan starts here.</h2>
-          <p id="previewNote">Choose the foods you actually eat and Hearty will build a simple 7-day plan with protein, fibre, snacks and a shopping list.</p>
-          <a class="btn btn-primary top-plan-cta" href="#quickSetupPanel" id="rightTopGenerateBtn" data-force-open-builder data-open-plan-setup>Generate my free 7-day plan</a>
-
-          <ul class="plan-benefit-list" aria-label="What is good about the free plan">
-            <li>Gives you simple meals built around foods you selected</li>
-            <li>Keeps protein and fibre visible without forcing huge portions</li>
-            <li>Includes breakfast, lunch, dinner and a snack or optional add-on when useful</li>
-            <li>Built around foods you actually like, not random diet meals</li>
-            <li>Adds a shopping list so you know what to buy</li>
-          </ul>
-        </div>
-
-        <div class="onscreen-full-plan" id="onscreenFullPlan" hidden>
-          <div class="onscreen-plan-head">
-            <div>
-              <span>Generated plan</span>
-              <h3>Your 7-day GLP-1 meal plan</h3>
-              <p>Review your full plan below. Then enter your email to download the PDF and shopping list.</p>
-            </div>
-            <a class="btn btn-primary onscreen-download-jump" href="#inlineUnlockPanel">Download PDF + shopping list</a>
-          </div>
-          <div class="full-plan-grid" id="fullPlanRows"></div>
-        </div>
-
-        <div class="inline-unlock-panel" id="inlineUnlockPanel" aria-live="polite">
-          <div class="unlock-head">
-            <div>
-              <strong>Your full 7-day plan is ready.</strong>
-              <p>Enter your email and the PDF downloads immediately. You’ll also see how Hearty helps after this first week.</p>
-            </div>
-          </div>
-          <div class="shopping-preview">
-            <h3>Shopping list preview</h3>
-            <div class="shopping-pill-grid" id="shoppingPreview"></div>
-          </div>
-          <div class="inline-email-card">
-            <div class="email-grid inline-email-grid">
-              <div class="field"><label for="leadEmail">Email address</label><input type="email" id="leadEmail" placeholder="you@example.com" autocomplete="email" /></div>
-              <div class="field"><label for="leadName">First name <span class="micro">optional</span></label><input type="text" id="leadName" placeholder="Your first name" autocomplete="given-name" /></div>
-            </div>
-            <button class="btn btn-primary" type="button" id="downloadPlanBtn">Download my 7-day plan</button>
-            <div class="status" id="leadStatus" aria-live="polite"></div>
-            <div class="post-submit" id="postSubmit">
-              <strong>Your plan is downloading ✅</strong>
-              <p>Week 1 is covered. Hearty helps after that: fresh meal ideas when appetite changes, protein and water structure, symptom tracking, progress and Support Mode for rough days.</p>
-              <button class="btn btn-primary" type="button" data-hearty-checkout>Get Hearty now — $29 once-off</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="hero-app-bridge app-sell-section" id="app">
-      <div class="app-sell-layout stronger-app-sell">
-        <div class="app-phone-column">
-          <div class="premium-phone app-phone-card">
-            <img src="assets/hearty-phone-app-preview-match-site.png" alt="Hearty app dashboard preview" />
-            <div class="phone-caption">Easy install on your phone</div>
-          </div>
-        </div>
-
-        <div class="app-sell-copy">
-          <div class="kicker">The full Hearty app</div>
-          <h2><span class="app-headline-bright">Your Complete GLP-1 companion</span></h2>
-          <p class="app-sell-lead">The free plan gets meals started. The full Hearty app helps you manage the rest: protein, symptoms, hydration, home and gym exercise, progress and daily routine.</p>
-
-          <div class="app-feature-grid" aria-label="Hearty app features">
-            <div class="app-feature-card"><span class="feature-icon">🍽️</span><strong>Meals</strong><em>GLP-1 friendly plans, protein anchors and easy swaps.</em></div>
-            <div class="app-feature-card"><span class="feature-icon">💙</span><strong>Support Mode</strong><em>Help for nausea, bloating, fatigue and low appetite days.</em></div>
-            <div class="app-feature-card"><span class="feature-icon">📈</span><strong>Progress</strong><em>Track weight, photos and consistency between appointments.</em></div>
-            <div class="app-feature-card"><span class="feature-icon">💧</span><strong>Hydration</strong><em>Daily water targets and gentle reminders.</em></div>
-            <div class="app-feature-card"><span class="feature-icon">🏋️</span><strong>Exercise</strong><em>Simple home and gym exercise plans that match your energy.</em></div>
-            <div class="app-feature-card"><span class="feature-icon">📲</span><strong>Easy install</strong><em>Install Hearty on your phone in seconds and keep it ready whenever you need it.</em></div>
-          </div>
-
-          <div class="app-sell-actions">
-            <a class="btn btn-primary" href="#pricing" data-hearty-checkout>Get Hearty — $29 once-off</a>
-            <a class="btn btn-secondary" href="#tool">Try the free meal plan first</a>
-          </div>
-          <div class="bridge-trust"><span>Lifetime access</span><span>No subscription</span><span>14-day money-back guarantee</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="shell hero-stage">
+<div class="hero-left">
+<div class="kicker">Complete GLP-1 companion app</div>
+<h1>One simple app for your <span class="hero-accent">GLP-1 routine.</span></h1>
+<p class="lead">Hearty helps with meals, protein, hydration, symptoms, home and gym exercise and progress — so you are not trying to manage everything in your head.</p>
+<div aria-label="Choose how to start with Hearty" class="hero-primary-path hero-primary-path-strong">
+<a class="btn btn-primary hero-plan-cta" data-force-open-builder="" data-open-plan-setup="" href="#quickSetupPanel" id="heroGeneratePlanBtn">Generate my free GLP-1 plan</a>
+<a class="btn btn-secondary" data-hearty-checkout="" href="#pricing">Get Hearty — $29 once-off</a>
+</div>
+<div aria-label="What Hearty helps with" class="hero-answer-chips app-chips">
+<div class="hero-answer-chip"><span>Meals + protein</span></div>
+<div class="hero-answer-chip"><span>Support Mode</span></div>
+<div class="hero-answer-chip"><span>Progress tracking</span></div>
+</div>
+<div aria-label="Hearty app summary" class="hero-free-card app-summary-card">
+<strong>Free plan first. Full app after.</strong>
+<span>The meal plan is the starting point. The paid app is the daily system for staying consistent when appetite, symptoms and real life change.</span>
+</div>
+</div>
+<div aria-label="Hearty 7-day meal setup tool" class="plan-panel" id="tool">
+<div class="plan-card">
+<div class="clean-plan-intro clean-plan-intro-open">
+<div class="plan-hero-kicker">FREE 7-DAY STARTER PLAN</div>
+<h2>Your free GLP-1 meal plan starts here.</h2>
+<p id="previewNote">Choose the foods you actually eat and Hearty will build a simple 7-day plan with protein, fibre, snacks and a shopping list.</p>
+<a class="btn btn-primary top-plan-cta" data-force-open-builder="" data-open-plan-setup="" href="#quickSetupPanel" id="rightTopGenerateBtn">Generate my free 7-day plan</a>
+<ul aria-label="What is good about the free plan" class="plan-benefit-list">
+<li>Gives you simple meals built around foods you selected</li>
+<li>Keeps protein and fibre visible without forcing huge portions</li>
+<li>Includes breakfast, lunch, dinner and a snack or optional add-on when useful</li>
+<li>Built around foods you actually like, not random meals</li>
+<li>Adds a shopping list so you know what to buy</li>
+</ul>
+</div>
+<div class="onscreen-full-plan" hidden="" id="onscreenFullPlan">
+<div class="onscreen-plan-head">
+<div>
+<span>Generated plan</span>
+<h3>Your 7-day GLP-1 meal plan</h3>
+<p>Review your full plan below. Then enter your email to download the PDF and shopping list.</p>
+</div>
+<a class="btn btn-primary onscreen-download-jump" href="#inlineUnlockPanel">Download PDF + shopping list</a>
+</div>
+<div class="full-plan-grid" id="fullPlanRows"></div>
+</div>
+<div aria-live="polite" class="inline-unlock-panel" id="inlineUnlockPanel">
+<div class="unlock-head">
+<div>
+<strong>Your full 7-day plan is ready.</strong>
+<p>Enter your email and the PDF downloads immediately. You’ll also see how Hearty helps after this first week.</p>
+</div>
+</div>
+<div class="shopping-preview">
+<h3>Shopping list preview</h3>
+<div class="shopping-pill-grid" id="shoppingPreview"></div>
+</div>
+<div class="inline-email-card">
+<div class="email-grid inline-email-grid">
+<div class="field"><label for="leadEmail">Email address</label><input autocomplete="email" id="leadEmail" placeholder="you@example.com" type="email"/></div>
+<div class="field"><label for="leadName">First name <span class="micro">optional</span></label><input autocomplete="given-name" id="leadName" placeholder="Your first name" type="text"/></div>
+</div>
+<button class="btn btn-primary" id="downloadPlanBtn" type="button">Download my 7-day plan</button>
+<div aria-live="polite" class="status" id="leadStatus"></div>
+<div class="post-submit" id="postSubmit">
+<strong>Your plan is downloading ✅</strong>
+<p>Week 1 is covered. Hearty helps after that: fresh meal ideas when appetite changes, protein and water structure, symptom tracking, progress and Support Mode for rough days.</p>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty now — $29 once-off</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hero-app-bridge app-sell-section" id="app">
+<div class="app-sell-layout stronger-app-sell">
+<div class="app-phone-column">
+<div class="premium-phone app-phone-card">
+<img alt="Hearty app dashboard preview" src="assets/hearty-phone-app-preview-match-site.png"/>
+<div class="phone-caption">Easy install on your phone</div>
+</div>
+</div>
+<div class="app-sell-copy">
+<div class="kicker">The full Hearty app</div>
+<h2><span class="app-headline-bright">Your Complete GLP-1 companion</span></h2>
+<p class="app-sell-lead">The free plan gets meals started. The full Hearty app helps you manage the rest: protein, symptoms, hydration, home and gym exercise, progress and daily routine.</p>
+<div aria-label="Hearty app features" class="app-feature-grid">
+<div class="app-feature-card"><span class="feature-icon">🍽️</span><strong>Meals</strong><em>GLP-1 friendly plans, protein anchors and easy swaps.</em></div>
+<div class="app-feature-card"><span class="feature-icon">💙</span><strong>Support Mode</strong><em>Help for nausea, bloating, fatigue and low appetite days.</em></div>
+<div class="app-feature-card"><span class="feature-icon">📈</span><strong>Progress</strong><em>Track weight, photos and consistency between appointments.</em></div>
+<div class="app-feature-card"><span class="feature-icon">💧</span><strong>Hydration</strong><em>Daily water targets and gentle reminders.</em></div>
+<div class="app-feature-card"><span class="feature-icon">🏋️</span><strong>Exercise</strong><em>Simple home and gym exercise plans that match your energy.</em></div>
+<div class="app-feature-card"><span class="feature-icon">📲</span><strong>Easy install</strong><em>Install Hearty on your phone in seconds and keep it ready whenever you need it.</em></div>
+</div>
+<div class="app-sell-actions">
+<a class="btn btn-primary" data-hearty-checkout="" href="#pricing">Get Hearty — $29 once-off</a>
+<a class="btn btn-secondary" href="#tool">Try the free meal plan first</a>
+</div>
+<div class="bridge-trust"><span>Lifetime access</span><span>No subscription</span><span>14-day money-back guarantee</span></div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
 <section class="section solution-section">
-  <div class="shell">
-    <div class="section-head compact-head">
-      <div>
-        <div class="kicker">Where Hearty helps</div>
-        <h2>Why most meal plans fall apart after day 1.</h2>
-        <p class="section-sub">The plan is not the hard part. The hard part is what happens when appetite, symptoms and normal life change the day.</p>
-      </div>
-    </div>
-    <div class="solution-grid">
-      <div class="solution-card"><span>01</span><h3>Appetite changes</h3><p>One day you can eat normally. The next day you need smaller, gentler options. Hearty keeps backups close.</p></div>
-      <div class="solution-card"><span>02</span><h3>Protein gets vague</h3><p>Instead of guessing, the meal setup keeps protein anchors visible so the day still has structure.</p></div>
-      <div class="solution-card"><span>03</span><h3>Rough days break routine</h3><p>Hearty gives a place to track symptoms, support choices and progress so one difficult day does not become a lost week.</p></div>
-    </div>
-  </div>
+<div class="shell">
+<div class="section-head compact-head">
+<div>
+<div class="kicker">Where Hearty helps</div>
+<h2>Why most meal plans fall apart after day 1.</h2>
+<p class="section-sub">The plan is not the hard part. The hard part is what happens when appetite, symptoms and normal life change the day.</p>
+</div>
+</div>
+<div class="solution-grid">
+<div class="solution-card"><span>01</span><h3>Appetite changes</h3><p>One day you can eat normally. The next day you need smaller, gentler options. Hearty keeps backups close.</p></div>
+<div class="solution-card"><span>02</span><h3>Protein gets vague</h3><p>Instead of guessing, the meal setup keeps protein anchors visible so the day still has structure.</p></div>
+<div class="solution-card"><span>03</span><h3>Rough days break routine</h3><p>Hearty gives a place to track symptoms, support choices and progress so one difficult day does not become a lost week.</p></div>
+</div>
+</div>
 </section>
-
 <section class="section proof-section">
-  <div class="shell proof-grid">
-    <div class="proof-card testimonial-proof">
-      <div class="kicker">Real Hearty user</div>
-      <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
-      <p>“That’s awesome and thank you for a great app! I will be seeing my doctor next month and will definitely let him know, perhaps he can suggest it to other patients on GLP 💪”</p>
-      <strong>Message from an early Hearty user</strong>
-    </div>
-    <div class="proof-card coach-proof">
-      <div class="kicker">Built by a coach</div>
-      <h2>Built from real GLP-1 food questions.</h2>
-      <p>Hearty was built by <strong>Jean du Plessis</strong>, a nutrition coach with 10 years of real client experience, after seeing the same pattern again and again: people lose appetite, feel unsure what to eat, and need practical support between appointments.</p>
-    </div>
-  </div>
+<div class="shell proof-grid">
+<div class="proof-card testimonial-proof">
+<div class="kicker">Real Hearty user</div>
+<div aria-label="5 out of 5 stars" class="review-stars">★★★★★</div>
+<p>“That’s awesome and thank you for a great app! I will be seeing my doctor next month and will definitely let him know, perhaps he can suggest it to other patients on GLP 💪”</p>
+<strong>Message from an early Hearty user</strong>
+</div>
+<div class="proof-card coach-proof">
+<div class="kicker">Built by a coach</div>
+<h2>Built from real GLP-1 food questions.</h2>
+<p>Hearty was built by <strong>Jean du Plessis</strong>, a nutrition coach with 10 years of real client experience, after seeing the same pattern again and again: people lose appetite, feel unsure what to eat, and need practical support between appointments.</p>
+</div>
+</div>
 </section>
-
 <section class="section">
-  <div class="shell install-card">
-    <div class="kicker">Easy install</div>
-    <h2>Install Hearty on your phone.</h2>
-    <p>Open Hearty, add it to your home screen, and keep meals, symptoms, progress and support one tap away.</p>
-    <div class="install-steps">
-      <div class="install-step"><b>1</b><strong>Open www.hearty.health</strong><span>Use the link from Facebook or type the address into your browser.</span></div>
-      <div class="install-step"><b>2</b><strong>Tap “Add to Home Screen”</strong><span>Your phone saves Hearty to your home screen.</span></div>
-      <div class="install-step"><b>3</b><strong>Use it daily</strong><span>Meals, water, symptoms, progress and rough-day support stay in one place.</span></div>
-    </div>
-  </div>
+<div class="shell install-card">
+<div class="kicker">Easy install</div>
+<h2>Install Hearty on your phone.</h2>
+<p>Open Hearty, add it to your home screen, and keep meals, symptoms, progress and support one tap away.</p>
+<div class="install-steps">
+<div class="install-step"><b>1</b><strong>Open www.hearty.health</strong><span>Use the link from Facebook or type the address into your browser.</span></div>
+<div class="install-step"><b>2</b><strong>Tap “Add to Home Screen”</strong><span>Your phone saves Hearty to your home screen.</span></div>
+<div class="install-step"><b>3</b><strong>Use it daily</strong><span>Meals, water, symptoms, progress and rough-day support stay in one place.</span></div>
+</div>
+</div>
 </section>
-
 <section class="section" id="pricing">
-  <div class="shell pricing-grid">
-    <div class="price-card featured">
-      <div class="kicker">Full Hearty app</div>
-      <h2>Keep meals, symptoms and progress organised.</h2>
-      <p>The free meal setup is the starting point. Hearty gives you the full daily companion app.</p>
-      <div class="price">$29 <small>once-off</small></div>
-      <ul class="value-list">
-        <li>Meal planning and shopping support</li>
-        <li>Protein and hydration structure</li>
-        <li>Symptom and rough-day Support Mode</li>
-        <li>Progress, photos and simple exercise</li>
-        <li>Lifetime access, no subscription</li>
-      </ul>
-      <div class="guarantee">14-day money-back guarantee. If Hearty does not help you feel more organised, email us and we will refund you.</div>
-      <button class="btn btn-primary" type="button" data-hearty-checkout>Get Hearty — $29 once-off</button>
-    </div>
-    <div class="testimonial price-side-card">
-      <div class="kicker">What changes after the free plan</div>
-      <h3>Instead of rebuilding from scratch every week, Hearty gives you one place to keep adjusting.</h3>
-      <p><strong>Best for:</strong> GLP-1 users who want food, protein, hydration, symptoms and progress organised in one simple phone-friendly place.</p>
-      <div class="mini-value-grid" aria-label="Hearty app value highlights">
-        <span>Fresh meal ideas</span>
-        <span>Protein structure</span>
-        <span>Support Mode</span>
-        <span>Progress tracking</span>
-      </div>
-    </div>
-  </div>
+<div class="shell pricing-grid">
+<div class="price-card featured">
+<div class="kicker">Full Hearty app</div>
+<h2>Keep meals, symptoms and progress organised.</h2>
+<p>The free meal setup is the starting point. Hearty gives you the full daily companion app.</p>
+<div class="price">$29 <small>once-off</small></div>
+<ul class="value-list">
+<li>Meal planning and shopping support</li>
+<li>Protein and hydration structure</li>
+<li>Symptom and rough-day Support Mode</li>
+<li>Progress, photos and simple exercise</li>
+<li>Lifetime access, no subscription</li>
+</ul>
+<div class="guarantee">14-day money-back guarantee. If Hearty does not help you feel more organised, email us and we will refund you.</div>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty — $29 once-off</button>
+</div>
+<div class="testimonial price-side-card">
+<div class="kicker">What changes after the free plan</div>
+<h3>Instead of rebuilding from scratch every week, Hearty gives you one place to keep adjusting.</h3>
+<p><strong>Best for:</strong> GLP-1 users who want food, protein, hydration, symptoms and progress organised in one simple phone-friendly place.</p>
+<div aria-label="Hearty app value highlights" class="mini-value-grid">
+<span>Fresh meal ideas</span>
+<span>Protein structure</span>
+<span>Support Mode</span>
+<span>Progress tracking</span>
+</div>
+</div>
+</div>
 </section>
-
 <section class="section">
-  <div class="shell faq-card">
-    <div class="kicker">FAQ</div>
-    <h2>Quick questions.</h2>
-    <div class="faq-grid">
-      <div>
-        <details open><summary>Is this medical advice?</summary><p>No. Hearty is practical food, hydration, symptom and routine support. It does not replace your doctor, prescriber or dietitian.</p></details>
-        <details><summary>Is the free plan the whole app?</summary><p>No. The free meal setup is one useful Hearty tool. The full app includes meals, protein, hydration, symptoms, progress, exercise and Support Mode.</p></details>
-        <details><summary>Do I need the app store?</summary><p>No. Hearty works from your browser and can be added to your phone home screen.</p></details>
-      </div>
-      <div>
-        <details><summary>Is there a subscription?</summary><p>No. International access is $29 once-off for lifetime access.</p></details>
-        <details><summary>Does it work for low appetite?</summary><p>Yes. The free setup keeps meals simple and portion-aware. The full app also includes Support Mode for low appetite, nausea, bloating and rough days.</p></details>
-        <details><summary>Does it work outside the US?</summary><p>Yes. You can choose US, UK, South Africa, Australia, Canada or Other for food wording and shopping ideas.</p></details>
-      </div>
-    </div>
-  </div>
+<div class="shell faq-card">
+<div class="kicker">FAQ</div>
+<h2>Quick questions.</h2>
+<div class="faq-grid">
+<div>
+<details open=""><summary>Is this medical advice?</summary><p>No. Hearty is practical food, hydration, symptom and routine support. It does not replace your doctor, prescriber or dietitian.</p></details>
+<details><summary>Is the free plan the whole app?</summary><p>No. The free meal setup is one useful Hearty tool. The full app includes meals, protein, hydration, symptoms, progress, exercise and Support Mode.</p></details>
+<details><summary>Do I need the app store?</summary><p>No. Hearty works from your browser and can be added to your phone home screen.</p></details>
+</div>
+<div>
+<details><summary>Is there a subscription?</summary><p>No. International access is $29 once-off for lifetime access.</p></details>
+<details><summary>Does it work for low appetite?</summary><p>Yes. The free setup keeps meals simple and portion-aware. The full app also includes Support Mode for low appetite, nausea, bloating and rough days.</p></details>
+<details><summary>Does it work outside the US?</summary><p>Yes. You can choose US, UK, South Africa, Australia, Canada or Other for food wording and shopping ideas.</p></details>
+</div>
+</div>
+</div>
 </section>
-
 <section class="final-cta">
-  <div class="shell dark-band">
-    <h2>Start with the free meal setup. Keep going with Hearty.</h2>
-    <p>Build the free plan now, or get the full GLP-1 companion app today for $29 once-off.</p>
-    <div class="hero-actions" style="justify-content:center">
-      <a class="btn btn-soft" href="#tool">Build my free setup</a>
-      <button class="btn btn-primary" type="button" data-hearty-checkout>Get Hearty — $29</button>
-    </div>
-  </div>
+<div class="shell dark-band">
+<h2>Start with the free meal setup. Keep going with Hearty.</h2>
+<p>Build the free plan now, or get the full GLP-1 companion app today for $29 once-off.</p>
+<div class="hero-actions" style="justify-content:center">
+<a class="btn btn-soft" href="#tool">Build my free setup</a>
+<button class="btn btn-primary" data-hearty-checkout="" type="button">Get Hearty — $29</button>
+</div>
+</div>
 </section>
 </main>
-
 <footer class="footer">
-  <div class="shell">Hearty — Your GLP-1 Companion · www.hearty.health</div>
+<div class="shell">Hearty — Your GLP-1 Companion · www.hearty.health</div>
 </footer>
-
-<a href="#tool" class="sticky-cta" id="stickyCta">Build my free plan</a>
-
-<div class="checkout-fallback" id="checkoutFallback" aria-hidden="true">
-  <div class="fallback-card">
-    <h3>Checkout did not open</h3>
-    <p>Facebook or your browser may have blocked the checkout window. Try again below, or open the page in your browser and tap the checkout button again.</p>
-    <div class="fallback-actions">
-      <button class="btn btn-primary" type="button" id="retryCheckout">Try again</button>
-      <a class="btn btn-primary hide" id="openHostedCheckout" href="#" target="_blank" rel="noopener">Open secure checkout</a>
-      <a class="btn btn-secondary" id="openHeartyBrowser" href="https://www.hearty.health/free-meal-plan.html" target="_blank" rel="noopener">Open page in browser</a>
-      <button class="btn btn-secondary" type="button" id="closeFallback">Close</button>
-    </div>
-  </div>
+<a class="sticky-cta" href="#tool" id="stickyCta">Build my free plan</a>
+<div aria-hidden="true" class="checkout-fallback" id="checkoutFallback">
+<div class="fallback-card">
+<h3>Checkout did not open</h3>
+<p>Facebook or your browser may have blocked the checkout window. Try again below, or open the page in your browser and tap the checkout button again.</p>
+<div class="fallback-actions">
+<button class="btn btn-primary" id="retryCheckout" type="button">Try again</button>
+<a class="btn btn-primary hide" href="#" id="openHostedCheckout" rel="noopener" target="_blank">Open secure checkout</a>
+<a class="btn btn-secondary" href="https://www.hearty.health/free-meal-plan.html" id="openHeartyBrowser" rel="noopener" target="_blank">Open page in browser</a>
+<button class="btn btn-secondary" id="closeFallback" type="button">Close</button>
 </div>
-
-<script src="js/hearty-meal-engine.js?v=420-selected-rotation"></script>
-
-
-
-
-<div class="quick-setup-panel plan-generator-window" id="quickSetupPanel" aria-live="polite" role="dialog" aria-modal="true" aria-label="Build your GLP-1 meal plan" hidden>
-  <div class="generator-window generator-window-engine generator-window-simple-builder">
-    <div class="generator-window-top engine-builder-top">
-      <div>
-        <div class="generator-kicker">free 7-day starter plan</div>
-        <h2>Set up your GLP-1 meal plan.</h2>
-        <p>Answer a few food questions. Hearty uses sensible GLP-1 defaults, then shapes the plan around foods and meal styles you actually like.</p>
-      </div>
-      <button class="generator-close" type="button" id="closePlanSetup" aria-label="Close plan builder">×</button>
-    </div>
-
-    <div class="engine-builder-shell simplified-engine-shell">
-      <div class="engine-builder-grid simplified-top-grid">
-        <div class="engine-builder-card">
-          <label class="engine-card-label">1. Sex for default portions</label>
-          <div class="engine-pill-row" data-simple-choice="sex">
-            <button type="button" class="engine-choice-pill selected" data-value="female">Female</button>
-            <button type="button" class="engine-choice-pill" data-value="male">Male</button>
-          </div>
-          <small>This sets the default portion range. Food style is inferred from your selected proteins.</small>
-        </div>
-
-        <div class="engine-builder-card">
-          <label class="engine-card-label">2. Eating style / avoidances</label>
-          <div class="engine-pill-row" data-simple-choice="diet">
-            <button type="button" class="engine-choice-pill selected" data-value="omnivore">Omnivore</button>
-            <button type="button" class="engine-choice-pill" data-value="no_pork">No pork</button>
-            <button type="button" class="engine-choice-pill" data-value="no_fish">No fish</button>
-            <button type="button" class="engine-choice-pill" data-value="pescatarian">Pescatarian</button>
-            <button type="button" class="engine-choice-pill" data-value="vegetarian">Vegetarian</button>
-          </div>
-          <small>This is passed directly to the meal engine so exclusions are handled before generation.</small>
-        </div>
-
-        <select class="country-select engine-country-select hidden-country-select" id="countrySelect" aria-label="Country">
-          <option value="US">United States</option>
-          <option value="UK">United Kingdom</option>
-          <option value="ZA" selected>South Africa</option>
-          <option value="AU">Australia</option>
-          <option value="CA">Canada</option>
-          <option value="OTHER">Other</option>
-        </select>
-        <span id="countryDetectedNote" class="country-detected-hidden">Detected from your location</span>
-
-      </div>
-
-      <div class="engine-builder-preferences simplified-preferences">
-        <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">3. Protein foods you like</label>
-          <div class="protein-check-grid engine-protein-grid full-choice-grid" id="proteinFoodGrid" aria-label="Protein foods you like">
-            <label class="protein-check"><input type="checkbox" value="eggs"><span>Eggs</span></label>
-            <label class="protein-check"><input type="checkbox" value="chicken"><span>Chicken</span></label>
-            <label class="protein-check"><input type="checkbox" value="greek_yoghurt"><span>Greek yoghurt</span></label>
-            <label class="protein-check"><input type="checkbox" value="cottage_cheese"><span>Cottage cheese</span></label>
-            <label class="protein-check"><input type="checkbox" value="protein_shake"><span>Protein shake</span></label>
-            <label class="protein-check"><input type="checkbox" value="tuna"><span>Tuna</span></label>
-            <label class="protein-check"><input type="checkbox" value="white_fish"><span>White fish</span></label>
-            <label class="protein-check"><input type="checkbox" value="prawns"><span>Prawns</span></label>
-            <label class="protein-check"><input type="checkbox" value="calamari"><span>Calamari</span></label>
-            <label class="protein-check"><input type="checkbox" value="mussels_clams"><span>Mussels / clams</span></label>
-            <label class="protein-check"><input type="checkbox" value="beef"><span>Beef</span></label>
-            <label class="protein-check"><input type="checkbox" value="pork"><span>Pork</span></label>
-            <label class="protein-check"><input type="checkbox" value="tofu"><span>Tofu</span></label>
-            <label class="protein-check"><input type="checkbox" value="beans"><span>Beans / chickpeas</span></label>
-            <label class="protein-check"><input type="checkbox" value="lentils"><span>Lentils</span></label>
-            <label class="protein-check"><input type="checkbox" value="meat_free_mince"><span>Meat-free mince</span></label>
-          </div>
-          <small>Used to bias the full Hearty meal engine toward proteins the person would actually eat.</small>
-        </div>
-
-        <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">4. Carbs and starches</label>
-          <div class="food-pref-grid engine-carb-grid full-choice-grid" id="carbFoodGrid" aria-label="Carbs and starches you are okay with">
-            <label class="protein-check"><input type="checkbox" value="rice"><span>Rice</span></label>
-            <label class="protein-check"><input type="checkbox" value="potato"><span>Potato</span></label>
-            <label class="protein-check"><input type="checkbox" value="sweet_potato"><span>Sweet potato</span></label>
-            <label class="protein-check"><input type="checkbox" value="noodles"><span>Noodles</span></label>
-            <label class="protein-check"><input type="checkbox" value="wraps"><span>Wraps / pita</span></label>
-          </div>
-          <small>Used for sides and breakfasts. Fruit is selected in the snack section below.</small>
-        </div>
-
-        <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">5. Vegetables you like</label>
-          <div class="food-pref-grid engine-veg-grid full-choice-grid" id="vegFoodGrid" aria-label="Vegetables you like">
-            <label class="protein-check"><input type="checkbox" value="spinach"><span>Spinach</span></label>
-            <label class="protein-check"><input type="checkbox" value="lettuce"><span>Lettuce</span></label>
-            <label class="protein-check"><input type="checkbox" value="tomato"><span>Tomato</span></label>
-            <label class="protein-check"><input type="checkbox" value="cucumber"><span>Cucumber</span></label>
-            <label class="protein-check"><input type="checkbox" value="carrot"><span>Carrot</span></label>
-            <label class="protein-check"><input type="checkbox" value="peppers"><span>Peppers</span></label>
-            <label class="protein-check"><input type="checkbox" value="mushrooms"><span>Mushrooms</span></label>
-            <label class="protein-check"><input type="checkbox" value="onion"><span>Onion</span></label>
-            <label class="protein-check"><input type="checkbox" value="broccoli"><span>Broccoli</span></label>
-            <label class="protein-check"><input type="checkbox" value="cauliflower"><span>Cauliflower</span></label>
-            <label class="protein-check"><input type="checkbox" value="green_beans"><span>Green beans</span></label>
-            <label class="protein-check"><input type="checkbox" value="cabbage"><span>Cabbage</span></label>
-            <label class="protein-check"><input type="checkbox" value="baby_marrow"><span>Baby marrow / zucchini</span></label>
-            <label class="protein-check"><input type="checkbox" value="peas"><span>Peas</span></label>
-            <label class="protein-check"><input type="checkbox" value="butternut"><span>Butternut</span></label>
-            <label class="protein-check"><input type="checkbox" value="eggplant"><span>Eggplant / aubergine</span></label>
-            <label class="protein-check"><input type="checkbox" value="celery"><span>Celery</span></label>
-            <label class="protein-check"><input type="checkbox" value="asparagus"><span>Asparagus</span></label>
-          </div>
-          <small>Pick actual vegetables. Hearty works out whether they fit better in salads, plates, soups or stir-fries.</small>
-        </div>
-
-        <div class="engine-builder-card engine-builder-wide">
-          <label class="engine-card-label">6. Fruit and snacks you like</label>
-          <div class="food-pref-grid engine-snack-grid full-choice-grid" id="snackFoodGrid" aria-label="Fruit and snacks you like">
-            <label class="protein-check"><input type="checkbox" value="berries"><span>Berries</span></label>
-            <label class="protein-check"><input type="checkbox" value="banana"><span>Banana</span></label>
-            <label class="protein-check"><input type="checkbox" value="apple"><span>Apple</span></label>
-            <label class="protein-check"><input type="checkbox" value="pear"><span>Pear</span></label>
-            <label class="protein-check"><input type="checkbox" value="orange_mandarin"><span>Orange / mandarin</span></label>
-            <label class="protein-check"><input type="checkbox" value="grapes"><span>Grapes</span></label>
-            <label class="protein-check"><input type="checkbox" value="greek_yoghurt"><span>Greek yoghurt</span></label>
-            <label class="protein-check"><input type="checkbox" value="cottage_cheese"><span>Cottage cheese</span></label>
-            <label class="protein-check"><input type="checkbox" value="boiled_eggs"><span>Boiled eggs</span></label>
-            <label class="protein-check"><input type="checkbox" value="protein_shake"><span>Protein shake</span></label>
-            <label class="protein-check"><input type="checkbox" value="tuna"><span>Tuna</span></label>
-            <label class="protein-check"><input type="checkbox" value="biltong"><span>Biltong / jerky</span></label>
-            <label class="protein-check"><input type="checkbox" value="hummus"><span>Hummus</span></label>
-            <label class="protein-check"><input type="checkbox" value="crackers"><span>Crackers</span></label>
-            <label class="protein-check"><input type="checkbox" value="veg_sticks"><span>Veg sticks</span></label>
-          </div>
-          <small>These guide snacks and balancing snacks. Hearty still keeps portions GLP-1 friendly.</small>
-        </div>
-
-      <div class="engine-builder-foot simplified-foot single-action-foot single-action-foot">
-        
-
-        <div class="engine-builder-actions">
-          <div class="engine-builder-note">
+</div>
+</div>
+<script src="js/hearty-meal-engine-v30.js?v=30-mvp-no-egg-snack-on-egg-breakfast"></script>
+<div aria-label="Build your GLP-1 meal plan" aria-live="polite" aria-modal="true" class="quick-setup-panel plan-generator-window" hidden="" id="quickSetupPanel" role="dialog">
+<div class="generator-window generator-window-engine generator-window-simple-builder">
+<div class="generator-window-top engine-builder-top">
+<div>
+<div class="generator-kicker">free 7-day starter plan</div>
+<h2>Set up your GLP-1 meal plan.</h2>
+<p>Answer a few food questions. Hearty uses sensible GLP-1 defaults, then shapes the plan around foods and meal styles you actually like.</p>
+</div>
+<button aria-label="Close plan builder" class="generator-close" id="closePlanSetup" type="button">×</button>
+</div>
+<div class="engine-builder-shell simplified-engine-shell">
+<div class="engine-builder-grid simplified-top-grid">
+<div class="engine-builder-card">
+<label class="engine-card-label">1. Sex for default portions</label>
+<div class="engine-pill-row" data-simple-choice="sex">
+<button class="engine-choice-pill selected" data-value="female" type="button">Female</button>
+<button class="engine-choice-pill" data-value="male" type="button">Male</button>
+</div>
+<small>This sets the default portion range. Food style is inferred from your selected proteins.</small>
+</div>
+<select aria-label="Country" class="country-select engine-country-select hidden-country-select" hidden="" id="countrySelect">
+<option selected="" value="ZA">South Africa</option>
+<option value="UK">United Kingdom</option>
+<option value="US">United States</option>
+<option value="CA">Canada</option>
+<option value="AU">Australia</option>
+</select>
+</div>
+<div class="engine-builder-preferences simplified-preferences">
+<div class="engine-builder-card engine-builder-wide">
+<label class="engine-card-label">2. Protein foods you like</label>
+<div aria-label="Protein foods you like" class="protein-check-grid engine-protein-grid full-choice-grid" id="proteinFoodGrid">
+<label class="protein-check"><input type="checkbox" value="eggs"/><span>Eggs</span></label>
+<label class="protein-check"><input type="checkbox" value="chicken"/><span>Chicken</span></label>
+<label class="protein-check"><input type="checkbox" value="beef"/><span>Beef</span></label>
+<label class="protein-check"><input type="checkbox" value="fish"/><span>Fish</span></label>
+<label class="protein-check"><input type="checkbox" value="turkey"/><span>Turkey</span></label>
+<label class="protein-check"><input type="checkbox" value="pork"/><span>Pork</span></label>
+<label class="protein-check"><input type="checkbox" value="tofu"/><span>Tofu</span></label>
+<label class="protein-check"><input type="checkbox" value="beans"/><span>Beans</span></label>
+<label class="protein-check"><input type="checkbox" value="lentils"/><span>Lentils</span></label>
+<label class="protein-check"><input type="checkbox" value="chickpeas"/><span>Chickpeas</span></label>
+<label class="protein-check"><input type="checkbox" value="yoghurt"/><span>Yoghurt</span></label>
+<label class="protein-check"><input type="checkbox" value="cottage_cheese"/><span>Cottage cheese</span></label>
+<label class="protein-check"><input type="checkbox" value="protein_shake"/><span>Protein shake</span></label>
+</div>
+<small>Choose at least 4. Each parent choice opens all matching engine options behind the scenes.</small>
+</div>
+<div class="engine-builder-card engine-builder-wide">
+<label class="engine-card-label">3. Carbs and starches</label>
+<div aria-label="Carbs and starches you are okay with" class="food-pref-grid engine-carb-grid full-choice-grid" id="carbFoodGrid">
+<label class="protein-check"><input type="checkbox" value="rice"/><span>Rice</span></label>
+<label class="protein-check"><input type="checkbox" value="potato"/><span>Potato</span></label>
+<label class="protein-check"><input type="checkbox" value="sweet_potato"/><span>Sweet potato</span></label>
+<label class="protein-check"><input type="checkbox" value="pasta"/><span>Pasta</span></label>
+<label class="protein-check"><input type="checkbox" value="couscous"/><span>Couscous</span></label>
+<label class="protein-check"><input type="checkbox" value="noodles"/><span>Noodles</span></label>
+<label class="protein-check"><input type="checkbox" value="toast"/><span>Toast</span></label>
+</div>
+<small>Choose at least 4. Crackers and rice cakes are snack options, not main starches.</small>
+</div>
+<div class="engine-builder-card engine-builder-wide">
+<label class="engine-card-label">4. Vegetables you like</label>
+<div aria-label="Vegetables you like" class="food-pref-grid engine-veg-grid full-choice-grid" id="vegFoodGrid">
+<label class="protein-check"><input type="checkbox" value="green_beans"/><span>Green beans</span></label>
+<label class="protein-check"><input type="checkbox" value="broccoli"/><span>Broccoli</span></label>
+<label class="protein-check"><input type="checkbox" value="carrots"/><span>Carrots</span></label>
+<label class="protein-check"><input type="checkbox" value="spinach"/><span>Spinach</span></label>
+<label class="protein-check"><input type="checkbox" value="peppers"/><span>Peppers</span></label>
+<label class="protein-check"><input type="checkbox" value="mushrooms"/><span>Mushrooms</span></label>
+<label class="protein-check"><input type="checkbox" value="cabbage"/><span>Cabbage</span></label>
+<label class="protein-check"><input type="checkbox" value="cauliflower"/><span>Cauliflower</span></label>
+<label class="protein-check"><input type="checkbox" value="baby_marrow"/><span data-country-label="baby_marrow">Baby marrow</span></label>
+<label class="protein-check"><input type="checkbox" value="butternut"/><span>Butternut</span></label>
+<label class="protein-check"><input type="checkbox" value="pumpkin"/><span>Pumpkin</span></label>
+<label class="protein-check"><input type="checkbox" value="asparagus"/><span>Asparagus</span></label>
+<label class="protein-check"><input type="checkbox" value="brussels_sprouts"/><span>Brussels sprouts</span></label>
+<label class="protein-check"><input type="checkbox" value="eggplant"/><span data-country-label="eggplant">Brinjal</span></label>
+<label class="protein-check"><input type="checkbox" value="lettuce"/><span>Lettuce</span></label>
+<label class="protein-check"><input type="checkbox" value="tomato"/><span>Tomato</span></label>
+<label class="protein-check"><input type="checkbox" value="cucumber"/><span>Cucumber</span></label>
+<label class="protein-check"><input type="checkbox" value="rocket"/><span data-country-label="rocket">Rocket</span></label>
+<label class="protein-check"><input type="checkbox" value="celery"/><span>Celery</span></label>
+<label class="protein-check"><input type="checkbox" value="peas"/><span>Peas</span></label>
+</div>
+<small>Pick actual vegetables. Pantry staples, herbs, dressings and pickled extras are handled by Hearty automatically where needed.</small>
+</div>
+<div class="engine-builder-card engine-builder-wide">
+<label class="engine-card-label">5. Fruit and snacks you like</label>
+<div aria-label="Fruit and snacks you like" class="food-pref-grid engine-snack-grid full-choice-grid" id="snackFoodGrid">
+<label class="protein-check"><input type="checkbox" value="berries"/><span>Berries</span></label>
+<label class="protein-check"><input type="checkbox" value="banana"/><span>Banana</span></label>
+<label class="protein-check"><input type="checkbox" value="apple"/><span>Apple</span></label>
+<label class="protein-check"><input type="checkbox" value="pear"/><span>Pear</span></label>
+<label class="protein-check"><input type="checkbox" value="orange"/><span>Orange</span></label>
+<label class="protein-check"><input type="checkbox" value="naartjie"/><span data-country-label="naartjie">Naartjie</span></label>
+<label class="protein-check"><input type="checkbox" value="grapes"/><span>Grapes</span></label>
+<label class="protein-check"><input type="checkbox" value="melon"/><span>Melon</span></label>
+<label class="protein-check"><input type="checkbox" value="peach"/><span>Peach</span></label>
+<label class="protein-check"><input type="checkbox" value="nectarine"/><span>Nectarine</span></label>
+<label class="protein-check"><input type="checkbox" value="pineapple"/><span>Pineapple</span></label>
+<label class="protein-check"><input type="checkbox" value="plum"/><span>Plum</span></label>
+<label class="protein-check"><input type="checkbox" value="kiwi"/><span>Kiwi</span></label>
+<label class="protein-check"><input type="checkbox" value="yoghurt_snacks"/><span>Yoghurt</span></label>
+<label class="protein-check"><input type="checkbox" value="cottage_cheese_snacks"/><span>Cottage cheese</span></label>
+<label class="protein-check"><input type="checkbox" value="egg_snacks"/><span>Boiled eggs</span></label>
+<label class="protein-check"><input type="checkbox" value="fish_snacks"/><span>Tuna, sardines or smoked salmon</span></label>
+<label class="protein-check country-snack-option" data-country-snack="biltong"><input type="checkbox" value="biltong_snacks"/><span>Biltong</span></label>
+<label class="protein-check country-snack-option" data-country-snack="jerky" hidden=""><input type="checkbox" value="jerky_snacks"/><span>Jerky</span></label>
+<label class="protein-check"><input type="checkbox" value="hummus_snacks"/><span>Hummus</span></label>
+<label class="protein-check"><input type="checkbox" value="edamame_snacks"/><span>Edamame</span></label>
+<label class="protein-check"><input type="checkbox" value="tofu_bites_snacks"/><span>Tofu bites</span></label>
+<label class="protein-check"><input type="checkbox" value="cracker_snacks"/><span>Crackers</span></label>
+<label class="protein-check"><input type="checkbox" value="rice_cake_snacks"/><span>Rice cakes</span></label>
+<label class="protein-check"><input type="checkbox" value="veg_sticks"/><span>Vegetable sticks</span></label>
+</div>
+<small>Choose at least 6 snack/fruit options, including at least 4 fruits and 2 protein snack options.</small>
+</div>
+<div class="engine-builder-foot simplified-foot single-action-foot single-action-foot">
+<div class="engine-builder-actions">
+<div class="engine-builder-note">
             Choose your foods first. Hearty will only generate once the minimum selection is met.
           </div>
-          <div class="builder-gate-message" id="builderGateMessage" hidden></div>
-          <div class="engine-builder-button-row">
-            <button class="btn btn-primary generator-build-btn" type="button" id="modalBuildPlanBtn">Generate my 7-day plan</button>
-            <button class="btn btn-secondary generator-cancel-btn" type="button" id="modalCancelPlanBtn">Back</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="builder-hidden-sync" aria-hidden="true">
-        <button type="button" id="proteinMinus">−</button>
-        <div id="proteinOutput">100g per day</div>
-        <button type="button" id="proteinPlus">+</button>
-        <small id="proteinTiny">100g/day</small>
-      </div>
-    </div>
-  </div>
+<div class="builder-gate-message" hidden="" id="builderGateMessage"></div>
+<div class="engine-builder-button-row">
+<button class="btn btn-primary generator-build-btn" id="modalBuildPlanBtn" type="button">Generate my 7-day plan</button>
+<button class="btn btn-secondary generator-cancel-btn" id="modalCancelPlanBtn" type="button">Back</button>
 </div>
-<script>
-(function(){
-  function qs(id){ return document.getElementById(id); }
-  function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
-
-  function openPlanBuilder(event){
-    if(event){
-      event.preventDefault();
-      event.stopPropagation();
-      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-    }
-    var modal = qs('quickSetupPanel');
-    if(!modal) return false;
-    if(modal.parentNode !== document.body) document.body.appendChild(modal);
-    modal.hidden = false;
-    modal.removeAttribute('hidden');
-    modal.classList.add('show');
-    modal.style.setProperty('display','flex','important');
-    document.body.classList.add('plan-builder-open');
-    return false;
-  }
-
-  function closePlanBuilder(){
-    var modal = qs('quickSetupPanel');
-    if(modal){
-      modal.classList.remove('show');
-      modal.hidden = true;
-      modal.style.display = 'none';
-    }
-    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
-    document.documentElement.classList.remove('plan-builder-root-lock');
-  }
-
-  function openPlanViewer(){
-    var modal = qs('planViewerModal');
-    if(!modal) return;
-    if(modal.parentNode !== document.body) document.body.appendChild(modal);
-    modal.hidden = false;
-    modal.removeAttribute('hidden');
-    modal.classList.add('show');
-    modal.style.setProperty('display','flex','important');
-    document.body.classList.add('plan-viewer-open');
-  }
-
-  function closePlanViewer(){
-    var modal = qs('planViewerModal');
-    if(modal){
-      modal.classList.remove('show');
-      modal.hidden = true;
-      modal.style.display = 'none';
-    }
-    document.body.classList.remove('plan-viewer-open');
-  }
-
-  function bind(){
-    var builder = qs('quickSetupPanel');
-    if(builder && builder.parentNode !== document.body) document.body.appendChild(builder);
-    var viewer = qs('planViewerModal');
-    if(viewer && viewer.parentNode !== document.body) document.body.appendChild(viewer);
-
-    var triggerSelector = '#heroGeneratePlanBtn,#rightTopGenerateBtn,#fullPlanBtn,[data-open-plan-setup],[data-force-open-builder],a[href="#quickSetupPanel"]';
-    qsa(triggerSelector).forEach(function(el){
-      el.setAttribute('href','#quickSetupPanel');
-      el.onclick = openPlanBuilder;
-      el.addEventListener('click', openPlanBuilder, true);
-    });
-    document.addEventListener('click', function(e){
-      var trigger = e.target.closest && e.target.closest(triggerSelector);
-      if(trigger) openPlanBuilder(e);
-    }, true);
-
-    var country = qs('countrySelect');
-    if(country && country.dataset.heartyCountryListener !== '1'){
-      country.dataset.heartyCountryListener = '1';
-      country.addEventListener('change', function(){
-        document.body.dataset.heartyCountry = country.value || '';
-      });
-    }
-
-    var close = qs('closePlanSetup');
-    if(close && close.dataset.heartyCloseBuilder !== '1'){
-      close.dataset.heartyCloseBuilder = '1';
-      close.addEventListener('click', closePlanBuilder, true);
-    }
-
-    var cancel = qs('modalCancelPlanBtn');
-    if(cancel && cancel.dataset.heartyCancelBuilder !== '1'){
-      cancel.dataset.heartyCancelBuilder = '1';
-      cancel.addEventListener('click', closePlanBuilder, true);
-    }
-
-    var closeViewer = qs('closePlanViewer');
-    if(closeViewer && closeViewer.dataset.heartyCloseViewerBasic !== '1'){
-      closeViewer.dataset.heartyCloseViewerBasic = '1';
-      closeViewer.addEventListener('click', closePlanViewer, true);
-    }
-
-    var viewerEdit = qs('viewerEditBtn');
-    if(viewerEdit && viewerEdit.dataset.heartyViewerEdit !== '1'){
-      viewerEdit.dataset.heartyViewerEdit = '1';
-      viewerEdit.addEventListener('click', function(e){
-        if(e){ e.preventDefault(); e.stopPropagation(); }
-        closePlanViewer();
-        openPlanBuilder(e);
-      }, true);
-    }
-
-    document.addEventListener('keydown', function(e){
-      if(e.key === 'Escape'){
-        closePlanViewer();
-        closePlanBuilder();
-      }
-    });
-
-    window.heartyOpenPlanSetup = openPlanBuilder;
-    window.heartyClosePlanSetup = closePlanBuilder;
-    window.heartyOpenPlanViewer = openPlanViewer;
-    window.heartyClosePlanViewer = closePlanViewer;
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
-  else bind();
-})();
-</script>
-
-
-
-
-
-
-<script>
-(function(){
-  function qs(id){ return document.getElementById(id); }
-  function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
-  function esc(v){
-    return String(v == null ? '' : v)
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'","&#039;");
-  }
-
-  var DEFAULTS = {
-    proteins:[],
-    carbs:[],
-    veg:[],
-    snacks:[]
-  };
-
-  var MINIMUMS = {
-    proteins: 3,
-    carbs: 3,
-    veg: 5,
-    snacks: 3,
-    dinnerStarches: 2
-  };
-
-  var BREAKFAST_FRIENDLY_PROTEINS = ['eggs','greek_yoghurt','cottage_cheese','protein_shake','tofu'];
-  var DINNER_STARCH_OPTIONS = ['rice','potato','sweet_potato','noodles','wraps'];
-
-  var labels = {
-    proteins:{
-      eggs:'Eggs', chicken:'Chicken', shredded_chicken:'Chicken',
-      greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', protein_shake:'Protein shake',
-      tuna:'Tuna', white_fish:'White fish', prawns:'Prawns', calamari:'Calamari', mussels_clams:'Mussels / clams',
-      beef:'Beef', lean_beef:'Beef', lean_mince:'Beef', pork:'Pork',
-      tofu:'Tofu', beans:'Beans / chickpeas', lentils:'Lentils', meat_free_mince:'Meat-free mince'
-    },
-    carbs:{
-      rice:'Rice', potato:'Potato', sweet_potato:'Sweet potato', noodles:'Noodles', wraps:'Wraps/pita', pasta:'Pasta'
-    },
-    veg:{
-      spinach:'Spinach', lettuce:'Lettuce', tomato:'Tomato', cucumber:'Cucumber', carrot:'Carrot',
-      peppers:'Peppers', mushrooms:'Mushrooms', onion:'Onion', broccoli:'Broccoli',
-      cauliflower:'Cauliflower', green_beans:'Green beans', cabbage:'Cabbage',
-      baby_marrow:'Baby marrow/zucchini', peas:'Peas', butternut:'Butternut',
-      eggplant:'Eggplant/aubergine', celery:'Celery', asparagus:'Asparagus'
-    },
-    snacks:{
-      berries:'Berries', banana:'Banana', apple:'Apple', pear:'Pear', orange_mandarin:'Orange / mandarin', grapes:'Grapes',
-      greek_yoghurt:'Greek yoghurt', cottage_cheese:'Cottage cheese', boiled_eggs:'Boiled eggs',
-      protein_shake:'Protein shake', tuna:'Tuna', biltong:'Biltong / jerky', hummus:'Hummus',
-      crackers:'Crackers', veg_sticks:'Veg sticks'
-    }
-  };
-
-  var currentNewEnginePlan = null;
-  var currentNewEnginePrefs = null;
-  var currentShopping = [];
-
-  function selectedValue(group){
-    var btn = document.querySelector('[data-simple-choice="'+group+'"] .selected');
-    return btn ? btn.dataset.value : '';
-  }
-
-  function countryValue(){
-    var select = qs('countrySelect');
-    return select && select.value ? select.value : 'ZA';
-  }
-
-  function checkedValues(id){
-    return qsa('#'+id+' input:checked').map(function(input){ return input.value; });
-  }
-
-  function setCheckedValues(id, values){
-    var set = new Set(values || []);
-    qsa('#'+id+' input').forEach(function(input){
-      input.checked = set.has(input.value);
-      var label = input.closest('.protein-check');
-      if(label) label.classList.toggle('selected', input.checked);
-    });
-  }
-
-  function resetDefaultSelections(){
-    // Do not prepopulate the ingredient builder. Users must choose foods they actually eat.
-    if(document.body.dataset.heartyLeadDefaultsLocked === '1') return;
-    document.body.dataset.heartyLeadDefaultsLocked = '1';
-
-    setCheckedValues('proteinFoodGrid', []);
-    setCheckedValues('carbFoodGrid', []);
-    setCheckedValues('vegFoodGrid', []);
-    setCheckedValues('snackFoodGrid', []);
-  }
-
-  function bindSimpleChoices(){
-    qsa('[data-simple-choice]').forEach(function(group){
-      if(group.dataset.heartySimpleChoiceBound === '1') return;
-      group.dataset.heartySimpleChoiceBound = '1';
-      group.addEventListener('click', function(e){
-        var btn = e.target.closest && e.target.closest('button');
-        if(!btn || !group.contains(btn)) return;
-        group.querySelectorAll('button').forEach(function(b){ b.classList.toggle('selected', b === btn); });
-        document.body.dataset.heartyPrefsTouched = '1';
-        if(group.getAttribute('data-simple-choice') === 'diet') applyDietFilters();
-      });
-    });
-  }
-
-  function bindSelectionClasses(){
-    qsa('#proteinFoodGrid input,#carbFoodGrid input,#vegFoodGrid input,#snackFoodGrid input').forEach(function(input){
-      if(input.dataset.heartySelectionBound === '1') return;
-      input.dataset.heartySelectionBound = '1';
-      input.addEventListener('change', function(){
-        document.body.dataset.heartyPrefsTouched = '1';
-        var label = input.closest('.protein-check');
-        if(label) label.classList.toggle('selected', input.checked);
-      });
-    });
-  }
-
-  function isAllowedForDiet(value, diet, gridId){
-    diet = diet || 'omnivore';
-    var meatProteins = ['chicken','beef','pork'];
-    var fishProteins = ['tuna','white_fish','prawns','calamari','mussels_clams'];
-    var animalSnackOnly = ['biltong'];
-    if(diet === 'no_pork' && value === 'pork') return false;
-    if(diet === 'no_fish' && (fishProteins.indexOf(value) !== -1 || value === 'tuna')) return false;
-    if(diet === 'pescatarian' && (meatProteins.indexOf(value) !== -1 || animalSnackOnly.indexOf(value) !== -1)) return false;
-    if(diet === 'vegetarian' && (meatProteins.indexOf(value) !== -1 || fishProteins.indexOf(value) !== -1 || value === 'tuna' || animalSnackOnly.indexOf(value) !== -1)) return false;
-    return true;
-  }
-
-  function applyDietFilters(){
-    var diet = selectedValue('diet') || 'omnivore';
-    ['proteinFoodGrid','snackFoodGrid'].forEach(function(gridId){
-      qsa('#' + gridId + ' input').forEach(function(input){
-        var allowed = isAllowedForDiet(input.value, diet, gridId);
-        var label = input.closest('.protein-check');
-        input.disabled = !allowed;
-        if(label) label.hidden = !allowed;
-        if(!allowed){
-          input.checked = false;
-          if(label) label.classList.remove('selected');
-        }
-      });
-    });
-  }
-
-  function sexPrefs(){
-    var sex = selectedValue('sex') || 'female';
-    return {
-      sex: sex,
-      proteinMin: sex === 'male' ? 105 : 90,
-      proteinMax: sex === 'male' ? 145 : 125,
-      fibreMin: sex === 'male' ? 25 : 20,
-      fibreMax: sex === 'male' ? 35 : 30,
-      calorieFloor: sex === 'male' ? 1350 : 1150
-    };
-  }
-
-  function uniqueValues(values){
-    var out = [];
-    (values || []).forEach(function(v){ if(v && out.indexOf(v) === -1) out.push(v); });
-    return out;
-  }
-
-  function canonicalProteinKey(value){
-    var v = String(value || '').trim();
-    var map = {
-      chicken_breast:'chicken', cooked_chicken:'chicken', shredded_chicken:'chicken', grilled_chicken:'chicken',
-      lean_beef:'beef', lean_mince:'beef', lean_beef_mince:'beef', ground_beef:'beef', beef_mince:'beef', beef_strips:'beef',
-      lean_pork:'pork', pork_fillet:'pork', pork_strips:'pork',
-      tuna_salmon:'fish', tuna:'fish', white_fish:'fish', hake:'fish', cod:'fish', salmon:'fish', prawns:'fish', shrimp:'fish', calamari:'fish', mussels_clams:'fish',
-      greek_yoghurt:'dairy', greek_yogurt:'dairy', plain_yoghurt:'dairy', plain_yogurt:'dairy', cottage_cheese:'dairy',
-      protein_shake:'protein_powder'
-    };
-    return map[v] || v;
-  }
-
-  function canonicalFormFoodKey(value){
-    var v = String(value || '').trim();
-    var map = {
-      chicken_breast:'chicken', cooked_chicken:'chicken', shredded_chicken:'chicken', grilled_chicken:'chicken',
-      lean_beef:'beef', lean_mince:'beef', lean_beef_mince:'beef', ground_beef:'beef', beef_mince:'beef', beef_strips:'beef',
-      lean_pork:'pork', pork_fillet:'pork', pork_strips:'pork'
-    };
-    return map[v] || v;
-  }
-
-  function selectedLabels(values, map, fallback, max){
-    max = max || 4;
-    var names = (values || []).map(function(v){ return map[v]; }).filter(Boolean);
-    if(!names.length) return fallback;
-    return names.slice(0,max).join(', ') + (names.length > max ? ' +' + (names.length - max) : '');
-  }
-
-
-  function dietLabel(diet){
-    var map = { omnivore:'Omnivore', no_pork:'No pork', no_fish:'No fish', pescatarian:'Pescatarian', vegetarian:'Vegetarian' };
-    return map[diet] || 'Omnivore';
-  }
-
-  function readPrefs(){
-    var base = sexPrefs();
-    var foods = uniqueValues(checkedValues('proteinFoodGrid').map(canonicalFormFoodKey));
-    var carbs = checkedValues('carbFoodGrid');
-    var veg = checkedValues('vegFoodGrid');
-    var snacks = checkedValues('snackFoodGrid');
-
-
-    return Object.assign(base, {
-      country: countryValue(),
-      diet: selectedValue('diet') || 'omnivore',
-      foods: foods,
-      carbs: carbs,
-      veg: veg,
-      snacks: snacks
-    });
-  }
-
-  function addUnique(arr, value){
-    if(value && arr.indexOf(value) === -1) arr.push(value);
-  }
-
-  function mealProteinNumber(meal){
-    if(!meal) return 0;
-    if(meal.nutrition && Number.isFinite(Number(meal.nutrition.protein))) return Number(meal.nutrition.protein);
-    return 0;
-  }
-
-  function mealProteinLabel(meal){
-    var n = mealProteinNumber(meal);
-    if(n) return '~' + Math.round(n) + 'g';
-    return '';
-  }
-
-  function ingredientsLine(meal){
-    if(!meal || !Array.isArray(meal.ingredients) || !meal.ingredients.length) return '';
-    return meal.ingredients.map(function(i){
-      if(!i) return '';
-      var amount = i.amount ? String(i.amount).trim() + ' ' : '';
-      return amount + String(i.item || '').trim();
-    }).filter(Boolean).join(', ');
-  }
-
-  function mealTitle(meal){
-    return meal && meal.title ? meal.title : '';
-  }
-
-  function mealDescription(meal){
-    if(!meal) return '';
-    var desc = meal.description || '';
-    var ing = ingredientsLine(meal);
-    if(ing && desc) return desc + ' Ingredients: ' + ing + '.';
-    if(ing) return 'Ingredients: ' + ing + '.';
-    return desc;
-  }
-
-  function normaliseShoppingRows(list){
-    var rows = [];
-    function push(cat, item, qty, notes){
-      if(!item) return;
-      rows.push({
-        cat: cat || 'Shopping',
-        item: String(item || ''),
-        qty: String(qty || ''),
-        notes: String(notes || '')
-      });
-    }
-    if(!list) return rows;
-    if(Array.isArray(list)){
-      list.forEach(function(r){
-        if(typeof r === 'string') push('Shopping', r, '', '');
-        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-      });
-      return rows;
-    }
-    Object.keys(list).forEach(function(cat){
-      var value = list[cat];
-      if(Array.isArray(value)){
-        value.forEach(function(r){
-          if(typeof r === 'string') push(cat, r, '', '');
-          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-        });
-      } else if(value && typeof value === 'object'){
-        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
-      }
-    });
-    return rows;
-  }
-
-  function getEngineShoppingRows(plan, input){
-    var shopping = plan && plan.shoppingList;
-    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.buildShoppingList === 'function'){
-      try{ shopping = window.HeartyMealEngine.buildShoppingList(plan, input || window.heartyLeadCurrentInput || {}); }
-      catch(e){ console.warn('[Hearty] Engine shopping list failed; using plan.shoppingList fallback', e); }
-    }
-    return normaliseShoppingRows(shopping);
-  }
-
-  function validateMinimumSelections(prefs){
-    var issues = [];
-    var foods = prefs.foods || [];
-    var carbs = prefs.carbs || [];
-    var veg = prefs.veg || [];
-    var snacks = prefs.snacks || [];
-    var hasBreakfastAnchor = foods.some(function(f){ return BREAKFAST_FRIENDLY_PROTEINS.indexOf(f) !== -1; });
-
-    if(foods.length < MINIMUMS.proteins) issues.push('Choose at least ' + MINIMUMS.proteins + ' protein foods.');
-    if(!hasBreakfastAnchor) issues.push('Include at least one breakfast-friendly protein: eggs, Greek yoghurt, cottage cheese, protein shake or tofu.');
-    if(carbs.length < MINIMUMS.carbs) issues.push('Choose at least ' + MINIMUMS.carbs + ' carb/starch options.');
-    var dinnerStarchCount = carbs.filter(function(c){ return DINNER_STARCH_OPTIONS.indexOf(c) !== -1; }).length;
-    if(dinnerStarchCount < MINIMUMS.dinnerStarches) issues.push('Choose at least ' + MINIMUMS.dinnerStarches + ' dinner starch options: rice, potato, sweet potato, noodles or wraps.');
-    if(veg.length < MINIMUMS.veg) issues.push('Choose at least ' + MINIMUMS.veg + ' vegetables.');
-    if(snacks.length < MINIMUMS.snacks) issues.push('Choose at least ' + MINIMUMS.snacks + ' snack/fruit options.');
-    return issues;
-  }
-
-  function showGateMessage(issues){
-    var box = qs('builderGateMessage');
-    if(!box) return;
-    if(!issues || !issues.length){
-      box.hidden = true;
-      box.classList.remove('show');
-      box.innerHTML = '';
-      return;
-    }
-    box.hidden = false;
-    box.classList.add('show');
-    box.innerHTML = '<strong>Choose a few more foods before generating.</strong><ul>' +
-      issues.map(function(msg){ return '<li>' + esc(msg) + '</li>'; }).join('') +
-      '</ul>';
-    box.scrollIntoView({behavior:'smooth', block:'center'});
-  }
-
-  function engineBlockedMessages(plan){
-    if(!plan) return ['The meal engine blocked this plan. Please choose a few more foods.'];
-    var out = [];
-    function add(msg){
-      if(!msg) return;
-      if(Array.isArray(msg)){ msg.forEach(add); return; }
-      if(typeof msg === 'string'){ out.push(msg); return; }
-      if(typeof msg === 'object'){
-        add(msg.message || msg.text || msg.reason || msg.label || msg.title);
-        if(Array.isArray(msg.messages)) add(msg.messages);
-        if(Array.isArray(msg.issues)) add(msg.issues);
-        if(Array.isArray(msg.errors)) add(msg.errors);
-      }
-    }
-    add(plan.gate);
-    add(plan.messages);
-    add(plan.message);
-    add(plan.errors);
-    add(plan.validation && plan.validation.warnings);
-    var seen = {};
-    out = out.map(function(x){ return String(x || '').trim(); }).filter(function(x){
-      if(!x || seen[x]) return false;
-      seen[x] = true;
-      return true;
-    });
-    return out.length ? out : ['The meal engine blocked this plan. Please adjust your selections and try again.'];
-  }
-
-  function canonicalFruitKey(value){
-    var v = String(value || '').trim();
-    var map = { berries:'berries', banana:'banana', apple:'apple', pear:'pear', orange_mandarin:'orange_mandarin', orange:'orange_mandarin', mandarin:'orange_mandarin', grapes:'grapes' };
-    return map[v] || '';
-  }
-
-  function canonicalSnackKey(value){
-    var v = String(value || '').trim();
-    var map = {
-      berries:'fruit', banana:'fruit', apple:'fruit', pear:'fruit', orange_mandarin:'fruit', grapes:'fruit',
-      greek_yoghurt:'yoghurt', greek_yogurt:'yoghurt', plain_yoghurt:'yoghurt', plain_yogurt:'yoghurt',
-      cottage_cheese:'cottage_cheese',
-      boiled_eggs:'eggs', egg:'eggs', eggs:'eggs',
-      protein_shake:'protein_powder', protein_powder:'protein_powder',
-      tuna_tin:'tuna', tuna_can:'tuna', tuna:'tuna',
-      beef_jerky:'biltong', biltong_jerky:'biltong', jerky:'biltong', biltong:'biltong',
-      hummus:'hummus',
-      crackers:'crackers', wholegrain_crackers:'crackers',
-      veggie_sticks:'veg_sticks', veg_sticks:'veg_sticks'
-    };
-    var key = map[v] || v;
-    var allowed = ['fruit','yoghurt','cottage_cheese','eggs','protein_powder','tuna','biltong','hummus','crackers','veg_sticks'];
-    return allowed.indexOf(key) !== -1 ? key : '';
-  }
-
-  function buildEngineInput(prefs){
-    var proteins = [];
-    var seafood = [];
-    var snacks = [];
-    var fruit = [];
-    var starches = [];
-    var vegetables = [];
-
-    (prefs.foods || []).forEach(function(rawFood){
-      var f = canonicalFormFoodKey(rawFood);
-      var proteinFamily = canonicalProteinKey(f);
-
-      if(f === 'prawns' || f === 'shrimp'){ addUnique(seafood,'prawns'); return; }
-      if(f === 'calamari'){ addUnique(seafood,'calamari'); return; }
-      if(f === 'mussels_clams'){ addUnique(seafood,'mussels'); addUnique(seafood,'clams'); return; }
-
-      if(proteinFamily === 'eggs'){ addUnique(proteins,'eggs'); return; }
-      if(proteinFamily === 'chicken'){ addUnique(proteins,'chicken'); return; }
-      if(proteinFamily === 'dairy'){ addUnique(proteins,'dairy'); return; }
-      if(proteinFamily === 'protein_powder'){ addUnique(proteins,'protein_powder'); return; }
-      if(proteinFamily === 'fish'){ addUnique(proteins,'fish'); return; }
-      if(proteinFamily === 'beef'){ addUnique(proteins,'beef'); return; }
-      if(proteinFamily === 'pork'){ addUnique(proteins,'pork'); return; }
-      if(proteinFamily === 'tofu'){ addUnique(proteins,'tofu'); return; }
-      if(f === 'beans'){ addUnique(proteins,'beans'); addUnique(proteins,'chickpeas'); return; }
-      if(f === 'lentils'){ addUnique(proteins,'lentils'); return; }
-      if(f === 'meat_free_mince'){ addUnique(proteins,'beans'); addUnique(proteins,'lentils'); return; }
-    });
-
-    (prefs.snacks || []).forEach(function(rawSnack){
-      var fruitKey = canonicalFruitKey(rawSnack);
-      var key = canonicalSnackKey(rawSnack);
-      if(fruitKey){ addUnique(fruit, fruitKey); addUnique(snacks, 'fruit'); return; }
-      if(key === 'yoghurt' || key === 'cottage_cheese') addUnique(proteins,'dairy');
-      if(key === 'eggs') addUnique(proteins,'eggs');
-      if(key === 'protein_powder') addUnique(proteins,'protein_powder');
-      if(key === 'tuna') addUnique(proteins,'fish');
-      if(key) addUnique(snacks,key);
-    });
-
-    (prefs.carbs || []).forEach(function(c){
-      if(c === 'rice') addUnique(starches,'rice');
-      if(c === 'potato') addUnique(starches,'potato');
-      if(c === 'sweet_potato') addUnique(starches,'sweet_potato');
-      if(c === 'wraps') addUnique(starches,'wrap');
-      if(c === 'noodles') addUnique(starches,'noodles');
-      if(c === 'pasta') addUnique(starches,'pasta');
-    });
-
-    (prefs.veg || []).forEach(function(v){
-      var map = { baby_marrow:'baby_marrow', green_beans:'green_beans', eggplant:'eggplant' };
-      addUnique(vegetables, map[v] || v);
-    });
-
-    return {
-      region: prefs.country === 'OTHER' ? 'US' : prefs.country,
-      diet: prefs.diet,
-      proteins: proteins,
-      seafood: seafood,
-      starches: starches,
-      vegetables: vegetables,
-      snacks: snacks,
-      fruit: fruit,
-      proteinDetails: uniqueValues(prefs.foods || []),
-      snackDetails: uniqueValues(prefs.snacks || []),
-      supportMode: 'none',
-      leftoverLunches: false,
-      targets: {
-        proteinMin: prefs.proteinMin,
-        proteinMax: prefs.proteinMax,
-        fibreMin: prefs.fibreMin,
-        fibreMax: prefs.fibreMax,
-        calorieFloor: prefs.calorieFloor
-      }
-    };
-  }
-
-  function proteinMidpoint(value){
-    var nums = String(value || '').match(/\d+/g) || [];
-    if(!nums.length) return 0;
-    nums = nums.map(Number);
-    return nums.reduce(function(a,b){ return a+b; },0) / nums.length;
-  }
-
-  function dayProtein(day){
-    if(day && day.nutrition && Number.isFinite(Number(day.nutrition.protein))) return Number(day.nutrition.protein);
-    return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
-      .reduce(function(sum, meal){ return sum + mealProteinNumber(meal); }, 0);
-  }
-
-  function mealRow(label, meal){
-    if(!meal) return '';
-    var protein = mealProteinLabel(meal);
-    var detail = mealDescription(meal);
-    return '<div class="full-meal-row">' +
-      '<b>' + esc(label) + '</b>' +
-      '<div><strong>' + esc(mealTitle(meal)) + '</strong>' +
-      '<small>' + esc((protein ? 'Approx. ' + protein + ' protein · ' : '') + detail) + '</small></div>' +
-      '</div>';
-  }
-
-  function renderPlan(plan, prefs){
-    var target = qs('viewerPlanRows');
-    if(!target) return;
-
-    if(!plan || !Array.isArray(plan.days) || !plan.days.length){
-      var msg = plan && plan.messages && plan.messages.length ? plan.messages.join(' ') : 'The plan could not be generated. Please choose a few more proteins and try again.';
-      target.innerHTML = '<article class="full-day-card"><h4><span>Check your choices</span></h4><p>' + esc(msg) + '</p></article>';
-      return;
-    }
-
-    target.innerHTML = plan.days.slice(0,7).map(function(day){
-      var protein = Math.round(dayProtein(day));
-      return '<article class="full-day-card full-engine-day-card">' +
-        '<h4><span>Day ' + esc(day.day || '') + '</span><em class="day-protein-total">±' + protein + 'g protein</em></h4>' +
-        '<div class="day-target-line">Guide: ' + esc(prefs.proteinMin + '–' + prefs.proteinMax + 'g protein · ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g fibre') + '</div>' +
-        '<div class="full-day-meals">' +
-          mealRow('Breakfast', day.breakfast) +
-          mealRow('Snack 1', day.morningSnack) +
-          mealRow('Lunch', day.lunch) +
-          mealRow('Snack 2', day.afternoonSnack) +
-          mealRow('Dinner', day.dinner) +
-        '</div></article>';
-    }).join('');
-
-    var hidden = qs('fullPlanRows');
-    if(hidden) hidden.innerHTML = '';
-    var onscreen = qs('onscreenFullPlan');
-    if(onscreen){ onscreen.hidden = true; onscreen.classList.remove('show'); }
-  }
-
-  function renderChips(prefs){
-    var row = qs('viewerChoiceRow');
-    if(!row) return;
-    row.innerHTML =
-      '<span>' + esc(prefs.sex === 'male' ? 'Male default' : 'Female default') + '</span>' +
-      '<span>' + esc(dietLabel(prefs.diet)) + '</span>' +
-      '<span>' + esc(prefs.proteinMin + '–' + prefs.proteinMax + 'g protein guide') + '</span>' +
-      '<span>' + esc('Fibre guide ' + prefs.fibreMin + '–' + prefs.fibreMax + 'g') + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.foods, labels.proteins, 'Flexible proteins', 4)) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.carbs, labels.carbs, 'Flexible carbs/starches', 4)) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.veg, labels.veg, 'Flexible vegetables', 4)) + '</span>' +
-      '<span>' + esc(selectedLabels(prefs.snacks, labels.snacks, 'Flexible snacks', 4)) + '</span>';
-  }
-
-  function renderShopping(prefs, plan){
-    currentShopping = getEngineShoppingRows(plan, window.heartyLeadCurrentInput || buildEngineInput(prefs));
-    var wrap = qs('shoppingPreview');
-    if(!wrap) return;
-    if(!currentShopping.length){
-      wrap.innerHTML = '<span>Shopping list will be built from the generated meals.</span>';
-      return;
-    }
-    wrap.innerHTML = currentShopping.slice(0,18).map(function(row){
-      var label = row.item + (row.qty ? ' — ' + row.qty : '');
-      return '<span>' + esc(label) + '</span>';
-    }).join('');
-  }
-
-  function planToText(plan, prefs, input){
-    if(!plan || !Array.isArray(plan.days) || !plan.days.length) return 'Your Hearty meal plan could not be generated.';
-    var lines = [
-      'Hearty 7-day GLP-1 meal plan',
-      'Setup: ' + (prefs.sex === 'male' ? 'Male' : 'Female') + ', ' + dietLabel(prefs.diet) + ', guide ' + prefs.proteinMin + '–' + prefs.proteinMax + 'g protein/day',
-      ''
-    ];
-
-    plan.days.slice(0,7).forEach(function(day){
-      lines.push('Day ' + day.day + ' — approx. ' + Math.round(dayProtein(day)) + 'g protein');
-      [['Breakfast', day.breakfast], ['Snack 1', day.morningSnack], ['Lunch', day.lunch], ['Snack 2', day.afternoonSnack], ['Dinner', day.dinner]].forEach(function(pair){
-        var meal = pair[1];
-        if(!meal) return;
-        var protein = mealProteinLabel(meal);
-        lines.push(pair[0] + ': ' + mealTitle(meal) + (protein ? ' (' + protein + ' protein)' : ''));
-        var desc = mealDescription(meal);
-        if(desc) lines.push('  ' + desc);
-      });
-      if(day.leftoverInstruction) lines.push('  ' + day.leftoverInstruction);
-      lines.push('');
-    });
-
-    if(currentShopping.length){
-      lines.push('Shopping list preview');
-      currentShopping.forEach(function(row){ lines.push('- ' + row.cat + ': ' + row.item + (row.qty ? ' — ' + row.qty : '')); });
-    }
-
-    return lines.join('\n');
-  }
-
-  function openViewer(){
-    var modal = qs('planViewerModal');
-    if(!modal) return;
-    if(modal.parentNode !== document.body) document.body.appendChild(modal);
-    modal.hidden = false;
-    modal.removeAttribute('hidden');
-    modal.classList.add('show');
-    modal.style.setProperty('display','flex','important');
-    document.body.classList.add('plan-viewer-open');
-  }
-
-  function closeBuilder(){
-    var modal = qs('quickSetupPanel');
-    if(modal){
-      modal.classList.remove('show');
-      modal.hidden = true;
-      modal.style.display = 'none';
-    }
-    document.documentElement.classList.remove('plan-builder-root-lock');
-    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
-  }
-
-  function openViewerUnlock(event){
-    if(event){
-      event.preventDefault();
-      event.stopPropagation();
-      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-    }
-
-    var mount = qs('viewerUnlockMount');
-    var panel = qs('inlineUnlockPanel');
-    var bottom = qs('viewerBottomCta');
-    if(!mount || !panel) return false;
-
-    if(panel.parentNode !== mount) mount.appendChild(panel);
-
-    mount.hidden = false;
-    mount.removeAttribute('hidden');
-    mount.classList.add('show');
-
-    panel.hidden = false;
-    panel.removeAttribute('hidden');
-    panel.classList.add('show');
-
-    if(bottom) bottom.classList.add('after-unlock');
-
-    setTimeout(function(){
-      mount.scrollIntoView({ behavior:'smooth', block:'start' });
-      var email = qs('leadEmail');
-      if(email) email.focus({ preventScroll:true });
-    }, 80);
-
-    return false;
-  }
-
-  function buildWithLockedLeadEngine(event){
-    if(event){
-      event.preventDefault();
-      event.stopPropagation();
-      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
-    }
-
-    if(!window.HeartyMealEngine || typeof window.HeartyMealEngine.generatePlan !== 'function'){
-      alert('The Hearty meal engine did not load. Please refresh and try again.');
-      return false;
-    }
-
-    var prefs = readPrefs();
-    var issues = validateMinimumSelections(prefs);
-    if(issues.length){
-      showGateMessage(issues);
-      return false;
-    }
-    showGateMessage([]);
-
-    var input = buildEngineInput(prefs);
-    var plan = window.HeartyMealEngine.generatePlan(input);
-
-    if(plan && plan.status === 'BLOCKED'){
-      console.warn('[Hearty] Meal engine blocked generation', { input: input, gate: plan.gate, messages: plan.messages });
-      showGateMessage(engineBlockedMessages(plan));
-      return false;
-    }
-
-    currentNewEnginePlan = plan;
-    currentNewEnginePrefs = prefs;
-
-    window.heartyLeadCurrentPlan = plan;
-    window.heartyLeadCurrentInput = input;
-    window.heartyLeadCurrentPrefs = prefs;
-    window.heartyLeadPlanText = function(){ return planToText(plan, prefs, input); };
-
-    console.log('[Hearty] Locked lead-magnet engine used', {
-      version: window.HeartyMealEngine.VERSION,
-      source: window.HeartyMealEngine.ENGINE_SOURCE,
-      input: input,
-      status: plan && plan.status,
-      gate: plan && plan.gate
-    });
-
-    renderChips(prefs);
-    renderPlan(plan, prefs);
-    renderShopping(prefs, plan);
-
-    var unlock = qs('inlineUnlockPanel');
-    if(unlock) unlock.classList.remove('show');
-    var mount = qs('viewerUnlockMount');
-    if(mount){ mount.hidden = true; mount.classList.remove('show'); }
-    var bottom = qs('viewerBottomCta');
-    if(bottom) bottom.classList.remove('after-unlock');
-
-    closeBuilder();
-    openViewer();
-    return false;
-  }
-
-  function bindLockedAdapter(){
-    resetDefaultSelections();
-    bindSimpleChoices();
-    applyDietFilters();
-    bindSelectionClasses();
-
-    var build = qs('modalBuildPlanBtn');
-    if(build && build.dataset.heartyLockedAdapter !== '1'){
-      build.dataset.heartyLockedAdapter = '1';
-      build.onclick = buildWithLockedLeadEngine;
-      build.addEventListener('click', buildWithLockedLeadEngine, true);
-    }
-
-    var viewerDownload = qs('viewerDownloadBtn');
-    if(viewerDownload && viewerDownload.dataset.heartyViewerUnlock !== '1'){
-      viewerDownload.dataset.heartyViewerUnlock = '1';
-      viewerDownload.onclick = openViewerUnlock;
-      viewerDownload.addEventListener('click', openViewerUnlock, true);
-    }
-
-    var closeViewer = qs('closePlanViewer');
-    if(closeViewer && closeViewer.dataset.heartyCloseViewer !== '1'){
-      closeViewer.dataset.heartyCloseViewer = '1';
-      closeViewer.addEventListener('click', function(){
-        var modal = qs('planViewerModal');
-        if(modal){ modal.classList.remove('show'); modal.hidden = true; modal.style.display = 'none'; }
-        document.body.classList.remove('plan-viewer-open');
-      }, true);
-    }
-
-    window.heartyLockedLeadEngineTest = function(){
-      var prefs = readPrefs();
-      var input = buildEngineInput(prefs);
-      return window.HeartyMealEngine.generatePlan(input);
-    };
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindLockedAdapter);
-  else bindLockedAdapter();
-
-  setTimeout(bindLockedAdapter, 300);
-  setTimeout(bindLockedAdapter, 1200);
-})();
-</script>
-
-
-
-
-<div class="plan-viewer-modal" id="planViewerModal" role="dialog" aria-modal="true" aria-label="Your generated 7-day GLP-1 meal plan" hidden>
-  <div class="plan-viewer-shell">
-    <div class="plan-viewer-top">
-      <div>
-        <div class="generator-kicker">Your generated plan</div>
-        <h2>Your 7-day GLP-1 meal plan</h2>
-        <p>Review the plan first. Then download the PDF and shopping list when you’re ready.</p>
-      </div>
-      <button class="generator-close" type="button" id="closePlanViewer" aria-label="Close plan viewer">×</button>
-    </div>
-    <div class="viewer-choice-row" id="viewerChoiceRow"></div>
-    <div class="viewer-plan-grid" id="viewerPlanRows"></div>
-    <div class="viewer-unlock-mount" id="viewerUnlockMount" hidden></div>
-    <div class="viewer-bottom-cta" id="viewerBottomCta">
-      <button class="btn btn-primary" type="button" id="viewerDownloadBtn">Continue to PDF + shopping list</button>
-      <button class="btn btn-secondary" type="button" id="viewerEditBtn">Edit answers</button>
-    </div>
-  </div>
+</div>
+</div>
+<div aria-hidden="true" class="builder-hidden-sync">
+<button id="proteinMinus" type="button">−</button>
+<div id="proteinOutput">100g per day</div>
+<button id="proteinPlus" type="button">+</button>
+<small id="proteinTiny">100g/day</small>
+</div>
+</div>
+</div>
 </div>
 
 
+<div aria-label="Your generated 7-day GLP-1 meal plan" aria-modal="true" class="plan-viewer-modal" hidden="" id="planViewerModal" role="dialog">
+<div class="plan-viewer-shell">
+<div class="plan-viewer-top">
+<div>
+<div class="generator-kicker">Your generated plan</div>
+<h2>Your 7-day GLP-1 meal plan</h2>
+<p>Review the plan first. Then download the PDF and shopping list when you’re ready.</p>
+</div>
+<button aria-label="Close plan viewer" class="generator-close" id="closePlanViewer" type="button">×</button>
+</div>
+<div class="viewer-choice-row" id="viewerChoiceRow"></div>
+<div class="engine-debug-panel" hidden="" id="engineDebugPanel" style="margin:12px 0;padding:14px;border-radius:18px;background:#fff8db;border:1px solid rgba(146,105,0,.22);color:#3d2d00;font-size:.86rem;line-height:1.45;"></div>
+<div class="viewer-plan-grid" id="viewerPlanRows"></div>
+<div class="viewer-unlock-mount" hidden="" id="viewerUnlockMount"></div>
+<div class="viewer-bottom-cta" id="viewerBottomCta">
+<button class="btn btn-primary" id="viewerDownloadBtn" type="button">Continue to PDF + shopping list</button>
+<button class="btn btn-secondary" id="viewerEditBtn" type="button">Edit answers</button>
+</div>
+</div>
+</div>
 <!-- Hearty Brevo-only sync patch — no meal generation logic -->
 <script>
 (function(){
@@ -6377,399 +5475,454 @@ body.plan-builder-hard-lock{
   };
 })();
 </script>
-
-
 <!-- Hearty direct PDF download handoff - direct jsPDF, no popup window -->
-<script>
-(function(){
-  function esc(v){
-    return String(v == null ? '' : v)
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'",'&#039;');
-  }
-  function cleanText(v){
-    return String(v == null ? '' : v)
-      .replace(/[\u2013\u2014]/g, '-')
-      .replace(/[\u00a0]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-  function proteinMidpoint(value){
-    var nums = String(value || '').match(/\d+/g) || [];
-    if(!nums.length) return 0;
-    nums = nums.map(Number);
-    return nums.reduce(function(a,b){ return a+b; },0) / nums.length;
-  }
-  function mealProteinNumber(meal){
-    if(!meal) return 0;
-    if(meal.nutrition && Number.isFinite(Number(meal.nutrition.protein))) return Number(meal.nutrition.protein);
-    return 0;
-  }
-  function mealProteinLabel(meal){
-    var n = mealProteinNumber(meal);
-    if(n) return '~' + Math.round(n) + 'g';
-    return '';
-  }
-  function ingredientsLine(meal){
-    if(!meal || !Array.isArray(meal.ingredients) || !meal.ingredients.length) return '';
-    return meal.ingredients.map(function(i){
-      if(!i) return '';
-      var amount = i.amount ? String(i.amount).trim() + ' ' : '';
-      return amount + String(i.item || '').trim();
-    }).filter(Boolean).join(', ');
-  }
-  function mealTitle(meal){ return meal && meal.title ? meal.title : ''; }
-  function mealDescription(meal){
-    if(!meal) return '';
-    var desc = meal.description || '';
-    var ing = ingredientsLine(meal);
-    if(ing && desc) return desc + ' Ingredients: ' + ing + '.';
-    if(ing) return 'Ingredients: ' + ing + '.';
-    return desc;
-  }
-  function dayProtein(day){
-    if(day && day.nutrition && Number.isFinite(Number(day.nutrition.protein))) return Number(day.nutrition.protein);
-    return [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner]
-      .reduce(function(sum, meal){ return sum + mealProteinNumber(meal); }, 0);
-  }
-  function allMeals(plan){
-    var out = [];
-    (plan && Array.isArray(plan.days) ? plan.days : []).forEach(function(day){
-      ['breakfast','morningSnack','lunch','afternoonSnack','dinner'].forEach(function(k){ if(day[k]) out.push({slot:k, meal:day[k]}); });
-    });
-    return out;
-  }
-  function countText(plan, re){
-    return allMeals(plan).filter(function(x){ return re.test((mealTitle(x.meal) + ' ' + mealDescription(x.meal)).toLowerCase()); }).length;
-  }
-  function normaliseShoppingRows(list){
-    var rows = [];
-    function push(cat, item, qty, notes){
-      if(!item) return;
-      rows.push({cat:cat || 'Shopping', item:String(item || ''), qty:String(qty || ''), notes:String(notes || '')});
-    }
-    if(!list) return rows;
-    if(Array.isArray(list)){
-      list.forEach(function(r){
-        if(typeof r === 'string') push('Shopping', r, '', '');
-        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-      });
-      return rows;
-    }
-    Object.keys(list).forEach(function(cat){
-      var value = list[cat];
-      if(Array.isArray(value)){
-        value.forEach(function(r){
-          if(typeof r === 'string') push(cat, r, '', '');
-          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-        });
-      } else if(value && typeof value === 'object'){
-        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
-      }
-    });
-    return rows;
-  }
-  function engineShoppingList(plan, input){
-    var shopping = null;
-    if(window.HeartyMealEngine && typeof window.HeartyMealEngine.buildShoppingList === 'function'){
-      shopping = window.HeartyMealEngine.buildShoppingList(plan, input || window.heartyLeadCurrentInput || {});
-    } else if(plan && plan.shoppingList) {
-      shopping = plan.shoppingList;
-    }
-    return shopping || {};
+
+</div><script>(function(){
+  'use strict';
+
+  function qs(id){ return document.getElementById(id); }
+  function qsa(sel, root){ return Array.from((root || document).querySelectorAll(sel)); }
+  function esc(value){
+    return String(value == null ? '' : value)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
   }
 
-  function shoppingRowsByGroup(list){
-    var rows = [];
-    var groupOrder = ['Protein','Dairy','Vegetables','Fruit','Carbs and starches','Pantry and flavour','Proteins','Carbs/starches','Carbs','Starches','Pantry'];
-    var used = {};
-    function push(cat, item, qty, notes){
-      if(!item) return;
-      rows.push({cat:cat || 'Shopping', item:String(item || ''), qty:String(qty || ''), notes:String(notes || '')});
-    }
-    function readGroup(cat, value){
-      used[cat] = true;
-      if(Array.isArray(value)){
-        value.forEach(function(r){
-          if(typeof r === 'string') push(cat, r, '', '');
-          else push(r.cat || r.category || cat, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-        });
-      } else if(value && typeof value === 'object'){
-        Object.keys(value).forEach(function(item){ push(cat, item, value[item], ''); });
-      }
-    }
-    if(Array.isArray(list)){
-      list.forEach(function(r){
-        if(typeof r === 'string') push('Shopping', r, '', '');
-        else push(r.cat || r.category || r.group, r.item || r.name || r.food, r.qty || r.quantity || r.amount, r.notes || r.note || '');
-      });
-      return rows;
-    }
-    if(!list || typeof list !== 'object') return rows;
-    groupOrder.forEach(function(cat){ if(Object.prototype.hasOwnProperty.call(list, cat)) readGroup(cat, list[cat]); });
-    Object.keys(list).forEach(function(cat){ if(!used[cat]) readGroup(cat, list[cat]); });
-    return rows;
+  var currentPlan = [];
+  var currentPrefs = {};
+
+  var COUNTRY_MAP = {
+    ZA: 'south_africa',
+    SA: 'south_africa',
+    SOUTH_AFRICA: 'south_africa',
+    UK: 'uk',
+    GB: 'uk',
+    US: 'us',
+    USA: 'us',
+    CA: 'canada',
+    CANADA: 'canada',
+    AU: 'australia',
+    AUS: 'australia'
+  };
+
+  function normalizeCountry(value){
+    var raw = String(value || 'ZA').trim();
+    var key = raw.toUpperCase().replace(/[\s-]+/g, '_');
+    return COUNTRY_MAP[key] || raw.toLowerCase() || 'south_africa';
   }
 
-  function buildFallbackHtml(plan, prefs){
-    var days = Array.isArray(plan && plan.days) ? plan.days.slice(0,7) : [];
-    var setup = prefs || window.heartyLeadCurrentPrefs || {};
-    var guide = (setup.proteinMin && setup.proteinMax) ? (setup.proteinMin + '-' + setup.proteinMax + 'g protein · ' + (setup.fibreMin || 20) + '-' + (setup.fibreMax || 30) + 'g fibre') : 'protein-focused';
-    function mealHtml(label, meal){
-      if(!meal) return '';
-      var protein = mealProteinLabel(meal);
-      return '<div class="meal"><b>' + esc(label) + '</b><strong>' + esc(mealTitle(meal)) + '</strong><span>' + esc((protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal)) + '</span></div>';
-    }
-    var input = window.heartyLeadCurrentInput || {};
-    var rows = shoppingRowsByGroup(engineShoppingList(plan, input)).map(function(r){ return '<tr><td>' + esc(r.cat) + '</td><td>' + esc(r.item) + '</td><td>' + esc(r.qty) + '</td><td>' + esc(r.notes) + '</td></tr>'; }).join('');
-    return '<!doctype html><html><head><meta charset="utf-8"><title>Hearty 7-day GLP-1 meal plan</title><style>body{font-family:Arial,sans-serif;color:#102a43;margin:24px;line-height:1.35}.shell{border:1px solid #cfddea;padding:24px;max-width:900px;margin:0 auto}.brand{font-size:30px;font-weight:900;color:#0c5b97}.day{break-inside:avoid;border:1px solid #d8e5ef;border-radius:12px;padding:14px;margin:12px 0}.day h2{margin:0 0 6px}.meal{display:grid;grid-template-columns:95px 1fr;gap:4px 12px;border-top:1px solid #edf3f8;padding:7px 0}.meal b{color:#0c5b97;text-transform:uppercase;font-size:12px}.meal strong,.meal span{grid-column:2}table{width:100%;border-collapse:collapse}td,th{border:1px solid #d8e5ef;padding:7px;text-align:left;vertical-align:top}th{background:#eaf6ff}</style></head><body><div class="shell"><div class="brand">Hearty</div><h1>Your 7-day GLP-1 meal plan</h1><p>Guide: ' + esc(guide) + '</p>' + days.map(function(day){ return '<section class="day"><h2>Day ' + esc(day.day || '') + ' - ~' + Math.round(dayProtein(day)) + 'g protein</h2>' + mealHtml('Breakfast',day.breakfast) + mealHtml('Snack 1',day.morningSnack) + mealHtml('Lunch',day.lunch) + mealHtml('Snack 2',day.afternoonSnack) + mealHtml('Dinner',day.dinner) + '</section>'; }).join('') + '<h2>7-day shopping list</h2><table><thead><tr><th>Category</th><th>Item</th><th>Quantity</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table></div></body></html>';
-  }
-  function fallbackDownloadHtml(plan, prefs){
-    var blob = new Blob([buildFallbackHtml(plan,prefs)], {type:'text/html;charset=utf-8'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'hearty-7-day-glp1-meal-plan.html';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  }
-  function loadJsPdf(){
-    if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
-    return new Promise(function(resolve, reject){
-      var existing = document.querySelector('script[data-hearty-jspdf]');
-      if(existing){ existing.addEventListener('load', function(){ window.jspdf && window.jspdf.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF library loaded but did not initialise')); }); existing.addEventListener('error', reject); return; }
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      s.async = true;
-      s.dataset.heartyJspdf = '1';
-      s.onload = function(){ window.jspdf && window.jspdf.jsPDF ? resolve(window.jspdf.jsPDF) : reject(new Error('PDF library loaded but did not initialise')); };
-      s.onerror = function(){ reject(new Error('Could not load PDF library')); };
-      document.head.appendChild(s);
-    });
-  }
-  function loadLogoDataUrl(){
-    return new Promise(function(resolve){
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = function(){
-        try{
-          var canvas = document.createElement('canvas');
-          canvas.width = img.naturalWidth || img.width;
-          canvas.height = img.naturalHeight || img.height;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img,0,0);
-          resolve(canvas.toDataURL('image/png'));
-        } catch(e){ resolve(null); }
-      };
-      img.onerror = function(){ resolve(null); };
-      img.src = 'assets/hearty-logo-header-transparent-clean.png';
-    });
-  }
-  function setFont(doc, size, style, color){
-    doc.setFont('helvetica', style || 'normal');
-    doc.setFontSize(size);
-    if(color) doc.setTextColor(color[0], color[1], color[2]);
-    else doc.setTextColor(16,42,67);
-  }
-  function linesFor(doc, text, width, size, style){
-    setFont(doc, size, style || 'normal');
-    return doc.splitTextToSize(cleanText(text), width);
-  }
-  function addPageFrame(doc){
-    doc.setDrawColor(207,221,234);
-    doc.setLineWidth(0.35);
-    doc.rect(8,8,194,281);
-  }
-  function addPageFooter(doc, pageNum){
-    setFont(doc, 7.5, 'normal', [120,140,155]);
-    doc.text('Hearty - Your GLP-1 Companion - www.hearty.health', 105, 286, {align:'center'});
-    doc.text(String(pageNum), 195, 286, {align:'right'});
-  }
-  function drawFirstHeader(doc, logoData, guide){
-    var y = 16;
-    if(logoData){
-      try{ doc.addImage(logoData, 'PNG', 14, y, 42, 16); }
-      catch(e){ setFont(doc, 24, 'bold', [12,91,151]); doc.text('Hearty', 14, y + 12); }
+  function setModalVisible(id, visible){
+    var modal = qs(id);
+    if(!modal) return;
+    if(modal.parentNode !== document.body) document.body.appendChild(modal);
+    modal.hidden = !visible;
+    if(visible){
+      modal.removeAttribute('hidden');
+      modal.classList.add('show');
+      modal.style.setProperty('display','flex','important');
     } else {
-      setFont(doc, 24, 'bold', [12,91,151]); doc.text('Hearty', 14, y + 12);
+      modal.classList.remove('show');
+      modal.style.display = 'none';
     }
-    setFont(doc, 22, 'bold', [7,29,53]);
-    doc.text('Your 7-day GLP-1 meal plan', 64, y + 6);
-    setFont(doc, 9.5, 'normal', [82,103,124]);
-    var intro = doc.splitTextToSize('A simple protein-focused starter plan from Hearty. Estimates are for the suggested serving.', 124);
-    doc.text(intro, 64, y + 13);
-    doc.setFillColor(234,246,255);
-    doc.roundedRect(64, y + 21, 78, 7, 3, 3, 'F');
-    setFont(doc, 8.3, 'bold', [11,76,132]);
-    doc.text('Guide: ' + cleanText(guide), 67, y + 25.6);
-    doc.setDrawColor(12,91,151);
-    doc.setLineWidth(0.6);
-    doc.line(14, y + 34, 196, y + 34);
-    return y + 42;
   }
-  function mealHeight(doc, meal, contentW){
-    if(!meal) return 0;
-    var protein = mealProteinLabel(meal);
-    var detail = (protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal);
-    var nameLines = linesFor(doc, mealTitle(meal), contentW - 31, 8.8, 'bold').length;
-    var detailLines = linesFor(doc, detail, contentW - 31, 7.7, 'normal').length;
-    return 4.5 + nameLines * 3.6 + detailLines * 3.25;
-  }
-  function dayBlockHeight(doc, day, contentW){
-    var h = 11 + 5;
-    [day.breakfast, day.morningSnack, day.lunch, day.afternoonSnack, day.dinner].forEach(function(meal){ h += mealHeight(doc, meal, contentW); });
-    return Math.max(42, h + 4);
-  }
-  function drawMeal(doc, label, meal, x, y, contentW){
-    if(!meal) return y;
-    var protein = mealProteinLabel(meal);
-    var detail = (protein ? 'Approx. ' + protein + ' protein - ' : '') + mealDescription(meal);
-    var labelW = 25;
-    setFont(doc, 7.2, 'bold', [12,91,151]);
-    doc.text(label.toUpperCase(), x, y + 3);
-    var tx = x + labelW + 4;
-    var tw = contentW - labelW - 4;
-    setFont(doc, 8.8, 'bold', [7,29,53]);
-    var nameLines = linesFor(doc, mealTitle(meal), tw, 8.8, 'bold');
-    doc.text(nameLines, tx, y + 3);
-    var cursor = y + 3 + nameLines.length * 3.6;
-    setFont(doc, 7.7, 'normal', [65,90,114]);
-    var detailLines = linesFor(doc, detail, tw, 7.7, 'normal');
-    doc.text(detailLines, tx, cursor);
-    cursor += detailLines.length * 3.25 + 1.8;
-    doc.setDrawColor(237,243,248);
-    doc.setLineWidth(0.2);
-    doc.line(x, cursor, x + contentW, cursor);
-    return cursor + 1.4;
-  }
-  function drawDay(doc, day, x, y, contentW, guide){
-    var h = dayBlockHeight(doc, day, contentW);
-    doc.setFillColor(255,255,255);
-    doc.setDrawColor(216,229,239);
-    doc.setLineWidth(0.35);
-    doc.roundedRect(x, y, contentW, h, 3, 3, 'FD');
-    var innerX = x + 4;
-    var innerW = contentW - 8;
-    setFont(doc, 14, 'bold', [7,29,53]);
-    doc.text('Day ' + cleanText(day.day || ''), innerX, y + 7.5);
-    doc.setFillColor(234,246,255);
-    doc.roundedRect(x + contentW - 45, y + 3, 39, 7, 3, 3, 'F');
-    setFont(doc, 8, 'bold', [11,76,132]);
-    doc.text('~' + Math.round(dayProtein(day)) + 'g protein', x + contentW - 25.5, y + 7.7, {align:'center'});
-    setFont(doc, 7.8, 'bold', [96,115,135]);
-    doc.text('Guide: ' + cleanText(guide), innerX, y + 13);
-    doc.setDrawColor(216,229,239);
-    doc.line(innerX, y + 15.5, innerX + innerW, y + 15.5);
-    var cursor = y + 18.5;
-    cursor = drawMeal(doc, 'Breakfast', day.breakfast, innerX, cursor, innerW);
-    cursor = drawMeal(doc, 'Snack 1', day.morningSnack, innerX, cursor, innerW);
-    cursor = drawMeal(doc, 'Lunch', day.lunch, innerX, cursor, innerW);
-    cursor = drawMeal(doc, 'Snack 2', day.afternoonSnack, innerX, cursor, innerW);
-    cursor = drawMeal(doc, 'Dinner', day.dinner, innerX, cursor, innerW);
-    return y + h + 4;
-  }
-  function newPage(doc){
-    doc.addPage();
-    addPageFrame(doc);
-  }
-  function drawShoppingList(doc, shoppingList, startPageY){
-    var rows = shoppingRowsByGroup(shoppingList);
-    newPage(doc);
-    var y = 17;
-    setFont(doc, 18, 'bold', [7,29,53]);
-    doc.text('7-day shopping list', 14, y);
-    y += 6;
-    setFont(doc, 8.2, 'normal', [96,115,135]);
-    doc.text(doc.splitTextToSize('Quantities are practical estimates for the suggested servings. Adjust up or down for your household.', 180), 14, y);
-    y += 9;
-    var widths = [28, 55, 43, 54];
-    function tableHead(){
-      doc.setFillColor(234,246,255);
-      doc.rect(14, y, 180, 7, 'F');
-      setFont(doc, 7.8, 'bold', [11,76,132]);
-      var labels = ['Category','Item','Quantity','Notes'];
-      var cx = 14;
-      labels.forEach(function(label, i){ doc.text(label, cx + 2, y + 4.7); cx += widths[i]; });
-      doc.setDrawColor(216,229,239);
-      doc.rect(14, y, 180, 7);
-      y += 7;
+
+  function openBuilder(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
     }
-    tableHead();
-    rows.forEach(function(r){
-      var cols = [r.cat, r.item, r.qty, r.notes].map(cleanText);
-      setFont(doc, 7.2, 'normal', [16,42,67]);
-      var lineCols = cols.map(function(c, i){ return doc.splitTextToSize(c, widths[i] - 4); });
-      var rowH = Math.max.apply(null, lineCols.map(function(ls){ return ls.length * 3.1 + 3.5; }));
-      if(y + rowH > 276){
-        newPage(doc);
-        y = 17;
-        tableHead();
-      }
-      var x = 14;
-      doc.setDrawColor(216,229,239);
-      doc.rect(14, y, 180, rowH);
-      lineCols.forEach(function(lines, i){
-        doc.text(lines, x + 2, y + 4.5);
-        if(i < widths.length - 1) doc.line(x + widths[i], y, x + widths[i], y + rowH);
-        x += widths[i];
-      });
-      y += rowH;
-    });
-  }
-  async function downloadStyledPdf(){
-    var plan = window.heartyLeadCurrentPlan;
-    var prefs = window.heartyLeadCurrentPrefs || {};
-    if(!plan || !Array.isArray(plan.days) || !plan.days.length){ alert('Please generate your meal plan first.'); return false; }
-    var status = document.getElementById('leadStatus');
-    if(status) status.textContent = 'Preparing your PDF download...';
-    try{
-      var jsPDF = await loadJsPdf();
-      var logoData = await loadLogoDataUrl();
-      var doc = new jsPDF({unit:'mm', format:'a4', orientation:'portrait'});
-      addPageFrame(doc);
-      var guide = (prefs.proteinMin && prefs.proteinMax) ? (prefs.proteinMin + '-' + prefs.proteinMax + 'g protein · ' + (prefs.fibreMin || 20) + '-' + (prefs.fibreMax || 30) + 'g fibre') : '90-125g protein · 20-30g fibre';
-      var y = drawFirstHeader(doc, logoData, guide);
-      var days = plan.days.slice(0,7);
-      days.forEach(function(day){
-        var needed = dayBlockHeight(doc, day, 180);
-        if(y + needed > 276){ newPage(doc); y = 17; }
-        y = drawDay(doc, day, 14, y, 180, guide);
-      });
-      var input = window.heartyLeadCurrentInput || {};
-      drawShoppingList(doc, engineShoppingList(plan, input), y);
-      var pages = doc.getNumberOfPages();
-      for(var p = 1; p <= pages; p++){
-        doc.setPage(p);
-        addPageFrame(doc);
-        addPageFooter(doc, p);
-      }
-      doc.save('hearty-7-day-glp1-meal-plan.pdf');
-      if(status) status.textContent = 'Downloaded - check your downloads folder.';
-      var post = document.getElementById('postSubmit');
-      if(post) post.classList.add('show');
-    } catch(err){
-      console.warn('[Hearty] Direct PDF failed; downloading HTML fallback', err);
-      fallbackDownloadHtml(plan, prefs);
-      if(status) status.textContent = 'Downloaded a styled plan file. If PDF download is blocked, open it and save/print as PDF.';
-      var post = document.getElementById('postSubmit');
-      if(post) post.classList.add('show');
-    }
+    setModalVisible('quickSetupPanel', true);
+    document.body.classList.add('plan-builder-open');
     return false;
   }
-  document.addEventListener('click', function(e){
-    var target = e.target && e.target.closest ? e.target.closest('#downloadPlanBtn') : null;
-    if(!target) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-    downloadStyledPdf();
-  }, true);
-  window.heartyDownloadStyledPlanPdf = downloadStyledPdf;
-})();
-</script>
 
-</body>
+  function closeBuilder(){
+    setModalVisible('quickSetupPanel', false);
+    document.body.classList.remove('plan-builder-open','plan-builder-hard-lock');
+    document.documentElement.classList.remove('plan-builder-root-lock');
+  }
+
+  function openViewer(){
+    setModalVisible('planViewerModal', true);
+    document.body.classList.add('plan-viewer-open');
+  }
+
+  function closeViewer(){
+    setModalVisible('planViewerModal', false);
+    document.body.classList.remove('plan-viewer-open');
+  }
+
+  function selectedValue(group){
+    var selected = document.querySelector('[data-simple-choice="' + group + '"] .selected');
+    return selected ? selected.getAttribute('data-value') : '';
+  }
+
+  function selectedChecks(gridId){
+    var grid = qs(gridId);
+    if(!grid) return [];
+    return qsa('input[type="checkbox"]:checked', grid).map(function(input){ return input.value; });
+  }
+
+  function readPrefs(){
+    var countrySelect = qs('countrySelect');
+    return {
+      sex: selectedValue('sex') || 'female',
+      country: normalizeCountry(countrySelect && countrySelect.value),
+      countryRaw: countrySelect && countrySelect.value || 'ZA',
+      proteins: selectedChecks('proteinFoodGrid'),
+      carbs: selectedChecks('carbFoodGrid'),
+      veg: selectedChecks('vegFoodGrid'),
+      snacks: selectedChecks('snackFoodGrid')
+    };
+  }
+  function applyCountrySnackOptions(){
+    var countrySelect = qs('countrySelect');
+    var country = normalizeCountry(countrySelect && countrySelect.value || 'ZA');
+    var showBiltong = country === 'south_africa';
+    qsa('[data-country-snack]').forEach(function(label){
+      var kind = label.getAttribute('data-country-snack');
+      var shouldShow = kind === 'biltong' ? showBiltong : !showBiltong;
+      label.hidden = !shouldShow;
+      if(!shouldShow){
+        var input = label.querySelector('input[type="checkbox"]');
+        if(input) input.checked = false;
+        label.classList.remove('selected');
+      }
+    });
+  }
+
+
+  function applyCountryFoodLabels(){
+    var countrySelect = qs('countrySelect');
+    var country = normalizeCountry(countrySelect && countrySelect.value || 'ZA');
+    var words = {
+      baby_marrow: country === 'united_states' || country === 'canada' ? 'Zucchini' : (country === 'united_kingdom' || country === 'australia' ? 'Courgette' : 'Baby marrow'),
+      eggplant: country === 'united_kingdom' || country === 'australia' ? 'Aubergine' : (country === 'south_africa' ? 'Brinjal' : 'Eggplant'),
+      rocket: country === 'united_states' || country === 'canada' ? 'Arugula' : 'Rocket',
+      naartjie: country === 'south_africa' ? 'Naartjie' : 'Clementine'
+    };
+    qsa('[data-country-label]').forEach(function(span){
+      var key = span.getAttribute('data-country-label');
+      if(words[key]) span.textContent = words[key];
+    });
+  }
+
+
+  function validatePrefs(prefs){
+    var messages = [];
+    if(!prefs.proteins.length) messages.push('Choose at least a few protein foods.');
+    if(!prefs.carbs.length) messages.push('Choose at least a few carbs or starches.');
+    if(!prefs.veg.length) messages.push('Choose at least a few vegetables.');
+    if(!prefs.snacks.length) messages.push('Choose at least a few fruit or snack options.');
+    return messages;
+  }
+
+  function setGate(messages){
+    var gate = qs('builderGateMessage');
+    if(!gate) return;
+    if(!messages || !messages.length){
+      gate.hidden = true;
+      gate.classList.remove('show');
+      gate.innerHTML = '';
+      return;
+    }
+    gate.hidden = false;
+    gate.classList.add('show');
+    gate.innerHTML = '<strong>Before Hearty builds your plan:</strong><ul>' + messages.map(function(m){ return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>';
+  }
+
+  function engine(){
+    return window.HeartyMealEngineV30 || window.HeartyMealEngine || null;
+  }
+
+  function mealKeys(){ return ['breakfast','lunch','dinner','snack']; }
+
+  function renderMeal(recipe, country){
+    var E = engine();
+    if(!recipe) return { title:'', description:'' };
+    if(E && typeof E.renderMeal === 'function'){
+      var rendered = E.renderMeal(recipe, country) || {};
+      return {
+        title: rendered.title || recipe.render_template || recipe.name || '',
+        description: rendered.description || rendered.portion || recipe.instruction || ''
+      };
+    }
+    return { title: recipe.render_template || recipe.name || '', description: recipe.instruction || '' };
+  }
+
+  function mealRow(label, recipe, country){
+    var rendered = renderMeal(recipe, country);
+    if(!rendered.title) return '';
+    return '<div class="full-meal-row full-engine-meal-row">' +
+      '<b>' + esc(label) + '</b>' +
+      '<div><strong>' + esc(rendered.title) + '</strong>' +
+      (rendered.description ? '<small>' + esc(rendered.description) + '</small>' : '') +
+      '</div></div>';
+  }
+
+  function nutritionLine(day){
+    var E = engine();
+    if(day && day.nutritionSummary) return day.nutritionSummary;
+    if(E && typeof E.renderDailyNutritionSummary === 'function'){
+      var estimate = day && day.nutrition_estimate ? day.nutrition_estimate : (E.estimateDayNutrition ? E.estimateDayNutrition(day, currentPrefs.country) : null);
+      return E.renderDailyNutritionSummary(estimate);
+    }
+    return '';
+  }
+
+  function renderPlanCards(targetId, plan, prefs){
+    var target = qs(targetId);
+    if(!target) return;
+    var days = Array.isArray(plan) ? plan : (plan && Array.isArray(plan.days) ? plan.days : []);
+    if(!days.length){
+      target.innerHTML = '<article class="full-day-card viewer-empty-plan"><h4><span>Check your choices</span></h4><p>The plan could not be generated. Please adjust your choices and try again.</p></article>';
+      return;
+    }
+    target.innerHTML = days.slice(0,7).map(function(day){
+      return '<article class="full-day-card full-engine-day-card">' +
+        '<h4><span>Day ' + esc(day.day || '') + '</span></h4>' +
+        '<div class="day-nutrition-line">' + esc(nutritionLine(day)) + '</div>' +
+        '<div class="full-day-meals">' +
+          mealRow('Breakfast', day.breakfast, prefs.country) +
+          mealRow('Lunch', day.lunch, prefs.country) +
+          mealRow('Dinner', day.dinner, prefs.country) +
+          mealRow('Snack', day.snack, prefs.country) +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function labelForCountry(raw){
+    return ({ZA:'South Africa', UK:'United Kingdom', US:'United States', CA:'Canada', AU:'Australia'}[String(raw || '').toUpperCase()] || raw || 'South Africa');
+  }
+
+  function renderChoiceChips(prefs){
+    var row = qs('viewerChoiceRow');
+    if(!row) return;
+    var chips = [
+      prefs.sex === 'male' ? 'Male portion guide' : 'Female portion guide',
+      '7-day starter plan'
+    ];
+    row.innerHTML = chips.map(function(chip){ return '<span>' + esc(chip) + '</span>'; }).join('');
+  }
+
+  function collectShoppingItems(days){
+    var items = new Map();
+    (days || []).forEach(function(day){
+      mealKeys().forEach(function(key){
+        var meal = day && day[key];
+        var list = meal && Array.isArray(meal.shopping_list_items) ? meal.shopping_list_items : [];
+        list.forEach(function(item){
+          var name = String(item || '').trim();
+          if(!name) return;
+          var key = name.toLowerCase();
+          items.set(key, { name: name, count: (items.get(key) ? items.get(key).count : 0) + 1 });
+        });
+      });
+    });
+    return Array.from(items.values()).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  }
+
+  function renderShoppingPreview(days){
+    var mount = qs('shoppingPreview');
+    if(!mount) return;
+    var items = collectShoppingItems(days).slice(0,24);
+    mount.innerHTML = items.map(function(item){ return '<span>' + esc(item.name) + '</span>'; }).join('');
+  }
+
+  function renderInlinePlan(){
+    var onscreen = qs('onscreenFullPlan');
+    if(onscreen){
+      onscreen.hidden = false;
+      onscreen.classList.add('show');
+    }
+    renderPlanCards('fullPlanRows', currentPlan, currentPrefs);
+    renderShoppingPreview(currentPlan);
+  }
+
+  function buildPlan(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    var E = engine();
+    if(!E || typeof E.buildLeadMagnetPlan !== 'function'){
+      setGate(['The Hearty meal engine did not load. Check that js/hearty-meal-engine-v30.js is uploaded.']);
+      return false;
+    }
+    var prefs = readPrefs();
+    var messages = validatePrefs(prefs);
+    if(messages.length){
+      setGate(messages);
+      return false;
+    }
+    setGate([]);
+    var options = {
+      days: 7,
+      country: prefs.country,
+      sex: prefs.sex,
+      maxVariety: true,
+      selectedFoods: {
+        proteins: prefs.proteins.slice(),
+        carbs: prefs.carbs.slice(),
+        vegetables: prefs.veg.slice(),
+        snacks: prefs.snacks.slice()
+      }
+    };
+    var plan = E.buildLeadMagnetPlan(options);
+    currentPlan = Array.isArray(plan) ? plan : (plan && Array.isArray(plan.days) ? plan.days : []);
+    currentPrefs = prefs;
+    window.heartyLeadCurrentPlan = currentPlan;
+    window.heartyLeadCurrentPrefs = currentPrefs;
+    renderChoiceChips(prefs);
+    renderPlanCards('viewerPlanRows', currentPlan, prefs);
+    renderShoppingPreview(currentPlan);
+    closeBuilder();
+    openViewer();
+    return false;
+  }
+
+  function planText(){
+    var lines = ['Hearty 7-day GLP-1 meal plan', ''];
+    (currentPlan || []).slice(0,7).forEach(function(day){
+      lines.push('Day ' + (day.day || ''));
+      var summary = nutritionLine(day);
+      if(summary) lines.push(summary);
+      mealKeys().forEach(function(key){
+        var rendered = renderMeal(day[key], currentPrefs.country);
+        if(rendered.title){
+          lines.push(key.charAt(0).toUpperCase() + key.slice(1) + ': ' + rendered.title);
+          if(rendered.description) lines.push('  ' + rendered.description);
+        }
+      });
+      lines.push('');
+    });
+    lines.push('Shopping list preview:');
+    collectShoppingItems(currentPlan).forEach(function(item){ lines.push('- ' + item.name); });
+    return lines.join('\n');
+  }
+
+  function downloadPlan(event){
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    var status = qs('leadStatus');
+    var email = qs('leadEmail');
+    if(email && !String(email.value || '').trim()){
+      if(status) status.textContent = 'Enter your email address to download the plan.';
+      email.focus();
+      return false;
+    }
+    if(!currentPlan || !currentPlan.length) renderInlinePlan();
+    var blob = new Blob([planText()], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'hearty-7-day-glp1-meal-plan.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+    if(status) status.textContent = 'Downloaded - check your downloads folder.';
+    var post = qs('postSubmit');
+    if(post) post.classList.add('show');
+    return false;
+  }
+
+  function continueToDownload(event){
+    if(event){ event.preventDefault(); event.stopPropagation(); }
+    closeViewer();
+    renderInlinePlan();
+    var panel = qs('inlineUnlockPanel') || qs('tool');
+    if(panel && panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return false;
+  }
+
+  function clearIngredientDefaults(){
+    ['proteinFoodGrid','carbFoodGrid','vegFoodGrid','snackFoodGrid'].forEach(function(id){
+      var grid = qs(id);
+      if(!grid) return;
+      qsa('input[type="checkbox"]', grid).forEach(function(input){
+        input.checked = false;
+        var label = input.closest('.protein-check');
+        if(label) label.classList.remove('selected');
+      });
+    });
+  }
+
+  function bindSelectionUi(){
+    qsa('[data-simple-choice]').forEach(function(group){
+      qsa('button[data-value]', group).forEach(function(button){
+        button.addEventListener('click', function(event){
+          event.preventDefault();
+          qsa('button[data-value]', group).forEach(function(other){ other.classList.remove('selected'); });
+          button.classList.add('selected');
+        });
+      });
+    });
+    qsa('.protein-check input[type="checkbox"]').forEach(function(input){
+      input.addEventListener('change', function(){
+        var label = input.closest('.protein-check');
+        if(label) label.classList.toggle('selected', !!input.checked);
+      });
+    });
+  }
+
+  function bindEvents(){
+    var triggerSelector = '#heroGeneratePlanBtn,#rightTopGenerateBtn,#fullPlanBtn,[data-open-plan-setup],[data-force-open-builder],a[href="#quickSetupPanel"]';
+    qsa(triggerSelector).forEach(function(el){
+      el.setAttribute('href','#quickSetupPanel');
+      el.addEventListener('click', openBuilder, true);
+    });
+    var closeSetup = qs('closePlanSetup');
+    if(closeSetup) closeSetup.addEventListener('click', closeBuilder, true);
+    var cancel = qs('modalCancelPlanBtn');
+    if(cancel) cancel.addEventListener('click', closeBuilder, true);
+    var closeView = qs('closePlanViewer');
+    if(closeView) closeView.addEventListener('click', closeViewer, true);
+    var edit = qs('viewerEditBtn');
+    if(edit) edit.addEventListener('click', function(e){ closeViewer(); openBuilder(e); }, true);
+    var build = qs('modalBuildPlanBtn');
+    if(build) build.addEventListener('click', buildPlan, true);
+    var viewerDownload = qs('viewerDownloadBtn');
+    if(viewerDownload) viewerDownload.addEventListener('click', continueToDownload, true);
+    var download = qs('downloadPlanBtn');
+    if(download) download.addEventListener('click', downloadPlan, true);
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ closeViewer(); closeBuilder(); } });
+  }
+
+  function initCountryDisplay(){
+    var country = qs('countrySelect');
+    applyCountrySnackOptions();
+    applyCountryFoodLabels();
+    if(country){
+      country.addEventListener('change', function(){
+        applyCountrySnackOptions();
+        applyCountryFoodLabels();
+      });
+    }
+  }
+
+  function init(){
+    clearIngredientDefaults();
+    bindSelectionUi();
+    bindEvents();
+    initCountryDisplay();
+    window.heartyOpenPlanSetup = openBuilder;
+    window.heartyClosePlanSetup = closeBuilder;
+    window.heartyOpenPlanViewer = openViewer;
+    window.heartyClosePlanViewer = closeViewer;
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script></body>
 </html>
