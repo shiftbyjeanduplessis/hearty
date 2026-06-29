@@ -5222,6 +5222,90 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
   body.plan-viewer-open .sticky-cta{display:none!important;}
 }
 
+
+
+/* v36 — mobile action/display + real PDF download polish */
+@media(max-width:760px){
+  /* remove the intrusive bottom sticky button on mobile */
+  #stickyCta{display:none!important;}
+
+  /* compact the builder action area */
+  #quickSetupPanel .engine-builder-actions{
+    position:sticky!important;
+    bottom:0!important;
+    padding:8px!important;
+    border-radius:16px!important;
+    gap:8px!important;
+    box-shadow:0 10px 28px rgba(0,0,0,.22)!important;
+  }
+  #quickSetupPanel .engine-builder-note{display:none!important;}
+  #quickSetupPanel .engine-builder-button-row{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
+  #quickSetupPanel .generator-build-btn,
+  #quickSetupPanel .generator-cancel-btn{min-height:46px!important;font-size:.92rem!important;border-radius:999px!important;}
+
+  /* warning becomes a short toast, not a giant panel */
+  #builderGateMessage.builder-gate-message.show{
+    left:18px!important;
+    right:18px!important;
+    bottom:calc(118px + env(safe-area-inset-bottom))!important;
+    padding:10px 12px!important;
+    border-radius:15px!important;
+    font-size:.84rem!important;
+    line-height:1.25!important;
+    max-height:112px!important;
+    overflow:hidden!important;
+  }
+  #builderGateMessage strong{font-size:.9rem!important;margin:0!important;}
+  #builderGateMessage ul{margin:4px 0 0 16px!important;}
+
+  /* viewer buttons should not float over the meal cards */
+  .viewer-bottom-cta{
+    position:static!important;
+    bottom:auto!important;
+    padding:0!important;
+    margin:18px 0 0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .viewer-bottom-cta .btn{min-height:50px!important;font-size:.94rem!important;}
+
+  /* generated plan embedded on the page: one readable column */
+  #onscreenFullPlan, .onscreen-full-plan{padding:0!important;}
+  #fullPlanRows, .full-plan-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  #fullPlanRows .full-day-card,
+  .onscreen-full-plan .full-day-card{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:16px!important;
+    border-radius:20px!important;
+    background:#fff!important;
+    color:#071d35!important;
+  }
+  .onscreen-plan-head{display:block!important;}
+  .onscreen-plan-head h3{font-size:1.65rem!important;line-height:1.08!important;}
+  .onscreen-plan-head p{font-size:.96rem!important;line-height:1.4!important;}
+  .onscreen-download-jump{width:100%!important;margin-top:12px!important;min-height:50px!important;font-size:.94rem!important;}
+  #fullPlanRows .full-meal-row,
+  .onscreen-full-plan .full-meal-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:4px!important;
+    padding:11px 0!important;
+  }
+  #fullPlanRows .full-meal-row b,
+  .onscreen-full-plan .full-meal-row b{font-size:.76rem!important;letter-spacing:.1em!important;color:#0c5b97!important;}
+  #fullPlanRows .full-meal-row strong,
+  .onscreen-full-plan .full-meal-row strong{font-size:1.08rem!important;line-height:1.25!important;color:#071d35!important;}
+  #fullPlanRows .full-meal-row small,
+  .onscreen-full-plan .full-meal-row small{font-size:.96rem!important;line-height:1.45!important;color:#53697d!important;}
+}
+
 </style>
 </head>
 <body>
@@ -6301,7 +6385,34 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
     }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, body:t }; }); })
       .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
   }
-  function downloadTextFile(){
+  function loadScriptOnce(src){
+    return new Promise(function(resolve, reject){
+      var existing = document.querySelector('script[src="' + src + '"]');
+      if(existing){
+        if(existing.__loaded) return resolve();
+        existing.addEventListener('load', resolve, { once:true });
+        existing.addEventListener('error', reject, { once:true });
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = function(){ s.__loaded = true; resolve(); };
+      s.onerror = function(){ reject(new Error('PDF library failed to load')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensureJsPdf(){
+    if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+    return loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+      .then(function(){
+        if(window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+        throw new Error('PDF library unavailable');
+      });
+  }
+
+  function downloadTextFallback(){
     var blob = new Blob([buildPlanText()], { type:'text/plain;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
@@ -6311,6 +6422,114 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
     a.click();
     a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 700);
+  }
+
+  function addPdfWrapped(doc, text, x, y, maxWidth, lineHeight){
+    var lines = doc.splitTextToSize(String(text || ''), maxWidth);
+    lines.forEach(function(line){
+      if(y > 275){ doc.addPage(); y = 18; }
+      doc.text(line, x, y);
+      y += lineHeight;
+    });
+    return y;
+  }
+
+  function downloadPdfFile(){
+    return ensureJsPdf().then(function(jsPDF){
+      var doc = new jsPDF({ unit:'mm', format:'a4' });
+      var plan = getCurrentPlan() || [];
+      var prefs = getCurrentPrefs() || {};
+      var x = 14, y = 16, pageW = 210, maxW = 182;
+
+      function pageCheck(extra){ if(y + (extra || 0) > 282){ doc.addPage(); y = 18; } }
+      function divider(){ doc.setDrawColor(220,230,239); doc.line(x, y, pageW - x, y); y += 5; }
+
+      doc.setFillColor(12,91,151);
+      doc.roundedRect(14, 10, 24, 11, 3, 3, 'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(10);
+      doc.text('♥', 18, 17.4);
+      doc.setTextColor(7,29,53);
+      doc.setFontSize(22);
+      doc.text('Hearty', 43, 18);
+      doc.setFontSize(16);
+      doc.text('7-day GLP-1 meal plan', 14, 34);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(83,105,125);
+      doc.text('Simple meals, protein, fibre and shopping support for your first week.', 14, 41);
+      y = 50;
+
+      plan.slice(0,7).forEach(function(day){
+        pageCheck(42);
+        doc.setTextColor(12,91,151);
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(12);
+        doc.text('DAY ' + (day.day || ''), x, y);
+        y += 6;
+        var n = nutritionLine(day);
+        if(n){
+          doc.setTextColor(83,105,125);
+          doc.setFontSize(9.2);
+          y = addPdfWrapped(doc, n, x, y, maxW, 4.6);
+          y += 1.5;
+        }
+        mealKeys().forEach(function(key){
+          var r = renderMeal(day && day[key], prefs.country);
+          if(!r.title) return;
+          pageCheck(22);
+          doc.setTextColor(12,91,151);
+          doc.setFont('helvetica','bold');
+          doc.setFontSize(8.5);
+          doc.text(key.toUpperCase(), x, y);
+          doc.setTextColor(7,29,53);
+          doc.setFontSize(10.5);
+          y = addPdfWrapped(doc, r.title, x + 34, y, maxW - 34, 4.8);
+          doc.setFont('helvetica','normal');
+          doc.setTextColor(83,105,125);
+          doc.setFontSize(9.2);
+          if(r.description) y = addPdfWrapped(doc, r.description, x + 34, y, maxW - 34, 4.5);
+          y += 2;
+        });
+        divider();
+      });
+
+      var items = collectShoppingItems(plan);
+      if(items.length){
+        pageCheck(24);
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(15);
+        doc.setTextColor(7,29,53);
+        doc.text('Shopping list', x, y);
+        y += 8;
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(9.2);
+        doc.setTextColor(83,105,125);
+        items.forEach(function(item){
+          pageCheck(8);
+          y = addPdfWrapped(doc, '• ' + item, x, y, maxW, 4.5);
+        });
+      }
+
+      var pages = doc.getNumberOfPages();
+      for(var i=1;i<=pages;i++){
+        doc.setPage(i);
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(8);
+        doc.setTextColor(120,137,153);
+        doc.text('Hearty — Your GLP-1 Companion', 14, 290);
+        doc.text(String(i) + ' / ' + String(pages), 188, 290);
+      }
+      doc.save('hearty-7-day-glp1-meal-plan.pdf');
+    }).catch(function(err){
+      console.warn('[Hearty] PDF failed, using text fallback', err);
+      downloadTextFallback();
+    });
+  }
+
+  function downloadTextFile(){
+    return downloadPdfFile();
   }
   function showViewerEmailPanel(){
     var mount = qs('viewerUnlockMount');
