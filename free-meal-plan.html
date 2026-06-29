@@ -5114,6 +5114,114 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
   .builder-gate-message ul{margin-top:6px!important;}
 }
 
+
+/* v35 — emergency event-break + mobile readability patch */
+@media(max-width:760px){
+  #quickSetupPanel.plan-generator-window{
+    padding:0!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+  }
+  #quickSetupPanel .generator-window-engine,
+  #quickSetupPanel .generator-window-simple,
+  #quickSetupPanel .generator-window-simple-builder{
+    width:100%!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+    padding:16px 14px calc(104px + env(safe-area-inset-bottom))!important;
+  }
+  #quickSetupPanel .engine-builder-top{margin-bottom:12px!important;}
+  #quickSetupPanel .generator-window-engine h2{font-size:1.9rem!important;line-height:1.05!important;}
+  #quickSetupPanel .engine-builder-grid,
+  #quickSetupPanel .engine-builder-preferences,
+  #quickSetupPanel .simplified-preferences,
+  #quickSetupPanel .simplified-foot,
+  #quickSetupPanel .engine-builder-foot,
+  #quickSetupPanel .engine-protein-grid,
+  #quickSetupPanel .engine-avoid-grid,
+  #quickSetupPanel .engine-builder-button-row{
+    grid-template-columns:1fr!important;
+  }
+  #quickSetupPanel .engine-builder-actions{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:30!important;
+    padding:12px!important;
+    border-radius:22px!important;
+  }
+  #quickSetupPanel .generator-build-btn,
+  #quickSetupPanel .generator-cancel-btn{width:100%!important;min-height:54px!important;}
+
+  #builderGateMessage.builder-gate-message.show{
+    position:fixed!important;
+    left:14px!important;
+    right:14px!important;
+    bottom:calc(84px + env(safe-area-inset-bottom))!important;
+    z-index:2147483647!important;
+    max-width:none!important;
+    padding:12px 14px!important;
+    border-radius:18px!important;
+    font-size:.9rem!important;
+    line-height:1.32!important;
+    box-shadow:0 18px 42px rgba(0,0,0,.30)!important;
+  }
+  #builderGateMessage strong{display:block!important;margin-bottom:4px!important;}
+  #builderGateMessage ul{margin:4px 0 0 18px!important;padding:0!important;}
+
+  .plan-viewer-modal{
+    padding:0!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+    background:#071d35!important;
+  }
+  .plan-viewer-shell{
+    width:100%!important;
+    max-width:none!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+    padding:16px 14px calc(112px + env(safe-area-inset-bottom))!important;
+    overflow:auto!important;
+  }
+  .plan-viewer-top{grid-template-columns:1fr auto!important;gap:12px!important;}
+  .plan-viewer-top h2{font-size:1.7rem!important;line-height:1.08!important;}
+  .plan-viewer-top p{font-size:.98rem!important;line-height:1.42!important;}
+  .viewer-plan-grid,
+  .full-plan-grid,
+  #fullPlanRows{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  .full-day-card,
+  .viewer-plan-grid .full-day-card,
+  #fullPlanRows .full-day-card{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:16px!important;
+    border-radius:22px!important;
+    background:#fff!important;
+    color:#071d35!important;
+  }
+  .full-meal-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+    padding:11px 0!important;
+  }
+  .full-meal-row b{font-size:.78rem!important;letter-spacing:.10em!important;line-height:1.15!important;color:#0c5b97!important;}
+  .full-meal-row strong{font-size:1.08rem!important;line-height:1.25!important;color:#071d35!important;}
+  .full-meal-row small{font-size:.98rem!important;line-height:1.45!important;margin-top:4px!important;color:#54697d!important;}
+  .day-nutrition-line{font-size:.92rem!important;line-height:1.35!important;color:#4d6378!important;}
+  .viewer-bottom-cta{position:sticky!important;bottom:0!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;padding:12px!important;margin-top:14px!important;border-radius:22px!important;background:#fff!important;}
+  .viewer-bottom-cta .btn{width:100%!important;min-height:54px!important;font-size:.98rem!important;}
+  body.plan-builder-open .sticky-cta,
+  body.plan-viewer-open .sticky-cta{display:none!important;}
+}
+
 </style>
 </head>
 <body>
@@ -5982,11 +6090,14 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
   }
 
   function continueToDownload(event){
-    if(event){ event.preventDefault(); event.stopPropagation(); }
-    closeViewer();
-    renderInlinePlan();
-    var panel = qs('inlineUnlockPanel') || qs('tool');
-    if(panel && panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if(window.heartyShowViewerEmailPanel){
+      return window.heartyShowViewerEmailPanel(event);
+    }
     return false;
   }
 
@@ -6096,16 +6207,9 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
   }
 
   function patchEngineRender(){
-    var E = window.HeartyMealEngineV30 || window.HeartyMealEngine;
-    if(!E || !E.renderMeal || E.__heartyCleanDescriptionPatch) return;
-    var old = E.renderMeal;
-    E.renderMeal = function(recipe, country){
-      var rendered = old.call(E, recipe, country) || {};
-      if(rendered.description) rendered.description = cleanDescription(rendered.description);
-      if(rendered.portion) rendered.portion = cleanDescription(rendered.portion);
-      return rendered;
-    };
-    E.__heartyCleanDescriptionPatch = true;
+    // Do not monkey-patch the meal engine. It is frozen/read-only on production.
+    // Descriptions are cleaned at render/download time instead.
+    return;
   }
 
   function showGateBriefly(){
@@ -6292,6 +6396,7 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
     bindHotfixEvents();
     setTimeout(initPaddle, 500);
     window.heartyOpenCheckout = openCheckout;
+    window.heartyShowViewerEmailPanel = showViewerEmailPanel;
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
