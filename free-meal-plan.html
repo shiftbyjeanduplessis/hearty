@@ -5772,7 +5772,7 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
 <!-- Hearty Brevo-only sync patch — no meal generation logic -->
 <script>
 (function(){
-  var HEARTY_BREVO_SYNC_URL = "https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
+  var HEARTY_BREVO_SYNC_URL = "https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
   var lastSyncedEmail = "";
 
   function byId(id) { return document.getElementById(id); }
@@ -6334,7 +6334,9 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
 <script>
 (function(){
   'use strict';
-  var BREVO_SYNC_URL = 'https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var BREVO_SYNC_URL = 'https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M';
   var PADDLE_TOKEN = 'live_516a138666d2aaaca6729c439ba';
   var PADDLE_PRICE_ID = 'pri_01krrpc5hxx3dnak7bxjetm8qp';
   var PADDLE_SUCCESS_URL = 'https://hearty.health/login';
@@ -6493,15 +6495,99 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
     if(qs('leadEmail')) qs('leadEmail').value = lead.email || '';
     if(qs('leadName')) qs('leadName').value = lead.name || '';
   }
+  function leadSessionId(){
+    try{
+      var key = 'hearty_free_meal_session';
+      var id = sessionStorage.getItem(key) || localStorage.getItem(key);
+      if(!id){ id = 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2); sessionStorage.setItem(key, id); localStorage.setItem(key, id); }
+      return id;
+    }catch(err){ return 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2); }
+  }
+  function urlParam(name){ return new URLSearchParams(window.location.search).get(name) || ''; }
+  function currentCountry(){
+    var prefs = getCurrentPrefs ? getCurrentPrefs() : {};
+    return String((prefs && (prefs.countryRaw || prefs.country)) || (qs('countrySelect') && qs('countrySelect').value) || '').toUpperCase() || '';
+  }
+  function postSupabaseEvent(eventName, metadata){
+    if(!SUPABASE_URL || !SUPABASE_ANON_KEY) return Promise.resolve({ ok:false, skipped:true });
+    var payload = {
+      event_name: eventName,
+      session_id: leadSessionId(),
+      user_id: null,
+      source: urlParam('src') || urlParam('utm_source') || 'direct',
+      campaign: urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
+      page: location.pathname,
+      referrer: document.referrer || '',
+      country: currentCountry(),
+      metadata: Object.assign({ tracking_version:'v31z-capture-hotfix', timestamp:new Date().toISOString() }, metadata || {})
+    };
+    return fetch(SUPABASE_URL + '/rest/v1/hearty_events', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'apikey':SUPABASE_ANON_KEY, 'Authorization':'Bearer ' + SUPABASE_ANON_KEY },
+      body:JSON.stringify(payload),
+      keepalive:true
+    }).then(function(res){ return { ok:res.ok, status:res.status }; })
+      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+  }
+  function postSupabaseLeadBackup(lead){
+    if(!SUPABASE_URL || !SUPABASE_ANON_KEY || !validEmail(lead.email)) return Promise.resolve({ ok:false, skipped:true });
+    var plan = getCurrentPlan ? getCurrentPlan() : [];
+    var prefs = getCurrentPrefs ? getCurrentPrefs() : {};
+    var payload = {
+      first_name: lead.name || '',
+      email: lead.email,
+      whatsapp: '',
+      country: currentCountry() || 'OTHER',
+      market: currentCountry() === 'ZA' ? 'ZA' : 'INT',
+      proteins: Array.isArray(prefs.proteins) ? prefs.proteins : [],
+      breakfasts: [],
+      starches: [],
+      vegetables: [],
+      fruits: [],
+      snacks: [],
+      generated_plan: Array.isArray(plan) ? plan.slice(0,7) : plan,
+      checkout_url: location.href,
+      ref: urlParam('ref'),
+      utm_source: urlParam('utm_source') || urlParam('src') || 'direct',
+      utm_medium: urlParam('utm_medium'),
+      utm_campaign: urlParam('utm_campaign') || urlParam('campaign') || 'free_meal_plan',
+      utm_content: urlParam('utm_content'),
+      lead_status: 'Email captured',
+      notes: 'Captured by free-meal-plan v31z-capture-hotfix. Brevo edge function also called.'
+    };
+    return fetch(SUPABASE_URL + '/rest/v1/meal_plan_leads', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'apikey':SUPABASE_ANON_KEY, 'Authorization':'Bearer ' + SUPABASE_ANON_KEY, 'Prefer':'return=minimal' },
+      body:JSON.stringify(payload)
+    }).then(function(res){ return { ok:res.ok, status:res.status }; })
+      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+  }
   function syncLead(lead){
     if(!validEmail(lead.email)) return Promise.resolve({ok:false, skipped:true});
-    return fetch(BREVO_SYNC_URL, {
+    var payload = {
+      email:lead.email,
+      name:lead.name || '',
+      firstName:lead.name || '',
+      source:'free_meal_plan',
+      campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
+      page:location.pathname
+    };
+    var brevoRequest = fetch(BREVO_SYNC_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ email:lead.email, name:lead.name || '', firstName:lead.name || '', source:'free_meal_plan' }),
+      body:JSON.stringify(payload),
       keepalive:true
-    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, body:t }; }); })
+    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, status:res.status, body:t }; }); })
       .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+    var eventRequest = postSupabaseEvent('free_meal_lead_capture_submitted', { email_present:true, brevo_url_fixed:true });
+    var leadBackupRequest = postSupabaseLeadBackup(lead);
+    return Promise.allSettled([brevoRequest, eventRequest, leadBackupRequest]).then(function(results){
+      var brevo = results[0].status === 'fulfilled' ? results[0].value : { ok:false, error:String(results[0].reason || '') };
+      var event = results[1].status === 'fulfilled' ? results[1].value : { ok:false, error:String(results[1].reason || '') };
+      var leadBackup = results[2].status === 'fulfilled' ? results[2].value : { ok:false, error:String(results[2].reason || '') };
+      try{ console.log('[Hearty] lead capture results', { brevo:brevo, event:event, leadBackup:leadBackup }); }catch(e){}
+      return { ok:Boolean(brevo.ok || event.ok || leadBackup.ok), brevo:brevo, event:event, leadBackup:leadBackup };
+    });
   }
   function loadScriptOnce(src){
     return new Promise(function(resolve, reject){
