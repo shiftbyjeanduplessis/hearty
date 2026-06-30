@@ -6902,5 +6902,126 @@ body.plan-viewer-open .sticky-cta{display:none!important;}
 })();
 </script>
 
+
+
+<!-- Hearty v31ab funnel-step tracking hotfix -->
+<script>
+(function(){
+  'use strict';
+  if (window.__heartyV31abFunnelTrackingHotfix) return;
+  window.__heartyV31abFunnelTrackingHotfix = true;
+
+  var SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXAiOiJtZHNmY25vY3ZlbHdxaWVyY3ljaSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzc3MTExMzYwLCJleHAiOjIwOTI2ODczNjB9.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M';
+
+  function param(name){
+    try{ return new URLSearchParams(window.location.search).get(name) || ''; }catch(e){ return ''; }
+  }
+  function getSessionId(){
+    try{
+      var key = 'hearty_free_meal_session';
+      var id = sessionStorage.getItem(key) || localStorage.getItem(key);
+      if(!id){
+        id = 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+        sessionStorage.setItem(key, id);
+        localStorage.setItem(key, id);
+      }
+      return id;
+    }catch(e){
+      return 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+    }
+  }
+  function source(){ return param('src') || param('source') || param('utm_source') || 'direct'; }
+  function campaign(){ return param('campaign') || param('utm_campaign') || 'free_meal_plan'; }
+  function closest(el, selector){ return el && el.closest ? el.closest(selector) : null; }
+  function currentCountry(){
+    var el = document.getElementById('country') || document.querySelector('[name="country"]') || document.querySelector('[data-country]');
+    return el ? String(el.value || el.getAttribute('data-country') || '').trim() : '';
+  }
+  function fireEvent(eventName, meta){
+    var payload = {
+      event_name: eventName,
+      session_id: getSessionId(),
+      user_id: null,
+      source: source(),
+      campaign: campaign(),
+      page: location.pathname,
+      referrer: document.referrer || '',
+      country: currentCountry(),
+      metadata: Object.assign({
+        tracking_version: 'v31ab-funnel-step-tracking-hotfix',
+        timestamp: new Date().toISOString(),
+        full_url: location.href,
+        search: location.search || '',
+        src: param('src'),
+        campaign: param('campaign'),
+        utm_source: param('utm_source'),
+        utm_medium: param('utm_medium'),
+        utm_campaign: param('utm_campaign')
+      }, meta || {})
+    };
+    return fetch(SUPABASE_URL + '/rest/v1/hearty_events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function(err){
+      try{ console.warn('[Hearty] funnel tracking failed', eventName, err); }catch(e){}
+    });
+  }
+
+  function firePageViewOnce(){
+    if(window.__heartyV31abPageViewFired) return;
+    window.__heartyV31abPageViewFired = true;
+    fireEvent('free_meal_page_view', { trigger: 'load' });
+  }
+  function fireStartedOnce(trigger){
+    if(window.__heartyV31abStartedFired) return;
+    window.__heartyV31abStartedFired = true;
+    fireEvent('free_meal_started', { trigger: trigger || 'interaction' });
+  }
+
+  function bindTracking(){
+    document.addEventListener('click', function(e){
+      var start = closest(e.target, '[data-open-plan-setup], [data-force-open-builder], #rightTopGenerateBtn, #heroPlanCta, #startMealPlanBtn, a[href="#quickSetupPanel"], a[href="#tool"]');
+      if(start){ fireStartedOnce(start.id || start.getAttribute('data-open-plan-setup') || start.getAttribute('href') || 'start_click'); }
+
+      var next = closest(e.target, '[data-next-step], .setup-next, .builder-next, button');
+      if(next){
+        var text = String(next.textContent || '').toLowerCase();
+        if(text.indexOf('next') !== -1 || text.indexOf('continue') !== -1 || text.indexOf('generate') !== -1 || text.indexOf('build') !== -1){
+          fireStartedOnce('builder_button_' + text.slice(0,30));
+        }
+      }
+    }, true);
+
+    document.addEventListener('input', function(e){
+      var target = e.target;
+      if(target && closest(target, '#quickSetupPanel, #tool, .plan-panel, .setup-panel, form')){
+        fireStartedOnce('input');
+      }
+    }, true);
+
+    document.addEventListener('change', function(e){
+      var target = e.target;
+      if(target && closest(target, '#quickSetupPanel, #tool, .plan-panel, .setup-panel, form')){
+        fireStartedOnce('change');
+      }
+    }, true);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(firePageViewOnce, 200); bindTracking(); });
+  }else{
+    setTimeout(firePageViewOnce, 200); bindTracking();
+  }
+})();
+</script>
+
 </body>
 </html>
