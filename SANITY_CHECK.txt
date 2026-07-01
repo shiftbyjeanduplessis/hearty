@@ -1,0 +1,10 @@
+engine_exists: PASS
+phone_asset_exists: PASS
+clean_css_present: PASS
+clean_js_present: PASS
+uses_original_setup_close: PASS
+uses_original_viewer_close: PASS
+fixed_original_bar: PASS
+clean_offer: PASS
+phone_image_used: PASS
+offer_after_plan: PASS

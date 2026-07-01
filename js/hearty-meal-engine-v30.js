@@ -1381,7 +1381,7 @@
     if (carb.includes("cracker")) return chosen.has("cracker_snacks");
     if (carb.includes("rice cake")) return chosen.has("rice_cake_snacks");
     if (name.includes("fruit")) return hasFruit;
-    return true;
+    return false;
   }
 
   function isDefaultSnackAllowed(recipe) {
@@ -1460,7 +1460,7 @@
     const targetGroup = DEFAULT_SNACK_SKELETON[dayIndex % DEFAULT_SNACK_SKELETON.length];
     let allowed = snacks.filter(isDefaultSnackAllowed);
     const selectedAllowed = allowed.filter((recipe) => snackAllowedBySelections(recipe, options));
-    if (selectedAllowed.length >= 4) allowed = selectedAllowed;
+    if (selectedAllowed.length) allowed = selectedAllowed;
     const cappedAllowed = allowed.filter((recipe) => snackObeysWeeklyCaps(recipe, state, options));
     let pool = cappedAllowed.filter((recipe) => !state.usedSnackIds.has(recipe.id));
     const targetPool = pool.filter((recipe) => snackTargetMatches(recipe, targetGroup));

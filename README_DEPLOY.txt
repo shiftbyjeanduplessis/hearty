@@ -1,27 +1,18 @@
-DEPLOY THIS ZIP EXACTLY
+Hearty free meal plan funnel — v35j clean flow
 
-Upload/replace these 3 files at the site root:
+Upload these paths together:
+- free-meal-plan.html
+- js/hearty-meal-engine-v30.js
+- assets/hearty-logo.png
+- assets/hearty-app-phone-preview.png
 
-1. /free-meal-plan.html
-2. /free-meal-plan
-3. /js/hearty-meal-engine.js
-
-This build:
-- Uses the actual locked project lead-magnet meal engine:
-  hearty-main/hearty-leadmagnet-meal-engine.js
-- Replaces the broken old v33 wrapper adapter.
-- Passes the correct engine input:
-  proteins, breakfastItems, snackProteins, starches, vegetables, region, diet.
-- Hard-resets the default checked foods on first load:
-  eggs, chicken, Greek yoghurt only for proteins.
-- Does not use preferredFoodKeys or the old app-style engine input.
-- Keeps Brevo sync.
-- Keeps /free-meal-plan as redirect safety.
-
-After deploy:
-1. Open https://hearty.health/free-meal-plan.html
-2. Ctrl+F5
-3. Generate default plan.
-4. Console should show:
-   [Hearty] Locked lead-magnet engine used
-5. Default plan should not include tofu, pork, fish, calamari, chickpeas or beans unless those are selected.
+v35j fixes:
+- Removes duplicate X problem by removing old injected close-button patches and styling the original close buttons only.
+- Moves the original viewer action bar to document.body and fixes it to the true browser bottom.
+- Action bar now only shows while the plan viewer is open.
+- Action bar hides when the email capture/download form opens, avoiding three competing save/download CTAs.
+- App offer uses the real phone image asset with transparent background, not the mini mockup.
+- App offer layout simplified so guarantee/refund text no longer collapses into a narrow vertical column.
+- Refine panel has clear actions: Update my plan and Close refinements.
+- Selection fidelity/snack variety changes preserved.
+- Existing meal engine, Paddle, Brevo, tracking and PDF logic preserved.
