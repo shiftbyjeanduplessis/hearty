@@ -36,16 +36,22 @@
     const n = Number(day);
     return names[Number.isFinite(n) && n >= 0 && n <= 6 ? n : 1];
   }
-  function frequencyDays(value){
+  function frequencyDays(value, intervalDays){
+    const custom = Number(intervalDays);
     const map = {
       daily: 1,
       weekly: 7,
+      every_2_weeks: 14,
       twice_weekly: 3.5,
       custom_days: null,
+      every_x_days: Number.isFinite(custom) && custom > 0 ? custom : null,
+      custom_next_date: null,
+      no_fixed: null,
+      set_later: null,
       not_sure: null,
       not_using: null
     };
-    return Object.prototype.hasOwnProperty.call(map, value) ? map[value] : 7;
+    return Object.prototype.hasOwnProperty.call(map, value) ? map[value] : null;
   }
   function normaliseMedicationDays(value){
     if(Array.isArray(value)) return value.map(String).filter(v => /^[0-6]$/.test(v));
@@ -56,29 +62,35 @@
     return normaliseMedicationDays(days).map(weekdayNameFromNumber);
   }
   function medicationDueToday(med){
+    const today = localDate();
     const todayDay = String(new Date().getDay());
-    const frequency = med.frequency || 'weekly';
+    const frequency = med.frequency || 'set_later';
     const days = normaliseMedicationDays(med.days && med.days.length ? med.days : med.day);
 
-    if(!med.type || med.type === 'Not using medication yet') return false;
+    if(!med.type || ['Not using medication yet','Prefer not to say'].includes(med.type)) return false;
+    if(['not_using','set_later','no_fixed','not_sure'].includes(frequency)) return false;
+    if(med.nextDoseDate && String(med.nextDoseDate) === today) return true;
     if(frequency === 'daily') return true;
-    if(frequency === 'weekly' || frequency === 'twice_weekly' || frequency === 'custom_days'){
-      return days.includes(todayDay);
-    }
+    if(frequency === 'weekly' || frequency === 'twice_weekly' || frequency === 'custom_days') return days.includes(todayDay);
     return false;
   }
   function medicationScheduleCopy(med){
-    const frequency = med.frequency || 'weekly';
+    const frequency = med.frequency || 'set_later';
     const days = normaliseMedicationDays(med.days && med.days.length ? med.days : med.day);
     const names = medicationDayNames(days);
+    const interval = Number(med.intervalDays || frequencyDays(frequency, med.intervalDays) || 0);
 
-    if(frequency === 'daily') return 'Daily medication reminder is active.';
+    if(frequency === 'daily') return 'Daily reminder is active.';
     if(frequency === 'weekly' && names.length) return `Weekly reminder: ${names[0]}.`;
+    if(frequency === 'every_2_weeks') return med.nextDoseDate ? `Every 2 weeks. Next reminder: ${med.nextDoseDate}.` : 'Every 2 weeks. Add a next reminder date when ready.';
     if(frequency === 'twice_weekly' && names.length) return `Twice-weekly reminder: ${names.join(' and ')}.`;
+    if(frequency === 'every_x_days') return interval ? `Reminder every ${interval} days${med.nextDoseDate ? ` from ${med.nextDoseDate}` : ''}.` : 'Custom interval selected. Add the number of days when ready.';
+    if(frequency === 'custom_next_date') return med.nextDoseDate ? `Next reminder: ${med.nextDoseDate}.` : 'Choose your next reminder date when ready.';
     if(frequency === 'custom_days' && names.length) return `Reminder days: ${names.join(', ')}.`;
+    if(frequency === 'no_fixed') return 'No fixed schedule. Log manually when needed.';
     if(frequency === 'not_using') return 'Medication reminders are off for now.';
-    if(frequency === 'not_sure') return 'Medication schedule not set yet.';
-    return 'Choose your medication day in setup.';
+    if(frequency === 'set_later' || frequency === 'not_sure') return 'Medication schedule not set yet.';
+    return 'You can finish medication reminders later.';
   }
   function saveInjectionBridge(){
     try{
@@ -314,11 +326,11 @@
   function load(){
     migrate();
     try { if(window.HeartyData && typeof window.HeartyData.migrate === 'function') window.HeartyData.migrate('home_boot'); } catch(e){}
-    state.profile = Object.assign({name:'',unit:'metric',targetWeight:null,setupComplete:false}, readJSON(KEY.profile, {}));
+    state.profile = Object.assign({name:'',unit:'metric',country:'ZA',targetWeight:null,setupComplete:false}, readJSON(KEY.profile, {}));
     state.weightLogs = Array.isArray(readJSON(KEY.weightLogs, [])) ? readJSON(KEY.weightLogs, []) : [];
     state.water = readJSON(KEY.water, {}) || {};
     state.photos = Array.isArray(readJSON(KEY.photos, [])) ? readJSON(KEY.photos, []) : [];
-    state.medication = Object.assign({type:'',frequency:'weekly',day:'',days:[],nextDoseDate:'',reminderEnabled:true,lastDoseDate:''}, readJSON(KEY.medication, {}));
+    state.medication = Object.assign({type:'',customMedicationName:'',frequency:'set_later',day:'',days:[],intervalDays:null,nextDoseDate:'',reminderEnabled:true,lastDoseDate:''}, readJSON(KEY.medication, {}));
     state.support = Object.assign({active:false,type:''}, readJSON(KEY.support, {}));
     const canonical = hdData();
     if(canonical){
@@ -328,6 +340,7 @@
       const sup = canonical.support || {};
       if(p.first_name && !state.profile.name) state.profile.name = p.first_name;
       if(s.units_system) state.profile.unit = s.units_system === 'imperial' ? 'imperial' : 'metric';
+      if(p.country || p.region) state.profile.country = p.country || p.region;
       if(p.target_weight_kg != null && !state.profile.targetWeightKg) state.profile.targetWeightKg = Number(p.target_weight_kg);
       if(s.onboarding_complete === true) state.profile.setupComplete = true;
       if(prog.weight_logs && typeof prog.weight_logs === 'object'){
@@ -355,7 +368,7 @@
       const homeMed = readJSON('heartyMedication', {}) || {};
       const sourceMed = Object.assign({}, homeMed, setup, schedule);
       if(!state.medication.type) state.medication.type = sourceMed.medication || sourceMed.type || localStorage.getItem('heartyMedicationType') || localStorage.getItem('heartyInjectionName') || '';
-      if(!state.medication.frequency) state.medication.frequency = sourceMed.frequency || localStorage.getItem('heartyMedicationFrequency') || localStorage.getItem('heartyInjectionFrequency') || 'weekly';
+      if(!state.medication.frequency || state.medication.frequency === 'weekly') state.medication.frequency = sourceMed.frequency || sourceMed.scheduleType || localStorage.getItem('heartyMedicationFrequency') || localStorage.getItem('heartyInjectionFrequency') || state.medication.frequency || 'set_later';
       if(!state.medication.days || !state.medication.days.length) {
         state.medication.days = normaliseMedicationDays(sourceMed.days || localStorage.getItem('heartyMedicationDays') || localStorage.getItem('heartyInjectionDays') || '');
       }
@@ -364,7 +377,9 @@
         state.medication.day = storedDay === '' ? '' : String(storedDay);
         state.medication.days = normaliseMedicationDays(storedDay);
       }
-      state.medication.nextDoseDate = '';
+      state.medication.nextDoseDate = sourceMed.nextDoseDate || localStorage.getItem('heartyNextDoseDate') || state.medication.nextDoseDate || '';
+      state.medication.intervalDays = sourceMed.intervalDays || state.medication.intervalDays || null;
+      state.medication.customMedicationName = sourceMed.customMedicationName || localStorage.getItem('heartyMedicationCustomName') || state.medication.customMedicationName || '';
       if(sourceMed.reminderEnabled === false || localStorage.getItem('heartyInjectionReminderEnabled') === 'false') state.medication.reminderEnabled = false;
     }catch(e){}
 
@@ -404,12 +419,31 @@
   function saveProfile(){
     writeJSON(KEY.profile, state.profile);
     try{
+      const units = state.profile.unit === 'imperial' ? 'imperial' : 'metric';
+      const region = state.profile.country || state.profile.region || localStorage.getItem('heartyCountry') || 'ZA';
       localStorage.setItem('heartyCoreSetupDone', state.profile.setupComplete ? 'true' : 'false');
       if(state.profile.name) localStorage.setItem('heartyFirstName', state.profile.name);
-      localStorage.setItem('heartyUnitsSystem', state.profile.unit === 'imperial' ? 'imperial' : 'metric');
+      localStorage.setItem('heartyUnitsSystem', units);
+      localStorage.setItem('heartyCountry', region);
+      localStorage.setItem('heartyRegion', region);
+      if(state.profile.startingWeightKg != null) localStorage.setItem('heartyStartingWeightKg', String(Number(state.profile.startingWeightKg)));
       if(state.profile.targetWeightKg != null) localStorage.setItem('heartyTargetWeightKg', String(Number(state.profile.targetWeightKg)));
+      writeJSON('hearty_basic_user_profile_v1', {
+        name: state.profile.name || '',
+        firstName: state.profile.name || '',
+        country: region,
+        region: region,
+        units: units,
+        unit: units,
+        startingWeightKg: state.profile.startingWeightKg != null ? Number(state.profile.startingWeightKg) : null,
+        currentWeightKg: state.profile.startingWeightKg != null ? Number(state.profile.startingWeightKg) : null,
+        goalWeightKg: state.profile.targetWeightKg != null ? Number(state.profile.targetWeightKg) : null,
+        onboardingComplete: !!state.profile.setupComplete,
+        updatedAt: new Date().toISOString()
+      });
     }catch(e){}
     hdSet('profile.first_name', state.profile.name || '');
+    hdSet('profile.country', state.profile.country || state.profile.region || 'ZA');
     hdSet('settings.units_system', state.profile.unit === 'imperial' ? 'imperial' : 'metric');
     if(state.profile.targetWeightKg != null) hdSet('profile.target_weight_kg', Number(state.profile.targetWeightKg));
     hdSet('settings.onboarding_complete', !!state.profile.setupComplete);
@@ -524,7 +558,7 @@
     const med = state.medication || {};
     if(med.type || med.frequency || med.day !== undefined || (med.days && med.days.length)) saveInjectionBridge();
 
-    const title = med.type ? `${med.type} reminder` : 'Dose reminder';
+    const title = med.type ? `${med.type} reminder` : 'Medication reminder';
     $('medicationTitle').textContent = title;
 
     const today = localDate();
@@ -535,8 +569,8 @@
     $('injectionCard').classList.toggle('logged', logged);
     $('logDoseBtn').classList.toggle('active', logged);
 
-    if (!med.type || med.type === 'Not set yet') {
-      $('nextInjectionDateText').textContent = 'Set your medication schedule during setup.';
+    if (!med.type || med.frequency === 'set_later') {
+      $('nextInjectionDateText').textContent = 'Medication reminders can be set up later from Progress.';
     } else if (med.type === 'Not using medication yet' || med.frequency === 'not_using') {
       $('nextInjectionDateText').textContent = 'Medication reminders are off for now.';
     } else if (logged) {
@@ -717,7 +751,7 @@
   }
 
   function bindSetup(){
-    const TOTAL_SETUP_STEPS = 6;
+    const TOTAL_SETUP_STEPS = 4;
 
     function setIfExists(id, value){
       const el = $(id);
@@ -735,40 +769,68 @@
       });
     }
 
+    function medicationNameFromInputs(){
+      const base = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
+      const custom = $('coreSetupMedicationCustom') ? $('coreSetupMedicationCustom').value.trim() : '';
+      return base === 'Other' && custom ? custom : base;
+    }
+
+    function updateMedicationCustomField(){
+      const field = $('coreSetupMedicationCustom');
+      if(!field) return;
+      const show = ($('coreSetupMedication') ? $('coreSetupMedication').value : '') === 'Other';
+      field.style.display = show ? 'block' : 'none';
+    }
+
     function updateMedicationDayStep(){
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'weekly';
+      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
+      const dayWrap = $('coreSetupDaysField');
       const dayButtons = document.querySelectorAll('[data-med-day]');
       const hint = $('coreSetupDaysHint');
       const title = $('coreSetupDaysTitle');
       const error = $('coreSetupDaysError');
+      const interval = $('coreSetupIntervalDays');
+      const nextDate = $('coreSetupNextDate');
+      const reminder = $('coreSetupReminder');
 
-      dayButtons.forEach(btn => {
-        btn.disabled = frequency === 'daily' || frequency === 'not_sure' || frequency === 'not_using';
-      });
+      const needsDays = ['weekly','twice_weekly','custom_days'].includes(frequency);
+      const needsInterval = frequency === 'every_x_days';
+      const needsDate = ['every_2_weeks','every_x_days','custom_next_date'].includes(frequency);
+      const disabledDays = !needsDays;
 
+      if(dayWrap) dayWrap.style.display = needsDays ? '' : 'none';
+      dayButtons.forEach(btn => { btn.disabled = disabledDays; });
+      if(interval) interval.style.display = needsInterval ? 'block' : 'none';
+      if(nextDate) nextDate.style.display = needsDate ? 'block' : 'none';
+      if(reminder) reminder.style.display = ['not_using','no_fixed'].includes(frequency) ? 'none' : 'block';
       if(error) error.style.display = 'none';
 
       if(title){
-        if(frequency === 'weekly') title.textContent = 'Choose your medication day';
-        else if(frequency === 'twice_weekly') title.textContent = 'Choose your two medication days';
-        else if(frequency === 'custom_days') title.textContent = 'Choose your medication days';
-        else title.textContent = 'Medication day(s)';
+        if(frequency === 'weekly') title.textContent = 'Choose your injection day';
+        else if(frequency === 'twice_weekly') title.textContent = 'Choose your two injection days';
+        else if(frequency === 'every_2_weeks') title.textContent = 'Choose your next reminder date';
+        else if(frequency === 'every_x_days') title.textContent = 'Custom interval';
+        else if(frequency === 'custom_next_date') title.textContent = 'Next reminder date';
+        else title.textContent = 'Schedule details';
       }
 
       if(hint){
-        if(frequency === 'daily') hint.textContent = 'Daily medication does not need a day selection.';
-        else if(frequency === 'weekly') hint.textContent = 'Choose the one day you usually take your medication.';
-        else if(frequency === 'twice_weekly') hint.textContent = 'Choose exactly two days. Hearty will remind you on both days.';
-        else if(frequency === 'custom_days') hint.textContent = 'Choose one or more days you want Hearty to remind you.';
-        else hint.textContent = 'You can leave this blank and set it later.';
+        if(frequency === 'weekly') hint.textContent = 'Choose the one day you usually take it.';
+        else if(frequency === 'twice_weekly') hint.textContent = 'Choose exactly two days. Hearty will remind you on both.';
+        else if(frequency === 'every_2_weeks') hint.textContent = 'Choose the next reminder date. Hearty will treat this as a 14-day rhythm.';
+        else if(frequency === 'every_x_days') hint.textContent = 'Enter the interval and optionally the next reminder date.';
+        else if(frequency === 'custom_next_date') hint.textContent = 'Use this if the preset days do not match your schedule.';
+        else if(frequency === 'no_fixed') hint.textContent = 'No fixed reminder will be created. You can still log injections manually.';
+        else if(frequency === 'not_using') hint.textContent = 'Medication reminders are off.';
+        else hint.textContent = 'You can leave this for later and finish it from Progress.';
       }
     }
 
     function medicationDayRequirement(){
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'weekly';
-      if(frequency === 'weekly') return { min:1, max:1, message:'Please choose one medication day.' };
-      if(frequency === 'twice_weekly') return { min:2, max:2, message:'Please choose two medication days.' };
-      if(frequency === 'custom_days') return { min:1, max:7, message:'Please choose at least one medication day.' };
+      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
+      if(frequency === 'weekly') return { min:1, max:1, message:'Please choose one injection day.' };
+      if(frequency === 'twice_weekly') return { min:2, max:2, message:'Please choose two injection days.' };
+      if(frequency === 'custom_days') return { min:1, max:7, message:'Please choose at least one reminder day.' };
       return { min:0, max:7, message:'' };
     }
 
@@ -776,31 +838,31 @@
       const requirement = medicationDayRequirement();
       const days = selectedMedicationDays();
       const error = $('coreSetupDaysError');
-
       const valid = days.length >= requirement.min && days.length <= requirement.max;
-
-      if(error){
-        error.textContent = requirement.message || '';
-        error.style.display = valid || !requirement.message ? 'none' : 'block';
-      }
-
+      if(error){ error.textContent = requirement.message || ''; error.style.display = valid || !requirement.message ? 'none' : 'block'; }
       return valid;
     }
 
     function syncSetupInputsFromState(){
       setIfExists('coreSetupName', state.profile.name || localStorage.getItem('heartyFirstName') || '');
+      setIfExists('coreSetupCountry', state.profile.country || state.profile.region || localStorage.getItem('heartyCountry') || localStorage.getItem('heartyRegion') || 'ZA');
       if(state.profile.startingWeightKg) setIfExists('coreSetupStartingWeight', convertDisplay(Number(state.profile.startingWeightKg)).toFixed(1));
       if(state.profile.targetWeightKg) setIfExists('coreSetupTargetWeight', convertDisplay(Number(state.profile.targetWeightKg)).toFixed(1));
-      setIfExists('coreSetupMedication', state.medication.type || '');
-      setIfExists('coreSetupFrequency', state.medication.frequency || 'weekly');
+      setIfExists('coreSetupMedication', state.medication.type === state.medication.customMedicationName ? 'Other' : (state.medication.type || ''));
+      setIfExists('coreSetupMedicationCustom', state.medication.customMedicationName || '');
+      setIfExists('coreSetupFrequency', state.medication.frequency || 'set_later');
+      setIfExists('coreSetupIntervalDays', state.medication.intervalDays || '');
+      setIfExists('coreSetupNextDate', state.medication.nextDoseDate || '');
       paintMedicationDays(state.medication.days && state.medication.days.length ? state.medication.days : state.medication.day);
       setIfExists('coreSetupReminder', state.medication.reminderEnabled === false ? 'false' : 'true');
+      updateMedicationCustomField();
       updateMedicationDayStep();
     }
 
     function saveCurrentSetupStep(){
       if(state.setupStep===0){
         state.profile.name = $('coreSetupName') ? $('coreSetupName').value.trim() : state.profile.name;
+        state.profile.country = $('coreSetupCountry') ? $('coreSetupCountry').value : (state.profile.country || 'ZA');
       }
 
       if(state.setupStep===1){
@@ -821,38 +883,36 @@
           hdSet('profile.starting_weight_kg', kg);
           hdSet('profile.current_weight_kg', kg);
         }
+        const target = num($('coreSetupTargetWeight')?.value);
+        if(target) state.profile.targetWeightKg = convertToKg(target);
       }
 
       if(state.setupStep===2){
-        const v = num($('coreSetupTargetWeight')?.value);
-        if(v) state.profile.targetWeightKg = convertToKg(v);
+        const base = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
+        const custom = $('coreSetupMedicationCustom') ? $('coreSetupMedicationCustom').value.trim() : '';
+        state.medication.customMedicationName = custom;
+        state.medication.type = base === 'Other' && custom ? custom : base;
       }
 
       if(state.setupStep===3){
-        state.medication.type = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
-      }
-
-      if(state.setupStep===4){
-        state.medication.frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'weekly';
-        if(['daily','not_sure','not_using'].includes(state.medication.frequency)){
+        state.medication.frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
+        if(['set_later','not_using','no_fixed'].includes(state.medication.frequency)){
           state.medication.days = [];
           state.medication.day = '';
           paintMedicationDays([]);
         }
       }
 
-      if(state.setupStep===5){
+      if(state.setupStep===4){
         if(!validateMedicationDays()) return false;
         const days = selectedMedicationDays();
         state.medication.days = days;
         state.medication.day = days[0] || '';
-      }
-
-      if(state.setupStep===6){
+        state.medication.intervalDays = $('coreSetupIntervalDays') && $('coreSetupIntervalDays').value ? Number($('coreSetupIntervalDays').value) : null;
+        state.medication.nextDoseDate = $('coreSetupNextDate') ? $('coreSetupNextDate').value : '';
         state.medication.reminderEnabled = $('coreSetupReminder') ? $('coreSetupReminder').value !== 'false' : true;
       }
 
-      state.medication.nextDoseDate = '';
       saveProfile();
       writeJSON(KEY.medication,state.medication);
       saveInjectionBridge();
@@ -866,37 +926,28 @@
     }));
 
     document.querySelectorAll('[data-med-day]').forEach(btn=>btn.addEventListener('click',()=>{
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'weekly';
-      if(['daily','not_sure','not_using'].includes(frequency)) return;
-
+      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
+      if(!['weekly','twice_weekly','custom_days'].includes(frequency)) return;
       if(frequency === 'weekly'){
         document.querySelectorAll('[data-med-day]').forEach(b => { if(b !== btn) b.classList.remove('active'); });
         btn.classList.toggle('active');
       } else if(frequency === 'twice_weekly'){
-        if(btn.classList.contains('active')){
-          btn.classList.remove('active');
-        } else if(document.querySelectorAll('[data-med-day].active').length < 2){
-          btn.classList.add('active');
-        }
+        if(btn.classList.contains('active')) btn.classList.remove('active');
+        else if(document.querySelectorAll('[data-med-day].active').length < 2) btn.classList.add('active');
       } else {
         btn.classList.toggle('active');
       }
-
       validateMedicationDays();
     }));
 
+    $('coreSetupMedication')?.addEventListener('change',()=>{ updateMedicationCustomField(); });
     $('coreSetupFrequency')?.addEventListener('change',()=>{
       state.medication.frequency = $('coreSetupFrequency').value;
-
-      if(['daily','not_sure','not_using'].includes(state.medication.frequency)) {
-        paintMedicationDays([]);
-      }
-
+      if(!['weekly','twice_weekly','custom_days'].includes(state.medication.frequency)) paintMedicationDays([]);
       if(state.medication.frequency === 'weekly'){
         const active = selectedMedicationDays();
         if(active.length > 1) paintMedicationDays([active[0]]);
       }
-
       updateMedicationDayStep();
       validateMedicationDays();
     });
@@ -905,6 +956,7 @@
       document.querySelectorAll('.setup-step').forEach(el=>el.hidden=Number(el.dataset.step)!==state.setupStep);
       $('coreSetupBackBtn').disabled=state.setupStep===0;
       $('coreSetupNextBtn').textContent=state.setupStep>=TOTAL_SETUP_STEPS?'Finish':'Next';
+      updateMedicationCustomField();
       updateMedicationDayStep();
     }
 
@@ -916,7 +968,6 @@
 
     $('coreSetupNextBtn').addEventListener('click',()=>{
       if(saveCurrentSetupStep() === false) return;
-
       if(state.setupStep>=TOTAL_SETUP_STEPS){
         state.profile.setupComplete=true;
         saveProfile();
@@ -928,14 +979,12 @@
         toast('Hearty setup complete.');
         return;
       }
-
       state.setupStep++;
       showStep();
     });
 
     syncSetupInputsFromState();
     document.querySelector(`[data-unit="${state.profile.unit||'metric'}"]`)?.classList.add('active');
-
     if(!state.profile.setupComplete){
       state.setupStep=0;
       showStep();

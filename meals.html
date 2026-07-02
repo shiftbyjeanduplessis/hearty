@@ -54,49 +54,12 @@
 </div>
 </section>
 <div aria-live="polite" class="meals-toast" id="mealsToast" role="status"></div>
-<script>
+<script id="hearty-meals-no-forced-onboarding">
     (function(){
       document.documentElement.setAttribute("data-theme", "clean_blue");
-
-      function readJsonStorage(key){
-        try {
-          var raw = localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : null;
-        } catch(e) {
-          return null;
-        }
-      }
-
-      function hasMealProfile(){
-        var state = readJsonStorage("heartyMealsPageStateVFinal") ||
-          readJsonStorage("heartyMealsStateVFinal") ||
-          readJsonStorage("heartyMealsStateV1") ||
-          readJsonStorage("heartyMealProfile") ||
-          readJsonStorage("heartyMealsProfile");
-
-        if (!state) return false;
-
-        var profile = state.preferences || state.onboarding || state.profile || state.mealProfile || state;
-        if (!profile || typeof profile !== "object") return false;
-
-        return state.profileComplete === true ||
-          state.onboardingComplete === true ||
-          state.mealsOnboardingComplete === true ||
-          profile.profileComplete === true ||
-          profile.onboardingComplete === true ||
-          Object.keys(profile).length > 2;
-      }
-
-      try {
-        var path = (window.location.pathname || "").toLowerCase();
-        var file = path.split("/").pop();
-        var isMealsPage = file === "meals.html" || file === "meals";
-        var isMealsOnboarding = path.indexOf("meals-onboarding") !== -1;
-
-        if (isMealsPage && !isMealsOnboarding && !hasMealProfile()) {
-          window.location.replace("/meals-onboarding.html");
-        }
-      } catch(e) {}
+      /* Meals setup is optional. The page must open with starter defaults first,
+         then let the user customise from Meals onboarding when they choose. */
+      try { localStorage.setItem('heartyMealsNoForcedSetupV1', 'true'); } catch(e) {}
     })();
   </script>
 <style>
@@ -790,7 +753,7 @@
 <div>
 <div class="eyebrow">MEAL PLANNER</div>
 <h1 class="headline">Your meals for today</h1>
-<p class="subline">Protein-forward meals based on your setup.</p>
+<p class="subline">Protein-forward GLP-1 meals. Starter plan first, customise when ready.</p><p style="margin:8px 0 0"><a class="soft-btn" href="/meals-onboarding.html">Make this plan fit me</a></p>
 </div>
 <div class="status-pills support-status-controls">
 <div class="support-pill is-off" id="supportPill">Support Off</div>
@@ -1667,6 +1630,30 @@
         window.location.href = "/meals-onboarding.html";
       }
 
+      function buildStarterMealProfile(){
+        var basic = readJsonStorage("hearty_basic_user_profile_v1") || {};
+        var region = basic.region || basic.country || localStorage.getItem("heartyRegion") || localStorage.getItem("heartyCountry") || "SA";
+        if (region === "ZA") region = "SA";
+        try {
+          localStorage.setItem("heartyMealsCountry", region);
+          localStorage.setItem("heartyMealsStarterPlanActive", "true");
+        } catch(e) {}
+        return {
+          profileComplete: false,
+          starterPlan: true,
+          country: region,
+          selectedCountry: region,
+          dietType: "omnivore",
+          proteins: ["chicken", "beef", "fish", "eggs", "dairy"],
+          breakfast: ["eggs", "yoghurt", "oats"],
+          starches: ["rice", "pasta", "sweet_potato"],
+          vegetables: ["spinach", "tomato", "carrot", "baby_marrow", "green_beans", "broccoli"],
+          snackPreferences: ["yoghurt", "cottage_cheese", "boiled_eggs"],
+          snacksEnabled: localStorage.getItem("heartyMealsSnacksOn") !== "false",
+          dinnerForLunch: true
+        };
+      }
+
       async function bootMeals(){
         syncTodayLabel();
         updateSupportBanner(readGlobalSupport());
@@ -1680,8 +1667,7 @@
           var mealProfile = readMealProfile();
 
           if (!mealProfile) {
-            redirectToMealsOnboarding();
-            return;
+            mealProfile = buildStarterMealProfile();
           }
 
           await loadFirst([
@@ -1772,6 +1758,7 @@
       }
     })();
   </script>
+<script src="js/hearty-support-state.js?v=38"></script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
 <script defer="" src="js/hearty-shell-template.js?v=36"></script>
 
