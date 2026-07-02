@@ -11285,7 +11285,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <div class="kicker">FREE 7-DAY GLP-1 MEAL PLAN/LIST</div>
 <h1>Get the free meal plan you asked for.</h1>
 <p class="lead">Simple protein-focused meals for low appetite, easier shopping and not knowing what to eat on GLP-1s.</p>
-<div aria-label="Free plan trust notes" class="guided-no-paywall"><strong>No payment. No card. No subscription.</strong><span>Generate the free plan on this page, then save the PDF and shopping list.</span></div>
+<div aria-label="Free plan trust notes" class="guided-no-paywall"><strong>No payment. No card. No subscription.</strong><span>Generate the free plan on this page, then email the plan and shopping list to yourself.</span></div>
 <div class="hero-primary-path hero-primary-path-strong">
 <a class="btn btn-primary hero-plan-cta" data-open-plan-setup="" href="#quickSetupPanel" id="heroGeneratePlanBtn">Generate my free 7-day plan</a>
 </div>
@@ -11333,7 +11333,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 </div>
 <div class="personalized-plan-line">Personalized from your food choices — not a random meal list.</div>
 
-<ul aria-label="How the free plan works" class="plan-benefit-list guided-benefit-list funnel-steps-row"><li><strong>Step 1:</strong> Choose foods you actually eat</li><li><strong>Step 2:</strong> Generate your 7-day plan on the page</li><li><strong>Step 3:</strong> Save the PDF and shopping list</li></ul>
+<ul aria-label="How the free plan works" class="plan-benefit-list guided-benefit-list funnel-steps-row"><li><strong>Step 1:</strong> Choose foods you actually eat</li><li><strong>Step 2:</strong> Generate your 7-day plan on the page</li><li><strong>Step 3:</strong> Email the plan and shopping list to yourself</li></ul>
 
 
 <div class="simple-plan-preview app-style-preview" aria-label="Preview of the free 7-day GLP-1 meal plan">
@@ -11388,9 +11388,9 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <div>
 <span>Generated plan</span>
 <h3>Your 7-day GLP-1 meal plan</h3>
-<p>Review your full plan below. Then save the PDF and shopping list so you do not lose it.</p>
+<p>Review your full plan below. Then email it to yourself so you do not lose it.</p>
 </div>
-<a class="btn btn-primary onscreen-download-jump" href="#inlineUnlockPanel">Download PDF + shopping list</a>
+<a class="btn btn-primary onscreen-download-jump" href="#inlineUnlockPanel">Email plan + shopping list</a>
 </div>
 <div class="full-plan-grid" id="fullPlanRows"></div>
 </div>
@@ -11410,10 +11410,10 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <div class="field"><label for="leadEmail">Email address</label><input autocomplete="email" id="leadEmail" placeholder="you@example.com" type="email"/></div>
 <div class="field"><label for="leadName">First name <span class="micro">optional</span></label><input autocomplete="given-name" id="leadName" placeholder="Your first name" type="text"/></div>
 </div>
-<button class="btn btn-primary" id="downloadPlanBtn" type="button">Download my free plan + shopping list</button>
+<button class="btn btn-primary" id="downloadPlanBtn" type="button">Email my free plan + shopping list</button>
 <div aria-live="polite" class="status" id="leadStatus"></div>
 <div class="post-submit" id="postSubmit">
-<strong>Your free plan is downloading ✅</strong>
+<strong>Your free plan has been sent ✅</strong>
 <p>This free plan is a starting point. Hearty is the full GLP-1 companion app for ongoing meal planning, portions, shopping lists, calories, protein, fibre, water, progress and Support Mode for harder days.</p>
 <button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Yes — unlock the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button>
 <div class="generated-offer-guarantee-line">Try it for 14 days. If it is not useful for you, email us for a refund.</div>
@@ -11446,7 +11446,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
         </article>
         <article class="faq-static-item">
           <h3>Do I have to pay anything for the 7-day plan?</h3>
-          <p>No. The 7-day meal plan is free to generate on this page. Saving the PDF and shopping list by email is optional, and the full Hearty app is a separate once-off purchase.</p>
+          <p>No. The 7-day meal plan is free to generate on this page. Emailing the plan and shopping list to yourself is optional, and the full Hearty app is a separate once-off purchase.</p>
         </article>
         <article class="faq-static-item">
           <h3>What if Hearty is not right for me?</h3>
@@ -11716,7 +11716,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <div>
 <div class="generator-kicker">Your free plan is ready</div>
 <h2>Your 7-day GLP-1 meal plan</h2>
-<p>Your plan is ready. Review the 7-day plan first, then save the PDF and shopping list when you are ready.</p>
+<p>Your plan is ready. Review the 7-day plan first, then email the plan and shopping list when you are ready.</p>
 </div>
 <button aria-label="Close plan viewer" class="generator-close" id="closePlanViewer" type="button">×</button>
 </div>
@@ -11765,16 +11765,17 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 </div>
 <div class="viewer-unlock-mount" hidden="" id="viewerUnlockMount"></div>
 <div class="viewer-bottom-cta" id="viewerBottomCta">
-<button class="btn btn-primary" id="viewerDownloadBtn" type="button">Save PDF + shopping list</button>
+<button class="btn btn-primary" id="viewerDownloadBtn" type="button">Email plan + shopping list</button>
 <button class="btn btn-secondary" id="viewerEditBtn" type="button">Refine ingredients</button>
 </div>
 </div>
 </div>
-<!-- Hearty Brevo-only sync patch — no meal generation logic -->
+<!-- Legacy Brevo-only sync patch disabled by v35l email-first flow to avoid duplicate contact sync before the plan payload is sent. -->
 <script>
 (function(){
   var HEARTY_BREVO_SYNC_URL = "https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
   var lastSyncedEmail = "";
+  window.heartyEmailFirstHotfixActive = true;
 
   function byId(id) { return document.getElementById(id); }
 
@@ -11807,6 +11808,10 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
   }
 
   function syncLeadToBrevo(reason) {
+    if (window.heartyEmailFirstHotfixActive) {
+      console.log('[Hearty] Legacy Brevo sync skipped — v35l email-first handler will send the full plan payload.');
+      return Promise.resolve({ ok:false, skipped:true, reason:'handled_by_v35l_email_first' });
+    }
     var lead = readLead();
 
     if (!lead.email || lead.email.indexOf('@') === -1) {
@@ -11843,13 +11848,13 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
         try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
         if (!res.ok) throw new Error('Brevo sync failed ' + res.status + ': ' + text);
         console.log('[Hearty] Brevo sync success', data);
-        setLeadStatus('Saved — your plan is downloading.');
+        setLeadStatus('Saved — sending your plan to your inbox.');
         return data;
       });
     })
     .catch(function(err) {
       console.warn('[Hearty] Brevo sync failed', err);
-      setLeadStatus('Your plan is downloading. Email follow-up may take a moment.');
+      setLeadStatus('Your plan is saved. If email takes a moment, your plan is also shown below.');
       return { ok:false, error:String(err && err.message ? err.message : err) };
     });
   }
@@ -11879,7 +11884,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
   };
 })();
 </script>
-<!-- Hearty direct PDF download handoff - direct jsPDF, no popup window -->
+<!-- Hearty legacy PDF functions retained as backup only. Main fulfilment is email-first. -->
 </div><script>(function(){
   'use strict';
 
@@ -12219,7 +12224,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     var status = qs('leadStatus');
     var email = qs('leadEmail');
     if(email && !String(email.value || '').trim()){
-      if(status) status.textContent = 'Enter your email address to download the free plan. No card needed.';
+      if(status) status.textContent = 'Enter your email address so we can send the free plan. No card needed.';
       email.focus();
       return false;
     }
@@ -12233,7 +12238,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     a.click();
     a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
-    if(status) status.textContent = 'Downloaded - check your downloads folder.';
+    if(status) status.textContent = 'Saved — check your inbox, and keep the on-page copy as backup.';
     var post = qs('postSubmit');
     if(post) post.classList.add('show');
     return false;
@@ -12486,6 +12491,37 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     return lines.join('\n');
   }
 
+  function buildPlanHtml(){
+    var plan = getCurrentPlan();
+    var prefs = getCurrentPrefs();
+    var html = ['<div style="font-family:Arial,sans-serif;color:#102a43;line-height:1.5;">'];
+    html.push('<h1 style="margin:0 0 10px;color:#0c5b97;">Your Hearty 7-day GLP-1 meal plan</h1>');
+    html.push('<p style="margin:0 0 18px;color:#53697d;">A simple starter plan for low appetite, protein and easy meals. Nutrition totals are estimates.</p>');
+    (plan || []).slice(0,7).forEach(function(day){
+      html.push('<div style="border:1px solid #dfeaf4;border-radius:14px;padding:14px;margin:0 0 14px;background:#ffffff;">');
+      html.push('<h2 style="margin:0 0 8px;color:#0c5b97;font-size:18px;">Day ' + esc(day && day.day || '') + '</h2>');
+      var n = nutritionLine(day); if(n) html.push('<p style="margin:0 0 10px;color:#53697d;font-weight:bold;">' + esc(n) + '</p>');
+      mealKeys().forEach(function(key){
+        var r = renderMeal(day && day[key], prefs.country);
+        if(!r.title) return;
+        html.push('<p style="margin:0 0 8px;"><strong style="text-transform:capitalize;color:#102a43;">' + esc(key) + ':</strong> ' + esc(r.title));
+        if(r.description) html.push('<br><span style="color:#53697d;">' + esc(r.description) + '</span>');
+        html.push('</p>');
+      });
+      html.push('</div>');
+    });
+    var items = collectShoppingItems(plan);
+    if(items.length){
+      html.push('<h2 style="margin:22px 0 8px;color:#0c5b97;font-size:20px;">Shopping list</h2>');
+      html.push('<ul style="padding-left:20px;margin:0;">');
+      items.forEach(function(item){ html.push('<li><strong>' + esc(item.name) + '</strong> — ' + esc(item.amount) + '</li>'); });
+      html.push('</ul>');
+    }
+    html.push('<p style="margin-top:22px;color:#53697d;font-size:13px;">Hearty is a practical GLP-1 meal-planning tool. Please discuss medical questions with your doctor, pharmacist or dietitian.</p>');
+    html.push('</div>');
+    return html.join('');
+  }
+
   function getLeadFromViewerOrInline(){
     var email = (qs('viewerLeadEmail') && qs('viewerLeadEmail').value) || (qs('leadEmail') && qs('leadEmail').value) || '';
     var name = (qs('viewerLeadName') && qs('viewerLeadName').value) || (qs('leadName') && qs('leadName').value) || '';
@@ -12509,7 +12545,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     return String((prefs && (prefs.countryRaw || prefs.country)) || (qs('countrySelect') && qs('countrySelect').value) || '').toUpperCase() || '';
   }
   function trackCaptureEvent(eventName, metadata){
-    var meta = Object.assign({ tracking_version:'v35k-email-delivery-hotfix', timestamp:new Date().toISOString() }, metadata || {});
+    var meta = Object.assign({ tracking_version:'v35l-email-first-fulfilment', timestamp:new Date().toISOString() }, metadata || {});
     try{
       if(window.heartyV33qTrack && typeof window.heartyV33qTrack === 'function'){
         return window.heartyV33qTrack(eventName, meta);
@@ -12555,7 +12591,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       utm_campaign:urlParam('utm_campaign') || urlParam('campaign') || 'free_meal_plan',
       utm_content:urlParam('utm_content'),
       lead_status:'Email captured',
-      notes:'Captured by free-meal-plan v35k email delivery hotfix. Brevo edge function also called.'
+      notes:'Captured by free-meal-plan v35l email-first fulfilment. Plan shown on screen and sent/saved through Brevo/Supabase flow.'
     };
     return fetch(CAPTURE_SUPABASE_URL + '/rest/v1/meal_plan_leads', {
       method:'POST',
@@ -12573,7 +12609,13 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       firstName:lead.name || '',
       source:'free_meal_plan',
       campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
-      page:location.pathname
+      page:location.pathname,
+      deliveryMode:'email_first',
+      country:currentCountry() || 'OTHER',
+      planText:buildPlanText(),
+      planHtml:buildPlanHtml(),
+      generatedPlan:getCurrentPlan(),
+      preferences:getCurrentPrefs()
     };
     var brevoRequest = fetch(BREVO_SYNC_URL, {
       method:'POST',
@@ -12826,12 +12868,12 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       panel = document.createElement('div');
       panel.id = 'heartyFulfilmentPanel';
       panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
-      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan is ready</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0 0 10px;">Copy plan text</button><textarea id="heartyPlanCopyText" readonly style="width:100%;min-height:180px;border-radius:14px;border:1px solid rgba(126,148,174,.25);padding:10px;font-size:.82rem;line-height:1.45;background:#fff;color:#102a43;"></textarea>';
+      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan has been sent</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0 0 10px;">Copy plan text backup</button><textarea id="heartyPlanCopyText" readonly style="width:100%;min-height:180px;border-radius:14px;border:1px solid rgba(126,148,174,.25);padding:10px;font-size:.82rem;line-height:1.45;background:#fff;color:#102a43;"></textarea>';
       if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
       else document.body.appendChild(panel);
     }
     var note = qs('heartyFulfilmentNote');
-    if(note) note.textContent = isFb ? 'Facebook can block downloads. Your plan is also shown below — copy it, or open this page in your phone browser if the download does not start.' : 'Your download should start. Your plan is also shown below as a backup.';
+    if(note) note.textContent = 'We have saved your request and sent the plan through the email flow. Your full plan is also shown below, with copy text as a backup.';
     var ta = qs('heartyPlanCopyText');
     if(ta) ta.value = buildPlanText();
     panel.hidden = false;
@@ -12851,7 +12893,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     mount.hidden = false;
     mount.classList.add('show');
     if(!mount.innerHTML.trim()){
-      mount.innerHTML = '<div class="viewer-unlock-card"><h3>Save your free plan</h3><p>Enter your email so you do not lose your 7-day meal plan and shopping list. No card needed.</p><div class="viewer-email-grid"><label>Email address<input id="viewerLeadEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>First name <span class="micro">optional</span><input id="viewerLeadName" type="text" autocomplete="given-name" placeholder="Your first name"></label></div><button class="btn btn-primary" id="viewerEmailDownloadBtn" type="button">Download my free plan + shopping list</button><div class="viewer-email-status" id="viewerEmailStatus"></div></div>';
+      mount.innerHTML = '<div class="viewer-unlock-card"><h3>Email your free plan</h3><p>Enter your email and we will send your 7-day meal plan and shopping list to your inbox. No card needed.</p><div class="viewer-email-grid"><label>Email address<input id="viewerLeadEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>First name <span class="micro">optional</span><input id="viewerLeadName" type="text" autocomplete="given-name" placeholder="Your first name"></label></div><button class="btn btn-primary" id="viewerEmailDownloadBtn" type="button">Email my free plan + shopping list</button><div class="viewer-email-status" id="viewerEmailStatus"></div></div>';
       var oldEmail = qs('leadEmail'); if(oldEmail && qs('viewerLeadEmail')) qs('viewerLeadEmail').value = oldEmail.value || '';
       var oldName = qs('leadName'); if(oldName && qs('viewerLeadName')) qs('viewerLeadName').value = oldName.value || '';
     }
@@ -12870,26 +12912,19 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     }
     mirrorLeadToInline(lead);
     var fb = isFacebookBrowser();
-    setText(statusId, 'Saving your email and preparing your plan...');
-    trackCaptureEvent('free_meal_email_submit_clicked', { email_present:true, facebook_browser:fb });
+    setText(statusId, 'Saving your email and sending your plan...');
+    trackCaptureEvent('free_meal_email_plan_submit_clicked', { email_present:true, facebook_browser:fb });
     syncLead(lead).then(function(result){
       showPlanFulfilmentPanel(fb);
-      try{
-        trackCaptureEvent('free_meal_download_attempted', { method:'pdf', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok) });
-        downloadTextFile();
-        trackCaptureEvent('free_meal_download_triggered', { method:'pdf', facebook_browser:fb });
-        setText(statusId, fb ? 'Your plan is ready below. If Facebook blocks the download, copy it or open the page in your browser.' : 'Your plan is ready. If the download does not start, copy it below.');
-      }catch(err){
-        trackCaptureEvent('free_meal_download_failed', { method:'pdf', facebook_browser:fb, error:String(err && err.message ? err.message : err) });
-        setText(statusId, 'Your plan is ready below. Copy it if the download does not start.');
-      }
+      trackCaptureEvent('free_meal_plan_email_requested', { method:'email_first', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok), backup_ok:!!(result && result.backup && result.backup.ok) });
+      setText(statusId, (result && result.ok) ? 'Sent — check your inbox. Your plan is also shown below as backup.' : 'Your plan is saved below. If the email takes a moment, use the copy backup.');
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
       if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
     }).catch(function(err){
       showPlanFulfilmentPanel(fb);
-      trackCaptureEvent('free_meal_email_delivery_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
-      setText(statusId, 'Your plan is ready below. Copy it if the download does not start.');
+      trackCaptureEvent('free_meal_email_first_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
+      setText(statusId, 'Your plan is shown below. Copy it as a backup if the email takes a moment.');
     });
     return false;
   }
@@ -13616,6 +13651,6 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 })();
 </script>
 
-<!-- v35k email delivery hotfix: fixed Brevo URL, restored lead capture tracking/backups, added Facebook-safe copy fallback -->
+<!-- v35l email-first fulfilment: send/save plan first, copy fallback only, no browser download dependency -->
 </body>
 </html>
