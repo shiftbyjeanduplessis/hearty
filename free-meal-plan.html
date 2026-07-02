@@ -11413,7 +11413,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <button class="btn btn-primary" id="downloadPlanBtn" type="button">Email my free plan + shopping list</button>
 <div aria-live="polite" class="status" id="leadStatus"></div>
 <div class="post-submit" id="postSubmit">
-<strong>Your free plan has been sent ✅</strong>
+<strong>Your plan request is saved ✅</strong>
 <p>This free plan is a starting point. Hearty is the full GLP-1 companion app for ongoing meal planning, portions, shopping lists, calories, protein, fibre, water, progress and Support Mode for harder days.</p>
 <button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Yes — unlock the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button>
 <div class="generated-offer-guarantee-line">Try it for 14 days. If it is not useful for you, email us for a refund.</div>
@@ -11758,7 +11758,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 
 <div class="viewer-post-offer" hidden="" id="viewerPostOffer">
 <strong>Your free plan is saved ✅</strong>
-<p>Want Hearty to keep building plans like this every week? The full app includes weekly meals, shopping lists, tracking and Support Mode.</p>
+<p>Your full plan is shown on this page. If the email takes a moment, keep this page open and use the copy backup if needed.</p>
 <div class="post-offer-guarantee">14-day money-back guarantee • $29 once-off • no subscription</div>
 <button class="btn btn-primary" data-hearty-checkout="" type="button">Get the full Hearty app — $29 lifetime</button>
 <button class="btn btn-secondary" id="viewerPostOfferClose" type="button">Not now</button>
@@ -12238,7 +12238,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     a.click();
     a.remove();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
-    if(status) status.textContent = 'Saved — check your inbox, and keep the on-page copy as backup.';
+    if(status) status.textContent = 'Saved — check your inbox shortly, and keep this page open as backup.';
     var post = qs('postSubmit');
     if(post) post.classList.add('show');
     return false;
@@ -12611,6 +12611,9 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
       page:location.pathname,
       deliveryMode:'email_first',
+      deliveryRequested:true,
+      emailPlanRequested:true,
+      forceSend:true,
       country:currentCountry() || 'OTHER',
       planText:buildPlanText(),
       planHtml:buildPlanHtml(),
@@ -12868,24 +12871,38 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       panel = document.createElement('div');
       panel.id = 'heartyFulfilmentPanel';
       panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
-      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan has been sent</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0 0 10px;">Copy plan text backup</button><textarea id="heartyPlanCopyText" readonly style="width:100%;min-height:180px;border-radius:14px;border:1px solid rgba(126,148,174,.25);padding:10px;font-size:.82rem;line-height:1.45;background:#fff;color:#102a43;"></textarea>';
+      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan request is saved</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
       if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
       else document.body.appendChild(panel);
     }
     var note = qs('heartyFulfilmentNote');
-    if(note) note.textContent = 'We have saved your request and sent the plan through the email flow. Your full plan is also shown below, with copy text as a backup.';
+    if(note) note.textContent = 'We have saved your request. Your full plan is shown on this page, and you can use the copy button as a backup if the email takes a moment.';
     var ta = qs('heartyPlanCopyText');
     if(ta) ta.value = buildPlanText();
     panel.hidden = false;
     if(panel.scrollIntoView) panel.scrollIntoView({ behavior:'smooth', block:'center' });
   }
   function copyPlanText(){
-    var ta = qs('heartyPlanCopyText');
-    var text = (ta && ta.value) || buildPlanText();
+    var text = buildPlanText();
     function done(){ var btn = qs('heartyCopyPlanTextBtn'); if(btn) btn.textContent = 'Copied ✅'; trackCaptureEvent('free_meal_plan_copied', { method:'copy_text' }); }
+    function fallbackCopy(){
+      var tmp = document.createElement('textarea');
+      tmp.value = text;
+      tmp.setAttribute('readonly','');
+      tmp.style.position = 'fixed';
+      tmp.style.left = '-9999px';
+      tmp.style.top = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.focus();
+      tmp.select();
+      try{ document.execCommand('copy'); done(); }catch(e){}
+      document.body.removeChild(tmp);
+    }
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(done).catch(function(){ if(ta){ ta.focus(); ta.select(); } });
-    }else if(ta){ ta.focus(); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} }
+      navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
+    }else{
+      fallbackCopy();
+    }
   }
   function showViewerEmailPanel(){
     var mount = qs('viewerUnlockMount');
@@ -12912,19 +12929,19 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     }
     mirrorLeadToInline(lead);
     var fb = isFacebookBrowser();
-    setText(statusId, 'Saving your email and sending your plan...');
+    setText(statusId, 'Saving your email and preparing your plan...');
     trackCaptureEvent('free_meal_email_plan_submit_clicked', { email_present:true, facebook_browser:fb });
     syncLead(lead).then(function(result){
       showPlanFulfilmentPanel(fb);
       trackCaptureEvent('free_meal_plan_email_requested', { method:'email_first', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok), backup_ok:!!(result && result.backup && result.backup.ok) });
-      setText(statusId, (result && result.ok) ? 'Sent — check your inbox. Your plan is also shown below as backup.' : 'Your plan is saved below. If the email takes a moment, use the copy backup.');
+      setText(statusId, (result && result.ok) ? 'Saved — check your inbox shortly. Your plan is also shown on this page.' : 'Your plan is shown below. If the email takes a moment, use the copy button.');
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
       if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
     }).catch(function(err){
       showPlanFulfilmentPanel(fb);
       trackCaptureEvent('free_meal_email_first_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
-      setText(statusId, 'Your plan is shown below. Copy it as a backup if the email takes a moment.');
+      setText(statusId, 'Your plan is shown below. Use the copy button as a backup if the email takes a moment.');
     });
     return false;
   }
@@ -13651,6 +13668,140 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 })();
 </script>
 
-<!-- v35l email-first fulfilment: send/save plan first, copy fallback only, no browser download dependency -->
+
+
+<!-- v35n capture-first safeguard: restore reliable Brevo lead capture before any email/document extras -->
+<script>
+(function(){
+  'use strict';
+  var BREVO_SYNC_URL = 'https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var lastSubmittedEmail = '';
+  var inFlight = false;
+
+  function byId(id){ return document.getElementById(id); }
+  function closest(el, sel){ return el && el.closest ? el.closest(sel) : null; }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim()); }
+  function urlParam(name){ try { return new URLSearchParams(window.location.search).get(name) || ''; } catch(e){ return ''; } }
+  function getEmail(){
+    var el = byId('viewerLeadEmail') || byId('leadEmail') || document.querySelector('input[type="email"]');
+    return el ? String(el.value || '').trim().toLowerCase() : '';
+  }
+  function getName(){
+    var el = byId('viewerLeadName') || byId('leadName') || document.querySelector('input[autocomplete="given-name"],input[name="name"],input[name="first_name"],input[name="firstName"]');
+    return el ? String(el.value || '').trim() : '';
+  }
+  function getStatus(){ return byId('viewerEmailStatus') || byId('leadStatus'); }
+  function setStatus(msg){ var s=getStatus(); if(s) s.textContent = msg || ''; }
+  function mirrorLead(email,name){
+    var le = byId('leadEmail'); if(le) le.value = email || '';
+    var ln = byId('leadName'); if(ln) ln.value = name || '';
+    var ve = byId('viewerLeadEmail'); if(ve) ve.value = email || '';
+    var vn = byId('viewerLeadName'); if(vn) vn.value = name || '';
+  }
+  function currentCountry(){
+    var c = byId('countrySelect');
+    return c ? String(c.value || '').toUpperCase() : 'UNKNOWN';
+  }
+  function track(name, extra){
+    try{
+      if(window.heartyV33qTrack && typeof window.heartyV33qTrack === 'function') return window.heartyV33qTrack(name, extra || {});
+      if(window.heartyTrackEvent && typeof window.heartyTrackEvent === 'function') return window.heartyTrackEvent(name, extra || {});
+    }catch(e){}
+    return Promise.resolve({ok:false, skipped:true});
+  }
+  function showAfterCapture(){
+    try{
+      var panel = byId('heartyFulfilmentPanel');
+      if(!panel){
+        var mount = byId('viewerUnlockMount') || byId('inlineUnlockPanel') || byId('postSubmit');
+        panel = document.createElement('div');
+        panel.id = 'heartyFulfilmentPanel';
+        panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
+        panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan request is saved</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;">Your full plan is shown on this page. Keep this page open and use the copy backup if the email takes a moment.</p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
+        if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
+        else document.body.appendChild(panel);
+      }
+      panel.hidden = false;
+      var post = byId('postSubmit'); if(post) post.classList.add('show');
+      var viewerPost = byId('viewerPostOffer'); if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
+      if(panel.scrollIntoView) panel.scrollIntoView({ behavior:'smooth', block:'center' });
+    }catch(e){}
+  }
+  function syncSimpleLead(email,name){
+    var payload = {
+      email: email,
+      name: name || '',
+      firstName: name || '',
+      source: 'free_meal_plan',
+      campaign: urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
+      page: location.pathname,
+      country: currentCountry(),
+      deliveryMode: 'email_first_capture_safe',
+      deliveryRequested: true,
+      emailPlanRequested: true,
+      captureVersion: 'v35n-capture-first-safe',
+      fullUrl: location.href
+    };
+    return fetch(BREVO_SYNC_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify(payload)
+    }).then(function(res){
+      return res.text().then(function(text){ return { ok:res.ok, status:res.status, body:text }; });
+    }).catch(function(err){
+      return { ok:false, error:String(err && err.message ? err.message : err) };
+    });
+  }
+  function handleSubmit(e){
+    var target = closest(e.target, '#viewerEmailDownloadBtn,#downloadPlanBtn,[data-lead-submit],[data-save-plan]');
+    if(!target) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+
+    var email = getEmail();
+    var name = getName();
+    if(!validEmail(email)){
+      setStatus('Enter a valid email address first.');
+      var field = byId('viewerLeadEmail') || byId('leadEmail');
+      if(field) field.focus();
+      return false;
+    }
+    mirrorLead(email,name);
+    if(inFlight){ setStatus('Saving your email...'); return false; }
+    if(lastSubmittedEmail === email){
+      setStatus('Saved — your plan is shown below. Keep this page open as backup.');
+      showAfterCapture();
+      return false;
+    }
+    inFlight = true;
+    setStatus('Saving your email...');
+    track('free_meal_capture_first_submit_clicked', { email_present:true, capture_version:'v35n' });
+    syncSimpleLead(email,name).then(function(result){
+      inFlight = false;
+      if(result && result.ok){
+        lastSubmittedEmail = email;
+        setStatus('Saved — your plan is shown below. Check your inbox shortly.');
+        track('free_meal_capture_first_saved', { email_present:true, status:result.status || '', capture_version:'v35n' });
+      }else{
+        setStatus('Your plan is shown below. Email save may be delayed — use the copy backup if needed.');
+        track('free_meal_capture_first_failed', { email_present:true, status:(result && result.status) || '', error:(result && result.error) || '', capture_version:'v35n' });
+      }
+      showAfterCapture();
+    }).catch(function(err){
+      inFlight = false;
+      setStatus('Your plan is shown below. Use the copy backup if needed.');
+      track('free_meal_capture_first_exception', { email_present:true, error:String(err && err.message ? err.message : err), capture_version:'v35n' });
+      showAfterCapture();
+    });
+    return false;
+  }
+
+  // Use window capture so this runs before older download/email handlers that may stop propagation.
+  window.addEventListener('click', handleSubmit, true);
+})();
+</script>
+
+<!-- v35m email-first fulfilment: no visible text box, copy button fallback only, no browser download dependency -->
 </body>
 </html>
