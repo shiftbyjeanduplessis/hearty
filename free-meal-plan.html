@@ -11773,7 +11773,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <!-- Hearty Brevo-only sync patch — no meal generation logic -->
 <script>
 (function(){
-  var HEARTY_BREVO_SYNC_URL = "https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
+  var HEARTY_BREVO_SYNC_URL = "https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
   var lastSyncedEmail = "";
 
   function byId(id) { return document.getElementById(id); }
@@ -12334,7 +12334,9 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <script>
 (function(){
   'use strict';
-  var BREVO_SYNC_URL = 'https://dsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var BREVO_SYNC_URL = 'https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo';
+  var CAPTURE_SUPABASE_URL = 'https://mdsfcnocvelwqiercyci.supabase.co';
+  var CAPTURE_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kc2Zjbm9jdmVsd3FpZXJjeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMTEzNjAsImV4cCI6MjA5MjY4NzM2MH0.TWRwj66PtVhBuf5Ov7AHteNFww1hrCQZuD5ZmEflC5M';
   var PADDLE_TOKEN = 'live_516a138666d2aaaca6729c439ba';
   var PADDLE_PRICE_ID = 'pri_01krrpc5hxx3dnak7bxjetm8qp';
   var PADDLE_SUCCESS_URL = 'https://hearty.health/login';
@@ -12493,15 +12495,103 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     if(qs('leadEmail')) qs('leadEmail').value = lead.email || '';
     if(qs('leadName')) qs('leadName').value = lead.name || '';
   }
+  function leadSessionId(){
+    try{
+      var key = 'hearty_free_meal_session';
+      var id = sessionStorage.getItem(key) || localStorage.getItem(key);
+      if(!id){ id = 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2); sessionStorage.setItem(key, id); localStorage.setItem(key, id); }
+      return id;
+    }catch(err){ return 'sess_' + Date.now() + '_' + Math.random().toString(16).slice(2); }
+  }
+  function urlParam(name){ try{ return new URLSearchParams(window.location.search).get(name) || ''; }catch(e){ return ''; } }
+  function currentCountry(){
+    var prefs = getCurrentPrefs ? getCurrentPrefs() : {};
+    return String((prefs && (prefs.countryRaw || prefs.country)) || (qs('countrySelect') && qs('countrySelect').value) || '').toUpperCase() || '';
+  }
+  function trackCaptureEvent(eventName, metadata){
+    var meta = Object.assign({ tracking_version:'v35k-email-delivery-hotfix', timestamp:new Date().toISOString() }, metadata || {});
+    try{
+      if(window.heartyV33qTrack && typeof window.heartyV33qTrack === 'function'){
+        return window.heartyV33qTrack(eventName, meta);
+      }
+    }catch(e){}
+    if(!CAPTURE_SUPABASE_URL || !CAPTURE_SUPABASE_ANON_KEY) return Promise.resolve({ ok:false, skipped:true });
+    var payload = {
+      event_name:eventName,
+      session_id:leadSessionId(),
+      user_id:null,
+      source:urlParam('src') || urlParam('utm_source') || 'direct',
+      campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
+      page:location.pathname,
+      referrer:document.referrer || '',
+      country:currentCountry(),
+      metadata:meta
+    };
+    return fetch(CAPTURE_SUPABASE_URL + '/rest/v1/hearty_events', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'apikey':CAPTURE_SUPABASE_ANON_KEY, 'Authorization':'Bearer ' + CAPTURE_SUPABASE_ANON_KEY, 'Prefer':'return=minimal' },
+      body:JSON.stringify(payload),
+      keepalive:true
+    }).then(function(res){ return { ok:res.ok, status:res.status }; })
+      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+  }
+  function postLeadBackup(lead){
+    if(!validEmail(lead.email) || !CAPTURE_SUPABASE_URL || !CAPTURE_SUPABASE_ANON_KEY) return Promise.resolve({ ok:false, skipped:true });
+    var plan = getCurrentPlan ? getCurrentPlan() : [];
+    var prefs = getCurrentPrefs ? getCurrentPrefs() : {};
+    var payload = {
+      first_name:lead.name || '',
+      email:lead.email,
+      whatsapp:'',
+      country:currentCountry() || 'OTHER',
+      market:currentCountry() === 'ZA' ? 'ZA' : 'INT',
+      proteins:Array.isArray(prefs.proteins) ? prefs.proteins : [],
+      breakfasts:[], starches:[], vegetables:[], fruits:[], snacks:[],
+      generated_plan:Array.isArray(plan) ? plan.slice(0,7) : plan,
+      checkout_url:location.href,
+      ref:urlParam('ref'),
+      utm_source:urlParam('utm_source') || urlParam('src') || 'direct',
+      utm_medium:urlParam('utm_medium'),
+      utm_campaign:urlParam('utm_campaign') || urlParam('campaign') || 'free_meal_plan',
+      utm_content:urlParam('utm_content'),
+      lead_status:'Email captured',
+      notes:'Captured by free-meal-plan v35k email delivery hotfix. Brevo edge function also called.'
+    };
+    return fetch(CAPTURE_SUPABASE_URL + '/rest/v1/meal_plan_leads', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'apikey':CAPTURE_SUPABASE_ANON_KEY, 'Authorization':'Bearer ' + CAPTURE_SUPABASE_ANON_KEY, 'Prefer':'return=minimal' },
+      body:JSON.stringify(payload),
+      keepalive:true
+    }).then(function(res){ return { ok:res.ok, status:res.status }; })
+      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+  }
   function syncLead(lead){
     if(!validEmail(lead.email)) return Promise.resolve({ok:false, skipped:true});
-    return fetch(BREVO_SYNC_URL, {
+    var payload = {
+      email:lead.email,
+      name:lead.name || '',
+      firstName:lead.name || '',
+      source:'free_meal_plan',
+      campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
+      page:location.pathname
+    };
+    var brevoRequest = fetch(BREVO_SYNC_URL, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ email:lead.email, name:lead.name || '', firstName:lead.name || '', source:'free_meal_plan' }),
+      body:JSON.stringify(payload),
       keepalive:true
-    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, body:t }; }); })
+    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, status:res.status, body:t }; }); })
       .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
+    var eventRequest = trackCaptureEvent('free_meal_lead_capture_submitted', { email_present:true, brevo_url_fixed:true });
+    var backupRequest = postLeadBackup(lead);
+    return Promise.allSettled([brevoRequest, eventRequest, backupRequest]).then(function(results){
+      var brevo = results[0].status === 'fulfilled' ? results[0].value : { ok:false, error:String(results[0].reason || '') };
+      var event = results[1].status === 'fulfilled' ? results[1].value : { ok:false, error:String(results[1].reason || '') };
+      var backup = results[2].status === 'fulfilled' ? results[2].value : { ok:false, error:String(results[2].reason || '') };
+      try{ console.log('[Hearty] lead capture results', { brevo:brevo, event:event, backup:backup }); }catch(e){}
+      trackCaptureEvent(brevo.ok ? 'brevo_sync_success' : 'brevo_sync_failed', { status:brevo.status || '', error:brevo.error || '', email_present:true });
+      return { ok:Boolean(brevo.ok || event.ok || backup.ok), brevo:brevo, event:event, backup:backup };
+    });
   }
   function loadScriptOnce(src){
     return new Promise(function(resolve, reject){
@@ -12726,6 +12816,35 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
   function downloadTextFile(){
     return downloadPdfFile();
   }
+  function isFacebookBrowser(){
+    return /FBAN|FBAV|FB_IAB|FB4A|FBIOS|Messenger|Instagram/i.test(navigator.userAgent || '') || /facebook\.com|lm\.facebook\.com|m\.facebook\.com/i.test(document.referrer || '');
+  }
+  function showPlanFulfilmentPanel(isFb){
+    var mount = qs('viewerUnlockMount') || qs('inlineUnlockPanel');
+    var panel = qs('heartyFulfilmentPanel');
+    if(!panel){
+      panel = document.createElement('div');
+      panel.id = 'heartyFulfilmentPanel';
+      panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
+      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan is ready</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0 0 10px;">Copy plan text</button><textarea id="heartyPlanCopyText" readonly style="width:100%;min-height:180px;border-radius:14px;border:1px solid rgba(126,148,174,.25);padding:10px;font-size:.82rem;line-height:1.45;background:#fff;color:#102a43;"></textarea>';
+      if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
+      else document.body.appendChild(panel);
+    }
+    var note = qs('heartyFulfilmentNote');
+    if(note) note.textContent = isFb ? 'Facebook can block downloads. Your plan is also shown below — copy it, or open this page in your phone browser if the download does not start.' : 'Your download should start. Your plan is also shown below as a backup.';
+    var ta = qs('heartyPlanCopyText');
+    if(ta) ta.value = buildPlanText();
+    panel.hidden = false;
+    if(panel.scrollIntoView) panel.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
+  function copyPlanText(){
+    var ta = qs('heartyPlanCopyText');
+    var text = (ta && ta.value) || buildPlanText();
+    function done(){ var btn = qs('heartyCopyPlanTextBtn'); if(btn) btn.textContent = 'Copied ✅'; trackCaptureEvent('free_meal_plan_copied', { method:'copy_text' }); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ if(ta){ ta.focus(); ta.select(); } });
+    }else if(ta){ ta.focus(); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} }
+  }
   function showViewerEmailPanel(){
     var mount = qs('viewerUnlockMount');
     if(!mount) return;
@@ -12750,13 +12869,27 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       return false;
     }
     mirrorLeadToInline(lead);
-    setText(statusId, 'Saving your email and preparing your download...');
-    syncLead(lead).then(function(){
-      downloadTextFile();
-      setText(statusId, 'Downloaded — check your downloads folder.');
+    var fb = isFacebookBrowser();
+    setText(statusId, 'Saving your email and preparing your plan...');
+    trackCaptureEvent('free_meal_email_submit_clicked', { email_present:true, facebook_browser:fb });
+    syncLead(lead).then(function(result){
+      showPlanFulfilmentPanel(fb);
+      try{
+        trackCaptureEvent('free_meal_download_attempted', { method:'pdf', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok) });
+        downloadTextFile();
+        trackCaptureEvent('free_meal_download_triggered', { method:'pdf', facebook_browser:fb });
+        setText(statusId, fb ? 'Your plan is ready below. If Facebook blocks the download, copy it or open the page in your browser.' : 'Your plan is ready. If the download does not start, copy it below.');
+      }catch(err){
+        trackCaptureEvent('free_meal_download_failed', { method:'pdf', facebook_browser:fb, error:String(err && err.message ? err.message : err) });
+        setText(statusId, 'Your plan is ready below. Copy it if the download does not start.');
+      }
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
-      if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); if(viewerPost.scrollIntoView) viewerPost.scrollIntoView({ behavior:'smooth', block:'center' }); }
+      if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
+    }).catch(function(err){
+      showPlanFulfilmentPanel(fb);
+      trackCaptureEvent('free_meal_email_delivery_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
+      setText(statusId, 'Your plan is ready below. Copy it if the download does not start.');
     });
     return false;
   }
@@ -12799,6 +12932,8 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       if(t){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); showViewerEmailPanel(); return false; }
       var d = closest(e.target, '#viewerEmailDownloadBtn,#downloadPlanBtn');
       if(d){ return finishDownload(e); }
+      var copy = closest(e.target, '#heartyCopyPlanTextBtn');
+      if(copy){ e.preventDefault(); copyPlanText(); return false; }
       var c = closest(e.target, '[data-hearty-checkout],[data-hearty-checkout-nav],[data-paddle-checkout]');
       if(c){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); openCheckout(); return false; }
       var close = closest(e.target, '#closeFallback'); if(close){ e.preventDefault(); hideCheckoutFallback(); return false; }
@@ -13481,5 +13616,6 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 })();
 </script>
 
+<!-- v35k email delivery hotfix: fixed Brevo URL, restored lead capture tracking/backups, added Facebook-safe copy fallback -->
 </body>
 </html>
