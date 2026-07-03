@@ -12826,6 +12826,23 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     if(mount.scrollIntoView) mount.scrollIntoView({ behavior:'smooth', block:'center' });
     setTimeout(function(){ var e=qs('viewerLeadEmail'); if(e) e.focus(); }, 150);
   }
+  function scrollBackToGeneratedOffer(){
+    var offer = qs('generatedAppOffer');
+    if(!offer) return;
+    setTimeout(function(){
+      try{
+        var shell = document.querySelector('#planViewerModal .plan-viewer-shell');
+        if(shell && typeof shell.scrollTo === 'function'){
+          shell.scrollTo({ top: Math.max(0, offer.offsetTop - 14), behavior:'smooth' });
+        }else if(offer.scrollIntoView){
+          offer.scrollIntoView({ behavior:'smooth', block:'start' });
+        }
+        trackCaptureEvent('free_meal_offer_scrolled_after_email', { capture_version:'v35n_scroll_to_offer_after_send' });
+      }catch(err){
+        if(offer.scrollIntoView) offer.scrollIntoView({ behavior:'smooth', block:'start' });
+      }
+    }, 220);
+  }
   function finishDownload(e){
     if(e){ e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation(); }
     var lead = getLeadFromViewerOrInline();
@@ -12853,10 +12870,12 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
       if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
+      scrollBackToGeneratedOffer();
     }).catch(function(err){
       showPlanFulfilmentPanel(fb);
       trackCaptureEvent('free_meal_email_delivery_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
       setText(statusId, 'Saved — your plan is ready. If the PDF does not open on this device, use the copy backup on this page.');
+      scrollBackToGeneratedOffer();
     });
     return false;
   }
