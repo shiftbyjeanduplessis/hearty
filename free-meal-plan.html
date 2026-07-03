@@ -11410,7 +11410,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <div class="field"><label for="leadEmail">Email address</label><input autocomplete="email" id="leadEmail" placeholder="you@example.com" type="email"/></div>
 <div class="field"><label for="leadName">First name <span class="micro">optional</span></label><input autocomplete="given-name" id="leadName" placeholder="Your first name" type="text"/></div>
 </div>
-<button class="btn btn-primary" id="downloadPlanBtn" type="button">Download my free plan + shopping list</button>
+<button class="btn btn-primary" id="downloadPlanBtn" type="button">Send my plan + shopping list</button>
 <div aria-live="polite" class="status" id="leadStatus"></div>
 <div class="post-submit" id="postSubmit">
 <strong>Your free plan is downloading ✅</strong>
@@ -11770,115 +11770,8 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 </div>
 </div>
 </div>
-<!-- Hearty Brevo-only sync patch — no meal generation logic -->
-<script>
-(function(){
-  var HEARTY_BREVO_SYNC_URL = "https://mdsfcnocvelwqiercyci.supabase.co/functions/v1/sync-hearty-lead-to-brevo";
-  var lastSyncedEmail = "";
-
-  function byId(id) { return document.getElementById(id); }
-
-  function findEmailField() {
-    return byId('leadEmail') ||
-      document.querySelector('input[type="email"]') ||
-      document.querySelector('input[name="email"]');
-  }
-
-  function findNameField() {
-    return byId('leadName') ||
-      document.querySelector('input[name="name"]') ||
-      document.querySelector('input[name="first_name"]') ||
-      document.querySelector('input[name="firstName"]') ||
-      document.querySelector('input[autocomplete="given-name"]');
-  }
-
-  function readLead() {
-    var emailEl = findEmailField();
-    var nameEl = findNameField();
-    return {
-      email: emailEl ? String(emailEl.value || '').trim().toLowerCase() : '',
-      name: nameEl ? String(nameEl.value || '').trim() : ''
-    };
-  }
-
-  function setLeadStatus(message) {
-    var el = byId('leadStatus');
-    if (el && message) el.textContent = message;
-  }
-
-  function syncLeadToBrevo(reason) {
-    var lead = readLead();
-
-    if (!lead.email || lead.email.indexOf('@') === -1) {
-      console.warn('[Hearty] Brevo sync skipped — missing/invalid email', lead);
-      return Promise.resolve({ ok:false, skipped:true, reason:'invalid_email' });
-    }
-
-    if (lead.email === lastSyncedEmail) {
-      console.log('[Hearty] Brevo sync skipped — already synced this email', lead.email);
-      return Promise.resolve({ ok:true, skipped:true, reason:'duplicate_email' });
-    }
-
-    lastSyncedEmail = lead.email;
-
-    var payload = {
-      email: lead.email,
-      name: lead.name || '',
-      firstName: lead.name || '',
-      source: 'free_meal_plan'
-    };
-
-    console.log('[Hearty] Brevo sync start', reason, payload);
-    setLeadStatus('Saving your email...');
-
-    return fetch(HEARTY_BREVO_SYNC_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      keepalive: true
-    })
-    .then(function(res) {
-      return res.text().then(function(text) {
-        var data = {};
-        try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
-        if (!res.ok) throw new Error('Brevo sync failed ' + res.status + ': ' + text);
-        console.log('[Hearty] Brevo sync success', data);
-        setLeadStatus('Saved — your plan is downloading.');
-        return data;
-      });
-    })
-    .catch(function(err) {
-      console.warn('[Hearty] Brevo sync failed', err);
-      setLeadStatus('Your plan is downloading. Email follow-up may take a moment.');
-      return { ok:false, error:String(err && err.message ? err.message : err) };
-    });
-  }
-
-  document.addEventListener('submit', function(e) {
-    var form = e.target;
-    if (!form) return;
-    if (
-      form.id === 'leadCaptureForm' ||
-      form.id === 'inlineLeadForm' ||
-      (form.closest && form.closest('#inlineUnlockPanel')) ||
-      (form.closest && form.closest('#viewerUnlockMount'))
-    ) {
-      syncLeadToBrevo('lead_form_submit');
-    }
-  }, true);
-
-  document.addEventListener('click', function(e) {
-    var target = e.target && e.target.closest
-      ? e.target.closest('#downloadPlanBtn,[data-download-plan],[data-save-plan],[data-lead-submit]')
-      : null;
-    if (target) syncLeadToBrevo('download_or_save_click');
-  }, true);
-
-  window.heartyBrevoSyncTest = function() {
-    return syncLeadToBrevo('manual_console_test');
-  };
-})();
-</script>
+<!-- v35m: legacy duplicate Brevo-only browser sync removed.
+     Main capture below saves to Supabase first, then attempts Brevo as best-effort. -->
 <!-- Hearty direct PDF download handoff - direct jsPDF, no popup window -->
 </div><script>(function(){
   'use strict';
@@ -12555,7 +12448,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       utm_campaign:urlParam('utm_campaign') || urlParam('campaign') || 'free_meal_plan',
       utm_content:urlParam('utm_content'),
       lead_status:'Email captured',
-      notes:'Captured by free-meal-plan v35k email delivery hotfix. Brevo edge function also called.'
+      notes:'Captured by free-meal-plan v35m Supabase-first delivery. Supabase is source of truth; Brevo browser sync is best-effort.'
     };
     return fetch(CAPTURE_SUPABASE_URL + '/rest/v1/meal_plan_leads', {
       method:'POST',
@@ -12565,7 +12458,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     }).then(function(res){ return { ok:res.ok, status:res.status }; })
       .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
   }
-  function syncLead(lead){
+  function attemptBrevoSync(lead){
     if(!validEmail(lead.email)) return Promise.resolve({ok:false, skipped:true});
     var payload = {
       email:lead.email,
@@ -12575,22 +12468,108 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       campaign:urlParam('campaign') || urlParam('utm_campaign') || 'free_meal_plan',
       page:location.pathname
     };
-    var brevoRequest = fetch(BREVO_SYNC_URL, {
+    var opts = {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':CAPTURE_SUPABASE_ANON_KEY,
+        'Authorization':'Bearer ' + CAPTURE_SUPABASE_ANON_KEY
+      },
       body:JSON.stringify(payload),
-      keepalive:true
-    }).then(function(res){ return res.text().then(function(t){ return { ok:res.ok, status:res.status, body:t }; }); })
-      .catch(function(err){ return { ok:false, error:String(err && err.message ? err.message : err) }; });
-    var eventRequest = trackCaptureEvent('free_meal_lead_capture_submitted', { email_present:true, brevo_url_fixed:true });
+      credentials:'omit'
+    };
+    var timer = null;
+    if(window.AbortController){
+      var controller = new AbortController();
+      opts.signal = controller.signal;
+      timer = setTimeout(function(){ try{ controller.abort(); }catch(e){} }, 6500);
+    }
+    return fetch(BREVO_SYNC_URL, opts)
+      .then(function(res){
+        return res.text().then(function(t){ return { ok:res.ok, status:res.status, body:t }; });
+      })
+      .catch(function(err){
+        return { ok:false, error:String(err && err.message ? err.message : err) };
+      })
+      .then(function(result){
+        if(timer) clearTimeout(timer);
+        return result;
+      });
+  }
+
+  function syncLead(lead){
+    if(!validEmail(lead.email)) return Promise.resolve({ok:false, skipped:true});
+
+    // v35m: Supabase is now the source of truth. The user flow should not depend on
+    // the browser successfully reaching Brevo. Browser-to-Brevo can fail in Facebook
+    // and some mobile browsers with "Failed to fetch" / "Load failed" even when the
+    // lead is safely captured. Save first, then attempt Brevo in the background.
+    var eventRequest = trackCaptureEvent('free_meal_lead_capture_submitted', {
+      email_present:true,
+      capture_version:'v35m_supabase_first'
+    });
     var backupRequest = postLeadBackup(lead);
-    return Promise.allSettled([brevoRequest, eventRequest, backupRequest]).then(function(results){
-      var brevo = results[0].status === 'fulfilled' ? results[0].value : { ok:false, error:String(results[0].reason || '') };
-      var event = results[1].status === 'fulfilled' ? results[1].value : { ok:false, error:String(results[1].reason || '') };
-      var backup = results[2].status === 'fulfilled' ? results[2].value : { ok:false, error:String(results[2].reason || '') };
-      try{ console.log('[Hearty] lead capture results', { brevo:brevo, event:event, backup:backup }); }catch(e){}
-      trackCaptureEvent(brevo.ok ? 'brevo_sync_success' : 'brevo_sync_failed', { status:brevo.status || '', error:brevo.error || '', email_present:true });
-      return { ok:Boolean(brevo.ok || event.ok || backup.ok), brevo:brevo, event:event, backup:backup };
+
+    return Promise.allSettled([eventRequest, backupRequest]).then(function(results){
+      var event = results[0].status === 'fulfilled' ? results[0].value : { ok:false, error:String(results[0].reason || '') };
+      var backup = results[1].status === 'fulfilled' ? results[1].value : { ok:false, error:String(results[1].reason || '') };
+      var leadSaved = Boolean(event.ok || backup.ok);
+
+      try{ console.log('[Hearty] v35m lead saved first', { event:event, backup:backup, leadSaved:leadSaved }); }catch(e){}
+
+      trackCaptureEvent(leadSaved ? 'free_meal_capture_saved' : 'free_meal_capture_failed', {
+        email_present:true,
+        event_ok:!!event.ok,
+        backup_ok:!!backup.ok,
+        event_status:event.status || '',
+        backup_status:backup.status || '',
+        capture_version:'v35m_supabase_first'
+      });
+
+      trackCaptureEvent('free_meal_plan_email_requested', {
+        method:'email_first',
+        email_present:true,
+        backup_ok:!!backup.ok,
+        event_ok:!!event.ok,
+        brevo_queued:true,
+        capture_version:'v35m_supabase_first'
+      });
+
+      // Best-effort Brevo sync. This is intentionally not awaited by the user flow.
+      setTimeout(function(){
+        attemptBrevoSync(lead).then(function(brevo){
+          var meta = {
+            status:brevo.status || '',
+            error:brevo.error || '',
+            email_present:true,
+            lead_saved:leadSaved,
+            backup_ok:!!backup.ok,
+            capture_version:'v35m_supabase_first'
+          };
+          if(brevo.ok){
+            trackCaptureEvent('brevo_sync_success', meta);
+          }else{
+            // Network/browser failure after Supabase save is pending, not lost.
+            trackCaptureEvent(leadSaved ? 'brevo_sync_pending' : 'brevo_sync_failed', meta);
+          }
+        }).catch(function(err){
+          trackCaptureEvent(leadSaved ? 'brevo_sync_pending' : 'brevo_sync_failed', {
+            error:String(err && err.message ? err.message : err),
+            email_present:true,
+            lead_saved:leadSaved,
+            backup_ok:!!backup.ok,
+            capture_version:'v35m_supabase_first'
+          });
+        });
+      }, 250);
+
+      return {
+        ok:leadSaved,
+        brevo:{ ok:false, queued:true },
+        event:event,
+        backup:backup,
+        lead_saved:leadSaved
+      };
     });
   }
   function loadScriptOnce(src){
@@ -12839,7 +12818,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     mount.hidden = false;
     mount.classList.add('show');
     if(!mount.innerHTML.trim()){
-      mount.innerHTML = '<div class="viewer-unlock-card"><h3>Save your free plan</h3><p>Enter your email so you do not lose your 7-day meal plan and shopping list. No card needed.</p><div class="viewer-email-grid"><label>Email address<input id="viewerLeadEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>First name <span class="micro">optional</span><input id="viewerLeadName" type="text" autocomplete="given-name" placeholder="Your first name"></label></div><button class="btn btn-primary" id="viewerEmailDownloadBtn" type="button">Download my free plan + shopping list</button><div class="viewer-email-status" id="viewerEmailStatus"></div></div>';
+      mount.innerHTML = '<div class="viewer-unlock-card"><h3>Save your free plan</h3><p>Enter your email so you do not lose your 7-day meal plan and shopping list. No card needed.</p><div class="viewer-email-grid"><label>Email address<input id="viewerLeadEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>First name <span class="micro">optional</span><input id="viewerLeadName" type="text" autocomplete="given-name" placeholder="Your first name"></label></div><button class="btn btn-primary" id="viewerEmailDownloadBtn" type="button">Send my plan + shopping list</button><div class="viewer-email-status" id="viewerEmailStatus"></div></div>';
       var oldEmail = qs('leadEmail'); if(oldEmail && qs('viewerLeadEmail')) qs('viewerLeadEmail').value = oldEmail.value || '';
       var oldName = qs('leadName'); if(oldName && qs('viewerLeadName')) qs('viewerLeadName').value = oldName.value || '';
     }
@@ -12859,17 +12838,17 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     mirrorLeadToInline(lead);
     var fb = isFacebookBrowser();
     setText(statusId, 'Saving your email and preparing your plan...');
-    trackCaptureEvent('free_meal_email_submit_clicked', { email_present:true, facebook_browser:fb });
+    trackCaptureEvent('free_meal_email_plan_submit_clicked', { email_present:true, facebook_browser:fb, capture_version:'v35m_supabase_first' });
     syncLead(lead).then(function(result){
       showPlanFulfilmentPanel(fb);
       try{
-        trackCaptureEvent('free_meal_download_attempted', { method:'pdf', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok) });
+        trackCaptureEvent('free_meal_download_attempted', { method:'pdf', facebook_browser:fb, lead_saved:!!(result && result.lead_saved), brevo_queued:!!(result && result.brevo && result.brevo.queued), capture_version:'v35m_supabase_first' });
         downloadTextFile();
         trackCaptureEvent('free_meal_download_triggered', { method:'pdf', facebook_browser:fb });
-        setText(statusId, 'Sent — check your inbox shortly. If you do not see it in 2 minutes, check spam and add info@hearty.health to your contacts.');
+        setText(statusId, 'Saved — your plan is ready. If the email is delayed, use the copy/download backup on this page.');
       }catch(err){
         trackCaptureEvent('free_meal_download_failed', { method:'pdf', facebook_browser:fb, error:String(err && err.message ? err.message : err) });
-        setText(statusId, 'Sent — check your inbox shortly. If the PDF does not open on this device, check your email.');
+        setText(statusId, 'Saved — your plan is ready. If the PDF does not open on this device, use the copy backup on this page.');
       }
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
@@ -12877,7 +12856,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     }).catch(function(err){
       showPlanFulfilmentPanel(fb);
       trackCaptureEvent('free_meal_email_delivery_failed', { email_present:true, facebook_browser:fb, error:String(err && err.message ? err.message : err) });
-      setText(statusId, 'Sent — check your inbox shortly. If the PDF does not open on this device, check your email.');
+      setText(statusId, 'Saved — your plan is ready. If the PDF does not open on this device, use the copy backup on this page.');
     });
     return false;
   }
@@ -13607,3 +13586,5 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <!-- v35l cleanup: removed duplicate below-email fulfilment panel; retained email/Brevo/download tracking -->
 </body>
 </html>
+
+<!-- v35m Supabase-first capture: removed duplicate Brevo sync, saves lead before best-effort Brevo queue -->
