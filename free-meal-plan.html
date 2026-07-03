@@ -11276,6 +11276,23 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 }
 </style>
 
+
+<!-- Meta Pixel: Hearty free meal plan funnel tracking -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+ n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+ if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+ n.queue=[];t=b.createElement(e);t.async=!0;
+ t.src=v;s=b.getElementsByTagName(e)[0];
+ s.parentNode.insertBefore(t,s)}(window, document,'script',
+ 'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '876229661733778');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+ src="https://www.facebook.com/tr?id=876229661733778&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 </head>
 <body>
 <main>
@@ -11413,7 +11430,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 <button class="btn btn-primary" id="downloadPlanBtn" type="button">Email my free plan + shopping list</button>
 <div aria-live="polite" class="status" id="leadStatus"></div>
 <div class="post-submit" id="postSubmit">
-<strong>Your plan request is saved ✅</strong>
+<strong>Your plan email is being prepared ✅</strong>
 <p>This free plan is a starting point. Hearty is the full GLP-1 companion app for ongoing meal planning, portions, shopping lists, calories, protein, fibre, water, progress and Support Mode for harder days.</p>
 <button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Yes — unlock the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button>
 <div class="generated-offer-guarantee-line">Try it for 14 days. If it is not useful for you, email us for a refund.</div>
@@ -11758,7 +11775,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
 
 <div class="viewer-post-offer" hidden="" id="viewerPostOffer">
 <strong>Your free plan is saved ✅</strong>
-<p>Your full plan is shown on this page. If the email takes a moment, keep this page open and use the copy backup if needed.</p>
+<p>Your plan email is being prepared. Keep this page open as a backup while it arrives.</p>
 <div class="post-offer-guarantee">14-day money-back guarantee • $29 once-off • no subscription</div>
 <button class="btn btn-primary" data-hearty-checkout="" type="button">Get the full Hearty app — $29 lifetime</button>
 <button class="btn btn-secondary" id="viewerPostOfferClose" type="button">Not now</button>
@@ -12871,12 +12888,12 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
       panel = document.createElement('div');
       panel.id = 'heartyFulfilmentPanel';
       panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
-      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan request is saved</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
+      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan email is being prepared</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
       if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
       else document.body.appendChild(panel);
     }
     var note = qs('heartyFulfilmentNote');
-    if(note) note.textContent = 'We have saved your request. Your full plan is shown on this page, and you can use the copy button as a backup if the email takes a moment.';
+    if(note) note.textContent = 'We are sending your plan to your inbox. Your full plan is still shown on this page as a backup while the email arrives.';
     var ta = qs('heartyPlanCopyText');
     if(ta) ta.value = buildPlanText();
     panel.hidden = false;
@@ -12929,12 +12946,12 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     }
     mirrorLeadToInline(lead);
     var fb = isFacebookBrowser();
-    setText(statusId, 'Saving your email and preparing your plan...');
+    setText(statusId, 'Sending your plan to your inbox...');
     trackCaptureEvent('free_meal_email_plan_submit_clicked', { email_present:true, facebook_browser:fb });
     syncLead(lead).then(function(result){
       showPlanFulfilmentPanel(fb);
       trackCaptureEvent('free_meal_plan_email_requested', { method:'email_first', facebook_browser:fb, brevo_ok:!!(result && result.brevo && result.brevo.ok), backup_ok:!!(result && result.backup && result.backup.ok) });
-      setText(statusId, (result && result.ok) ? 'Saved — check your inbox shortly. Your plan is also shown on this page.' : 'Your plan is shown below. If the email takes a moment, use the copy button.');
+      setText(statusId, (result && result.ok) ? 'Sent — check your inbox shortly. Your plan is also shown on this page as backup.' : 'Your plan is shown below. If the email takes a moment, use the copy button.');
       var post = qs('postSubmit'); if(post) post.classList.add('show');
       var viewerPost = qs('viewerPostOffer');
       if(viewerPost){ viewerPost.hidden = false; viewerPost.classList.add('show'); }
@@ -13717,7 +13734,7 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
         panel = document.createElement('div');
         panel.id = 'heartyFulfilmentPanel';
         panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
-        panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan request is saved</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;">Your full plan is shown on this page. Keep this page open and use the copy backup if the email takes a moment.</p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
+        panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan email is being prepared</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;">Your full plan is shown on this page. Keep this page open and use the copy backup if the email takes a moment.</p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
         if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
         else document.body.appendChild(panel);
       }
@@ -13797,11 +13814,128 @@ body > #viewerBottomCta.hearty-clean-fixed-bar #viewerEditBtn{
     return false;
   }
 
-  // Use window capture so this runs before older download/email handlers that may stop propagation.
-  window.addEventListener('click', handleSubmit, true);
+  // v36 transactional plan email: disabled this older capture-first safeguard.
+  // It only sent a simple lead payload and blocked the full meal-plan payload.
+  window.heartyV35nCaptureFirstDisabledByV36 = true;
+  // window.addEventListener('click', handleSubmit, true);
 })();
 </script>
 
 <!-- v35m email-first fulfilment: no visible text box, copy button fallback only, no browser download dependency -->
+
+<!-- Hearty Meta Pixel custom funnel events: generic steps only, no health/meal/personal data sent -->
+<script id="hearty-meta-pixel-funnel-events">
+(function(){
+  'use strict';
+  var firedOnce = {};
+
+  function fbReady(){ return !!(window.fbq && typeof window.fbq === 'function'); }
+  function safeTrack(name, params, once){
+    try{
+      if(once && firedOnce[name]) return;
+      if(once) firedOnce[name] = true;
+      if(!fbReady()) return;
+      var clean = Object.assign({
+        funnel: 'free_meal_plan',
+        page: 'free-meal-plan',
+        tracking_version: 'meta-pixel-v1'
+      }, params || {});
+      // Keep this deliberately generic. Do not send names, emails, food choices, symptoms, medication, weight or calorie data to Meta.
+      window.fbq('trackCustom', name, clean);
+    }catch(e){}
+  }
+
+  function byId(id){ return document.getElementById(id); }
+  function closest(el, sel){ return el && el.closest ? el.closest(sel) : null; }
+  function isVisible(el){
+    if(!el) return false;
+    if(el.hidden || el.getAttribute('hidden') !== null) return false;
+    var style = window.getComputedStyle ? window.getComputedStyle(el) : null;
+    return !style || (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0');
+  }
+  function validEmail(value){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim()); }
+  function getLeadEmail(){
+    var field = byId('viewerLeadEmail') || byId('leadEmail') || document.querySelector('input[type="email"]');
+    return field ? field.value : '';
+  }
+
+  function checkPlanGenerated(){
+    var rows = byId('fullPlanRows') || byId('viewerPlanRows');
+    var onscreen = byId('onscreenFullPlan');
+    var viewer = byId('planViewerModal');
+    var hasRows = rows && String(rows.textContent || '').trim().length > 80;
+    var visiblePlan = isVisible(onscreen) || isVisible(viewer);
+    if(hasRows && visiblePlan) safeTrack('PlanGenerated', { method: 'on_page_render' }, true);
+  }
+
+  function checkAppOfferViewed(){
+    var post = byId('postSubmit');
+    var viewerPost = byId('viewerPostOffer');
+    if(isVisible(post) || isVisible(viewerPost) || document.querySelector('.post-submit.show,.viewer-post-offer.show')){
+      safeTrack('AppOfferViewed', { offer: 'hearty_once_off_app' }, true);
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var generate = closest(e.target, '#heroGeneratePlanBtn,#rightTopGenerateBtn,#fullPlanBtn,[data-open-plan-setup],[data-force-open-builder],a[href="#quickSetupPanel"]');
+    if(generate){
+      safeTrack('GeneratePlanClick', {
+        element_id: generate.id || 'generate_cta',
+        location: generate.id === 'rightTopGenerateBtn' ? 'top_panel' : 'hero_or_page'
+      });
+    }
+
+    var build = closest(e.target, '#modalBuildPlanBtn');
+    if(build){ safeTrack('BuildPlanClick', { location: 'setup_modal' }); }
+
+    var emailSubmit = closest(e.target, '#downloadPlanBtn,#viewerEmailDownloadBtn,[data-lead-submit],[data-save-plan]');
+    if(emailSubmit && validEmail(getLeadEmail())){
+      safeTrack('EmailSubmitted', { method: 'save_copy_or_shopping_list' }, true);
+    }
+
+    var checkout = closest(e.target, '[data-hearty-checkout],#openHostedCheckout,#retryCheckout');
+    if(checkout){
+      safeTrack('CheckoutClick', { offer: 'hearty_once_off_app', checkout: checkout.id || 'paddle' });
+    }
+  }, true);
+
+  var scrollMarks = { 50:false, 90:false };
+  function checkScrollDepth(){
+    try{
+      var doc = document.documentElement;
+      var body = document.body;
+      var scrollTop = window.pageYOffset || doc.scrollTop || body.scrollTop || 0;
+      var height = Math.max(body.scrollHeight, doc.scrollHeight, body.offsetHeight, doc.offsetHeight);
+      var viewport = window.innerHeight || doc.clientHeight || 0;
+      var pct = height > viewport ? Math.round(((scrollTop + viewport) / height) * 100) : 100;
+      if(pct >= 50 && !scrollMarks[50]){ scrollMarks[50] = true; safeTrack('ScrollDepth', { depth: 50 }); }
+      if(pct >= 90 && !scrollMarks[90]){ scrollMarks[90] = true; safeTrack('ScrollDepth', { depth: 90 }); }
+    }catch(e){}
+  }
+
+  var observer = null;
+  function bindObserver(){
+    try{
+      observer = new MutationObserver(function(){
+        checkPlanGenerated();
+        checkAppOfferViewed();
+      });
+      observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden','class','style'] });
+    }catch(e){}
+    checkPlanGenerated();
+    checkAppOfferViewed();
+    checkScrollDepth();
+  }
+
+  window.addEventListener('scroll', checkScrollDepth, { passive:true });
+  window.addEventListener('load', function(){ setTimeout(function(){ checkPlanGenerated(); checkAppOfferViewed(); checkScrollDepth(); }, 600); });
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindObserver);
+  else bindObserver();
+
+  window.heartyMetaPixelTrack = safeTrack;
+})();
+</script>
+<!-- End Hearty Meta Pixel custom funnel events -->
 </body>
 </html>
