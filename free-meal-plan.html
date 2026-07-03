@@ -11374,6 +11374,72 @@ fbq('track', 'PageView');
   #heartyFulfilmentPanel .hearty-email-success-offer{padding:16px;}
   #heartyFulfilmentPanel .paid-primary-cta{min-height:56px;}
 }
+
+
+/* v36 testimonial trust patches */
+.hero-user-proof{
+  position:relative;
+  z-index:2;
+  max-width:560px;
+  margin:14px 0 16px;
+  padding:13px 15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(246,95,154,.18);
+  box-shadow:0 14px 30px rgba(7,31,61,.07);
+}
+.hero-user-proof .review-stars,
+.generated-offer-user-proof .review-stars{
+  color:#ffbf3f;
+  font-size:.9rem;
+  letter-spacing:.04em;
+  font-weight:950;
+  line-height:1;
+  margin-bottom:7px;
+}
+.hero-user-proof p{
+  margin:0;
+  color:#123452;
+  font-size:.95rem;
+  line-height:1.42;
+  font-weight:850;
+}
+.hero-user-proof strong{
+  display:block;
+  margin-top:6px;
+  color:#0c5b97;
+  font-size:.82rem;
+  font-weight:950;
+}
+#planViewerModal #generatedAppOffer .generated-offer-user-proof,
+.generated-offer-user-proof{
+  margin:14px 0 14px!important;
+  padding:13px 14px!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.12)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  color:#fff!important;
+}
+#planViewerModal #generatedAppOffer .generated-offer-user-proof p,
+.generated-offer-user-proof p{
+  margin:0!important;
+  color:rgba(255,255,255,.94)!important;
+  font-size:.9rem!important;
+  line-height:1.42!important;
+  font-weight:820!important;
+}
+#planViewerModal #generatedAppOffer .generated-offer-user-proof strong,
+.generated-offer-user-proof strong{
+  display:block!important;
+  margin-top:6px!important;
+  color:#dffdf7!important;
+  font-size:.78rem!important;
+  font-weight:950!important;
+}
+@media(max-width:620px){
+  .hero-user-proof{margin:12px 0 14px;padding:12px 13px;border-radius:18px;}
+  .hero-user-proof p{font-size:.9rem;}
+}
 </style>
 
 </head>
@@ -11386,6 +11452,11 @@ fbq('track', 'PageView');
 <h1>Get the free meal plan you asked for.</h1>
 <p class="lead">Simple protein-focused meals for low appetite, easier shopping and not knowing what to eat on GLP-1s.</p>
 <div aria-label="Free plan trust notes" class="guided-no-paywall"><strong>No payment. No card. No subscription.</strong><span>Generate the free plan on this page, then email the plan and shopping list to yourself.</span></div>
+<div class="hero-user-proof" aria-label="Hearty user review">
+  <div class="review-stars">★★★★★</div>
+  <p>“I was skeptical, but now I use the app every day to track my Mounjaro journey — and I love it.”</p>
+  <strong>— Karen C.</strong>
+</div>
 <div class="hero-primary-path hero-primary-path-strong">
 <a class="btn btn-primary hero-plan-cta" data-open-plan-setup="" href="#quickSetupPanel" id="heroGeneratePlanBtn">Generate my free 7-day plan</a>
 </div>
@@ -11837,6 +11908,13 @@ fbq('track', 'PageView');
       <div><strong>Support Mode</strong><span>Softer meals and routine help for low-appetite days.</span></div>
       <div><strong>Water + routine</strong><span>Simple daily rhythm without a complicated tracker.</span></div>
       <div><strong>Progress tracking</strong><span>Weight, photos and consistency in one place.</span></div>
+    </div>
+
+
+    <div class="generated-offer-user-proof" aria-label="Hearty user review">
+      <div class="review-stars">★★★★★</div>
+      <p>“That’s awesome — thank you for a great app. I’ll be seeing my doctor next month and will definitely let him know.”</p>
+      <strong>— Keri V.</strong>
     </div>
 
     <div class="offer-price-line">$29 once-off — lifetime access, no subscription.</div>
