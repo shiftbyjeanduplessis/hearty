@@ -1,20 +1,232 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#1550b3" />
-  <title>Hearty</title>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
-  <meta http-equiv="refresh" content="0; url=/home.html" />
-  <style>body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#eef4fb;color:#102033}.card{max-width:360px;margin:20px;padding:24px;border-radius:24px;background:#fff;box-shadow:0 18px 44px rgba(14,31,53,.10);text-align:center}a{color:#1550b3;font-weight:800}</style>
+  <title>Hearty — Your GLP-1 Companion</title>
+  <meta name="description" content="Hearty is a simple GLP-1 companion app for meals, movement, support mode and private progress tracking. One-time $29 lifetime access." />
+  <meta name="theme-color" content="#0c5b97" />
+  <style>
+    :root{
+      --blue:#0c5b97;
+      --blue2:#064877;
+      --teal:#0f8f9b;
+      --ink:#123244;
+      --muted:#5f7481;
+      --soft:#edf8fb;
+      --line:#d9eef4;
+      --card:#ffffff;
+      --cream:#fffaf2;
+      --shadow:0 18px 45px rgba(10,54,84,.14);
+      --radius:26px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15,143,155,.20), transparent 34rem),
+        radial-gradient(circle at 80% 0%, rgba(12,91,151,.18), transparent 32rem),
+        linear-gradient(180deg,#f6fbfd 0%,#fffaf2 100%);
+      line-height:1.45;
+    }
+    a{color:inherit}
+    .wrap{width:min(1120px, calc(100% - 32px)); margin:0 auto}
+    .nav{position:sticky;top:0;z-index:10;background:rgba(246,251,253,.86);backdrop-filter:blur(14px);border-bottom:1px solid rgba(217,238,244,.8)}
+    .nav-inner{height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.03em;color:var(--blue)}
+    .brand-mark{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--teal));display:grid;place-items:center;color:white;font-size:20px;box-shadow:0 10px 25px rgba(12,91,151,.22)}
+    .nav-links{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+    .nav-links a{text-decoration:none;padding:8px 10px;border-radius:999px}
+    .nav-links a:hover{background:white}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:999px;background:var(--blue);color:white;text-decoration:none;font-weight:800;border:0;box-shadow:0 14px 28px rgba(12,91,151,.22);min-height:48px}
+    .btn:hover{background:var(--blue2)}
+    .btn.secondary{background:white;color:var(--blue);border:1px solid var(--line);box-shadow:none}
+    .btn.ghost{background:transparent;color:var(--blue);border:1px solid rgba(12,91,151,.25);box-shadow:none}
+    .hero{padding:72px 0 42px}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:38px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:white;border:1px solid var(--line);color:var(--teal);font-weight:800;font-size:13px;box-shadow:0 8px 18px rgba(10,54,84,.06)}
+    h1{font-size:clamp(42px,6vw,72px);line-height:.94;letter-spacing:-.07em;margin:22px 0 18px;color:#092f47}
+    .lead{font-size:clamp(18px,2vw,22px);color:var(--muted);max-width:660px;margin:0 0 28px}
+    .cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:26px 0 18px}
+    .micro{font-size:14px;color:var(--muted)}
+    .hero-card{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:34px;padding:22px;box-shadow:var(--shadow)}
+    .phone{background:linear-gradient(180deg,#0d669f,#073c64);border-radius:34px;padding:18px;color:white;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+    .phone-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-weight:850}
+    .pill{font-size:12px;border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.14)}
+    .app-card{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:16px;margin:12px 0}
+    .app-card h3{margin:0 0 8px;font-size:16px;color:white}
+    .app-card p{margin:0;color:rgba(255,255,255,.78);font-size:14px}
+    .meter{height:10px;background:rgba(255,255,255,.16);border-radius:999px;overflow:hidden;margin-top:12px}
+    .meter span{display:block;width:72%;height:100%;border-radius:999px;background:#fff}
+    section{padding:52px 0}
+    .section-head{max-width:760px;margin:0 auto 28px;text-align:center}
+    h2{font-size:clamp(30px,4vw,48px);line-height:1;letter-spacing:-.055em;margin:0 0 12px;color:#092f47}
+    .section-head p{margin:0;color:var(--muted);font-size:18px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 12px 24px rgba(10,54,84,.06)}
+    .icon{width:42px;height:42px;border-radius:15px;background:var(--soft);display:grid;place-items:center;margin-bottom:14px;font-size:21px}
+    .feature h3{margin:0 0 8px;font-size:20px;letter-spacing:-.025em;color:#10384e}
+    .feature p{margin:0;color:var(--muted)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+    .panel{background:white;border:1px solid var(--line);border-radius:30px;padding:28px;box-shadow:0 12px 28px rgba(10,54,84,.06)}
+    .list{display:grid;gap:12px;margin:20px 0 0;padding:0;list-style:none}
+    .list li{display:flex;gap:10px;align-items:flex-start;color:var(--muted)}
+    .list strong{color:var(--ink)}
+    .check{flex:0 0 24px;width:24px;height:24px;border-radius:999px;background:#e7f7ef;color:#16834b;display:grid;place-items:center;font-weight:900;font-size:13px;margin-top:1px}
+    .price{background:linear-gradient(135deg,#0c5b97,#0f8f9b);color:white;border-radius:34px;padding:32px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .price:after{content:"";position:absolute;inset:auto -50px -90px auto;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.12)}
+    .price h2,.price p{color:white}
+    .amount{font-size:64px;line-height:1;letter-spacing:-.08em;font-weight:900;margin:12px 0}
+    .amount small{font-size:18px;letter-spacing:0;font-weight:800;opacity:.88}
+    .guarantee{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:9px 12px;font-weight:800;margin:12px 0 20px}
+    .fine{font-size:13px;color:rgba(255,255,255,.78);max-width:620px}
+    footer{padding:36px 0;color:var(--muted);font-size:13px;text-align:center}
+    .note{background:#fff7df;border:1px solid #f0dfad;border-radius:18px;padding:14px 16px;color:#705a18;font-size:14px;margin-top:18px}
+    @media (max-width:860px){
+      .nav-links a:not(.btn){display:none}
+      .hero{padding-top:44px}
+      .hero-grid,.split{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .hero-card{padding:12px;border-radius:28px}
+      .phone{border-radius:26px}
+      .cta-row .btn{width:100%}
+    }
+  </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Opening Hearty…</h1>
-    <p><a href="/home.html">Tap here if it does not open automatically.</a></p>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/" aria-label="Hearty home"><span class="brand-mark">♥</span><span>Hearty</span></a>
+      <div class="nav-links">
+        <a href="#features">What it does</a>
+        <a href="#price">Price</a>
+        <a class="btn" href="#price">Get Hearty</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Built for real GLP-1 life</span>
+          <h1>Your complete GLP-1 companion.</h1>
+          <p class="lead">The injection changes your appetite. Hearty helps you keep your daily rhythm: protein-forward meals, simple movement, support for harder days, and private progress tracking beyond the scale.</p>
+          <div class="cta-row">
+            <a class="btn" href="#price">Get Hearty — $29 once-off</a>
+            <a class="btn secondary" href="/free-meal-plan.html">Try the free meal plan</a>
+          </div>
+          <p class="micro">No subscription. Lifetime access. 14-day money-back guarantee.</p>
+        </div>
+        <div class="hero-card" aria-label="Hearty app preview">
+          <div class="phone">
+            <div class="phone-top"><span>♥ Hearty</span><span class="pill">Support Off</span></div>
+            <div class="app-card">
+              <h3>Today’s rhythm</h3>
+              <p>Weight, hydration, movement, medication and one practical lesson.</p>
+              <div class="meter"><span></span></div>
+            </div>
+            <div class="app-card">
+              <h3>Meals</h3>
+              <p>Breakfast, lunch and dinner built around protein and appetite.</p>
+            </div>
+            <div class="app-card">
+              <h3>Support Mode</h3>
+              <p>Soften meals and exercise on nausea, bloating, fatigue or low-appetite days.</p>
+            </div>
+            <div class="app-card">
+              <h3>Progress</h3>
+              <p>Track weight, photos, injection rhythm and consistency privately.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Less guessing. More daily structure.</h2>
+          <p>Hearty is not another noisy diet app. It is a simple companion for the habits GLP-1 users actually struggle with.</p>
+        </div>
+        <div class="grid">
+          <article class="feature"><div class="icon">🍽️</div><h3>Protein-forward meals</h3><p>Generate simple meals, optional snacks and shopping support without overcomplicating food.</p></article>
+          <article class="feature"><div class="icon">🧭</div><h3>Daily rhythm</h3><p>Keep the basics visible: weigh-in, water, movement, medication rhythm and quick lessons.</p></article>
+          <article class="feature"><div class="icon">🌿</div><h3>Support Mode</h3><p>When appetite or side effects are rough, Hearty softens the plan instead of making you feel behind.</p></article>
+          <article class="feature"><div class="icon">💪</div><h3>Simple movement</h3><p>Home or gym strength sessions designed to protect muscle during weight loss.</p></article>
+          <article class="feature"><div class="icon">📈</div><h3>Private progress</h3><p>Track more than the scale with photos, consistency and useful trends stored on your device.</p></article>
+          <article class="feature"><div class="icon">🔒</div><h3>No noise</h3><p>No public feed. No shame. No complicated macro obsession. Just practical support.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap split">
+        <div class="panel">
+          <h2>Made for the messy middle.</h2>
+          <p class="lead" style="font-size:18px;margin-bottom:0">Hearty helps when the first excitement fades and you need a simple system you can keep following.</p>
+          <ul class="list">
+            <li><span class="check">✓</span><span><strong>Low appetite days:</strong> smaller, simpler meal support.</span></li>
+            <li><span class="check">✓</span><span><strong>Slow scale weeks:</strong> progress tracking beyond one number.</span></li>
+            <li><span class="check">✓</span><span><strong>Protein confusion:</strong> meals built around the basics.</span></li>
+            <li><span class="check">✓</span><span><strong>Harder side-effect days:</strong> support without guilt.</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h2>What you get</h2>
+          <ul class="list">
+            <li><span class="check">✓</span><span>Hearty GLP-1 companion app access</span></li>
+            <li><span class="check">✓</span><span>Meals, exercise, progress and support tools</span></li>
+            <li><span class="check">✓</span><span>Private on-device daily tracking</span></li>
+            <li><span class="check">✓</span><span>Future app improvements included during launch</span></li>
+            <li><span class="check">✓</span><span>14-day money-back guarantee</span></li>
+          </ul>
+          <div class="note">Hearty is a practical habit-support tool. It does not replace medical advice from your doctor or prescribing clinician.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="price">
+      <div class="wrap price">
+        <span class="eyebrow" style="background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.22);color:white">Special launch price</span>
+        <h2 style="margin-top:18px">Get Hearty for one simple payment.</h2>
+        <div class="amount">$29 <small>once-off lifetime access</small></div>
+        <div class="guarantee">✓ 14-day money-back guarantee</div>
+        <div class="cta-row">
+          <a class="btn secondary" href="/free-meal-plan.html">Start with the free meal plan</a>
+          <a class="btn ghost" style="color:white;border-color:rgba(255,255,255,.45)" href="/home.html">Already have access? Open app</a>
+        </div>
+        <p class="fine">Checkout link should be connected here in the live production version. This rescue page is designed to protect the public root from accidentally opening the app home page.</p>
+      </div>
+    </section>
   </main>
-  <script>location.replace('/home.html');</script>
+
+  <footer>
+    <div class="wrap">© 2026 Hearty. Your GLP-1 Companion.</div>
+  </footer>
+
+  <script>
+    // Root protection: the public sales page must not behave like the app shell.
+    // This clears only browser caches/service workers for this origin; it does not clear localStorage user data.
+    (function(){
+      try {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(regs){
+            regs.forEach(function(reg){ reg.unregister(); });
+          }).catch(function(){});
+        }
+        if ('caches' in window) {
+          caches.keys().then(function(keys){
+            keys.forEach(function(key){
+              if (/hearty|glp|app|pwa|shell|static|workbox/i.test(key)) caches.delete(key);
+            });
+          }).catch(function(){});
+        }
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
