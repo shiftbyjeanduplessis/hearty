@@ -1,31 +1,26 @@
 {
-  "id": "/home.html",
-  "name": "Hearty",
-  "short_name": "Hearty",
-  "description": "Your GLP-1 companion.",
-  "start_url": "/home.html?utm_source=pwa",
-  "scope": "/",
+  "name": "Perfect Women Tracker",
+  "short_name": "Perfect Women",
+  "description": "Local-first Perfect Women client tracker for water, movement, weekly weigh-ins, programs, walking-program logs, 5 km jogging-program logs, measurements, weekly check-ins, progress photo comparison, recipes and mini meal ideas.",
+  "start_url": "/perfect-women/",
   "display": "standalone",
-  "background_color": "#0057ff",
-  "theme_color": "#0057ff",
+  "background_color": "#06122F",
+  "theme_color": "#06122F",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/icons/hearty-icon-192.png",
+      "src": "/perfect-women/assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/icons/hearty-icon-512.png",
+      "src": "/perfect-women/assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/hearty-icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "scope": "/perfect-women/",
+  "id": "/perfect-women/"
 }
