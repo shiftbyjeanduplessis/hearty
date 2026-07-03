@@ -1,232 +1,405 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="clean_blue" data-page="home">
+
+<html data-theme="clean_blue" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#1550b3" />
-  <title>Hearty — Home</title>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
-  <script id="hearty-theme-preboot">
-    (function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();
-  </script>
-  <link rel="stylesheet" href="css/hearty-theme.css" />
-  <link rel="stylesheet" href="css/hearty-phase1-visual-fixes.css" />
-  <link rel="stylesheet" href="css/hearty-step5i-atmosphere.css" />
-  <link rel="stylesheet" href="css/hearty-step5i-shell-fix.css" />
-  <link rel="stylesheet" href="css/hearty-step5ib-foundation.css" />
-  <link rel="stylesheet" href="css/hearty-shell-template.css" />
-  <link rel="stylesheet" href="css/hearty-step5n-theme-beauty.css" />
-  <link rel="stylesheet" href="css/hearty-home-v15-refactor-aesthetic.css" />
-  <style id="hearty-home-v41-layout-restore">
-    body[data-page="home"] .hearty-page-strip[data-shell-template="page-strip"]{display:none!important}
-    body[data-page="home"] .shell{padding-bottom:112px!important}
-    .status-strip.home-welcome-only{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:18px!important;margin:4px 0 20px!important}
-    .status-strip.home-welcome-only #dailyStatusLine{display:block!important}
-    .status-strip.home-welcome-only #homeDayPill{display:inline-flex!important}
-    .setup-step[hidden]{display:none!important}
-    @media(max-width:760px){.status-strip.home-welcome-only{align-items:flex-start!important;flex-direction:column!important}}
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+
+<title>Hearty — Home</title>
+<meta content="#f6f9fe" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Hearty" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="icons/hearty-icon-192.png" rel="apple-touch-icon"/>
+<link as="style" href="css/hearty-home-v15-refactor-aesthetic.css" rel="preload"/>
+<link href="css/hearty-home-v15-refactor-aesthetic.css" rel="stylesheet"/>
+<script src="js/hearty-data-layer.v1.js"></script>
+<script src="hearty-target-calculator.js"></script>
+<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js"></script>
+<meta content="yes" name="mobile-web-app-capable"/>
+<style id="hearty-medication-day-picker-css">
+    .day-toggle-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-top:10px;
+    }
+    .day-toggle-grid button{
+      min-height:44px;
+      border-radius:14px;
+      border:1px solid var(--line, rgba(143,163,184,.24));
+      background:var(--surface-button, rgba(255,255,255,.9));
+      color:var(--muted, #6d7b8c);
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06));
+    }
+    .day-toggle-grid button.active{
+      background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));
+      color:var(--theme-accent, #2f6df6);
+      border-color:rgba(47,109,246,.26);
+    }
+    @media(max-width:520px){
+      .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
   </style>
+<style id="hearty-page-selector-safe-lock">
+/* Safe local page selector lock — no shared JS, no nav rebuild. */
+.bottom-nav .nav-item svg,
+#bottomNav .nav-item svg{
+  width:20px!important;
+  height:20px!important;
+  max-width:22px!important;
+  max-height:22px!important;
+  display:block!important;
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  overflow:visible!important;
+}
+.bottom-nav .nav-item svg *,
+#bottomNav .nav-item svg *{
+  stroke:currentColor!important;
+  fill:none!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  vector-effect:non-scaling-stroke!important;
+}
+.bottom-nav .nav-item,
+#bottomNav .nav-item{
+  overflow:hidden!important;
+}
+</style>
+<link href="css/hearty-theme.css" rel="stylesheet"/>
+<script src="js/hearty-theme.js"></script>
+<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=49" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
+<script src="js/hearty-production-guard.js?v=49"></script>
+<style id="hearty-nav-v10-visible-fix">
+/* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
+html body[data-page] [data-shell-mount="bottom-nav"]#bottomNav{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  transform:none !important;
+  z-index:2147483647 !important;
+  pointer-events:none !important;
+  width:100vw !important;
+  max-width:100vw !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 10px calc(8px + env(safe-area-inset-bottom,0px)) !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
+html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{
+  display:grid !important;
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  width:min(860px,calc(100vw - 20px)) !important;
+  max-width:720px !important;
+  height:74px !important;
+  min-height:74px !important;
+  margin:0 auto !important;
+  padding:7px 6px !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  gap:4px !important;
+  pointer-events:auto !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)) !important;}
+</style>
+  <link rel="stylesheet" href="/pwa-install.css?v=34">
 </head>
 <body data-page="home">
-  <div class="shell">
-    <div data-shell-mount="topbar"></div>
+<div class="shell" id="app"><div data-shell-mount="topbar"></div>
 
-    <section class="status-strip home-welcome-only" data-keep-page-strip="true" aria-label="Today summary">
-      <div>
-        <div class="eyebrow">Today</div>
-        <h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
-        <p class="subline" id="dailyStatusLine"></p>
-      </div>
-      <div class="day-pill" id="homeDayPill">Today</div>
-    </section>
+<section class="status-strip home-welcome-only">
+<h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
+</section>
+<section aria-label="How to use Hearty" class="first-time-guide-card" id="firstTimeGuideCard">
+<div>
+<div class="eyebrow">New to Hearty?</div>
+<h2 class="section-title" style="margin:0 0 6px">Start with the quick guide</h2>
+<p class="subline" style="margin:0">Learn what to do first, how Meals works, when to use Support Mode, and how to install the app.</p>
+</div>
+<div class="guide-actions">
+<a class="action-btn primary" href="how-to-use.html">How to use Hearty</a>
+<button class="btn secondary" id="dismissGuideBanner" type="button">Dismiss</button>
+</div>
+</section>
+<main class="home-grid">
+<section class="main-stack">
+<section aria-label="Progress summary" class="card hero-card">
+<div class="rings">
+<article class="ring-block">
+<div aria-hidden="true" class="ring-wrap" data-ring="adherence">
+<svg fill="none" height="132" viewbox="0 0 132 132" width="132"><circle class="ring-track" cx="66" cy="66" fill="none" r="54"></circle><circle class="ring-progress ring-orange" cx="66" cy="66" fill="none" id="adherenceRing" r="54"></circle></svg>
+<div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
+</div>
+<h2 class="ring-title">Daily protocol</h2>
+<p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
+</article>
+<article class="ring-block">
+<div aria-hidden="true" class="ring-wrap" data-ring="water">
+<svg fill="none" height="132" viewbox="0 0 132 132" width="132"><circle class="ring-track" cx="66" cy="66" fill="none" r="54"></circle><circle class="ring-progress ring-teal" cx="66" cy="66" fill="none" id="waterRing" r="54"></circle></svg>
+<div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">GLASSES</div></div></div>
+</div>
+<h2 class="ring-title">Hydration</h2>
+<p class="ring-caption" id="waterCaption">Tap the water card to log.</p>
+</article>
+</div>
+<div aria-label="Weight progress" class="progress-band">
+<div class="progress-top">
+<div>
+<div class="section-label">Weight progress</div>
+<div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
+</div>
+<div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
+</div>
+<div aria-hidden="true" class="goalbar"><div class="goalbar-fill" id="goalbarFill"></div><div class="goal-marker" id="goalMarker"></div></div>
+<div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
+</div>
+</section>
+<section aria-label="Today's protocol" class="card rhythm-card" id="todaysRhythmCard">
+<div class="protocol-head">
+<div><div class="section-label">Today’s protocol</div><h2 class="card-title">Small actions, repeated.</h2></div>
+<div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
+</div>
+<div class="next-action" id="nextAction"><div><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div></div>
+<div class="protocol-list" id="protocolList">
+<article class="protocol-item" id="weighInTask">
+<div class="task-main"><div class="task-title">Daily weigh-in</div><div class="task-sub">Weigh yourself first thing in the morning, before eating or drinking.</div></div>
+<button aria-label="Open daily weigh-in" class="task-icon-btn" id="openWeightBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-weight.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item" id="walkTask">
+<div class="task-main"><div class="task-title">Movement baseline</div><div class="task-sub">Complete your 20–30 minute movement target.</div></div>
+<button aria-label="Mark movement done" class="task-icon-btn" id="toggleWalkBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-movement.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item" id="photoTask">
+<div class="task-main"><div class="task-title">Progress photos</div><div class="task-sub" id="photoTaskSub">Due every 3 weeks.</div></div>
+<button aria-label="Open photo check-in" class="task-icon-btn" id="openPhotoBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-photo.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item lesson-task-item" id="lessonTaskItem">
+<div class="task-main">
+<div class="lesson-card-bar" id="lessonCardCounter"><span class="lesson-mini-icon">📘</span> Lesson 1/10</div>
+<div class="task-title">Today’s lesson</div>
+<div class="task-sub" id="lessonSub">A 2–3 minute practical read.</div>
+</div>
+<button aria-label="Open today's lesson" class="task-icon-btn" id="openLessonBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-lesson.png"/><span class="task-check">✓</span></button>
+</article>
+</div>
+<div class="protocol-complete" id="protocolComplete">✓ Today’s protocol complete</div>
+</section>
+</section>
+<aside class="side-stack">
+<section aria-label="Support mode" class="card support-card is-off" data-support-active="false" data-support-state="off" id="supportCard">
+<span aria-hidden="true" class="led" id="supportLed"></span>
+<div class="section-label">Support mode</div>
+<h2 class="card-title" id="supportTitle">Do you need some support?</h2>
+<p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
+<div class="support-actions-row legacy-support-actions" hidden><a class="soft-btn" href="support.html" id="supportPrimary" tabindex="-1">I need support</a><button class="ghost-btn" id="supportOff" type="button" hidden>Turn off</button></div>
+</section>
+<section aria-label="Hydration logger" class="card hydration-card">
+<div class="compact-head hydration-head"><div><div class="section-label">Hydration</div></div></div>
+<div class="hydration-logger-clean">
+<button aria-label="Log one glass of water" class="hydration-drop-btn" id="waterGlass" type="button">
+<span class="hydration-drop-wrap"><svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="26"><path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" fill="none"></path></svg></span>
+<span class="hydration-add-label">+250ml</span>
+</button>
+<div class="hydration-main">
+<div aria-hidden="true" class="hydration-progress"><span id="waterProgressBar"></span></div>
+<div class="hydration-count-chip" id="waterCountChip">
+<strong id="waterCountValue">0</strong>
+<span id="waterCountHint">Tap once for each glass</span>
+</div>
+</div>
+<button aria-label="Undo water glass" class="water-undo-clean" id="waterUndo" type="button"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="22"><path d="M9 14 4 9l5-5" fill="none"></path><path d="M4 9h10a6 6 0 0 1 0 12h-1" fill="none"></path></svg></button>
+</div>
+</section>
+<section aria-label="Medication reminder" class="card medication-card" id="injectionCard">
+<div class="section-label">Medication</div>
+<h2 class="card-title" id="medicationTitle">Dose reminder</h2>
+<p class="card-copy" id="nextInjectionDateText">Set your medication schedule during setup.</p>
+<div class="injection-actions"><button aria-label="Mark dose logged" class="dose-icon-btn" id="logDoseBtn" type="button">✓</button></div>
+</section>
+</aside>
+</main>
 
-    <main class="home-grid" aria-label="Hearty Home">
-      <section class="main-stack">
-        <article class="card progress-card" aria-label="Daily progress">
-          <div class="rings">
-            <div class="ring-block hydration-card">
-              <div class="ring-wrap" aria-hidden="true">
-                <svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="54"></circle><circle class="ring-progress ring-teal" id="waterRing" cx="60" cy="60" r="54"></circle></svg>
-                <div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">WATER</div></div></div>
-              </div>
-              <p class="ring-title">Hydration</p>
-              <p class="ring-caption" id="waterCountHint">Target: 8 glasses • 250 ml each</p>
-              <div class="hydration-logger-clean">
-                <button class="hydration-drop-btn" id="waterGlass" type="button" aria-label="Log one glass of water">
-                  <span class="hydration-drop-wrap" aria-hidden="true">💧</span>
-                  <span class="hydration-add-label">+ glass</span>
-                </button>
-                <div class="hydration-main">
-                  <div class="hydration-count-chip" id="waterCountChip"><strong id="waterCountValue">0</strong><span id="waterGlassCount">0 / 8</span></div>
-                  <div class="hydration-progress" aria-hidden="true"><span id="waterProgressBar"></span></div>
-                </div>
-                <button class="water-undo-clean" id="waterUndo" type="button" aria-label="Undo water glass">↺</button>
-              </div>
-            </div>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="weightSheet">
+<div aria-labelledby="weightSheetTitle" aria-modal="true" class="task-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Daily weigh-in</h2><p class="sheet-copy">Weigh yourself first thing in the morning, before eating or drinking.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="weight-readout"><input class="weight-input" id="weightValueInput" inputmode="decimal" max="400" min="20" placeholder="0.0" step="0.1" type="number"/><div class="weight-unit" id="weightUnitLabel">KG</div></div>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
+</div>
+</section>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="photoSheet">
+<div aria-labelledby="photoSheetTitle" aria-modal="true" class="task-sheet photo-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photo check-in</h2><p class="sheet-copy">Front photo required. Side and back are optional.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="photo-action-list" id="photoSlots">
+<button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img alt="Front preview" hidden=""/></button>
+<button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img alt="Side preview" hidden=""/></button>
+<button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img alt="Back preview" hidden=""/></button>
+</div>
+<input accept="image/*" capture="environment" class="sr-only" id="photoInput" type="file"/>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" disabled="" id="completePhotoBtn" type="button">Add front photo to complete</button></div>
+</div>
+</section>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="lessonSheet">
+<div aria-labelledby="lessonTitle" aria-modal="true" class="task-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><div class="lesson-counter" id="lessonCounter">Lesson 1/10</div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">One short practical lesson each day.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="lesson-copy" id="lessonBody"></div>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
+</div>
+</section>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="coreSetupSheet">
+<div aria-labelledby="coreSetupTitle" aria-modal="true" class="task-sheet setup-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</h2><p class="sheet-copy" id="coreSetupCopy">A few details help Home show the right daily rhythm.</p></div></div>
+<div class="setup-step" data-step="0"><label class="field-label" for="coreSetupName">What shall we call you?</label><input autocomplete="given-name" class="field-input" id="coreSetupName" placeholder="First name"/><label class="field-label" for="coreSetupCountry" style="margin-top:14px">Where are you based?</label><select class="field-input" id="coreSetupCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="UK">United Kingdom</option><option value="AU">Australia</option><option value="CA">Canada</option><option value="OTHER">Other / not listed</option></select><div aria-label="Unit preference" class="unit-toggle" role="group"><button data-unit="metric" type="button">kg</button><button data-unit="imperial" type="button">lb</button></div><p class="sheet-copy">This is general app setup. Meals can use your country and units as defaults, but food preferences are set separately inside Meals.</p></div>
+<div class="setup-step" data-step="1" hidden=""><label class="field-label" for="coreSetupStartingWeight">Current / starting weight</label><input class="field-input" id="coreSetupStartingWeight" inputmode="decimal" max="400" min="20" placeholder="Needed for protein estimate" step="0.1" type="number"/><label class="field-label" for="coreSetupTargetWeight" style="margin-top:14px">Goal weight</label><input class="field-input" id="coreSetupTargetWeight" inputmode="decimal" max="400" min="20" placeholder="Optional" step="0.1" type="number"/><label class="field-label" for="coreSetupHeightCm" style="margin-top:14px">Height</label><input class="field-input" id="coreSetupHeightCm" inputmode="decimal" max="230" min="120" placeholder="cm, e.g. 165" step="0.1" type="number"/><label class="field-label" for="coreSetupAge" style="margin-top:14px">Age</label><input class="field-input" id="coreSetupAge" inputmode="numeric" max="95" min="18" placeholder="Used for calorie estimate" type="number"/><label class="field-label" for="coreSetupSex" style="margin-top:14px">Calorie formula</label><select class="field-input" id="coreSetupSex"><option value="">Choose later</option><option value="female">Female formula</option><option value="male">Male formula</option></select><p class="sheet-copy">These details let Hearty estimate calories and protein. If you skip them, Meals will use a safe starter estimate.</p></div>
+<div class="setup-step" data-step="2" hidden=""><label class="field-label" for="coreSetupDailyActivity">Normal daily movement</label><select class="field-input" id="coreSetupDailyActivity"><option value="">Choose later</option><option value="mostly_sitting">Mostly sitting</option><option value="light_daily">Light daily movement</option><option value="on_feet">On my feet a lot</option><option value="physical_job">Physical job / very active routine</option></select><label class="field-label" for="coreSetupExerciseActivity" style="margin-top:14px">Exercise / training</label><select class="field-input" id="coreSetupExerciseActivity"><option value="">Choose later</option><option value="none">No structured exercise right now</option><option value="light_1_2">Light exercise 1–2 times/week</option><option value="regular_3_4">Exercise 3–4 times/week</option><option value="hard_5plus">Hard training 5+ times/week</option><option value="very_hard">Very hard training / sport most days</option></select><label class="field-label" for="coreSetupNutritionGoal" style="margin-top:14px">Meal plan goal</label><select class="field-input" id="coreSetupNutritionGoal"><option value="lose">Steady fat loss</option><option value="faster">Faster fat loss</option><option value="recomp">Keep/build muscle while losing</option><option value="maintain">Keep me steady</option></select><p class="sheet-copy">This is for rough meal targets only. You can update it later.</p></div>
+<div class="setup-step" data-step="3" hidden=""><label class="field-label" for="coreSetupMedication">Medication label</label><select class="field-input" id="coreSetupMedication"><option value="">Set later</option><option>Mounjaro</option><option>Ozempic</option><option>Wegovy</option><option>Zepbound</option><option>Saxenda</option><option>Trulicity</option><option>Victoza</option><option>Rybelsus</option><option value="Other">Other / type my medication</option><option value="Prefer not to say">I don’t want to say</option><option value="Not using medication yet">Not using medication yet</option></select><input class="field-input" id="coreSetupMedicationCustom" placeholder="Type medication name" style="display:none;margin-top:12px"/><p class="sheet-copy">The medication name is only a label. It does not control your schedule.</p></div>
+<div class="setup-step" data-step="4" hidden=""><label class="field-label" for="coreSetupFrequency">Injection / reminder rhythm</label><select class="field-input" id="coreSetupFrequency"><option selected="" value="set_later">Set this later</option><option value="weekly">Once weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="twice_weekly">Twice weekly</option><option value="every_x_days">Every X days</option><option value="custom_next_date">Custom next reminder date</option><option value="no_fixed">No fixed schedule / I’ll log manually</option><option value="not_using">I’m not using medication yet</option></select><p class="sheet-copy">This is only for reminders. You can edit the full injection setup later from Progress or Settings.</p></div>
+<div class="setup-step" data-step="5" hidden=""><label class="field-label" id="coreSetupDaysTitle">Schedule details</label><div aria-label="Medication days" class="unit-toggle day-toggle-grid" id="coreSetupDaysField" role="group"><button data-med-day="1" type="button">Mon</button><button data-med-day="2" type="button">Tue</button><button data-med-day="3" type="button">Wed</button><button data-med-day="4" type="button">Thu</button><button data-med-day="5" type="button">Fri</button><button data-med-day="6" type="button">Sat</button><button data-med-day="0" type="button">Sun</button></div><input class="field-input" id="coreSetupIntervalDays" inputmode="numeric" min="2" max="60" placeholder="Repeat every how many days?" style="display:none;margin-top:12px" type="number"/><input class="field-input" id="coreSetupNextDate" style="display:none;margin-top:12px" type="date"/><select class="field-input" id="coreSetupReminder" style="margin-top:12px"><option selected="" value="true">Remind me</option><option value="false">No reminder for now</option></select><p class="sheet-copy" id="coreSetupDaysHint">Choose the details for your reminder, or leave it for later.</p><p class="sheet-copy" id="coreSetupDaysError" style="display:none;color:#b45309;font-weight:800;margin-top:8px">Please select the required medication days.</p></div>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
+</div>
+</section>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+<script id="hearty-core-onboarding-expanded-fields">
+  (function(){
+    function $(id){ return document.getElementById(id); }
+    function set(key, value){ try { localStorage.setItem(key, String(value == null ? '' : value)); } catch(e) {} }
+    function setJSON(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {} }
+    function readVal(id){ var el = $(id); return el ? String(el.value || '').trim() : ''; }
+    function selectedDays(){ return Array.prototype.slice.call(document.querySelectorAll('[data-med-day].active')).map(function(btn){ return String(btn.getAttribute('data-med-day')); }); }
+    function dayNameFromValue(value){ var names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; var n = Number(value); return Number.isFinite(n) && n >= 0 && n <= 6 ? names[n] : ''; }
+    function visibleMedicationName(){ var med = readVal('coreSetupMedication'); var custom = readVal('coreSetupMedicationCustom'); return med === 'Other' && custom ? custom : med; }
+    function syncExpandedCoreOnboarding(){
+      var now = new Date().toISOString();
+      var name = readVal('coreSetupName');
+      var country = readVal('coreSetupCountry') || 'ZA';
+      var startingWeight = readVal('coreSetupStartingWeight');
+      var targetWeight = readVal('coreSetupTargetWeight');
+      var heightCm = readVal('coreSetupHeightCm');
+      var age = readVal('coreSetupAge');
+      var sex = readVal('coreSetupSex');
+      var dailyActivity = readVal('coreSetupDailyActivity');
+      var exerciseActivity = readVal('coreSetupExerciseActivity');
+      var nutritionGoal = readVal('coreSetupNutritionGoal') || 'lose';
+      var medication = visibleMedicationName();
+      var medicationRaw = readVal('coreSetupMedication');
+      var medicationCustom = readVal('coreSetupMedicationCustom');
+      var frequency = readVal('coreSetupFrequency') || 'set_later';
+      var days = selectedDays();
+      var dayValue = days[0] || '';
+      var intervalDays = readVal('coreSetupIntervalDays');
+      var nextDoseDate = readVal('coreSetupNextDate');
+      var reminder = readVal('coreSetupReminder') !== 'false';
+      var unit = (document.querySelector('[data-unit].active') || {}).dataset && (document.querySelector('[data-unit].active') || {}).dataset.unit || localStorage.getItem('heartyUnitsSystem') || 'metric';
+      var existingProfile = {}; try { existingProfile = JSON.parse(localStorage.getItem('hearty_basic_user_profile_v1') || '{}') || {}; } catch(e) {}
+      var existingComplete = existingProfile.onboardingComplete === true || existingProfile.setupComplete === true || localStorage.getItem('heartyCoreSetupDone') === 'true';
+      var profile = Object.assign({}, existingProfile, { name:name, firstName:name, country:country, region:country, units:unit, unit:unit, currentWeight:startingWeight || existingProfile.currentWeight || '', startingWeight:startingWeight || existingProfile.startingWeight || '', goalWeight:targetWeight || existingProfile.goalWeight || '', heightCm:heightCm || existingProfile.heightCm || '', age:age || existingProfile.age || '', sex:sex || existingProfile.sex || '', dailyActivity:dailyActivity || existingProfile.dailyActivity || '', exerciseActivity:exerciseActivity || existingProfile.exerciseActivity || '', nutritionGoal:nutritionGoal || existingProfile.nutritionGoal || 'lose', onboardingComplete:existingComplete, setupComplete:existingComplete, updatedAt:now });
+      try {
+        var calc = window.HeartyTargetCalculator;
+        var targets = calc && calc.calculate ? calc.calculate({units:'metric', sex:profile.sex, age:profile.age, heightCm:profile.heightCm, weightKg:startingWeight || existingProfile.startingWeightKg || existingProfile.weightKg || '', dailyActivity:profile.dailyActivity, exerciseActivity:profile.exerciseActivity, goal:profile.nutritionGoal}) : null;
+        if(!targets || !targets.ok) targets = calc && calc.defaultTargets ? Object.assign(calc.defaultTargets(), {needsMoreInfo:true}) : {ok:true, skipped:true, needsMoreInfo:true, calorieMin:1400, calorieMax:1650, proteinMin:85, proteinMax:105, fibreMin:20, fibreMax:25, fatMin:40, tier:2};
+        profile.targets = targets; profile.calorieTargetMin = targets.calorieMin; profile.calorieTargetMax = targets.calorieMax; profile.proteinTargetMin = targets.proteinMin; profile.proteinTargetMax = targets.proteinMax;
+        setJSON('heartyNutritionTargetsV1', targets); setJSON('heartyMealTargetsV1', targets);
+      } catch(e) {}
+      if(name){ set('heartyUserName', name); set('heartyFirstName', name); }
+      set('heartyCountry', country); set('heartyRegion', country); set('heartyUnitsSystem', unit);
+      if(startingWeight){ set('heartyStartingWeightKg', startingWeight); set('heartyCurrentWeightKg', startingWeight); set('heartyWeightStartingKg', startingWeight); set('heartyWeightCurrentKg', startingWeight); }
+      if(targetWeight){ set('heartyTargetWeightKg', targetWeight); set('heartyWeightTargetKg', targetWeight); set('heartyProgressTargetWeightKg', targetWeight); }
+      setJSON('hearty_basic_user_profile_v1', profile);
+      set('heartyMedicationType', medication); set('heartyInjectionName', medication); set('heartyMedicationCustomName', medicationCustom);
+      set('heartyMedicationFrequency', frequency); set('heartyInjectionFrequency', frequency); set('heartyMedicationDays', days.join(',')); set('heartyInjectionDays', days.join(','));
+      set('heartyInjectionDay', dayValue); set('heartyInjectionDayName', dayNameFromValue(dayValue)); set('heartyMedicationNextDate', nextDoseDate); set('heartyNextDoseDate', nextDoseDate); set('heartyInjectionReminderEnabled', reminder ? 'true' : 'false');
+      var schedule = { medication:medication, medicationRaw:medicationRaw, customMedicationName:medicationCustom, frequency:frequency, scheduleType:frequency, day:dayValue, days:days, dayName:dayNameFromValue(dayValue), intervalDays:intervalDays ? Number(intervalDays) : null, nextDoseDate:nextDoseDate || '', reminderEnabled:reminder, source:'home-onboarding', updatedAt:now };
+      setJSON('heartyInjectionSchedule', schedule); setJSON('heartyMedication', Object.assign({ type:medication }, schedule)); setJSON('heartyMedicationSetupV1', schedule);
+      try { window.dispatchEvent(new CustomEvent('hearty:onboardingProfileUpdated', { detail:profile })); window.dispatchEvent(new CustomEvent('hearty:medicationSetupUpdated', { detail:schedule })); } catch(e) {}
+    }
+    document.addEventListener('change', function(event){ if(event.target && event.target.closest && event.target.closest('#coreSetupSheet')) syncExpandedCoreOnboarding(); }, true);
+    document.addEventListener('click', function(event){ if(event.target && event.target.closest && event.target.closest('#coreSetupNextBtn')) setTimeout(syncExpandedCoreOnboarding, 0); }, true);
+    window.HeartyCoreOnboarding = window.HeartyCoreOnboarding || {}; window.HeartyCoreOnboarding.syncExpandedFields = syncExpandedCoreOnboarding;
+  })();
+  </script>
+<!-- Hearty v40: old home-only Support Mode script removed. Shared js/hearty-support-state.js is the only support contract. -->
+<script id="hearty-home-first-load-stability">
+  (function(){
+    function markHomeStable(){
+      try {
+        localStorage.setItem('heartyHomeFirstLoadComplete', 'true');
+        localStorage.setItem('heartyHomeLastStableAt', new Date().toISOString());
+      } catch(e) {}
+      window.dispatchEvent(new CustomEvent('hearty:home-stable'));
+    }
 
-            <div class="ring-block adherence-card">
-              <div class="ring-wrap" aria-hidden="true">
-                <svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="54"></circle><circle class="ring-progress ring-orange" id="adherenceRing" cx="60" cy="60" r="54"></circle></svg>
-                <div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
-              </div>
-              <p class="ring-title">Daily rhythm</p>
-              <p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
-            </div>
-          </div>
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function(){
+        requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
+      });
+    } else {
+      requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
+    }
+  })();
+  </script>
+<script id="hearty-safe-service-worker-registration-v22">
+  /* Hearty v22: registration only. No automatic reload on service-worker controllerchange. */
+  if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(){
+        return navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+      });
+    });
+  }
+  </script>
+<script>
+(function(){
+  const key = 'hearty_help_banner_dismissed';
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    const card = document.getElementById('firstTimeGuideCard');
+    const dismiss = document.getElementById('dismissGuideBanner');
+    if(!card) return;
+    try{ if(localStorage.getItem(key) === 'true') card.hidden = true; }catch(e){}
+    dismiss?.addEventListener('click', function(){
+      card.hidden = true;
+      try{ localStorage.setItem(key, 'true'); }catch(e){}
+    });
+  });
+})();
+</script>
+<script src="js/hearty-support-state.js?v=40"></script>
+<script defer="" src="js/hearty-shell-template.js?v=49"></script>
+<script defer src="/pwa-install.js?v=34"></script>
 
-          <div class="progress-band">
-            <div class="progress-top">
-              <div>
-                <div class="section-label">Weight progress</div>
-                <div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
-                <div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
-              </div>
-              <button class="soft-btn" id="openWeightTopBtn" type="button" onclick="document.getElementById('openWeightBtn').click()">Log weight</button>
-            </div>
-            <div class="goalbar" aria-hidden="true"><span class="goalbar-fill" id="goalbarFill"></span><span class="goal-marker" id="goalMarker"></span></div>
-            <div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
-          </div>
-        </article>
-
-        <article class="card protocol-card" aria-label="Daily rhythm tasks">
-          <div class="protocol-head">
-            <div>
-              <div class="section-label">Your daily rhythm</div>
-              <h2 class="card-title">Small actions for today</h2>
-            </div>
-            <div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
-          </div>
-          <div class="next-action"><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div>
-          <div class="protocol-list">
-            <div class="protocol-item" id="weighInTask">
-              <div><div class="task-title">Weight</div><div class="task-sub">Log today’s weight.</div></div>
-              <button class="task-icon-btn" id="openWeightBtn" type="button" aria-label="Log weight"><span class="task-icon"><img class="icon-main-img" src="home-weight.png" alt="" /></span><span class="task-check">✓</span></button>
-            </div>
-            <div class="protocol-item" id="walkTask">
-              <div><div class="task-title">Movement</div><div class="task-sub">Complete your gentle movement baseline.</div></div>
-              <button class="task-icon-btn" id="toggleWalkBtn" type="button" aria-label="Mark movement done"><span class="task-icon"><img class="icon-main-img" src="home-movement.png" alt="" /></span><span class="task-check">✓</span></button>
-            </div>
-            <div class="protocol-item" id="photoTask">
-              <div><div class="task-title">Photos</div><div class="task-sub" id="photoTaskSub">Progress photos are due every 3 weeks.</div></div>
-              <button class="task-icon-btn" id="openPhotoBtn" type="button" aria-label="Open progress photos"><span class="task-icon"><img class="icon-main-img" src="home-photo.png" alt="" /></span><span class="task-check">✓</span></button>
-            </div>
-            <div class="protocol-item lesson-task-item" id="lessonTaskItem">
-              <div><div class="lesson-counter" id="lessonCounter">Lesson</div><div class="task-sub" id="lessonSub">Read today’s 2–3 minute lesson.</div></div>
-              <button class="task-icon-btn" id="openLessonBtn" type="button" aria-label="Read lesson"><span class="task-icon"><img class="icon-main-img" src="home-lesson.png" alt="" /></span><span class="task-check">✓</span></button>
-            </div>
-          </div>
-          <div class="protocol-complete" id="protocolComplete">✓ All core tasks complete.</div>
-        </article>
-      </section>
-
-      <aside class="side-stack">
-        <article class="card support-card is-off" id="supportCard" data-support-card aria-label="Support Mode">
-          <span class="led" id="supportLed" aria-hidden="true"></span>
-          <div class="section-label">Support Mode</div>
-          <h2 class="card-title">Need a softer day?</h2>
-          <p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
-          <div class="support-actions-row"><a class="soft-btn" href="support.html">Open Support</a><button class="ghost-btn" id="supportOff" type="button">Turn off</button></div>
-        </article>
-
-        <article class="card medication-card" id="injectionCard" aria-label="Medication reminder">
-          <div class="section-label">Medication</div>
-          <h2 class="card-title" id="medicationTitle">Medication reminder</h2>
-          <p class="card-copy" id="nextInjectionDateText">Medication reminders can be set up later from Progress.</p>
-          <div class="support-actions-row"><button class="dose-icon-btn" id="logDoseBtn" type="button" aria-label="Log dose today">✓</button><span class="compact-pill">Log dose today</span></div>
-        </article>
-
-        <article class="card how-card" aria-label="How to use Hearty">
-          <div class="section-label">Start here</div>
-          <h2 class="card-title">How to use Hearty</h2>
-          <p class="card-copy">Quick guide for Home, Meals, Support Mode, Progress and installing the app.</p>
-          <div class="support-actions-row"><a class="ghost-btn" href="how-to-use.html">Open guide</a></div>
-        </article>
-      </aside>
-    </main>
-  </div>
-
-  <div class="sheet-overlay" id="weightSheet" hidden aria-hidden="true">
-    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="weightSheetTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Log weight</h2><p class="sheet-copy">Use the same scale and time where possible.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <div class="weight-readout"><input class="weight-input" id="weightValueInput" inputmode="decimal" type="number" step="0.1" /><div class="weight-unit" id="weightUnitLabel">KG</div></div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
-    </section>
-  </div>
-
-  <div class="sheet-overlay" id="lessonSheet" hidden aria-hidden="true">
-    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">2–3 minute read</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <div class="lesson-copy" id="lessonBody"></div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
-    </section>
-  </div>
-
-  <div class="sheet-overlay" id="photoSheet" hidden aria-hidden="true">
-    <section class="task-sheet photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photoSheetTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photos</h2><p class="sheet-copy">Front photo is enough. Side and back are optional.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
-      <input id="photoInput" type="file" accept="image/*" hidden />
-      <div class="photo-action-list">
-        <button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img hidden alt="" /></button>
-        <button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img hidden alt="" /></button>
-        <button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img hidden alt="" /></button>
-      </div>
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="completePhotoBtn" type="button" disabled>Add front photo to complete</button></div>
-    </section>
-  </div>
-
-  <div class="sheet-overlay" id="coreSetupSheet" hidden aria-hidden="true">
-    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="coreSetupTitle">
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Set up Hearty</h2><p class="sheet-copy">A quick setup so Hearty can save your rhythm.</p></div></div>
-
-      <div class="setup-step" data-step="0">
-        <label class="field-label" for="coreSetupName">First name</label><input class="field-input" id="coreSetupName" autocomplete="given-name" />
-        <label class="field-label" for="coreSetupCountry" style="margin-top:12px">Country</label><select class="field-input" id="coreSetupCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="OTHER">Other</option></select>
-        <div class="unit-toggle"><button type="button" data-unit="metric">Metric</button><button type="button" data-unit="imperial">Imperial</button></div>
-      </div>
-
-      <div class="setup-step" data-step="1" hidden>
-        <label class="field-label" for="coreSetupStartingWeight">Starting weight</label><input class="field-input" id="coreSetupStartingWeight" inputmode="decimal" type="number" step="0.1" />
-        <label class="field-label" for="coreSetupTargetWeight" style="margin-top:12px">Doctor target weight</label><input class="field-input" id="coreSetupTargetWeight" inputmode="decimal" type="number" step="0.1" />
-      </div>
-
-      <div class="setup-step" data-step="2" hidden>
-        <label class="field-label" for="coreSetupMedication">Medication</label><select class="field-input" id="coreSetupMedication"><option value="">Set later</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Zepbound</option><option>Saxenda</option><option>Not using medication yet</option><option>Other</option></select>
-        <input class="field-input" id="coreSetupMedicationCustom" placeholder="Medication name" style="margin-top:12px;display:none" />
-      </div>
-
-      <div class="setup-step" data-step="3" hidden>
-        <label class="field-label" for="coreSetupFrequency">Reminder rhythm</label><select class="field-input" id="coreSetupFrequency"><option value="set_later">Set later</option><option value="weekly">Weekly</option><option value="twice_weekly">Twice weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="every_x_days">Every X days</option><option value="custom_next_date">Specific next date</option><option value="no_fixed">No fixed day</option><option value="not_using">Not using medication</option></select>
-      </div>
-
-      <div class="setup-step" data-step="4" hidden>
-        <div class="field-label" id="coreSetupDaysTitle">Schedule details</div>
-        <p class="sheet-copy" id="coreSetupDaysHint">You can leave this for later and finish it from Progress.</p>
-        <div id="coreSetupDaysField" class="unit-toggle" style="grid-template-columns:repeat(4,1fr);margin-top:12px">
-          <button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button>
-        </div>
-        <input class="field-input" id="coreSetupIntervalDays" inputmode="numeric" type="number" min="1" placeholder="Every how many days?" style="margin-top:12px;display:none" />
-        <input class="field-input" id="coreSetupNextDate" type="date" style="margin-top:12px;display:none" />
-        <select class="field-input" id="coreSetupReminder" style="margin-top:12px"><option value="true">Reminder on</option><option value="false">Reminder off</option></select>
-        <p class="sheet-copy" id="coreSetupDaysError" style="display:none;color:#b42318;margin-top:10px"></p>
-      </div>
-
-      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
-    </section>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <script src="js/hearty-data-layer.v1.js?v=1"></script>
-  <script src="js/hearty-theme.js?v=36"></script>
-  <script src="js/hearty-support-state.js?v=38"></script>
-  <script src="js/hearty-home-v15-refactor-aesthetic.js?v=41"></script>
-  <script src="js/hearty-updater.js?v=1.0.1"></script>
-  <script defer src="js/hearty-shell-template.js?v=36"></script>
-  <div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
+<div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
 </body>
 </html>
