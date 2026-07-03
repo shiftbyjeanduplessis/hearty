@@ -11293,6 +11293,89 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none" alt=""
  src="https://www.facebook.com/tr?id=876229661733778&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel -->
+
+<style id="hearty-visible-post-email-upsell-css">
+#heartyFulfilmentPanel .hearty-email-success-offer{
+  padding:18px;
+  background:linear-gradient(135deg,#061b33 0%,#0b5f9f 52%,#f65f9a 140%);
+  color:#fff;
+}
+#heartyFulfilmentPanel .success-kicker{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  color:#d9f4ff;
+  font-size:.78rem;
+  font-weight:950;
+  letter-spacing:.02em;
+  margin-bottom:10px;
+}
+#heartyFulfilmentPanel h3{
+  margin:0 0 8px;
+  font-size:clamp(1.25rem,3.6vw,1.7rem);
+  line-height:1.05;
+  letter-spacing:-.055em;
+  color:#fff;
+}
+#heartyFulfilmentPanel p{
+  margin:0 0 12px;
+  color:rgba(255,255,255,.84);
+  font-weight:760;
+  line-height:1.45;
+}
+#heartyFulfilmentPanel .paid-primary-cta{
+  width:100%;
+  min-height:58px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  border:0;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ffffff,#f9eff6);
+  color:#073b68;
+  box-shadow:0 16px 34px rgba(0,0,0,.18);
+  margin:8px 0 10px;
+}
+#heartyFulfilmentPanel .paid-cta-main{
+  font-size:1rem;
+  font-weight:950;
+}
+#heartyFulfilmentPanel .paid-cta-sub{
+  font-size:.78rem;
+  font-weight:850;
+  opacity:.86;
+}
+#heartyFulfilmentPanel .success-guarantee{
+  color:rgba(255,255,255,.84);
+  font-weight:800;
+  line-height:1.4;
+  font-size:.84rem;
+  margin:0 0 12px;
+}
+#heartyFulfilmentPanel #heartyCopyPlanTextBtn{
+  min-height:44px;
+  margin:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.24);
+  color:#fff;
+}
+#postSubmit.post-email-app-offer,
+#postSubmit{
+  border-radius:24px;
+}
+@media(max-width:620px){
+  #heartyFulfilmentPanel .hearty-email-success-offer{padding:16px;}
+  #heartyFulfilmentPanel .paid-primary-cta{min-height:56px;}
+}
+</style>
+
 </head>
 <body>
 <main>
@@ -11429,11 +11512,11 @@ fbq('track', 'PageView');
 </div>
 <button class="btn btn-primary" id="downloadPlanBtn" type="button">Email my free plan + shopping list</button>
 <div aria-live="polite" class="status" id="leadStatus"></div>
-<div class="post-submit" id="postSubmit">
-<strong>Your plan email is being prepared ✅</strong>
-<p>This free plan is a starting point. Hearty is the full GLP-1 companion app for ongoing meal planning, portions, shopping lists, calories, protein, fibre, water, progress and Support Mode for harder days.</p>
-<button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Yes — unlock the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button>
-<div class="generated-offer-guarantee-line">Try it for 14 days. If it is not useful for you, email us for a refund.</div>
+<div class="post-submit post-email-app-offer" id="postSubmit">
+<strong>Want this organised inside the full Hearty app?</strong>
+<button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Get the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button>
+<p>Your free plan is a starting point. Hearty gives you ongoing meal planning, portions, shopping lists, calories, protein, fibre, water, progress and Support Mode for harder days.</p>
+<div class="generated-offer-guarantee-line">14-day money-back guarantee. Try it properly — if it is not useful, email us for a refund.</div>
 <span class="post-offer-note">Optional once-off app purchase. No subscription.</span>
 </div>
 </div>
@@ -12887,8 +12970,8 @@ fbq('track', 'PageView');
     if(!panel){
       panel = document.createElement('div');
       panel.id = 'heartyFulfilmentPanel';
-      panel.style.cssText = 'margin:14px 0 0;padding:14px;border-radius:18px;border:1px solid rgba(12,91,151,.16);background:linear-gradient(180deg,#f7fbff,#fff);color:#102a43;';
-      panel.innerHTML = '<h3 style="margin:0 0 6px;font-size:1.05rem;letter-spacing:-.03em;">Your plan email is being prepared</h3><p id="heartyFulfilmentNote" style="margin:0 0 10px;color:#53697d;font-weight:750;line-height:1.45;"></p><button class="btn btn-primary" id="heartyCopyPlanTextBtn" type="button" style="min-height:46px;margin:0;">Copy plan text backup</button>';
+      panel.style.cssText = 'margin:14px 0 0;padding:0;border-radius:24px;border:1px solid rgba(12,91,151,.16);background:#fff;color:#102a43;overflow:hidden;box-shadow:0 18px 44px rgba(7,31,61,.10);';
+      panel.innerHTML = '<div class="hearty-email-success-offer"><div class="success-kicker">Plan sent — next step</div><h3>Want this organised inside the full Hearty app?</h3><p id="heartyFulfilmentNote">We are sending your plan to your inbox. Your full plan is still shown on this page as a backup while the email arrives.</p><button class="btn btn-primary paid-primary-cta" data-hearty-checkout="" type="button"><span class="paid-cta-main">Get the full Hearty app</span><span class="paid-cta-sub">$29 once-off • lifetime access • no subscription</span></button><div class="success-guarantee">14-day money-back guarantee. Try it properly — if it is not useful, email us for a refund.</div><button class="btn btn-secondary" id="heartyCopyPlanTextBtn" type="button">Copy plan text backup</button></div>';
       if(mount && mount.parentNode) mount.parentNode.insertBefore(panel, mount.nextSibling);
       else document.body.appendChild(panel);
     }
