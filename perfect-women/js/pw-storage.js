@@ -34,7 +34,7 @@
 
   function defaultState() {
     return {
-      schemaVersion: 2,
+      schemaVersion: 6,
       localClientId: uid('pw_client'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -60,7 +60,24 @@
       logs: {
         water: {},
         movement: {},
-        weights: {}
+        weights: {},
+        measurements: {},
+        checkins: {},
+        walks: [],
+        runs: []
+      },
+      programs: {
+        active: null
+      },
+      walkingProgram: {
+        started: false,
+        startDate: null,
+        targetWalksPerWeek: 4,
+        weeklyTargets: {}
+      },
+      joggingProgram: {
+        started: false,
+        startDate: null
       },
       photos: {
         sets: []
@@ -159,6 +176,208 @@
     const key = todayKey();
     return update((draft) => {
       delete draft.logs.movement[key];
+    });
+  }
+
+
+
+  function walkingWeekNumber(dateKey = todayKey()) {
+    const start = state.walkingProgram?.startDate;
+    if (!state.walkingProgram?.started || !start) return 1;
+    const startDate = new Date(`${start}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
+
+  function startWalkingProgram({ targetWalksPerWeek = 4, targetSteps = '' } = {}) {
+    const date = todayKey();
+    return update((draft) => {
+      draft.walkingProgram.started = true;
+      draft.walkingProgram.startDate = draft.walkingProgram.startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = 'walking';
+      draft.walkingProgram.targetWalksPerWeek = Math.max(1, Math.min(7, Number(targetWalksPerWeek || 4)));
+      if (targetSteps !== '' && targetSteps !== null && targetSteps !== undefined) {
+        const steps = Number(targetSteps);
+        if (steps && !Number.isNaN(steps)) draft.walkingProgram.weeklyTargets['1'] = steps;
+      }
+    });
+  }
+
+  function saveWalkingTarget({ week, targetSteps }) {
+    const cleanWeek = Math.min(8, Math.max(1, Number(week || 1)));
+    const steps = Number(targetSteps);
+    return update((draft) => {
+      if (!draft.walkingProgram.started) {
+        draft.walkingProgram.started = true;
+        draft.walkingProgram.startDate = draft.walkingProgram.startDate || todayKey();
+      }
+      if (steps && !Number.isNaN(steps)) draft.walkingProgram.weeklyTargets[String(cleanWeek)] = steps;
+      else delete draft.walkingProgram.weeklyTargets[String(cleanWeek)];
+    });
+  }
+
+  function saveWalkSession({ date, steps, notes }) {
+    const cleanDate = date || todayKey();
+    const cleanSteps = Number(steps);
+    if (!cleanSteps || Number.isNaN(cleanSteps)) return state;
+    const week = walkingWeekNumber(cleanDate);
+    return update((draft) => {
+      if (!draft.walkingProgram.started) {
+        draft.walkingProgram.started = true;
+        draft.walkingProgram.startDate = draft.walkingProgram.startDate || cleanDate;
+      }
+      if (!draft.programs) draft.programs = { active: null };
+      if (!draft.programs.active) draft.programs.active = 'walking';
+      if (!Array.isArray(draft.logs.walks)) draft.logs.walks = [];
+      draft.logs.walks.push({
+        id: uid('walk'),
+        date: cleanDate,
+        week,
+        durationMinutes: 60,
+        steps: Math.round(cleanSteps),
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+    });
+  }
+
+  function deleteWalkSession(id) {
+    return update((draft) => {
+      draft.logs.walks = (draft.logs.walks || []).filter((item) => item.id !== id);
+    });
+  }
+
+  function sortedWalks() {
+    return (state.logs.walks || [])
+      .filter((item) => item && item.date && typeof item.steps === 'number')
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
+
+  function joggingWeekNumber(dateKey = todayKey()) {
+    const start = state.joggingProgram?.startDate;
+    if (!state.joggingProgram?.started || !start) return 1;
+    const startDate = new Date(`${start}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
+
+  function startJoggingProgram() {
+    const date = todayKey();
+    return update((draft) => {
+      draft.joggingProgram.started = true;
+      draft.joggingProgram.startDate = draft.joggingProgram.startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = 'jogging';
+      if (!Array.isArray(draft.logs.runs)) draft.logs.runs = [];
+    });
+  }
+
+  function saveRunSession({ date, sessionKey, sessionLabel, targetKm, distanceKm, timeMinutes, rpe, notes }) {
+    const cleanDate = date || todayKey();
+    const km = Number(distanceKm);
+    if (!km || Number.isNaN(km)) return state;
+    const week = joggingWeekNumber(cleanDate);
+    return update((draft) => {
+      if (!draft.joggingProgram.started) {
+        draft.joggingProgram.started = true;
+        draft.joggingProgram.startDate = draft.joggingProgram.startDate || cleanDate;
+      }
+      if (!draft.programs) draft.programs = { active: null };
+      if (!draft.programs.active) draft.programs.active = 'jogging';
+      if (!Array.isArray(draft.logs.runs)) draft.logs.runs = [];
+      draft.logs.runs.push({
+        id: uid('run'),
+        date: cleanDate,
+        week,
+        sessionKey: sessionKey || 'run',
+        sessionLabel: sessionLabel || 'Jogging session',
+        targetKm: Number(targetKm || 0),
+        distanceKm: Math.round(km * 100) / 100,
+        timeMinutes: timeMinutes === '' || timeMinutes === null || timeMinutes === undefined ? null : Number(timeMinutes),
+        rpe: rpe === '' || rpe === null || rpe === undefined ? null : Number(rpe),
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+    });
+  }
+
+  function deleteRunSession(id) {
+    return update((draft) => {
+      draft.logs.runs = (draft.logs.runs || []).filter((item) => item.id !== id);
+    });
+  }
+
+  function sortedRuns() {
+    return (state.logs.runs || [])
+      .filter((item) => item && item.date && typeof item.distanceKm === 'number')
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
+
+
+  function numOrNull(value) {
+    if (value === '' || value === null || value === undefined) return null;
+    const n = Number(value);
+    return Number.isNaN(n) ? null : n;
+  }
+
+  function saveMeasurements(entry) {
+    const date = entry.date || todayKey();
+    return update((draft) => {
+      draft.logs.measurements[date] = {
+        date,
+        waist: numOrNull(entry.waist),
+        hips: numOrNull(entry.hips),
+        chest: numOrNull(entry.chest),
+        thigh: numOrNull(entry.thigh),
+        arm: numOrNull(entry.arm),
+        notes: entry.notes || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
+
+  function sortedMeasurements() {
+    return Object.values(state.logs.measurements || {})
+      .filter((item) => item && item.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  function saveCheckin(entry) {
+    const date = entry.date || todayKey();
+    return update((draft) => {
+      draft.logs.checkins[date] = {
+        date,
+        meals: entry.meals || '',
+        water: entry.water || '',
+        movement: entry.movement || '',
+        energy: entry.energy || '',
+        stress: entry.stress || '',
+        win: entry.win || '',
+        struggle: entry.struggle || '',
+        help: entry.help || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
+
+  function sortedCheckins() {
+    return Object.values(state.logs.checkins || {})
+      .filter((item) => item && item.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+
+  function setActiveProgram(program) {
+    const clean = ['walking', 'jogging'].includes(program) ? program : null;
+    if (!clean) return state;
+    return update((draft) => {
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = clean;
     });
   }
 
@@ -315,7 +534,23 @@
     getTodayWater,
     saveMovement,
     clearMovement,
+    startWalkingProgram,
+    setActiveProgram,
+    saveWalkingTarget,
+    saveWalkSession,
+    deleteWalkSession,
+    sortedWalks,
+    walkingWeekNumber,
+    startJoggingProgram,
+    saveRunSession,
+    deleteRunSession,
+    sortedRuns,
+    joggingWeekNumber,
     saveWeight,
+    saveMeasurements,
+    sortedMeasurements,
+    saveCheckin,
+    sortedCheckins,
     sortedWeights,
     saveSettings,
     completeOnboarding,

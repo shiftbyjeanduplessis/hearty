@@ -56,3 +56,14 @@ assets/icon-512.png
 manifest.json
 sw.js
 TECH_SPEC.md
+
+
+V1.2.1 update:
+- Added a simple 8-week 0–5 km jogging program inside Programs.
+- Clients can start the program, view weekly sessions, log distance/time/RPE/notes, and see jogging progress on Progress.
+- Existing local data key stays unchanged.
+
+
+V1.2.3 update:
+- Programs now use a focused layout. The current program opens up, while other programs stay minimal.
+- Added a Current Program indicator at the top of Programs.

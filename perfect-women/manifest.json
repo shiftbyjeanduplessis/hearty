@@ -1,7 +1,7 @@
 {
   "name": "Perfect Women Tracker",
   "short_name": "Perfect Women",
-  "description": "Local-first Perfect Women client tracker for water, movement, weekly weigh-ins, progress photo comparison, recipes and mini meal ideas.",
+  "description": "Local-first Perfect Women client tracker for water, movement, weekly weigh-ins, programs, walking-program logs, 5 km jogging-program logs, measurements, weekly check-ins, progress photo comparison, recipes and mini meal ideas.",
   "start_url": "/perfect-women/",
   "display": "standalone",
   "background_color": "#06122F",

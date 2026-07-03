@@ -40,7 +40,8 @@
             <p>Open the hosted app link in Safari, tap the <strong>Share</strong> button, choose <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</p>
           </div>
         </div>
-        <p class="small muted">Note: installation works from the hosted app link. A downloaded <code>file://</code> preview is only for testing.</p>
+        <button class="primary full install-now-btn" id="onboardingInstallBtn" type="button" hidden>Install app on this phone</button>
+        <p class="small muted" id="onboardingInstallStatus">Note: installation works from the hosted app link. A downloaded <code>file://</code> preview is only for testing.</p>
       </div>
     </div>
   </div>
@@ -94,6 +95,27 @@
             <p class="muted" id="weighInText">Your main weigh-in is Monday morning.</p>
           </div>
           <button class="secondary" data-nav="track">Log weight</button>
+        </article>
+
+        <article class="card callout" id="homeCheckinCard">
+          <div>
+            <p class="eyebrow pink">Weekly check-in</p>
+            <h3 id="homeCheckinTitle">Check in once a week</h3>
+            <p class="muted" id="homeCheckinText">Save your win, struggle and what you need help with.</p>
+          </div>
+          <button class="secondary" data-nav="track">Open check-in</button>
+        </article>
+
+        <article class="card walking-home-card" id="homeWalkingCard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow pink">Walking program</p>
+              <h3 id="homeWalkingTitle">8-week walking program</h3>
+              <p class="muted" id="homeWalkingText">Log your 60-minute walks and track your weekly step average.</p>
+            </div>
+            <button class="secondary" data-nav="programs">Log walk</button>
+          </div>
+          <div class="walk-mini-stats" id="homeWalkingStats"></div>
         </article>
 
         <article class="card">
@@ -179,6 +201,221 @@
           <textarea id="weightNotes" rows="2" placeholder="Optional: cycle, stress, weekend, digestion, etc."></textarea>
           <button class="primary full" id="saveWeightBtn">Save weigh-in</button>
         </article>
+
+
+        <article class="card" id="measurementsCard">
+          <p class="eyebrow pink">Measurements</p>
+          <h2>Update measurements</h2>
+          <p class="muted">Use this when measurements are due. Waist is the main one, but the others help show non-scale progress.</p>
+          <div class="form-grid">
+            <label>Date<input type="date" id="measurementDate" /></label>
+            <label>Waist (cm)<input type="number" id="measureWaist" inputmode="decimal" step="0.1" placeholder="e.g. 92" /></label>
+            <label>Hips (cm)<input type="number" id="measureHips" inputmode="decimal" step="0.1" placeholder="optional" /></label>
+            <label>Chest (cm)<input type="number" id="measureChest" inputmode="decimal" step="0.1" placeholder="optional" /></label>
+            <label>Thigh (cm)<input type="number" id="measureThigh" inputmode="decimal" step="0.1" placeholder="optional" /></label>
+            <label>Arm (cm)<input type="number" id="measureArm" inputmode="decimal" step="0.1" placeholder="optional" /></label>
+          </div>
+          <label class="field-label" for="measurementNotes">Notes</label>
+          <textarea id="measurementNotes" rows="2" placeholder="Optional: bloating, cycle, clothing fit, etc."></textarea>
+          <button class="primary full" id="saveMeasurementsBtn">Save measurements</button>
+        </article>
+
+        <article class="card" id="weeklyCheckinCard">
+          <p class="eyebrow gold">Weekly check-in</p>
+          <h2>How did this week go?</h2>
+          <p class="muted">A quick weekly reflection. It stays on this phone for now and can feed a coach dashboard later.</p>
+          <div class="form-grid">
+            <label>Date<input type="date" id="checkinDate" /></label>
+            <label>Meal plan consistency
+              <select id="checkinMeals">
+                <option value="">Choose</option>
+                <option>Great</option>
+                <option>Good</option>
+                <option>Mixed</option>
+                <option>Struggled</option>
+              </select>
+            </label>
+            <label>Water consistency
+              <select id="checkinWater">
+                <option value="">Choose</option>
+                <option>Great</option>
+                <option>Good</option>
+                <option>Mixed</option>
+                <option>Struggled</option>
+              </select>
+            </label>
+            <label>Movement consistency
+              <select id="checkinMovement">
+                <option value="">Choose</option>
+                <option>Great</option>
+                <option>Good</option>
+                <option>Mixed</option>
+                <option>Struggled</option>
+              </select>
+            </label>
+            <label>Energy
+              <select id="checkinEnergy">
+                <option value="">Choose</option>
+                <option>High</option>
+                <option>Okay</option>
+                <option>Low</option>
+              </select>
+            </label>
+            <label>Stress
+              <select id="checkinStress">
+                <option value="">Choose</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </label>
+          </div>
+          <label class="field-label" for="checkinWin">Biggest win</label>
+          <textarea id="checkinWin" rows="2" placeholder="What went well this week?"></textarea>
+          <label class="field-label" for="checkinStruggle">Biggest struggle</label>
+          <textarea id="checkinStruggle" rows="2" placeholder="What was hardest this week?"></textarea>
+          <label class="field-label" for="checkinHelp">What do you need help with?</label>
+          <textarea id="checkinHelp" rows="2" placeholder="Optional question or note for your coach"></textarea>
+          <button class="primary full" id="saveCheckinBtn">Save weekly check-in</button>
+        </article>
+      </section>
+
+      <section class="page" id="page-programs" data-page="programs">
+        <article class="card soft-card programs-header-card">
+          <p class="eyebrow pink">Programs</p>
+          <h2>Your coaching programs</h2>
+          <p class="muted">Choose one current program at a time. The active program opens up, while the others stay neat and minimal.</p>
+          <div class="current-program-banner" id="currentProgramBanner">
+            <span class="ui-icon" data-icon="program"></span>
+            <div>
+              <strong>No current program yet</strong>
+              <small>Start walking or jogging when you are ready.</small>
+            </div>
+          </div>
+        </article>
+
+        <article class="card walking-program-card program-card" id="walkingProgramCard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow gold">8-week walking program</p>
+              <h2>Log your 60-minute walks</h2>
+              <p class="muted">Walk 4–5 times per week. After each 60-minute walk, enter the total steps from your phone, watch or pedometer.</p>
+            </div>
+            <span class="program-pill" id="walkingWeekPill">Week 1</span>
+          </div>
+
+          <div class="compact-program-panel" id="walkingCompactPanel">
+            <div>
+              <strong>8-week walking program</strong>
+              <small>60-minute walks • 4–5/week • step average tracking</small>
+            </div>
+            <button class="secondary" id="openWalkingProgramBtn" type="button">Start / view</button>
+          </div>
+
+          <div class="walking-start" id="walkingStartPanel">
+            <div class="mini-card">
+              <h3>How it works</h3>
+              <p>Start with your normal pace in Week 1. Each week, aim to gently improve your average steps per 60-minute walk if you feel good.</p>
+            </div>
+            <div class="form-grid">
+              <label>Walks per week
+                <select id="walkingTargetWalks">
+                  <option value="4">4 walks</option>
+                  <option value="5">5 walks</option>
+                </select>
+              </label>
+              <label>Week 1 step target, optional<input type="number" id="walkingStartTarget" inputmode="numeric" placeholder="e.g. 5500" /></label>
+            </div>
+            <button class="primary full" id="startWalkingProgramBtn">Start walking program</button>
+          </div>
+
+          <div class="walking-active" id="walkingActivePanel" hidden>
+            <div class="grid three walk-stats-grid">
+              <article class="mini-stat"><span>Current week</span><strong id="walkingCurrentWeek">1 of 8</strong></article>
+              <article class="mini-stat"><span>Walks this week</span><strong id="walkingThisWeekCount">0/4</strong></article>
+              <article class="mini-stat"><span>Average steps</span><strong id="walkingThisWeekAvg">—</strong></article>
+            </div>
+
+            <div class="form-grid">
+              <label>This week’s step target<input type="number" id="walkingWeekTarget" inputmode="numeric" placeholder="Optional" /></label>
+              <label>Walk date<input type="date" id="walkDate" /></label>
+              <label>Steps this walk<input type="number" id="walkSteps" inputmode="numeric" placeholder="e.g. 6200" /></label>
+            </div>
+            <label class="field-label" for="walkNotes">Notes</label>
+            <textarea id="walkNotes" rows="2" placeholder="Optional: route, shoes, energy, weather, etc."></textarea>
+            <div class="button-row">
+              <button class="primary" id="saveWalkBtn">Save walk</button>
+              <button class="secondary" id="saveWalkingTargetBtn">Save target</button>
+            </div>
+
+            <div class="walk-advice" id="walkingAdvice">Week 1 is your baseline week. Record your walks without forcing the pace.</div>
+            <div class="summary-list" id="walkingSessionList"></div>
+          </div>
+        </article>
+
+        <article class="card jogging-program-card program-card" id="joggingProgramCard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow pink">5 km jogging program</p>
+              <h2>Build up to your first 5 km</h2>
+              <p class="muted">A simple 8-week beginner jogging plan. Log each session, distance, time and effort.</p>
+            </div>
+            <span class="program-pill pink-pill" id="joggingWeekPill">Not started</span>
+          </div>
+
+          <div class="compact-program-panel" id="joggingCompactPanel">
+            <div>
+              <strong>5 km jogging program</strong>
+              <small>8-week beginner plan • 3 core sessions/week</small>
+            </div>
+            <button class="secondary" id="openJoggingProgramBtn" type="button">Start / view</button>
+          </div>
+
+          <div class="walking-start" id="joggingStartPanel">
+            <div class="mini-card">
+              <h3>How it works</h3>
+              <p>Run or walk-jog 3 core sessions per week. Keep the pace easy and build up gradually toward 5 km.</p>
+            </div>
+            <button class="primary full" id="startJoggingProgramBtn">Start 5 km jogging program</button>
+          </div>
+
+          <div class="walking-active" id="joggingActivePanel" hidden>
+            <div class="grid three walk-stats-grid">
+              <article class="mini-stat"><span>Current week</span><strong id="joggingCurrentWeek">1 of 8</strong></article>
+              <article class="mini-stat"><span>Sessions this week</span><strong id="joggingThisWeekCount">0/3</strong></article>
+              <article class="mini-stat"><span>Distance logged</span><strong id="joggingThisWeekKm">—</strong></article>
+            </div>
+
+            <div class="jogging-plan-list" id="joggingPlanList"></div>
+
+            <div class="form-grid">
+              <label>Session
+                <select id="runSessionType"></select>
+              </label>
+              <label>Run date<input type="date" id="runDate" /></label>
+              <label>Distance completed (km)<input type="number" id="runDistance" inputmode="decimal" step="0.1" placeholder="e.g. 2.5" /></label>
+              <label>Time, optional (minutes)<input type="number" id="runTime" inputmode="numeric" placeholder="e.g. 28" /></label>
+              <label>Effort / RPE, optional
+                <select id="runRpe">
+                  <option value="">Choose</option>
+                  <option value="3">3 — easy</option>
+                  <option value="4">4 — comfortable</option>
+                  <option value="5">5 — moderate</option>
+                  <option value="6">6 — hard but controlled</option>
+                  <option value="7">7 — too hard for most beginner runs</option>
+                </select>
+              </label>
+            </div>
+            <p class="small muted" id="joggingSessionHint">Choose a session to see the focus.</p>
+            <label class="field-label" for="runNotes">Notes</label>
+            <textarea id="runNotes" rows="2" placeholder="Optional: route, walk breaks, shoes, energy, weather, etc."></textarea>
+            <button class="primary full" id="saveRunBtn">Save jogging session</button>
+
+            <div class="walk-advice" id="joggingAdvice">Keep beginner runs easy. You should not be gasping or in pain.</div>
+            <div class="summary-list" id="joggingSessionList"></div>
+          </div>
+        </article>
+
       </section>
 
       <section class="page" id="page-progress" data-page="progress">
@@ -241,6 +478,61 @@
           <p class="eyebrow gold">Consistency</p>
           <h2>This week</h2>
           <div class="summary-list" id="progressSummary"></div>
+        </article>
+
+
+        <article class="card" id="measurementProgressCard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow pink">Measurements</p>
+              <h2>Body measurements</h2>
+              <p class="small muted">Compare your first and latest saved measurements.</p>
+            </div>
+            <button class="text-button" data-nav="track">Add</button>
+          </div>
+          <div class="grid two" id="measurementStats"></div>
+          <div class="summary-list" id="measurementHistory"></div>
+        </article>
+
+        <article class="card" id="monthlyReportCard">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow gold">Progress report</p>
+              <h2>Last 30 days</h2>
+              <p class="small muted">A simple summary of weight, waist, water, movement and check-ins.</p>
+            </div>
+            <button class="text-button" data-nav="track">Check in</button>
+          </div>
+          <div class="report-grid" id="monthlyReportGrid"></div>
+          <div class="latest-checkin" id="latestCheckinBox"></div>
+        </article>
+
+        <article class="card walking-progress-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow gold">Walking program</p>
+              <h2>Walking progress</h2>
+              <p class="small muted" id="walkingChartSummary">Start the walking program to see weekly averages.</p>
+            </div>
+            <button class="text-button" data-nav="programs">Log walk</button>
+          </div>
+          <canvas id="walkingChart" width="600" height="300" aria-label="Weekly walking average bar chart"></canvas>
+          <p class="small muted" id="walkingChartEmpty">Log at least one walk to see your walking trend.</p>
+          <div class="movement-delta-list" id="walkingWeekList"></div>
+        </article>
+
+        <article class="card jogging-progress-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow pink">5 km jogging program</p>
+              <h2>Jogging progress</h2>
+              <p class="small muted" id="joggingChartSummary">Start the 5 km jogging program to see weekly distance.</p>
+            </div>
+            <button class="text-button" data-nav="programs">Log jog</button>
+          </div>
+          <canvas id="joggingChart" width="600" height="300" aria-label="Weekly jogging distance bar chart"></canvas>
+          <p class="small muted" id="joggingChartEmpty">Log at least one jogging session to see your 5 km progress.</p>
+          <div class="movement-delta-list" id="joggingWeekList"></div>
         </article>
 
         <article class="card">
@@ -397,7 +689,8 @@
               <p>Open the hosted app link in Safari → tap <strong>Share</strong> → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</p>
             </div>
           </div>
-          <p class="small muted">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
+          <button class="primary full install-now-btn" id="installAppBtn" type="button" hidden>Install app on this phone</button>
+          <p class="small muted" id="installStatusText">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
           <button class="secondary full" id="showOnboardingBtn">Show setup guide again</button>
         </article>
 
@@ -412,6 +705,7 @@
     <nav class="bottom-nav" aria-label="Main navigation">
       <button class="nav-btn active" data-nav="home"><span class="ui-icon" data-icon="home"></span>Home</button>
       <button class="nav-btn" data-nav="track"><span class="ui-icon" data-icon="check"></span>Track</button>
+      <button class="nav-btn" data-nav="programs"><span class="ui-icon" data-icon="program"></span>Programs</button>
       <button class="nav-btn" data-nav="progress"><span class="ui-icon" data-icon="chart"></span>Progress</button>
       <button class="nav-btn" data-nav="photos"><span class="ui-icon" data-icon="camera"></span>Photos</button>
       <button class="nav-btn" data-nav="recipes"><span class="ui-icon" data-icon="plate"></span>Recipes</button>

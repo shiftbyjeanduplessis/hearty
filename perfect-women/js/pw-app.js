@@ -10,10 +10,12 @@
   let compareDateBId = null;
   let mealSpinRotation = 0;
   let mealIdeasVisible = false;
+  let deferredInstallPrompt = null;
 
   const pageTitles = {
     home: 'Today',
     track: 'Track',
+    programs: 'Programs',
     progress: 'Progress',
     photos: 'Photos',
     recipes: 'Recipes',
@@ -25,19 +27,73 @@
     settings: '<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.04.04a2.1 2.1 0 0 1-2.97 2.97l-.04-.04a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.08 1.65V21a2.1 2.1 0 0 1-4.2 0v-.06A1.8 1.8 0 0 0 8.4 19.3a1.8 1.8 0 0 0-2 .36l-.04.04a2.1 2.1 0 0 1-2.97-2.97l.04-.04a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.08H2.1a2.1 2.1 0 0 1 0-4.2h.06A1.8 1.8 0 0 0 3.8 8.4a1.8 1.8 0 0 0-.36-2l-.04-.04A2.1 2.1 0 0 1 6.37 3.4l.04.04a1.8 1.8 0 0 0 2 .36 1.8 1.8 0 0 0 1.08-1.65V2.1a2.1 2.1 0 0 1 4.2 0v.06A1.8 1.8 0 0 0 14.8 3.8a1.8 1.8 0 0 0 2-.36l.04-.04a2.1 2.1 0 0 1 2.97 2.97l-.04.04a1.8 1.8 0 0 0-.36 2c.26.67.9 1.1 1.62 1.1h.07a2.1 2.1 0 0 1 0 4.2h-.06a1.8 1.8 0 0 0-1.65 1.08z"></path>',
     water: '<path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"></path><path d="M9.5 14.6a2.9 2.9 0 0 0 4.4 2.4"></path>',
     walk: '<circle cx="12" cy="5" r="2"></circle><path d="M10.5 9.2 8.8 13l-2.3 2.2"></path><path d="M11.2 9.2h2.2l2.1 3.2"></path><path d="M11.6 13.2 13 16l.8 4"></path><path d="M9.2 20l2.3-3.8"></path>',
+    run: '<circle cx="12" cy="4.5" r="2"></circle><path d="M10 8.5 7.5 12 5 13"></path><path d="M11.5 8.2 15 10l2.2 2.4"></path><path d="M12.4 12.1 10.5 16.3 7.4 20"></path><path d="M13.1 13.1 16.2 16l2.4 4"></path>',
     check: '<path d="M20 6 9 17l-5-5"></path>',
     workout: '<path d="M3 9v6"></path><path d="M7 7v10"></path><path d="M17 7v10"></path><path d="M21 9v6"></path><path d="M7 12h10"></path>',
     chart: '<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 3-4 3 2 5-7"></path><path d="M18 6h-4"></path><path d="M18 6v4"></path>',
+    ruler: '<path d="M4 17 17 4l3 3L7 20l-3-3z"></path><path d="m14 7 3 3"></path><path d="m11 10 2 2"></path><path d="m8 13 3 3"></path>',
     camera: '<path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.7l1.1-1.6h5.4L15.8 6h1.7A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-8z"></path><circle cx="12" cy="12.5" r="3.2"></circle>',
     upload: '<path d="M12 16V5"></path><path d="m7 10 5-5 5 5"></path><path d="M5 19h14"></path>',
     home: '<path d="m3 11 9-8 9 8"></path><path d="M5.5 10.5V21h13V10.5"></path><path d="M9.5 21v-6h5v6"></path>',
     plate: '<circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="3.5"></circle><path d="M3.5 4.5v15"></path><path d="M20.5 4.5v15"></path>',
+    program: '<path d="M5 4h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5v-13A1.5 1.5 0 0 1 5 4z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path>',
     spark: '<path d="M12 2.8 13.7 8l5.4 1.4-5.4 1.4L12 16l-1.7-5.2-5.4-1.4L10.3 8 12 2.8z"></path><path d="M18.5 14.5l.8 2.3 2.3.7-2.3.7-.8 2.3-.8-2.3-2.3-.7 2.3-.7.8-2.3z"></path><path d="M5.5 15.5l.6 1.8 1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6.6-1.8z"></path>'
   };
 
   function icon(name) {
     return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ICONS.check}</svg>`;
   }
+
+  const JOGGING_PLAN = [
+    { week: 1, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 1.5, note: 'Easy pace. Keep it comfortable.' },
+      { key: 'form', label: 'Form focus', targetKm: 1.0, note: 'Easy run plus 4 short relaxed stride-outs.' },
+      { key: 'long', label: 'Long slow run', targetKm: 2.0, note: 'Conversational pace.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 1.0, optional: true, note: 'Only if you feel fresh.' }
+    ]},
+    { week: 2, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 1.5, note: 'Easy pace. Repeat the baseline.' },
+      { key: 'form', label: 'Form focus', targetKm: 1.0, note: 'Easy run plus 4 short relaxed stride-outs.' },
+      { key: 'long', label: 'Long slow run', targetKm: 2.5, note: 'Slow and steady.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 1.0, optional: true, note: 'Only if you feel fresh.' }
+    ]},
+    { week: 3, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 2.5, note: 'Easy pace. Do not chase speed.' },
+      { key: 'form', label: 'Form focus', targetKm: 2.0, note: 'Relaxed form and quick light steps.' },
+      { key: 'long', label: 'Long slow run', targetKm: 3.0, note: 'Comfortable pace.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 1.5, optional: true, note: 'Keep it very easy.' }
+    ]},
+    { week: 4, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 2.5, note: 'Easy controlled effort.' },
+      { key: 'form', label: 'Form focus', targetKm: 2.0, note: 'Add relaxed stride-outs if you feel good.' },
+      { key: 'long', label: 'Long slow run', targetKm: 3.5, note: 'Build distance gently.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 1.5, optional: true, note: 'Skip if tired.' }
+    ]},
+    { week: 5, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 3.5, note: 'Easy pace. Stay patient.' },
+      { key: 'form', label: 'Form focus', targetKm: 2.5, note: 'Focus on posture and light feet.' },
+      { key: 'long', label: 'Long slow run', targetKm: 4.0, note: 'Comfort over speed.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 2.0, optional: true, note: 'Only if recovered.' }
+    ]},
+    { week: 6, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 3.5, note: 'Easy steady effort.' },
+      { key: 'form', label: 'Form focus', targetKm: 2.5, note: 'Controlled stride-outs if fresh.' },
+      { key: 'long', label: 'Long slow run', targetKm: 4.5, note: 'Slow enough to finish well.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 2.0, optional: true, note: 'Skip if legs feel heavy.' }
+    ]},
+    { week: 7, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 4.0, note: 'Easy and confident.' },
+      { key: 'form', label: 'Form focus', targetKm: 3.0, note: 'Relaxed form, no sprinting.' },
+      { key: 'long', label: 'Long slow run', targetKm: 5.0, note: 'First 5 km practice.' },
+      { key: 'optional', label: 'Optional easy jog', targetKm: 2.5, optional: true, note: 'Very easy only.' }
+    ]},
+    { week: 8, sessions: [
+      { key: 'foundation', label: 'Foundation run', targetKm: 4.0, note: 'Easy confidence builder.' },
+      { key: 'form', label: 'Form focus', targetKm: 3.0, note: 'Light relaxed running.' },
+      { key: 'test', label: '5 km run', targetKm: 5.0, note: 'Complete your 5 km at a steady, safe pace.' },
+      { key: 'optional', label: 'Optional recovery jog', targetKm: 3.0, optional: true, note: 'Only if you feel good after the 5 km.' }
+    ]}
+  ];
 
   function renderStaticIcons() {
     $$('[data-icon]').forEach((el) => {
@@ -133,7 +189,17 @@
       $('#weighInText').textContent = 'We track weekly trend instead of daily scale noise.';
     }
 
+    const latestCheckin = (window.PWStore.sortedCheckins ? window.PWStore.sortedCheckins() : []).slice(-1)[0];
+    if (latestCheckin) {
+      $('#homeCheckinTitle').textContent = `Last check-in: ${fmtDate(latestCheckin.date)}`;
+      $('#homeCheckinText').textContent = latestCheckin.help ? `Help needed: ${latestCheckin.help.slice(0, 80)}${latestCheckin.help.length > 80 ? '…' : ''}` : 'Your weekly reflection has been saved.';
+    } else {
+      $('#homeCheckinTitle').textContent = 'Weekly check-in';
+      $('#homeCheckinText').textContent = 'Save your win, struggle and what you need help with.';
+    }
+
     renderWeekStrip();
+    renderWalkingHome(s);
   }
 
   function renderWeekStrip() {
@@ -181,6 +247,87 @@
     });
 
     $('#weightDate').value = window.PWStore.todayKey();
+    if ($('#measurementDate')) $('#measurementDate').value = window.PWStore.todayKey();
+    if ($('#checkinDate')) $('#checkinDate').value = window.PWStore.todayKey();
+  }
+
+
+  function activeProgramKey(s) {
+    const active = s.programs?.active;
+    const walkingStarted = !!s.walkingProgram?.started;
+    const joggingStarted = !!s.joggingProgram?.started;
+    if (active === 'walking' && walkingStarted) return 'walking';
+    if (active === 'jogging' && joggingStarted) return 'jogging';
+    if (walkingStarted && !joggingStarted) return 'walking';
+    if (joggingStarted && !walkingStarted) return 'jogging';
+    if (walkingStarted && joggingStarted) return 'walking';
+    return null;
+  }
+
+  function renderProgramOverview(s) {
+    const active = activeProgramKey(s);
+    const walkingCard = $('#walkingProgramCard');
+    const joggingCard = $('#joggingProgramCard');
+    if (walkingCard) {
+      walkingCard.classList.toggle('is-active-program', active === 'walking');
+      walkingCard.classList.toggle('is-compact-program', active !== 'walking');
+    }
+    if (joggingCard) {
+      joggingCard.classList.toggle('is-active-program', active === 'jogging');
+      joggingCard.classList.toggle('is-compact-program', active !== 'jogging');
+    }
+
+    const banner = $('#currentProgramBanner');
+    if (banner) {
+      if (active === 'walking') {
+        const week = walkingWeekNumberForDate(s);
+        const walks = walksForWeek(s, week);
+        const targetWalks = Number(s.walkingProgram?.targetWalksPerWeek || 4);
+        banner.innerHTML = `${icon('walk')}<div><strong>Current program: 8-week walking</strong><small>Week ${week} of 8 • ${walks.length}/${targetWalks} walks logged this week</small></div>`;
+        banner.classList.add('is-active');
+      } else if (active === 'jogging') {
+        const week = joggingWeekNumberForDate(s);
+        const plan = joggingWeekPlan(week);
+        const runs = runsForWeek(s, week);
+        const targetSessions = plan.sessions.filter((item) => !item.optional).length;
+        banner.innerHTML = `${icon('run')}<div><strong>Current program: 5 km jogging</strong><small>Week ${week} of 8 • ${runs.length}/${targetSessions} sessions logged this week</small></div>`;
+        banner.classList.add('is-active');
+      } else {
+        banner.innerHTML = `${icon('program')}<div><strong>No current program yet</strong><small>Pick one program to open it up and keep your focus clear.</small></div>`;
+        banner.classList.remove('is-active');
+      }
+    }
+
+    const walkingBtn = $('#openWalkingProgramBtn');
+    if (walkingBtn) walkingBtn.textContent = s.walkingProgram?.started ? 'Make current' : 'Start walking';
+    const joggingBtn = $('#openJoggingProgramBtn');
+    if (joggingBtn) joggingBtn.textContent = s.joggingProgram?.started ? 'Make current' : 'Start jogging';
+
+    const walkingCompact = $('#walkingCompactPanel small');
+    if (walkingCompact) {
+      if (s.walkingProgram?.started) {
+        const week = walkingWeekNumberForDate(s);
+        walkingCompact.textContent = `Saved progress • Week ${week} of 8`;
+      } else {
+        walkingCompact.textContent = '60-minute walks • 4–5/week • step average tracking';
+      }
+    }
+    const joggingCompact = $('#joggingCompactPanel small');
+    if (joggingCompact) {
+      if (s.joggingProgram?.started) {
+        const week = joggingWeekNumberForDate(s);
+        joggingCompact.textContent = `Saved progress • Week ${week} of 8`;
+      } else {
+        joggingCompact.textContent = '8-week beginner plan • 3 core sessions/week';
+      }
+    }
+  }
+
+  function renderPrograms() {
+    const s = state();
+    renderProgramOverview(s);
+    renderWalkingTrack(s);
+    renderJoggingTrack(s);
   }
 
   function renderProgress() {
@@ -199,6 +346,10 @@
     }
     drawWeightChart(weights);
     renderProgressSummary(s);
+    renderMeasurementProgress(s);
+    renderMonthlyReport(s);
+    renderWalkingProgress(s);
+    renderJoggingProgress(s);
     renderMovementGraph(s);
     renderPhotoCompare();
   }
@@ -273,6 +424,96 @@
       <div class="summary-row"><span>Movement days</span><strong>${movementDays}/7</strong></div>
       <div class="summary-row"><span>Weigh-in rhythm</span><strong>Monday</strong></div>
     `;
+  }
+
+
+  function cmText(value) {
+    return typeof value === 'number' && !Number.isNaN(value) ? `${value.toFixed(1)} cm` : '—';
+  }
+
+  function measurementDelta(first, latest, key) {
+    if (!first || !latest || typeof first[key] !== 'number' || typeof latest[key] !== 'number') return '—';
+    const change = latest[key] - first[key];
+    return `${change > 0 ? '+' : ''}${change.toFixed(1)} cm`;
+  }
+
+  function renderMeasurementProgress(s) {
+    const measurements = window.PWStore.sortedMeasurements ? window.PWStore.sortedMeasurements() : [];
+    const stats = $('#measurementStats');
+    const history = $('#measurementHistory');
+    if (!stats || !history) return;
+
+    if (!measurements.length) {
+      stats.innerHTML = `
+        <article class="mini-stat wide"><span>No measurements yet</span><strong>Save your first set in Track.</strong></article>
+      `;
+      history.innerHTML = '';
+      return;
+    }
+
+    const first = measurements[0];
+    const latest = measurements[measurements.length - 1];
+    stats.innerHTML = `
+      <article class="mini-stat"><span>Latest waist</span><strong>${cmText(latest.waist)}</strong></article>
+      <article class="mini-stat"><span>Waist change</span><strong>${measurementDelta(first, latest, 'waist')}</strong></article>
+      <article class="mini-stat"><span>Latest hips</span><strong>${cmText(latest.hips)}</strong></article>
+      <article class="mini-stat"><span>Saved sets</span><strong>${measurements.length}</strong></article>
+    `;
+
+    history.innerHTML = measurements.slice(-5).reverse().map((item) => `
+      <div class="summary-row">
+        <span><strong>${fmtDate(item.date)}</strong><br><small>Waist ${cmText(item.waist)} • Hips ${cmText(item.hips)} • Chest ${cmText(item.chest)}</small></span>
+        <strong>${item.notes ? escapeHtml(item.notes).slice(0, 28) : 'Saved'}</strong>
+      </div>
+    `).join('');
+  }
+
+  function dateDaysAgo(days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return window.PWStore.todayKey(d);
+  }
+
+  function renderMonthlyReport(s) {
+    const grid = $('#monthlyReportGrid');
+    const latestBox = $('#latestCheckinBox');
+    if (!grid || !latestBox) return;
+    const since = dateDaysAgo(30);
+    const weights = window.PWStore.sortedWeights().filter((item) => item.date >= since);
+    const measurements = window.PWStore.sortedMeasurements ? window.PWStore.sortedMeasurements().filter((item) => item.date >= since) : [];
+    const checkins = window.PWStore.sortedCheckins ? window.PWStore.sortedCheckins() : [];
+    const allKeys = Array.from({ length: 30 }, (_, i) => dateDaysAgo(29 - i));
+    const waterDays = allKeys.filter((key) => (s.logs.water[key]?.ml || 0) >= s.settings.waterTargetMl).length;
+    const movementDays = allKeys.filter((key) => s.logs.movement[key]?.done).length;
+    const walks = (s.logs.walks || []).filter((item) => item.date >= since).length;
+    const photoSets = (s.photos.sets || []).filter((item) => item.date >= since).length;
+
+    const weightChange = weights.length >= 2 ? `${weights[weights.length - 1].kg - weights[0].kg > 0 ? '+' : ''}${(weights[weights.length - 1].kg - weights[0].kg).toFixed(1)} kg` : '—';
+    const waistChange = measurements.length >= 2 ? measurementDelta(measurements[0], measurements[measurements.length - 1], 'waist') : '—';
+
+    grid.innerHTML = `
+      <article class="mini-stat"><span>Weight change</span><strong>${weightChange}</strong></article>
+      <article class="mini-stat"><span>Waist change</span><strong>${waistChange}</strong></article>
+      <article class="mini-stat"><span>Water days</span><strong>${waterDays}/30</strong></article>
+      <article class="mini-stat"><span>Movement days</span><strong>${movementDays}/30</strong></article>
+      <article class="mini-stat"><span>Walks logged</span><strong>${walks}</strong></article>
+      <article class="mini-stat"><span>Photo sets</span><strong>${photoSets}</strong></article>
+    `;
+
+    const latest = checkins[checkins.length - 1];
+    latestBox.innerHTML = latest ? `
+      <p class="eyebrow pink">Latest check-in</p>
+      <h3>${fmtDate(latest.date)}</h3>
+      <div class="summary-list compact">
+        <div class="summary-row"><span>Meals</span><strong>${escapeHtml(latest.meals || '—')}</strong></div>
+        <div class="summary-row"><span>Water</span><strong>${escapeHtml(latest.water || '—')}</strong></div>
+        <div class="summary-row"><span>Movement</span><strong>${escapeHtml(latest.movement || '—')}</strong></div>
+        <div class="summary-row"><span>Energy / Stress</span><strong>${escapeHtml(latest.energy || '—')} / ${escapeHtml(latest.stress || '—')}</strong></div>
+      </div>
+      ${latest.win ? `<p class="small"><strong>Win:</strong> ${escapeHtml(latest.win)}</p>` : ''}
+      ${latest.struggle ? `<p class="small"><strong>Struggle:</strong> ${escapeHtml(latest.struggle)}</p>` : ''}
+      ${latest.help ? `<p class="small"><strong>Help needed:</strong> ${escapeHtml(latest.help)}</p>` : ''}
+    ` : '<p class="muted">No weekly check-in saved yet. Add one from Track.</p>';
   }
 
   function dateKeyFromDate(date) {
@@ -442,6 +683,433 @@
     ctx.closePath();
   }
 
+
+
+  function walkingWeekNumberForDate(s, dateKey = window.PWStore.todayKey()) {
+    if (!s.walkingProgram?.started || !s.walkingProgram.startDate) return 1;
+    const start = new Date(`${s.walkingProgram.startDate}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - start) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
+
+  function walksForWeek(s, week) {
+    return (s.logs.walks || []).filter((walk) => Number(walk.week) === Number(week));
+  }
+
+  function avgSteps(walks) {
+    if (!walks.length) return 0;
+    return Math.round(walks.reduce((sum, walk) => sum + Number(walk.steps || 0), 0) / walks.length);
+  }
+
+  function walkingWeeklyRows(s) {
+    const rows = [];
+    for (let week = 1; week <= 8; week += 1) {
+      const walks = walksForWeek(s, week);
+      const average = avgSteps(walks);
+      rows.push({
+        week,
+        walks: walks.length,
+        average,
+        target: Number(s.walkingProgram?.weeklyTargets?.[String(week)] || 0)
+      });
+    }
+    return rows;
+  }
+
+  function renderWalkingHome(s) {
+    const title = $('#homeWalkingTitle');
+    const text = $('#homeWalkingText');
+    const stats = $('#homeWalkingStats');
+    if (!title || !text || !stats) return;
+
+    if (!s.walkingProgram?.started) {
+      title.textContent = '8-week walking program';
+      text.textContent = 'Start when you are ready. Log each 60-minute walk and track your step average.';
+      stats.innerHTML = '<span>60-min walks</span><span>4–5/week</span><span>steps per session</span>';
+      return;
+    }
+
+    const week = walkingWeekNumberForDate(s);
+    const walks = walksForWeek(s, week);
+    const targetWalks = Number(s.walkingProgram.targetWalksPerWeek || 4);
+    const average = avgSteps(walks);
+    const targetSteps = Number(s.walkingProgram.weeklyTargets?.[String(week)] || 0);
+    title.textContent = `Walking program: Week ${week} of 8`;
+    text.textContent = targetSteps
+      ? `This week’s target: ${targetSteps.toLocaleString()} steps per 60-minute walk.`
+      : 'Log your 60-minute walks and build your weekly average gently.';
+    stats.innerHTML = `
+      <span>${walks.length}/${targetWalks} walks</span>
+      <span>${average ? average.toLocaleString() : '—'} avg steps</span>
+      <span>${targetSteps ? targetSteps.toLocaleString() + ' target' : 'target optional'}</span>
+    `;
+  }
+
+  function suggestedWalkingTarget(rows, currentWeek) {
+    const previous = rows.find((row) => row.week === currentWeek - 1);
+    if (!previous || !previous.average) return '';
+    return Math.round(previous.average * 1.05 / 50) * 50;
+  }
+
+  function renderWalkingTrack(s) {
+    const startPanel = $('#walkingStartPanel');
+    const activePanel = $('#walkingActivePanel');
+    if (!startPanel || !activePanel) return;
+
+    const started = !!s.walkingProgram?.started;
+    startPanel.hidden = started;
+    activePanel.hidden = !started;
+
+    const week = walkingWeekNumberForDate(s);
+    const targetWalks = Number(s.walkingProgram?.targetWalksPerWeek || 4);
+    const walks = walksForWeek(s, week).sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+    const average = avgSteps(walks);
+    const rows = walkingWeeklyRows(s);
+    const targetSteps = Number(s.walkingProgram?.weeklyTargets?.[String(week)] || 0);
+    const suggested = suggestedWalkingTarget(rows, week);
+
+    $('#walkingWeekPill').textContent = started ? `Week ${week} of 8` : 'Not started';
+    if ($('#walkingCurrentWeek')) $('#walkingCurrentWeek').textContent = `${week} of 8`;
+    if ($('#walkingThisWeekCount')) $('#walkingThisWeekCount').textContent = `${walks.length}/${targetWalks}`;
+    if ($('#walkingThisWeekAvg')) $('#walkingThisWeekAvg').textContent = average ? average.toLocaleString() : '—';
+    if ($('#walkingWeekTarget')) $('#walkingWeekTarget').value = targetSteps || '';
+    if ($('#walkDate')) $('#walkDate').value = window.PWStore.todayKey();
+
+    const advice = $('#walkingAdvice');
+    if (advice) {
+      if (week === 1 && !average) advice.textContent = 'Week 1 is your baseline week. Record your normal 60-minute walks without forcing the pace.';
+      else if (week === 1) advice.textContent = `Week 1 baseline average so far: ${average.toLocaleString()} steps.`;
+      else if (!targetSteps && suggested) advice.textContent = `Suggested Week ${week} target: about ${suggested.toLocaleString()} steps per 60-minute walk. Save it or adjust it.`;
+      else if (targetSteps && average) advice.textContent = average >= targetSteps ? 'You are meeting this week’s walking target. Keep it steady and recover well.' : 'Keep showing up. The goal is steady progress, not perfection.';
+      else advice.textContent = 'Log each 60-minute walk after you finish. Only total steps are needed.';
+    }
+
+    const list = $('#walkingSessionList');
+    if (list) {
+      if (!walks.length) {
+        list.innerHTML = '<p class="muted">No walks logged for this week yet.</p>';
+      } else {
+        list.innerHTML = walks.map((walk) => `
+          <div class="summary-row movement-row">
+            <span><strong>${fmtDate(walk.date)}</strong><br><small>60-minute walk${walk.notes ? ' • ' + escapeHtml(walk.notes) : ''}</small></span>
+            <strong>${Number(walk.steps || 0).toLocaleString()} steps</strong>
+            <button class="text-button danger-link" data-delete-walk="${escapeHtml(walk.id)}" type="button">Delete</button>
+          </div>
+        `).join('');
+        $$('[data-delete-walk]').forEach((btn) => btn.addEventListener('click', () => {
+          if (!confirm('Delete this walk entry?')) return;
+          window.PWStore.deleteWalkSession(btn.dataset.deleteWalk);
+          toast('Walk deleted');
+          renderAll();
+        }));
+      }
+    }
+  }
+
+  function renderWalkingProgress(s) {
+    const canvas = $('#walkingChart');
+    const empty = $('#walkingChartEmpty');
+    const summary = $('#walkingChartSummary');
+    const list = $('#walkingWeekList');
+    if (!canvas || !empty || !summary || !list) return;
+
+    const rows = walkingWeeklyRows(s);
+    const activeRows = rows.filter((row) => row.walks > 0 || row.target > 0);
+    empty.style.display = activeRows.length ? 'none' : 'block';
+
+    if (!s.walkingProgram?.started) {
+      summary.textContent = 'Start the walking program on the Programs page.';
+    } else {
+      const currentWeek = walkingWeekNumberForDate(s);
+      const current = rows.find((row) => row.week === currentWeek);
+      const previous = rows.find((row) => row.week === currentWeek - 1);
+      const delta = current?.average && previous?.average ? current.average - previous.average : 0;
+      const deltaText = delta ? `${delta > 0 ? '+' : ''}${delta.toLocaleString()} vs last week` : 'build your baseline';
+      summary.textContent = `Week ${currentWeek} of 8 • ${current?.walks || 0} walks • ${current?.average ? current.average.toLocaleString() + ' avg steps' : deltaText}`;
+    }
+
+    drawWalkingChart(rows);
+    list.innerHTML = activeRows.length ? activeRows.map((row) => {
+      const previous = rows.find((item) => item.week === row.week - 1);
+      const delta = row.average && previous?.average ? row.average - previous.average : 0;
+      const cls = delta > 0 ? 'up' : delta < 0 ? 'down' : 'same';
+      const deltaText = row.average && previous?.average ? `${delta > 0 ? '+' : ''}${delta.toLocaleString()}` : '—';
+      return `
+        <div class="summary-row movement-row">
+          <span><strong>Week ${row.week}</strong><br><small>${row.walks} walk${row.walks === 1 ? '' : 's'} • target ${row.target ? row.target.toLocaleString() : 'not set'}</small></span>
+          <strong>${row.average ? row.average.toLocaleString() : '—'} avg</strong>
+          <strong class="delta-pill ${cls}">${deltaText}</strong>
+        </div>
+      `;
+    }).join('') : '';
+  }
+
+  function drawWalkingChart(rows) {
+    const canvas = $('#walkingChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.045)';
+    ctx.fillRect(0, 0, w, h);
+    const activeRows = rows.filter((row) => row.walks > 0 || row.target > 0);
+    if (!activeRows.length) return;
+
+    const max = Math.max(1000, ...activeRows.map((row) => Math.max(row.average || 0, row.target || 0))) * 1.08;
+    const left = 54;
+    const right = 24;
+    const top = 34;
+    const bottom = 50;
+    const plotW = w - left - right;
+    const plotH = h - top - bottom;
+    const gap = 10;
+    const barW = Math.max(22, (plotW - gap * 7) / 8);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#b8bbd0';
+    ctx.font = '13px system-ui';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 3; i += 1) {
+      const y = top + plotH - (plotH * i) / 3;
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(w - right, y);
+      ctx.stroke();
+      ctx.fillText(Math.round((max * i) / 3).toLocaleString(), left - 8, y + 4);
+    }
+
+    rows.forEach((row, index) => {
+      const x = left + index * (barW + gap);
+      const avgH = row.average ? (row.average / max) * plotH : 0;
+      const y = top + plotH - avgH;
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      roundRect(ctx, x, top, barW, plotH, 9);
+      ctx.fill();
+
+      if (avgH > 0) {
+        const gradient = ctx.createLinearGradient(0, y, 0, top + plotH);
+        gradient.addColorStop(0, '#d9a72e');
+        gradient.addColorStop(1, '#e80075');
+        ctx.fillStyle = gradient;
+        roundRect(ctx, x, y, barW, Math.max(avgH, 8), 9);
+        ctx.fill();
+      }
+
+      if (row.target > 0) {
+        const targetY = top + plotH - (row.target / max) * plotH;
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - 2, targetY);
+        ctx.lineTo(x + barW + 2, targetY);
+        ctx.stroke();
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 13px system-ui';
+      ctx.fillText(`W${row.week}`, x + barW / 2, h - 22);
+      ctx.fillStyle = '#b8bbd0';
+      ctx.font = '12px system-ui';
+      ctx.fillText(`${row.walks || 0}x`, x + barW / 2, h - 7);
+    });
+  }
+
+  function joggingWeekNumberForDate(s, dateKey = window.PWStore.todayKey()) {
+    if (!s.joggingProgram?.started || !s.joggingProgram.startDate) return 1;
+    const start = new Date(`${s.joggingProgram.startDate}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - start) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
+
+  function joggingWeekPlan(week) {
+    return JOGGING_PLAN.find((item) => item.week === Number(week)) || JOGGING_PLAN[0];
+  }
+
+  function runsForWeek(s, week) {
+    return (s.logs.runs || []).filter((run) => Number(run.week) === Number(week));
+  }
+
+  function joggingWeeklyRows(s) {
+    return JOGGING_PLAN.map((plan) => {
+      const runs = runsForWeek(s, plan.week);
+      const completedKm = Math.round(runs.reduce((sum, run) => sum + Number(run.distanceKm || 0), 0) * 100) / 100;
+      const plannedKm = Math.round(plan.sessions.filter((item) => !item.optional).reduce((sum, item) => sum + item.targetKm, 0) * 100) / 100;
+      return { week: plan.week, runs: runs.length, completedKm, plannedKm };
+    });
+  }
+
+  function renderJoggingTrack(s) {
+    const startPanel = $('#joggingStartPanel');
+    const activePanel = $('#joggingActivePanel');
+    if (!startPanel || !activePanel) return;
+
+    const started = !!s.joggingProgram?.started;
+    startPanel.hidden = started;
+    activePanel.hidden = !started;
+
+    const week = joggingWeekNumberForDate(s);
+    const plan = joggingWeekPlan(week);
+    const runs = runsForWeek(s, week).sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+    const targetSessions = plan.sessions.filter((item) => !item.optional).length;
+    const completedKm = Math.round(runs.reduce((sum, run) => sum + Number(run.distanceKm || 0), 0) * 100) / 100;
+    const plannedKm = Math.round(plan.sessions.filter((item) => !item.optional).reduce((sum, item) => sum + item.targetKm, 0) * 100) / 100;
+
+    if ($('#joggingWeekPill')) $('#joggingWeekPill').textContent = started ? `Week ${week} of 8` : 'Not started';
+    if ($('#joggingCurrentWeek')) $('#joggingCurrentWeek').textContent = `${week} of 8`;
+    if ($('#joggingThisWeekCount')) $('#joggingThisWeekCount').textContent = `${runs.length}/${targetSessions}`;
+    if ($('#joggingThisWeekKm')) $('#joggingThisWeekKm').textContent = completedKm ? `${completedKm.toFixed(1)} km` : '—';
+    if ($('#runDate')) $('#runDate').value = window.PWStore.todayKey();
+
+    const sessionSelect = $('#runSessionType');
+    if (sessionSelect) {
+      const current = sessionSelect.value;
+      sessionSelect.innerHTML = plan.sessions.map((session) => `<option value="${session.key}">${session.label} • ${session.targetKm} km${session.optional ? ' • optional' : ''}</option>`).join('');
+      if (current && plan.sessions.some((session) => session.key === current)) sessionSelect.value = current;
+      const selected = plan.sessions.find((session) => session.key === sessionSelect.value) || plan.sessions[0];
+      if ($('#runDistance')) $('#runDistance').value = selected?.targetKm || '';
+      if ($('#joggingSessionHint')) $('#joggingSessionHint').textContent = selected ? selected.note : 'Choose your session and log what you completed.';
+      sessionSelect.onchange = () => {
+        const next = plan.sessions.find((session) => session.key === sessionSelect.value) || plan.sessions[0];
+        if ($('#runDistance')) $('#runDistance').value = next?.targetKm || '';
+        if ($('#joggingSessionHint')) $('#joggingSessionHint').textContent = next ? next.note : '';
+      };
+    }
+
+    const planList = $('#joggingPlanList');
+    if (planList) {
+      planList.innerHTML = plan.sessions.map((session) => {
+        const done = runs.some((run) => run.sessionKey === session.key);
+        return `<div class="program-session ${done ? 'done' : ''}">
+          <span><strong>${session.label}</strong><br><small>${session.targetKm} km${session.optional ? ' • optional' : ''} • ${session.note}</small></span>
+          <span>${done ? 'Done' : 'To do'}</span>
+        </div>`;
+      }).join('');
+    }
+
+    const advice = $('#joggingAdvice');
+    if (advice) {
+      if (!started) advice.textContent = 'Start the 8-week 0–5 km plan when you are ready.';
+      else if (week === 1 && !runs.length) advice.textContent = 'Week 1 is about easy jogging/walking and building confidence. Keep the pace comfortable.';
+      else if (runs.length >= targetSessions) advice.textContent = 'Core sessions completed for this week. Optional session only if you feel fresh.';
+      else advice.textContent = `This week: aim for ${targetSessions} core sessions and about ${plannedKm.toFixed(1)} km total.`;
+    }
+
+    const list = $('#joggingSessionList');
+    if (list) {
+      if (!runs.length) {
+        list.innerHTML = '<p class="muted">No jogs logged for this week yet.</p>';
+      } else {
+        list.innerHTML = runs.map((run) => `
+          <div class="summary-row movement-row">
+            <span><strong>${fmtDate(run.date)} • ${escapeHtml(run.sessionLabel || 'Jogging session')}</strong><br><small>${run.timeMinutes ? run.timeMinutes + ' min • ' : ''}${run.rpe ? 'RPE ' + run.rpe + ' • ' : ''}${run.notes ? escapeHtml(run.notes) : 'Logged run'}</small></span>
+            <strong>${Number(run.distanceKm || 0).toFixed(1)} km</strong>
+            <button class="text-button danger-link" data-delete-run="${escapeHtml(run.id)}" type="button">Delete</button>
+          </div>
+        `).join('');
+        $$('[data-delete-run]').forEach((btn) => btn.addEventListener('click', () => {
+          if (!confirm('Delete this jogging entry?')) return;
+          window.PWStore.deleteRunSession(btn.dataset.deleteRun);
+          toast('Jogging entry deleted');
+          renderAll();
+        }));
+      }
+    }
+  }
+
+  function renderJoggingProgress(s) {
+    const canvas = $('#joggingChart');
+    const empty = $('#joggingChartEmpty');
+    const summary = $('#joggingChartSummary');
+    const list = $('#joggingWeekList');
+    if (!canvas || !empty || !summary || !list) return;
+
+    const rows = joggingWeeklyRows(s);
+    const activeRows = rows.filter((row) => row.runs > 0);
+    empty.style.display = activeRows.length ? 'none' : 'block';
+    if (!s.joggingProgram?.started) {
+      summary.textContent = 'Start the 5 km jogging program on the Programs page.';
+    } else {
+      const week = joggingWeekNumberForDate(s);
+      const current = rows.find((row) => row.week === week);
+      summary.textContent = `Week ${week} of 8 • ${current?.runs || 0} sessions • ${current?.completedKm ? current.completedKm.toFixed(1) + ' km done' : 'log your first run'}`;
+    }
+
+    drawJoggingChart(rows);
+    list.innerHTML = activeRows.length ? activeRows.map((row) => {
+      const pctDone = row.plannedKm ? Math.round((row.completedKm / row.plannedKm) * 100) : 0;
+      return `
+        <div class="summary-row movement-row">
+          <span><strong>Week ${row.week}</strong><br><small>${row.runs} session${row.runs === 1 ? '' : 's'} • planned ${row.plannedKm.toFixed(1)} km</small></span>
+          <strong>${row.completedKm.toFixed(1)} km</strong>
+          <strong class="delta-pill ${pctDone >= 100 ? 'up' : pctDone > 0 ? 'same' : 'down'}">${pctDone}%</strong>
+        </div>
+      `;
+    }).join('') : '';
+  }
+
+  function drawJoggingChart(rows) {
+    const canvas = $('#joggingChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,0.045)';
+    ctx.fillRect(0, 0, w, h);
+    const activeRows = rows.filter((row) => row.runs > 0 || row.plannedKm > 0);
+    if (!activeRows.length) return;
+
+    const max = Math.max(5, ...activeRows.map((row) => Math.max(row.completedKm || 0, row.plannedKm || 0))) * 1.15;
+    const left = 42, right = 22, top = 34, bottom = 50;
+    const plotW = w - left - right;
+    const plotH = h - top - bottom;
+    const gap = 10;
+    const barW = Math.max(22, (plotW - gap * 7) / 8);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#b8bbd0';
+    ctx.font = '13px system-ui';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 3; i += 1) {
+      const y = top + plotH - (plotH * i) / 3;
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(w - right, y);
+      ctx.stroke();
+      ctx.fillText(`${Math.round((max * i) / 3)}km`, left - 7, y + 4);
+    }
+
+    rows.forEach((row, index) => {
+      const x = left + index * (barW + gap);
+      const plannedH = row.plannedKm ? (row.plannedKm / max) * plotH : 0;
+      const completedH = row.completedKm ? (row.completedKm / max) * plotH : 0;
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      roundRect(ctx, x, top + plotH - plannedH, barW, Math.max(plannedH, 8), 9);
+      ctx.fill();
+      if (completedH > 0) {
+        const y = top + plotH - completedH;
+        const gradient = ctx.createLinearGradient(0, y, 0, top + plotH);
+        gradient.addColorStop(0, '#ec4899');
+        gradient.addColorStop(1, '#8b5cf6');
+        ctx.fillStyle = gradient;
+        roundRect(ctx, x + 4, y, Math.max(8, barW - 8), Math.max(completedH, 8), 8);
+        ctx.fill();
+      }
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '800 13px system-ui';
+      ctx.fillText(`W${row.week}`, x + barW / 2, h - 22);
+      ctx.fillStyle = '#b8bbd0';
+      ctx.font = '12px system-ui';
+      ctx.fillText(`${row.runs || 0}x`, x + barW / 2, h - 7);
+    });
+  }
 
   function renderMovementHistory(s) {
     const container = $('#movementHistory');
@@ -786,6 +1454,7 @@
   async function renderAll() {
     renderHome();
     renderTrack();
+    renderPrograms();
     renderProgress();
     if ($('#page-photos').classList.contains('active')) await renderPhotos();
     if ($('#page-recipes').classList.contains('active')) {
@@ -793,6 +1462,65 @@
       renderMealIdeaList();
     }
     renderSettings();
+  }
+
+
+  function isStandaloneApp() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  function updateInstallUi() {
+    const canPrompt = !!deferredInstallPrompt && !isStandaloneApp();
+    ['#installAppBtn', '#onboardingInstallBtn'].forEach((selector) => {
+      const btn = $(selector);
+      if (btn) btn.hidden = !canPrompt;
+    });
+
+    const statusText = isStandaloneApp()
+      ? 'App is already installed on this device.'
+      : canPrompt
+        ? 'Chrome can install the app now. Tap the install button above.'
+        : 'Android Chrome: use the browser menu if the install button does not appear. iPhone: open in Safari, tap Share, then Add to Home Screen.';
+
+    ['#installStatusText', '#onboardingInstallStatus'].forEach((selector) => {
+      const el = $(selector);
+      if (el) el.textContent = statusText;
+    });
+  }
+
+  async function promptInstallApp() {
+    if (isStandaloneApp()) {
+      toast('The app is already installed');
+      updateInstallUi();
+      return;
+    }
+    if (!deferredInstallPrompt) {
+      toast('Use Chrome menu → Install app, or iPhone Safari → Share → Add to Home Screen');
+      updateInstallUi();
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    try {
+      await deferredInstallPrompt.userChoice;
+    } catch (err) {
+      console.warn('Install prompt was dismissed or failed.', err);
+    }
+    deferredInstallPrompt = null;
+    updateInstallUi();
+  }
+
+  function bindInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      updateInstallUi();
+    });
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      toast('Perfect Women app installed');
+      updateInstallUi();
+    });
+    updateInstallUi();
   }
 
   function bindEvents() {
@@ -849,6 +1577,101 @@
       renderAll();
     });
 
+
+    if ($('#openWalkingProgramBtn')) $('#openWalkingProgramBtn').addEventListener('click', () => {
+      const s = state();
+      if (!s.walkingProgram?.started) {
+        window.PWStore.startWalkingProgram({ targetWalksPerWeek: 4, targetSteps: '' });
+        toast('Walking program started');
+      } else {
+        window.PWStore.setActiveProgram('walking');
+        toast('Walking program is now current');
+      }
+      renderAll();
+    });
+
+    if ($('#openJoggingProgramBtn')) $('#openJoggingProgramBtn').addEventListener('click', () => {
+      const s = state();
+      if (!s.joggingProgram?.started) {
+        window.PWStore.startJoggingProgram();
+        toast('5 km jogging program started');
+      } else {
+        window.PWStore.setActiveProgram('jogging');
+        toast('5 km jogging program is now current');
+      }
+      renderAll();
+    });
+
+
+    if ($('#startWalkingProgramBtn')) $('#startWalkingProgramBtn').addEventListener('click', () => {
+      window.PWStore.startWalkingProgram({
+        targetWalksPerWeek: $('#walkingTargetWalks')?.value || 4,
+        targetSteps: $('#walkingStartTarget')?.value || ''
+      });
+      toast('Walking program started');
+      renderAll();
+    });
+
+    if ($('#saveWalkingTargetBtn')) $('#saveWalkingTargetBtn').addEventListener('click', () => {
+      const s = state();
+      const week = walkingWeekNumberForDate(s);
+      window.PWStore.saveWalkingTarget({ week, targetSteps: $('#walkingWeekTarget')?.value || '' });
+      toast('Walking target saved');
+      renderAll();
+    });
+
+    if ($('#saveWalkBtn')) $('#saveWalkBtn').addEventListener('click', () => {
+      const steps = Number($('#walkSteps')?.value || 0);
+      if (!steps || Number.isNaN(steps)) {
+        toast('Please enter the steps for this walk');
+        return;
+      }
+      window.PWStore.saveWalkSession({
+        date: $('#walkDate')?.value || window.PWStore.todayKey(),
+        steps,
+        notes: $('#walkNotes')?.value || ''
+      });
+      $('#walkSteps').value = '';
+      $('#walkNotes').value = '';
+      toast('Walk saved');
+      renderAll();
+    });
+
+
+    if ($('#startJoggingProgramBtn')) $('#startJoggingProgramBtn').addEventListener('click', () => {
+      window.PWStore.startJoggingProgram();
+      toast('5 km jogging program started');
+      renderAll();
+    });
+
+    if ($('#saveRunBtn')) $('#saveRunBtn').addEventListener('click', () => {
+      const s = state();
+      const week = joggingWeekNumberForDate(s);
+      const plan = joggingWeekPlan(week);
+      const sessionKey = $('#runSessionType')?.value || plan.sessions[0].key;
+      const session = plan.sessions.find((item) => item.key === sessionKey) || plan.sessions[0];
+      const distanceKm = Number($('#runDistance')?.value || 0);
+      if (!distanceKm || Number.isNaN(distanceKm)) {
+        toast('Please enter the distance completed');
+        return;
+      }
+      window.PWStore.saveRunSession({
+        date: $('#runDate')?.value || window.PWStore.todayKey(),
+        sessionKey: session.key,
+        sessionLabel: session.label,
+        targetKm: session.targetKm,
+        distanceKm,
+        timeMinutes: $('#runTime')?.value || '',
+        rpe: $('#runRpe')?.value || '',
+        notes: $('#runNotes')?.value || ''
+      });
+      $('#runTime').value = '';
+      $('#runRpe').value = '';
+      $('#runNotes').value = '';
+      toast('Jogging session saved');
+      renderAll();
+    });
+
     $('#saveWeightBtn').addEventListener('click', () => {
       const kg = Number($('#weightKg').value);
       if (!kg || Number.isNaN(kg)) {
@@ -865,6 +1688,49 @@
       $('#waistCm').value = '';
       $('#weightNotes').value = '';
       toast('Weigh-in saved');
+      renderAll();
+    });
+
+
+    if ($('#saveMeasurementsBtn')) $('#saveMeasurementsBtn').addEventListener('click', () => {
+      const waist = $('#measureWaist').value;
+      const hips = $('#measureHips').value;
+      const chest = $('#measureChest').value;
+      const thigh = $('#measureThigh').value;
+      const arm = $('#measureArm').value;
+      if (!waist && !hips && !chest && !thigh && !arm) {
+        toast('Add at least one measurement');
+        return;
+      }
+      window.PWStore.saveMeasurements({
+        date: $('#measurementDate').value || window.PWStore.todayKey(),
+        waist, hips, chest, thigh, arm,
+        notes: $('#measurementNotes').value
+      });
+      ['measureWaist','measureHips','measureChest','measureThigh','measureArm','measurementNotes'].forEach((id) => { const el = $('#' + id); if (el) el.value = ''; });
+      toast('Measurements saved');
+      renderAll();
+    });
+
+    if ($('#saveCheckinBtn')) $('#saveCheckinBtn').addEventListener('click', () => {
+      const hasContent = $('#checkinMeals').value || $('#checkinWater').value || $('#checkinMovement').value || $('#checkinEnergy').value || $('#checkinStress').value || $('#checkinWin').value || $('#checkinStruggle').value || $('#checkinHelp').value;
+      if (!hasContent) {
+        toast('Add a few check-in details first');
+        return;
+      }
+      window.PWStore.saveCheckin({
+        date: $('#checkinDate').value || window.PWStore.todayKey(),
+        meals: $('#checkinMeals').value,
+        water: $('#checkinWater').value,
+        movement: $('#checkinMovement').value,
+        energy: $('#checkinEnergy').value,
+        stress: $('#checkinStress').value,
+        win: $('#checkinWin').value,
+        struggle: $('#checkinStruggle').value,
+        help: $('#checkinHelp').value
+      });
+      ['checkinMeals','checkinWater','checkinMovement','checkinEnergy','checkinStress','checkinWin','checkinStruggle','checkinHelp'].forEach((id) => { const el = $('#' + id); if (el) el.value = ''; });
+      toast('Weekly check-in saved');
       renderAll();
     });
 
@@ -953,6 +1819,8 @@
       renderAll();
     });
 
+    if ($('#installAppBtn')) $('#installAppBtn').addEventListener('click', promptInstallApp);
+    if ($('#onboardingInstallBtn')) $('#onboardingInstallBtn').addEventListener('click', promptInstallApp);
     $('#showOnboardingBtn').addEventListener('click', showOnboarding);
 
     $('#saveSettingsBtn').addEventListener('click', () => {
@@ -990,6 +1858,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderStaticIcons();
     bindEvents();
+    bindInstallPrompt();
     registerServiceWorker();
     navigate(location.hash.replace('#', '') || 'home');
     maybeShowOnboarding();

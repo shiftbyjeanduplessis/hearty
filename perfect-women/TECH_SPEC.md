@@ -1,4 +1,4 @@
-# Perfect Women Local Tracker V1.0.8 — Technical Spec
+# Perfect Women Local Tracker V1.2.3 — Technical Spec
 
 ## Build principle
 
@@ -34,17 +34,23 @@ Purpose: daily client anchor.
 Shows:
 - water progress
 - movement/walk status
+- walking-program summary
 - Monday weigh-in status
 - weekly consistency strip
 - quick actions
 
 ### 2. Track
-Purpose: daily logging.
+Purpose: daily and weekly logging.
 
 Includes:
 - water tracker
 - movement/walk tick-off
+- 8-week walking programme module
+- 60-minute walk session logging
+- weekly walking step target
 - weekly weight entry
+- body measurements
+- weekly check-in
 
 ### 3. Progress
 Purpose: high-level trend view.
@@ -57,6 +63,11 @@ Includes:
 - weight trend canvas
 - weekly water/movement summary
 - movement by type bar graph with current-week vs previous-week increase/decrease
+- walking-program bar graph for weekly average steps per 60-minute walk
+- walking week list with session count, target and change vs previous week
+- body measurement summary
+- last-30-days progress report
+- latest weekly check-in summary
 - photo comparison module with date A/date B selectors and front/side/back angle toggle
 
 ### 4. Photos
@@ -326,3 +337,64 @@ PWA/service-worker safety changes:
 - Fetch handler only responds to same-origin requests whose path starts with `/perfect-women/`.
 
 Deploy rule: upload the complete `perfect-women` folder to the Hearty repo root. Do not merge these files into the Hearty root.
+
+
+## V1.2.1 walking-program update
+
+Adds an 8-week walking programme module based on the Perfect Women walking PDF.
+
+Client-facing flow:
+- Start walking programme from the Track page
+- Choose 4 or 5 walks per week
+- Optional Week 1 step target
+- Log each 60-minute walk manually
+- Save date, total steps and optional notes
+- Save/update the current week step target
+- See current week, walks completed and average steps
+- View walking progress on the Progress page
+
+Tracking logic:
+- Programme week is calculated from local walking start date
+- Each walk is fixed to 60 minutes by programme design
+- Progress graph shows weekly average steps per 60-minute walk
+- Target line is shown on weeks with a saved weekly target
+- Suggested target is roughly +5% from the previous week average
+
+Storage additions:
+- `walkingProgram.started`
+- `walkingProgram.startDate`
+- `walkingProgram.targetWalksPerWeek`
+- `walkingProgram.weeklyTargets`
+- `logs.walks[]`
+
+
+## V1.2.1 update
+- Added Chrome install prompt support via `beforeinstallprompt` with install buttons in onboarding/settings.
+- Added a dedicated bottom-nav Programs tab.
+- Moved the 8-week walking program from Track to Programs.
+- Existing local data is preserved because storage keys/schema were not changed.
+
+
+V1.2.1 update:
+- Added a simple 8-week 0–5 km jogging program inside Programs.
+- Clients can start the program, view weekly sessions, log distance/time/RPE/notes, and see jogging progress on Progress.
+- Existing local data key stays unchanged.
+
+
+## V1.2.2 update
+
+- Added Programs focus mode: program cards stay compact until selected.
+- Added Current Program indicator for continuity.
+- Active program expands while other programs stay minimal.
+- Added active program switching without deleting existing program data.
+- Updated service worker cache to `perfect-women-tracker-v1.2.2-program-focus`.
+
+
+## V1.2.3 update
+
+Recipe refresh:
+- Expanded the recipe library from 18 to 32 recipes.
+- Added stronger South African/client-friendly categories: Breakfast, Lunch, No Cook, Quick, Braai, Sunday Meals, Casserole, Fakeaway, South African, Sweet, Meal Prep and Family Meals.
+- Improved recipe search so it checks title, tags, summary, ingredients, plan notes and search terms.
+- Cleaned recipe summaries and plan notes so meals stay aligned with the Perfect Women protein/vegetables/measured-starch structure.
+- Added new recipes such as egg muffin cups, cottage cheese protein pancakes, no-cook tuna cottage cheese wrap, fish taco bowl, braai hake parcels, lean bobotie bowl, chakalaka beef mince bowl, light chicken à la king bowl, measured peanut chicken stir-fry, butternut chicken casserole, Greek chicken pita bowl, roast beef Sunday plate, light chicken potjie, sweet chilli lettuce bowls and apple cinnamon yogurt crumble cups.

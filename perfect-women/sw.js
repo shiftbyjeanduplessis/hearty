@@ -1,4 +1,4 @@
-const CACHE_NAME = 'perfect-women-tracker-v1.0.9-hearty-deploy';
+const CACHE_NAME = 'perfect-women-tracker-v1.2.3-recipe-refresh';
 const ASSETS = [
   './',
   './index.html',

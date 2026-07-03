@@ -13,7 +13,7 @@
   --danger: #f87171;
   --shadow: 0 20px 60px rgba(0,0,0,.35);
   --radius: 26px;
-  --nav-h: 78px;
+  --nav-h: 82px;
 }
 
 * { box-sizing: border-box; }
@@ -413,7 +413,7 @@ canvas {
   min-height: var(--nav-h);
   padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 6px;
   background: rgba(5,10,31,.92);
   border-top: 1px solid rgba(255,255,255,.13);
@@ -426,7 +426,7 @@ canvas {
   min-height: 58px;
   background: transparent;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
 }
 .nav-btn span { display: block; font-size: 20px; margin-bottom: 3px; }
@@ -1204,4 +1204,326 @@ button:disabled {
   .meal-generator-grid { grid-template-columns: 1fr; }
   .meal-wheel-wrap { min-height: 150px; }
   .meal-wheel { width: 158px; }
+}
+
+/* V1.1.0: 8-week walking program */
+.walking-home-card,
+.walking-program-card,
+.walking-progress-card {
+  border-color: rgba(217,167,46,.28);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(217,167,46,.13), transparent 34%),
+    radial-gradient(circle at 88% 0%, rgba(232,0,117,.12), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.062));
+}
+.walk-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.walk-mini-stats span,
+.program-pill {
+  border-radius: 999px;
+  padding: 9px 10px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(248,250,252,.82);
+  font-size: 12px;
+  font-weight: 850;
+  text-align: center;
+}
+.program-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fde68a;
+  background: rgba(217,167,46,.12);
+  border-color: rgba(217,167,46,.28);
+  white-space: nowrap;
+}
+.grid.three,
+.walk-stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.mini-stat {
+  padding: 13px;
+  border-radius: 22px;
+  background: rgba(2,6,23,.28);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.mini-stat span {
+  display: block;
+  color: rgba(248,250,252,.62);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.mini-stat strong {
+  color: #fff;
+  font-size: 20px;
+}
+.walking-start,
+.walking-active {
+  display: grid;
+  gap: 14px;
+}
+.walking-start[hidden],
+.walking-active[hidden] { display: none !important; }
+.walk-advice {
+  border-radius: 22px;
+  padding: 13px 14px;
+  background: rgba(232,0,117,.10);
+  border: 1px solid rgba(232,0,117,.24);
+  color: rgba(248,250,252,.86);
+  font-size: 14px;
+  font-weight: 750;
+}
+.danger-link {
+  color: #fca5a5 !important;
+  min-width: auto;
+  padding: 0 0 0 8px;
+}
+#walkingChart {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.10);
+  overflow: hidden;
+  margin-top: 10px;
+}
+@media (max-width: 620px) {
+  .walk-mini-stats,
+  .grid.three,
+  .walk-stats-grid { grid-template-columns: 1fr; }
+  .program-pill { width: 100%; }
+}
+
+
+/* V1.1.1: Programs tab + install prompt */
+.install-now-btn[hidden] { display: none !important; }
+.install-now-btn { margin-top: 12px; }
+#installStatusText, #onboardingInstallStatus { margin-top: 10px; }
+@media (max-width: 380px) {
+  .bottom-nav { gap: 3px; padding-left: 5px; padding-right: 5px; }
+  .nav-btn { font-size: 9px; padding-left: 2px; padding-right: 2px; }
+  .nav-btn .ui-icon { width: 21px; height: 21px; }
+}
+
+
+/* V1.2.0 — Measurements and weekly check-in */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.latest-checkin {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.summary-list.compact { margin-top: 8px; }
+.summary-list.compact .summary-row { padding: 8px 0; }
+.mini-stat.wide { grid-column: 1 / -1; }
+#measurementStats { margin-top: 12px; }
+#measurementHistory { margin-top: 12px; }
+#weeklyCheckinCard textarea, #measurementsCard textarea { margin-bottom: 10px; }
+@media (max-width: 390px) {
+  .report-grid { grid-template-columns: 1fr; }
+}
+
+/* V1.2.1 — 5 km jogging program */
+.jogging-program-card,
+.jogging-progress-card {
+  border-color: rgba(232,0,117,.30);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(232,0,117,.15), transparent 34%),
+    radial-gradient(circle at 88% 0%, rgba(139,92,246,.13), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.062));
+}
+.pink-pill {
+  color: #fbcfe8;
+  background: rgba(232,0,117,.14);
+  border-color: rgba(232,0,117,.30);
+}
+.jogging-plan-list {
+  display: grid;
+  gap: 8px;
+}
+.program-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  padding: 12px 13px;
+  background: rgba(2,6,23,.24);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.program-session strong { color: #fff; }
+.program-session small { color: rgba(248,250,252,.66); }
+.program-session > span:last-child {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(255,255,255,.08);
+  color: rgba(248,250,252,.72);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+.program-session.done {
+  border-color: rgba(34,197,94,.26);
+  background: rgba(34,197,94,.08);
+}
+.program-session.done > span:last-child {
+  background: rgba(34,197,94,.16);
+  color: #bbf7d0;
+}
+#joggingChart {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.10);
+  overflow: hidden;
+  margin-top: 10px;
+}
+@media (max-width: 520px) {
+  .program-session { align-items: flex-start; }
+  .program-session > span:last-child { margin-top: 2px; }
+}
+
+/* V1.2.2 — Programs focus mode */
+.current-program-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 13px 14px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.075);
+  border: 1px solid rgba(255,255,255,.14);
+}
+.current-program-banner.is-active {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(232,0,117,.16), transparent 34%),
+    rgba(217,167,46,.08);
+  border-color: rgba(217,167,46,.28);
+}
+.current-program-banner .ui-icon,
+.current-program-banner svg {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 auto;
+  color: var(--gold);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.current-program-banner strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+.current-program-banner small {
+  display: block;
+  color: rgba(248,250,252,.68);
+  line-height: 1.35;
+}
+.program-card {
+  transition: transform .18s ease, opacity .18s ease, border-color .18s ease, background .18s ease;
+}
+.program-card.is-active-program {
+  border-color: rgba(217,167,46,.42);
+  box-shadow: 0 18px 48px rgba(0,0,0,.24), 0 0 0 1px rgba(217,167,46,.10) inset;
+}
+.program-card.is-active-program .section-heading::after {
+  content: "Current";
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(34,197,94,.13);
+  border: 1px solid rgba(34,197,94,.26);
+  color: #bbf7d0;
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.program-card.is-compact-program {
+  padding: 15px;
+  opacity: .95;
+}
+.program-card.is-compact-program .section-heading {
+  align-items: center;
+}
+.program-card.is-compact-program .section-heading h2 {
+  font-size: 18px;
+  margin-bottom: 0;
+}
+.program-card.is-compact-program .section-heading .muted {
+  display: none;
+}
+.program-card.is-compact-program .program-pill {
+  font-size: 10px;
+  padding: 7px 9px;
+}
+.compact-program-panel {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 13px;
+  border-radius: 20px;
+  background: rgba(2,6,23,.24);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.compact-program-panel strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+.compact-program-panel small {
+  display: block;
+  color: rgba(248,250,252,.66);
+  line-height: 1.35;
+}
+.compact-program-panel button {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 9px 13px;
+  font-size: 12px;
+}
+.program-card.is-compact-program .compact-program-panel {
+  display: flex;
+}
+.program-card.is-compact-program .walking-start,
+.program-card.is-compact-program .walking-active {
+  display: none !important;
+}
+.program-card.is-active-program .compact-program-panel {
+  display: none !important;
+}
+@media (max-width: 430px) {
+  .compact-program-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .compact-program-panel button {
+    width: 100%;
+  }
+  .program-card.is-active-program .section-heading::after {
+    display: none;
+  }
 }
