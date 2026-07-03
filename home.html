@@ -8,7 +8,7 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" href="/assets/icon-192.png" />
   <script id="hearty-theme-preboot">
-    (function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry|rose_aurora|sunlit)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);}catch(e){document.documentElement.setAttribute('data-theme','clean_blue');}})();
+    (function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();
   </script>
   <link rel="stylesheet" href="css/hearty-theme.css" />
   <link rel="stylesheet" href="css/hearty-phase1-visual-fixes.css" />
@@ -17,137 +17,216 @@
   <link rel="stylesheet" href="css/hearty-step5ib-foundation.css" />
   <link rel="stylesheet" href="css/hearty-shell-template.css" />
   <link rel="stylesheet" href="css/hearty-step5n-theme-beauty.css" />
-  <style id="hearty-home-maintenance-repair-v40">
-    *{box-sizing:border-box}html,body{margin:0;padding:0}body{min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink,#102033);background:linear-gradient(180deg,var(--bg-2,#f8fbff),var(--bg-1,#eef4fb));overflow-x:hidden}.shell{max-width:980px;margin:0 auto;padding:16px 14px 112px}.home-main{display:grid;gap:14px}.home-card{background:var(--card,rgba(255,255,255,.94));border:1px solid var(--line,rgba(143,163,184,.24));border-radius:26px;box-shadow:var(--shadow-soft,0 12px 30px rgba(14,31,53,.08));padding:18px}.home-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.home-hero h2{margin:4px 0 2px;font-size:1.55rem;line-height:1.05;letter-spacing:-.04em}.muted{color:var(--muted,#6d7b8c)}.day-pill,.mini-pill{display:inline-flex;align-items:center;justify-content:center;padding:8px 11px;border-radius:999px;background:var(--pill-bg,rgba(255,255,255,.78));border:1px solid var(--line,rgba(143,163,184,.24));color:var(--muted,#6d7b8c);font-weight:800;font-size:.78rem;white-space:nowrap}.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.home-grid-wide{grid-column:1/-1}.card-title{margin:0 0 4px;font-size:1.02rem;letter-spacing:-.02em}.card-copy{margin:0;color:var(--muted,#6d7b8c);font-size:.9rem;line-height:1.4}.metric-main{font-size:1.35rem;font-weight:900;letter-spacing:-.04em;margin:12px 0 4px}.goalbar{height:12px;border-radius:999px;background:rgba(143,163,184,.18);position:relative;overflow:hidden;margin:12px 0 8px}.goalbar-fill{position:absolute;inset:0 auto 0 0;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--accent,#1550b3),var(--accent-2,#ff6b00))}.goal-marker{position:absolute;right:0;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(0,-50%);background:#fff;border:2px solid var(--accent,#1550b3)}.goal-labels{display:flex;justify-content:space-between;color:var(--muted,#6d7b8c);font-size:.78rem}.action-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.primary-btn,.soft-btn,.icon-action,.task-action{border:0;border-radius:16px;min-height:44px;padding:0 14px;font-weight:900;cursor:pointer}.primary-btn{background:linear-gradient(180deg,var(--accent,#1550b3),color-mix(in srgb,var(--accent,#1550b3) 76%,#000));color:#fff}.soft-btn,.icon-action,.task-action{background:rgba(255,255,255,.86);color:var(--ink,#102033);border:1px solid var(--line,rgba(143,163,184,.24))}.soft-btn[disabled],.task-action[disabled]{opacity:.45;cursor:not-allowed}.water-button{width:100%;min-height:78px;margin-top:12px;border-radius:22px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}.water-progress{height:9px;background:rgba(143,163,184,.18);border-radius:999px;overflow:hidden;margin-top:12px}.water-progress span{display:block;height:100%;width:0%;background:var(--accent,#1550b3);border-radius:inherit}.status-dot{width:12px;height:12px;border-radius:50%;background:#9aa8b7;box-shadow:0 0 0 5px rgba(143,163,184,.12);display:inline-block}.status-dot.active{background:#0ea56b;box-shadow:0 0 0 5px rgba(14,165,107,.12)}.support-card.is-active{border-color:rgba(14,165,107,.28)}.support-card.is-off{opacity:.98}.task-list{display:grid;gap:10px;margin-top:12px}.task-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line,rgba(143,163,184,.22));border-radius:18px;background:rgba(255,255,255,.55)}.task-row.completed{background:rgba(14,165,107,.08);border-color:rgba(14,165,107,.18)}.task-title{font-weight:900}.task-sub{font-size:.82rem;color:var(--muted,#6d7b8c);margin-top:2px}.complete-note{display:none;margin-top:10px;padding:10px 12px;border-radius:16px;background:rgba(14,165,107,.1);color:#0f7a53;font-weight:800}.complete-note.show{display:block}.ring-row{display:flex;gap:12px;align-items:center}.mini-ring{width:74px;height:74px}.mini-ring svg{width:74px;height:74px;transform:rotate(-90deg)}.ring-track{fill:none;stroke:rgba(143,163,184,.22);stroke-width:9}.ring-progress{fill:none;stroke:var(--accent,#1550b3);stroke-width:9;stroke-linecap:round;stroke-dasharray:339.292;stroke-dashoffset:339.292}.sheet-overlay[hidden]{display:none!important}.sheet-overlay{position:fixed;inset:0;z-index:100000;background:rgba(9,18,32,.46);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:14px}.sheet{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--card,#fff);border:1px solid var(--line,rgba(143,163,184,.24));border-radius:28px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.sheet h2{margin:0;font-size:1.28rem}.field{display:grid;gap:6px;margin:10px 0}.field label,.field-title{font-size:.82rem;font-weight:900;color:var(--muted,#6d7b8c)}input,select{width:100%;min-height:44px;border-radius:14px;border:1px solid var(--line,rgba(143,163,184,.24));padding:0 12px;background:#fff;font:inherit}.setup-step[hidden]{display:none!important}.choice-row,.day-row,.photo-row{display:flex;gap:8px;flex-wrap:wrap}.choice-row button,.day-row button,.photo-slot{border:1px solid var(--line,rgba(143,163,184,.24));background:#fff;border-radius:14px;min-height:42px;padding:0 12px;font-weight:800}.choice-row button.active,.day-row button.active{background:var(--accent,#1550b3);color:#fff}.photo-slot{display:grid;gap:5px;place-items:center;min-width:100px;min-height:92px}.photo-slot img{width:56px;height:56px;object-fit:cover;border-radius:12px}.toast{position:fixed;left:18px;right:18px;bottom:92px;z-index:100001;background:#102033;color:#fff;padding:12px 14px;border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.24);opacity:0;transform:translateY(8px);transition:.2s;text-align:center;font-weight:800}.toast.show{opacity:1;transform:translateY(0)}.lesson-body{line-height:1.55;color:var(--ink,#102033)}.lesson-callout{padding:12px;border-radius:16px;background:rgba(21,80,179,.08);margin-top:12px}@media(max-width:760px){.home-grid{grid-template-columns:1fr}.home-hero{flex-direction:column}.shell{padding-left:12px;padding-right:12px}}
+  <link rel="stylesheet" href="css/hearty-home-v15-refactor-aesthetic.css" />
+  <style id="hearty-home-v41-layout-restore">
+    body[data-page="home"] .hearty-page-strip[data-shell-template="page-strip"]{display:none!important}
+    body[data-page="home"] .shell{padding-bottom:112px!important}
+    .status-strip.home-welcome-only{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:18px!important;margin:4px 0 20px!important}
+    .status-strip.home-welcome-only #dailyStatusLine{display:block!important}
+    .status-strip.home-welcome-only #homeDayPill{display:inline-flex!important}
+    .setup-step[hidden]{display:none!important}
+    @media(max-width:760px){.status-strip.home-welcome-only{align-items:flex-start!important;flex-direction:column!important}}
   </style>
 </head>
 <body data-page="home">
   <div class="shell">
-    <main class="home-main" aria-label="Hearty Home">
-      <section class="home-card home-hero" aria-label="Today">
-        <div>
-          <div class="mini-pill" id="homeDayPill">Today</div>
-          <h2 id="welcomeTitle">Welcome to Hearty</h2>
-          <p class="card-copy" id="dailyStatusLine">Your daily rhythm is ready.</p>
-        </div>
-        <a class="soft-btn" href="how-to-use.html" style="display:inline-flex;align-items:center;text-decoration:none;">How to use</a>
+    <div data-shell-mount="topbar"></div>
+
+    <section class="status-strip home-welcome-only" data-keep-page-strip="true" aria-label="Today summary">
+      <div>
+        <div class="eyebrow">Today</div>
+        <h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
+        <p class="subline" id="dailyStatusLine"></p>
+      </div>
+      <div class="day-pill" id="homeDayPill">Today</div>
+    </section>
+
+    <main class="home-grid" aria-label="Hearty Home">
+      <section class="main-stack">
+        <article class="card progress-card" aria-label="Daily progress">
+          <div class="rings">
+            <div class="ring-block hydration-card">
+              <div class="ring-wrap" aria-hidden="true">
+                <svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="54"></circle><circle class="ring-progress ring-teal" id="waterRing" cx="60" cy="60" r="54"></circle></svg>
+                <div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">WATER</div></div></div>
+              </div>
+              <p class="ring-title">Hydration</p>
+              <p class="ring-caption" id="waterCountHint">Target: 8 glasses • 250 ml each</p>
+              <div class="hydration-logger-clean">
+                <button class="hydration-drop-btn" id="waterGlass" type="button" aria-label="Log one glass of water">
+                  <span class="hydration-drop-wrap" aria-hidden="true">💧</span>
+                  <span class="hydration-add-label">+ glass</span>
+                </button>
+                <div class="hydration-main">
+                  <div class="hydration-count-chip" id="waterCountChip"><strong id="waterCountValue">0</strong><span id="waterGlassCount">0 / 8</span></div>
+                  <div class="hydration-progress" aria-hidden="true"><span id="waterProgressBar"></span></div>
+                </div>
+                <button class="water-undo-clean" id="waterUndo" type="button" aria-label="Undo water glass">↺</button>
+              </div>
+            </div>
+
+            <div class="ring-block adherence-card">
+              <div class="ring-wrap" aria-hidden="true">
+                <svg viewBox="0 0 120 120"><circle class="ring-track" cx="60" cy="60" r="54"></circle><circle class="ring-progress ring-orange" id="adherenceRing" cx="60" cy="60" r="54"></circle></svg>
+                <div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
+              </div>
+              <p class="ring-title">Daily rhythm</p>
+              <p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
+            </div>
+          </div>
+
+          <div class="progress-band">
+            <div class="progress-top">
+              <div>
+                <div class="section-label">Weight progress</div>
+                <div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
+                <div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
+              </div>
+              <button class="soft-btn" id="openWeightTopBtn" type="button" onclick="document.getElementById('openWeightBtn').click()">Log weight</button>
+            </div>
+            <div class="goalbar" aria-hidden="true"><span class="goalbar-fill" id="goalbarFill"></span><span class="goal-marker" id="goalMarker"></span></div>
+            <div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
+          </div>
+        </article>
+
+        <article class="card protocol-card" aria-label="Daily rhythm tasks">
+          <div class="protocol-head">
+            <div>
+              <div class="section-label">Your daily rhythm</div>
+              <h2 class="card-title">Small actions for today</h2>
+            </div>
+            <div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
+          </div>
+          <div class="next-action"><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div>
+          <div class="protocol-list">
+            <div class="protocol-item" id="weighInTask">
+              <div><div class="task-title">Weight</div><div class="task-sub">Log today’s weight.</div></div>
+              <button class="task-icon-btn" id="openWeightBtn" type="button" aria-label="Log weight"><span class="task-icon"><img class="icon-main-img" src="home-weight.png" alt="" /></span><span class="task-check">✓</span></button>
+            </div>
+            <div class="protocol-item" id="walkTask">
+              <div><div class="task-title">Movement</div><div class="task-sub">Complete your gentle movement baseline.</div></div>
+              <button class="task-icon-btn" id="toggleWalkBtn" type="button" aria-label="Mark movement done"><span class="task-icon"><img class="icon-main-img" src="home-movement.png" alt="" /></span><span class="task-check">✓</span></button>
+            </div>
+            <div class="protocol-item" id="photoTask">
+              <div><div class="task-title">Photos</div><div class="task-sub" id="photoTaskSub">Progress photos are due every 3 weeks.</div></div>
+              <button class="task-icon-btn" id="openPhotoBtn" type="button" aria-label="Open progress photos"><span class="task-icon"><img class="icon-main-img" src="home-photo.png" alt="" /></span><span class="task-check">✓</span></button>
+            </div>
+            <div class="protocol-item lesson-task-item" id="lessonTaskItem">
+              <div><div class="lesson-counter" id="lessonCounter">Lesson</div><div class="task-sub" id="lessonSub">Read today’s 2–3 minute lesson.</div></div>
+              <button class="task-icon-btn" id="openLessonBtn" type="button" aria-label="Read lesson"><span class="task-icon"><img class="icon-main-img" src="home-lesson.png" alt="" /></span><span class="task-check">✓</span></button>
+            </div>
+          </div>
+          <div class="protocol-complete" id="protocolComplete">✓ All core tasks complete.</div>
+        </article>
       </section>
 
-      <section class="home-grid">
-        <article class="home-card">
-          <h3 class="card-title">Weight progress</h3>
-          <p class="card-copy" id="weightProgressMeta">Target weight must be provided by your doctor.</p>
-          <div class="metric-main" id="weightProgressMain">Add your first weigh-in</div>
-          <div class="goalbar"><span class="goalbar-fill" id="goalbarFill"></span><span class="goal-marker" id="goalMarker"></span></div>
-          <div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
+      <aside class="side-stack">
+        <article class="card support-card is-off" id="supportCard" data-support-card aria-label="Support Mode">
+          <span class="led" id="supportLed" aria-hidden="true"></span>
+          <div class="section-label">Support Mode</div>
+          <h2 class="card-title">Need a softer day?</h2>
+          <p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
+          <div class="support-actions-row"><a class="soft-btn" href="support.html">Open Support</a><button class="ghost-btn" id="supportOff" type="button">Turn off</button></div>
         </article>
 
-        <article class="home-card">
-          <h3 class="card-title">Hydration</h3>
-          <p class="card-copy" id="waterCountHint">Target: 8 glasses • 250 ml each</p>
-          <button class="soft-btn water-button" id="waterGlass" type="button">
-            <span><strong>Log a glass</strong><br><span class="muted" id="waterGlassCount">0 / 8</span></span>
-            <span class="mini-pill" id="waterCountChip"><span id="waterCountValue">0</span> logged</span>
-          </button>
-          <div class="water-progress" aria-hidden="true"><span id="waterProgressBar"></span></div>
-          <div class="action-row"><button class="soft-btn" id="waterUndo" type="button">Undo</button><span class="mini-pill" id="waterValue">0/8</span></div>
-          <svg class="mini-ring" aria-hidden="true" viewBox="0 0 120 120" style="position:absolute;width:0;height:0"><circle id="waterRing" class="ring-progress" cx="60" cy="60" r="54"></circle></svg>
-        </article>
-
-        <article class="home-card" id="injectionCard">
-          <h3 class="card-title" id="medicationTitle">Medication reminder</h3>
+        <article class="card medication-card" id="injectionCard" aria-label="Medication reminder">
+          <div class="section-label">Medication</div>
+          <h2 class="card-title" id="medicationTitle">Medication reminder</h2>
           <p class="card-copy" id="nextInjectionDateText">Medication reminders can be set up later from Progress.</p>
-          <div class="action-row"><button class="soft-btn" id="logDoseBtn" type="button">Log dose today</button></div>
+          <div class="support-actions-row"><button class="dose-icon-btn" id="logDoseBtn" type="button" aria-label="Log dose today">✓</button><span class="compact-pill">Log dose today</span></div>
         </article>
 
-        <article class="home-card support-card is-off" id="supportCard" data-support-card>
-          <div class="ring-row"><span class="status-dot" id="supportLed"></span><div><h3 class="card-title">Support Mode</h3><p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p></div></div>
-          <div class="action-row"><a class="primary-btn" href="support.html" style="display:inline-flex;align-items:center;text-decoration:none;">Open Support</a><button class="soft-btn" id="supportOff" type="button">Turn off</button></div>
+        <article class="card how-card" aria-label="How to use Hearty">
+          <div class="section-label">Start here</div>
+          <h2 class="card-title">How to use Hearty</h2>
+          <p class="card-copy">Quick guide for Home, Meals, Support Mode, Progress and installing the app.</p>
+          <div class="support-actions-row"><a class="ghost-btn" href="how-to-use.html">Open guide</a></div>
         </article>
-
-        <article class="home-card home-grid-wide">
-          <div class="ring-row">
-            <svg class="mini-ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="54"></circle><circle id="adherenceRing" class="ring-progress" cx="60" cy="60" r="54"></circle></svg>
-            <div><h3 class="card-title">Daily rhythm</h3><div class="metric-main" id="adherenceValue">0%</div><p class="card-copy" id="adherenceCaption">Complete your core tasks.</p></div>
-          </div>
-          <div class="action-row"><span class="mini-pill" id="protocolSummary">0 of 3 complete</span><span class="muted" id="nextActionText">Record today’s weight</span></div>
-          <div class="task-list">
-            <div class="task-row" id="weighInTask"><div><div class="task-title">Weight</div><div class="task-sub">Log today’s weight.</div></div><button class="task-action" id="openWeightBtn" type="button">Log</button></div>
-            <div class="task-row" id="walkTask"><div><div class="task-title">Movement</div><div class="task-sub">Complete your gentle movement baseline.</div></div><button class="task-action" id="toggleWalkBtn" type="button">Done</button></div>
-            <div class="task-row" id="photoTask"><div><div class="task-title">Photos</div><div class="task-sub" id="photoTaskSub">Progress photos are due every 3 weeks.</div></div><button class="task-action" id="openPhotoBtn" type="button">Open</button></div>
-            <div class="task-row" id="lessonTaskItem"><div><div class="task-title"><span id="lessonCounter">Lesson</span></div><div class="task-sub" id="lessonSub">Read today’s 2–3 minute lesson.</div></div><button class="task-action" id="openLessonBtn" type="button">Read</button></div>
-          </div>
-          <div class="complete-note" id="protocolComplete">All core tasks complete.</div>
-        </article>
-      </section>
+      </aside>
     </main>
   </div>
 
   <div class="sheet-overlay" id="weightSheet" hidden aria-hidden="true">
-    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="weightSheetTitle">
-      <div class="sheet-head"><div><h2 id="weightSheetTitle">Log weight</h2><p class="card-copy">Use the same scale and time where possible.</p></div><button class="soft-btn" data-close-sheet type="button">Close</button></div>
-      <div class="field"><label for="weightValueInput">Weight <span id="weightUnitLabel">KG</span></label><input id="weightValueInput" inputmode="decimal" type="number" step="0.1" /></div>
-      <button class="primary-btn" id="saveWeightBtn" type="button">Save weight</button>
+    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="weightSheetTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Log weight</h2><p class="sheet-copy">Use the same scale and time where possible.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
+      <div class="weight-readout"><input class="weight-input" id="weightValueInput" inputmode="decimal" type="number" step="0.1" /><div class="weight-unit" id="weightUnitLabel">KG</div></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
     </section>
   </div>
 
   <div class="sheet-overlay" id="lessonSheet" hidden aria-hidden="true">
-    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
-      <div class="sheet-head"><div><h2 id="lessonTitle">Today’s lesson</h2><p class="card-copy" id="lessonSheetSub">2–3 minute read</p></div><button class="soft-btn" data-close-sheet type="button">Close</button></div>
-      <div class="lesson-body" id="lessonBody"></div>
-      <button class="primary-btn" id="completeLessonBtn" type="button">Mark lesson complete</button>
+    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="lessonTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">2–3 minute read</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
+      <div class="lesson-copy" id="lessonBody"></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
     </section>
   </div>
 
   <div class="sheet-overlay" id="photoSheet" hidden aria-hidden="true">
-    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="photoSheetTitle">
-      <div class="sheet-head"><div><h2 id="photoSheetTitle">Progress photos</h2><p class="card-copy">Front photo is enough. Side/back are optional.</p></div><button class="soft-btn" data-close-sheet type="button">Close</button></div>
+    <section class="task-sheet photo-sheet" role="dialog" aria-modal="true" aria-labelledby="photoSheetTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photos</h2><p class="sheet-copy">Front photo is enough. Side and back are optional.</p></div><button class="sheet-close" data-close-sheet type="button" aria-label="Close">×</button></div>
       <input id="photoInput" type="file" accept="image/*" hidden />
-      <div class="photo-row">
-        <button class="photo-slot" data-photo-slot="front" type="button"><img hidden alt=""><strong>Front</strong><em>Choose</em></button>
-        <button class="photo-slot" data-photo-slot="side" type="button"><img hidden alt=""><strong>Side</strong><em>Choose</em></button>
-        <button class="photo-slot" data-photo-slot="back" type="button"><img hidden alt=""><strong>Back</strong><em>Choose</em></button>
+      <div class="photo-action-list">
+        <button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img hidden alt="" /></button>
+        <button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img hidden alt="" /></button>
+        <button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img hidden alt="" /></button>
       </div>
-      <div class="action-row"><button class="primary-btn" id="completePhotoBtn" type="button" disabled>Add front photo to complete</button></div>
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="completePhotoBtn" type="button" disabled>Add front photo to complete</button></div>
     </section>
   </div>
 
   <div class="sheet-overlay" id="coreSetupSheet" hidden aria-hidden="true">
-    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="coreSetupTitle">
-      <div class="sheet-head"><div><h2 id="coreSetupTitle">Set up Hearty</h2><p class="card-copy">A quick setup so the app can save your rhythm.</p></div></div>
+    <section class="task-sheet" role="dialog" aria-modal="true" aria-labelledby="coreSetupTitle">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Set up Hearty</h2><p class="sheet-copy">A quick setup so Hearty can save your rhythm.</p></div></div>
+
       <div class="setup-step" data-step="0">
-        <div class="field"><label for="coreSetupName">First name</label><input id="coreSetupName" autocomplete="given-name" /></div>
-        <div class="field"><label for="coreSetupCountry">Country</label><select id="coreSetupCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="OTHER">Other</option></select></div>
-        <div class="field-title">Units</div><div class="choice-row"><button type="button" data-unit="metric">Metric</button><button type="button" data-unit="imperial">Imperial</button></div>
+        <label class="field-label" for="coreSetupName">First name</label><input class="field-input" id="coreSetupName" autocomplete="given-name" />
+        <label class="field-label" for="coreSetupCountry" style="margin-top:12px">Country</label><select class="field-input" id="coreSetupCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="OTHER">Other</option></select>
+        <div class="unit-toggle"><button type="button" data-unit="metric">Metric</button><button type="button" data-unit="imperial">Imperial</button></div>
       </div>
+
       <div class="setup-step" data-step="1" hidden>
-        <div class="field"><label for="coreSetupStartingWeight">Starting weight</label><input id="coreSetupStartingWeight" inputmode="decimal" type="number" step="0.1" /></div>
-        <div class="field"><label for="coreSetupTargetWeight">Doctor target weight</label><input id="coreSetupTargetWeight" inputmode="decimal" type="number" step="0.1" /></div>
+        <label class="field-label" for="coreSetupStartingWeight">Starting weight</label><input class="field-input" id="coreSetupStartingWeight" inputmode="decimal" type="number" step="0.1" />
+        <label class="field-label" for="coreSetupTargetWeight" style="margin-top:12px">Doctor target weight</label><input class="field-input" id="coreSetupTargetWeight" inputmode="decimal" type="number" step="0.1" />
       </div>
+
       <div class="setup-step" data-step="2" hidden>
-        <div class="field"><label for="coreSetupMedication">Medication</label><select id="coreSetupMedication"><option value="">Set later</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Zepbound</option><option>Saxenda</option><option>Other</option><option>Not using medication yet</option></select></div>
-        <div class="field"><label for="coreSetupMedicationCustom">Custom medication</label><input id="coreSetupMedicationCustom" /></div>
+        <label class="field-label" for="coreSetupMedication">Medication</label><select class="field-input" id="coreSetupMedication"><option value="">Set later</option><option>Ozempic</option><option>Wegovy</option><option>Mounjaro</option><option>Zepbound</option><option>Saxenda</option><option>Not using medication yet</option><option>Other</option></select>
+        <input class="field-input" id="coreSetupMedicationCustom" placeholder="Medication name" style="margin-top:12px;display:none" />
       </div>
+
       <div class="setup-step" data-step="3" hidden>
-        <div class="field"><label for="coreSetupFrequency">Reminder rhythm</label><select id="coreSetupFrequency"><option value="set_later">Set later</option><option value="weekly">Weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="twice_weekly">Twice weekly</option><option value="daily">Daily</option><option value="custom_days">Custom days</option><option value="every_x_days">Every X days</option><option value="custom_next_date">Custom next date</option><option value="no_fixed">No fixed schedule</option><option value="not_using">Not using medication</option></select></div>
+        <label class="field-label" for="coreSetupFrequency">Reminder rhythm</label><select class="field-input" id="coreSetupFrequency"><option value="set_later">Set later</option><option value="weekly">Weekly</option><option value="twice_weekly">Twice weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="every_x_days">Every X days</option><option value="custom_next_date">Specific next date</option><option value="no_fixed">No fixed day</option><option value="not_using">Not using medication</option></select>
       </div>
+
       <div class="setup-step" data-step="4" hidden>
-        <div id="coreSetupDaysField"><div class="field-title" id="coreSetupDaysTitle">Choose your injection day</div><p class="card-copy" id="coreSetupDaysHint">Choose the day you usually take it.</p><div class="day-row"><button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button></div><p class="card-copy" id="coreSetupDaysError" style="display:none;color:#b42318"></p></div>
-        <div class="field"><label for="coreSetupIntervalDays">Interval days</label><input id="coreSetupIntervalDays" type="number" min="1" step="1" /></div>
-        <div class="field"><label for="coreSetupNextDate">Next reminder date</label><input id="coreSetupNextDate" type="date" /></div>
-        <div class="field"><label for="coreSetupReminder">Reminder</label><select id="coreSetupReminder"><option value="true">On</option><option value="false">Off</option></select></div>
+        <div class="field-label" id="coreSetupDaysTitle">Schedule details</div>
+        <p class="sheet-copy" id="coreSetupDaysHint">You can leave this for later and finish it from Progress.</p>
+        <div id="coreSetupDaysField" class="unit-toggle" style="grid-template-columns:repeat(4,1fr);margin-top:12px">
+          <button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button>
+        </div>
+        <input class="field-input" id="coreSetupIntervalDays" inputmode="numeric" type="number" min="1" placeholder="Every how many days?" style="margin-top:12px;display:none" />
+        <input class="field-input" id="coreSetupNextDate" type="date" style="margin-top:12px;display:none" />
+        <select class="field-input" id="coreSetupReminder" style="margin-top:12px"><option value="true">Reminder on</option><option value="false">Reminder off</option></select>
+        <p class="sheet-copy" id="coreSetupDaysError" style="display:none;color:#b42318;margin-top:10px"></p>
       </div>
-      <div class="action-row" style="justify-content:space-between"><button class="soft-btn" id="coreSetupBackBtn" type="button">Back</button><button class="primary-btn" id="coreSetupNextBtn" type="button">Next</button></div>
+
+      <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
     </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="js/hearty-theme.js"></script>
-  <script src="js/hearty-data-layer.v1.js"></script>
-  <script src="js/hearty-production-guard.js"></script>
-  <script src="js/hearty-support-state.js"></script>
-  <script src="js/hearty-updater.js"></script>
-  <script src="js/hearty-shell-template.js"></script>
-  <script src="js/hearty-home-v15-refactor-aesthetic.js"></script>
+
+  <script src="js/hearty-data-layer.v1.js?v=1"></script>
+  <script src="js/hearty-theme.js?v=36"></script>
+  <script src="js/hearty-support-state.js?v=38"></script>
+  <script src="js/hearty-home-v15-refactor-aesthetic.js?v=41"></script>
+  <script src="js/hearty-updater.js?v=1.0.1"></script>
+  <script defer src="js/hearty-shell-template.js?v=36"></script>
+  <div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
 </body>
 </html>
