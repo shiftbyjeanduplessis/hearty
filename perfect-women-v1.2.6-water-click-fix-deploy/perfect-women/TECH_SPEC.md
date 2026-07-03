@@ -1,0 +1,415 @@
+# Perfect Women Local Tracker V1.2.6 — Technical Spec
+
+## Build principle
+
+The app is **local-first now, sync-ready later**.
+
+V1 stores client activity on the phone/browser. The data shape is deliberately structured so later layers can be added without disrupting the current app:
+
+- client login
+- Supabase sync
+- coach dashboard
+- assigned meal plans
+- assigned exercise programmes
+- check-ins
+- AI-assisted summaries
+
+## V1 pages
+
+### 0. Onboarding
+Purpose: first-run setup and install guidance.
+
+Includes:
+- client name
+- starting weight
+- Android install instructions
+- iPhone install instructions
+- note that proper install requires hosted URL rather than `file://` preview
+
+Starting weight is saved into the weight log for the setup date.
+
+### 1. Home
+Purpose: daily client anchor.
+
+Shows:
+- water progress
+- movement/walk status
+- walking-program summary
+- Monday weigh-in status
+- weekly consistency strip
+- quick actions
+
+### 2. Track
+Purpose: daily and weekly logging.
+
+Includes:
+- water tracker
+- movement/walk tick-off
+- 8-week walking programme module
+- 60-minute walk session logging
+- weekly walking step target
+- weekly weight entry
+- body measurements
+- weekly check-in
+
+### 3. Progress
+Purpose: high-level trend view.
+
+Includes:
+- starting weight
+- latest weight
+- total change
+- weigh-in count
+- weight trend canvas
+- weekly water/movement summary
+- movement by type bar graph with current-week vs previous-week increase/decrease
+- walking-program bar graph for weekly average steps per 60-minute walk
+- walking week list with session count, target and change vs previous week
+- body measurement summary
+- last-30-days progress report
+- latest weekly check-in summary
+- photo comparison module with date A/date B selectors and front/side/back angle toggle
+
+### 4. Photos
+Purpose: local progress-photo storage.
+
+Includes:
+- front photo with camera button and upload fallback
+- side photo with camera button and upload fallback
+- back photo with camera button and upload fallback
+- date
+- notes
+- gallery
+- delete photo set
+
+Photos are stored in IndexedDB, not localStorage.
+
+### 5. Recipes
+Purpose: app content value.
+
+Includes:
+- mini meal generator with Breakfast / Snack / Lunch / Dinner selector
+- longer spinning meal wheel interaction
+- recipe idea filters including Fun Meals, Sunday Meals, Casserole, Braai, Fakeaway, Family Meals and Comfort Meals
+- spin-wheel style random idea generator
+- show-all idea list for each meal type
+- searchable recipe cards
+- filters
+- recipe detail modal
+- starter recipes from the existing Perfect Women cookbook structure
+
+### 6. Settings
+Purpose: client preferences and local data tools.
+
+Includes:
+- name
+- water target
+- fixed Monday weigh-in note
+- export JSON
+- reset data
+
+## File structure
+
+```text
+perfect-women-local-tracker-v1/
+  index.html
+  manifest.json
+  sw.js
+  README_START_HERE.txt
+  TECH_SPEC.md
+  assets/
+        icon-192.png
+    icon-512.png
+  css/
+    perfect-women.css
+  js/
+    pw-storage.js
+    pw-recipes-data.js
+    pw-meal-ideas-data.js
+    pw-app.js
+  data/
+```
+
+## Data schema
+
+Storage key:
+
+```text
+perfectWomen.localTracker.v1
+```
+
+Shape:
+
+```json
+{
+  "schemaVersion": 2,
+  "localClientId": "pw_client_xxx",
+  "createdAt": "ISO timestamp",
+  "updatedAt": "ISO timestamp",
+  "sync": {
+    "status": "local-only",
+    "pending": true,
+    "lastSyncedAt": null
+  },
+  "client": {
+    "name": "",
+    "startDate": "YYYY-MM-DD",
+    "onboarded": false,
+    "startingWeightKg": null
+  },
+  "settings": {
+    "waterTargetMl": 2000,
+    "weighInDay": 1,
+    "units": {
+      "weight": "kg",
+      "length": "cm"
+    }
+  },
+  "logs": {
+    "water": {
+      "YYYY-MM-DD": {
+        "date": "YYYY-MM-DD",
+        "ml": 1500,
+        "entries": [{ "ml": 250, "ts": "ISO timestamp" }]
+      }
+    },
+    "movement": {
+      "YYYY-MM-DD": {
+        "date": "YYYY-MM-DD",
+        "done": true,
+        "duration": 20,
+        "type": "Walk",
+        "notes": "",
+        "ts": "ISO timestamp"
+      }
+    },
+    "weights": {
+      "YYYY-MM-DD": {
+        "date": "YYYY-MM-DD",
+        "kg": 84.6,
+        "waistCm": 92,
+        "notes": "",
+        "ts": "ISO timestamp"
+      }
+    }
+  },
+  "photos": {
+    "sets": [
+      {
+        "id": "photo_set_xxx",
+        "date": "YYYY-MM-DD",
+        "notes": "",
+        "photoKeys": {
+          "front": "photo_set_xxx:front",
+          "side": "photo_set_xxx:side",
+          "back": "photo_set_xxx:back"
+        },
+        "createdAt": "ISO timestamp"
+      }
+    ]
+  },
+  "recipes": {
+    "favourites": []
+  }
+}
+```
+
+## Photo storage
+
+Photo blobs are stored in IndexedDB:
+
+Database:
+
+```text
+perfectWomen.photos.v1
+```
+
+Object store:
+
+```text
+photos
+```
+
+Keys:
+
+```text
+photo_set_id:front
+photo_set_id:side
+photo_set_id:back
+```
+
+This avoids putting large image data into localStorage.
+
+## Sync-ready plan for later
+
+Later Supabase wiring can use:
+
+- `localClientId` as temporary offline id
+- `updatedAt` for conflict resolution
+- `sync.pending` to know what needs upload
+- date-keyed logs for easy server inserts
+- photo set metadata separated from photo blobs
+
+Suggested future tables:
+
+```text
+clients
+client_daily_water
+client_daily_movement
+client_weekly_weight
+client_photo_sets
+client_photo_files
+client_recipe_favourites
+```
+
+## Next build recommendations
+
+### Build 1A — Polish and testing
+- test onboarding on a clean browser
+- test camera buttons on iPhone/Android
+- test on iPhone/Android browser
+- confirm photo storage works
+- confirm PWA install works on hosted URL
+- tune visual spacing
+- add actual Perfect Women logo if separate from banner
+
+### Build 2 — Recipe expansion
+- move all approved cookbook recipes into `pw-recipes-data.js`
+- add categories and plan notes
+- add favourites
+
+### Build 3 — Exercise cards
+- add exercise page or section
+- template-based programmes only
+- assigned programme saved locally first
+
+### Build 4 — Weekly check-in
+- add weekly check-in form in-app
+- export check-in summary
+- later sync to coach dashboard
+
+### Build 5 — Supabase sync
+- auth
+- client profile
+- cloud backup
+- coach dashboard
+
+
+## V1.0.4 — Logo + visual refresh
+
+- Added the upgraded Perfect Women floral logo as `assets/perfect-women-logo.png`.
+- Replaced the temporary PW mark in the top bar and onboarding screen with the logo.
+- Removed the “10 years coaching” label from the app header.
+- Refreshed the app visuals with a more premium dark navy, hot pink, gold and floral-glass style.
+- Updated PWA icons from the new logo and bumped the service-worker cache to `perfect-women-tracker-v1.0.4`.
+
+
+## V1.0.7 update notes
+
+- Removed the saved movement log card from Progress.
+- Kept the movement bar graph because it gives movement trends without turning Progress into a diary.
+- Added a Hearty-style photo comparison module to Progress with Date A / Date B selectors and Front / Side / Back angle toggle.
+- Replaced visible emoji icons with a lightweight inline SVG icon system for a more premium app feel.
+- Updated service worker cache to `perfect-women-tracker-v1.0.5`.
+
+
+## V1.0.6 update notes
+
+- Moved the Photo Compare module higher on the Progress page so it is visible directly under the weight summary instead of being buried below the movement chart.
+- Made the empty-state clearer: the compare tool is present, but it needs at least two saved photo sets to show a real side-by-side comparison.
+- Added a Photos-page shortcut card that points clients to the Progress photo comparison tool.
+- Updated service worker cache to `perfect-women-tracker-v1.0.6`.
+
+
+## V1.0.7 update
+
+Added a mini meal generator on the Recipes page. It is local/static data for now and does not change client logs. The generator supports Breakfast, Snack, Lunch and Dinner ideas, shows all options on request, and uses a wheel-style interaction to make meal selection feel more playful. The data is kept in `js/pw-meal-ideas-data.js` so it can later be replaced by Supabase/admin-managed meal ideas without touching the rest of the app.
+
+
+## V1.0.9 Hearty subfolder deploy notes
+
+This build is prepared for temporary hosting at `/perfect-women/` on the existing Hearty deploy.
+
+PWA/service-worker safety changes:
+- Manifest `start_url`, `scope`, and `id` are set to `/perfect-women/`.
+- Service worker is registered with scope `/perfect-women/`.
+- Cache cleanup only deletes cache keys beginning with `perfect-women-tracker-`.
+- Fetch handler only responds to same-origin requests whose path starts with `/perfect-women/`.
+
+Deploy rule: upload the complete `perfect-women` folder to the Hearty repo root. Do not merge these files into the Hearty root.
+
+
+## V1.2.1 walking-program update
+
+Adds an 8-week walking programme module based on the Perfect Women walking PDF.
+
+Client-facing flow:
+- Start walking programme from the Track page
+- Choose 4 or 5 walks per week
+- Optional Week 1 step target
+- Log each 60-minute walk manually
+- Save date, total steps and optional notes
+- Save/update the current week step target
+- See current week, walks completed and average steps
+- View walking progress on the Progress page
+
+Tracking logic:
+- Programme week is calculated from local walking start date
+- Each walk is fixed to 60 minutes by programme design
+- Progress graph shows weekly average steps per 60-minute walk
+- Target line is shown on weeks with a saved weekly target
+- Suggested target is roughly +5% from the previous week average
+
+Storage additions:
+- `walkingProgram.started`
+- `walkingProgram.startDate`
+- `walkingProgram.targetWalksPerWeek`
+- `walkingProgram.weeklyTargets`
+- `logs.walks[]`
+
+
+## V1.2.1 update
+- Added Chrome install prompt support via `beforeinstallprompt` with install buttons in onboarding/settings.
+- Added a dedicated bottom-nav Programs tab.
+- Moved the 8-week walking program from Track to Programs.
+- Existing local data is preserved because storage keys/schema were not changed.
+
+
+V1.2.1 update:
+- Added a simple 8-week 0–5 km jogging program inside Programs.
+- Clients can start the program, view weekly sessions, log distance/time/RPE/notes, and see jogging progress on Progress.
+- Existing local data key stays unchanged.
+
+
+## V1.2.2 update
+
+- Added Programs focus mode: program cards stay compact until selected.
+- Added Current Program indicator for continuity.
+- Active program expands while other programs stay minimal.
+- Added active program switching without deleting existing program data.
+- Updated service worker cache to `perfect-women-tracker-v1.2.2-program-focus`.
+
+
+## V1.2.3 update
+
+Recipe refresh:
+- Expanded the recipe library from 18 to 32 recipes.
+- Added stronger South African/client-friendly categories: Breakfast, Lunch, No Cook, Quick, Braai, Sunday Meals, Casserole, Fakeaway, South African, Sweet, Meal Prep and Family Meals.
+- Improved recipe search so it checks title, tags, summary, ingredients, plan notes and search terms.
+- Cleaned recipe summaries and plan notes so meals stay aligned with the Perfect Women protein/vegetables/measured-starch structure.
+- Added new recipes such as egg muffin cups, cottage cheese protein pancakes, no-cook tuna cottage cheese wrap, fish taco bowl, braai hake parcels, lean bobotie bowl, chakalaka beef mince bowl, light chicken à la king bowl, measured peanut chicken stir-fry, butternut chicken casserole, Greek chicken pita bowl, roast beef Sunday plate, light chicken potjie, sweet chilli lettuce bowls and apple cinnamon yogurt crumble cups.
+
+
+## V1.2.6 update
+
+- Merged selected Autumn Recipe Book items into the app recipe library without duplicating existing similar recipes.
+- Added 10 extra recipes/ideas: Pumpkin Oat Pancakes, Nourishing Autumn Broth, Lean Chili Con Carne Bowl, White Chicken Chili, Cabbage & Carrot Chicken Slaw, Stuffed Avocado Beef Boats, Clean Chicken Meatballs, Lean Pork & Veggie Stir-Fry, Coach Jean’s Chicken Liver Plate, and Lighter Pickled Fish Plate.
+- Skipped direct duplicates/similar items already covered by the app library, including Lean Beef & Butternut Stew and Fish Tacos.
+- Kept plan notes practical and flagged occasional/higher-fat recipes where needed.
+
+
+## V1.2.6 update
+- Made the Home water card tappable: tapping it adds 250 ml and saves immediately.
+- Made the water progress ring on Track tappable as another +250 ml shortcut.
+- Added clearer water save status text so clients can see their water entry saved on this device.
+- Updated PWA cache name to force the deployed app to pull the newer water interaction build.
