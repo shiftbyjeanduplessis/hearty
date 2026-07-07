@@ -2,47 +2,41 @@
   "use strict";
 
   const LOG_KEY = "heartyProteinLogsV1";
-  const LEFTOVER_KEY = "heartyDinnerToLunchEnabled";
-  const SNACKS_KEY = "heartyMealsSnacksOn";
+  const SNACKS_KEY = "heartyMealsSnacksOn"; // legacy key ignored from v73; optional snack stays available.
   const SUPPORT_STORAGE_KEY = "hearty_support_mode_v1";
   const LEGACY_SUPPORT_KEY = "meals_support_mode";
+  const BRIDGE_VERSION = "v77-meals-ia-refresh-split";
+  const PLAN_SEED_KEY = "hearty_meals_plan_seed_v1";
+  const BULK_PREP_PLAN_KEY = "hearty_bulk_prep_plan_v1";
+  const PREP_KEY = "hearty_meals_prep_model_v1";
+  const LEGACY_LEFTOVER_KEY = "heartyDinnerToLunchEnabled";
 
   const $ = (id) => document.getElementById(id);
 
   const SUPPORT_MODE_MAP = {
     nausea: "nausea",
-    "nausea": "nausea",
-    "Nausea": "nausea",
-
     bloating: "bloating",
-    "bloating": "bloating",
-    "Bloating": "bloating",
-
-    exhaustion: "exhaustion",
-    "exhaustion": "exhaustion",
-    fatigue: "exhaustion",
-    "fatigue": "exhaustion",
-    "Fatigue": "exhaustion",
-    "low energy": "exhaustion",
-    "Low energy": "exhaustion",
-    "Low Energy": "exhaustion",
-    tired: "exhaustion",
-    "Tired": "exhaustion",
-
+    constipation: "constipation",
     low_appetite: "low_appetite",
-    "low_appetite": "low_appetite",
-    "low appetite": "low_appetite",
-    "Low appetite": "low_appetite",
-    "Low Appetite": "low_appetite",
-    appetite: "low_appetite",
-    "Appetite": "low_appetite"
+    fatigue: "fatigue",
+    exhaustion: "fatigue",
+    tired: "fatigue",
+    "low energy": "fatigue",
+    "low_energy": "fatigue"
   };
 
   const SUPPORT_LABELS = {
-    nausea: "Support on: nausea",
-    bloating: "Support on: bloating",
-    exhaustion: "Support on: low energy",
-    low_appetite: "Support on: low appetite"
+    nausea: "Nausea",
+    bloating: "Bloated",
+    constipation: "Constipated",
+    low_appetite: "Low appetite",
+    fatigue: "Tired"
+  };
+
+  const PREP_LABELS = {
+    cook_fresh: "Cook as you go",
+    dinner_leftovers: "Dinner becomes lunch",
+    weekly_bulk_prep: "Weekly bulk prep"
   };
 
   function readJSON(key, fallback) {
@@ -55,9 +49,17 @@
   }
 
   function writeJSON(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[ch]));
   }
 
   function todayKey() {
@@ -65,22 +67,30 @@
   }
 
   function snacksEnabled() {
-    return localStorage.getItem(SNACKS_KEY) !== "false";
+    return true;
+  }
+
+  function readPlanSeed() {
+    const n = Number(readJSON(PLAN_SEED_KEY, 0));
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function bumpPlanSeed() {
+    const next = readPlanSeed() + 1;
+    writeJSON(PLAN_SEED_KEY, next);
+    return next;
   }
 
   function normaliseSupportMode(value) {
     if (!value) return null;
     const raw = String(value).trim();
-    if (!raw) return null;
-    return SUPPORT_MODE_MAP[raw] || SUPPORT_MODE_MAP[raw.toLowerCase()] || null;
+    const low = raw.toLowerCase().replace(/\s+/g, "_");
+    return SUPPORT_MODE_MAP[raw] || SUPPORT_MODE_MAP[low] || null;
   }
 
   function readGlobalSupportMode() {
     try {
       const raw = localStorage.getItem(SUPPORT_STORAGE_KEY);
-
-      // Canonical key is the authority. If it exists and is off, never fall back
-      // to meals_support_mode because that key may be stale from an old support day.
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && (parsed.active === true || parsed.isActive === true)) {
@@ -88,18 +98,12 @@
         }
         return null;
       }
-    } catch {
-      return null;
-    }
-
-    // Legacy fallback disabled to prevent support turning on by itself.
-    // Other pages should write hearty_support_mode_v1 going forward.
+    } catch { return null; }
     return null;
   }
 
   function writeGlobalSupportMode(mode, source) {
     const supportMode = normaliseSupportMode(mode);
-
     if (!supportMode) {
       writeJSON(SUPPORT_STORAGE_KEY, {
         active: false,
@@ -107,9 +111,7 @@
         source: source || "meals",
         updatedAt: new Date().toISOString()
       });
-      try {
-        localStorage.removeItem(LEGACY_SUPPORT_KEY);
-      } catch {}
+      try { localStorage.removeItem(LEGACY_SUPPORT_KEY); } catch {}
       return null;
     }
 
@@ -119,23 +121,116 @@
       source: source || "meals",
       updatedAt: new Date().toISOString()
     });
-
-    // Keep the legacy key alive while the other pages are being patched file by file.
-    try {
-      localStorage.setItem(LEGACY_SUPPORT_KEY, supportMode);
-    } catch {}
-
+    try { localStorage.setItem(LEGACY_SUPPORT_KEY, supportMode); } catch {}
     return supportMode;
   }
 
   function loadMealAdjustments() {
     const supportMode = readGlobalSupportMode();
-
     return {
       supportMode,
       lowAppetite: supportMode === "low_appetite",
-      supportActive: !!supportMode
+      supportActive: !!supportMode,
+      snacksOn: true
     };
+  }
+
+  function defaultPrepModel() {
+    let scenario = "dinner_leftovers";
+    try {
+      if (localStorage.getItem(LEGACY_LEFTOVER_KEY) === "false") scenario = "cook_fresh";
+      if (localStorage.getItem(LEGACY_LEFTOVER_KEY) === "true") scenario = "dinner_leftovers";
+    } catch {}
+    return {
+      scenario,
+      bulkPrep: {
+        prepDay: "Sunday",
+        prepDaysCount: 5,
+        mealsToPrep: ["lunch", "dinner"],
+        batchRecipeCount: 3,
+        includeSnacks: false,
+        fridgeDays: 3,
+        freezerFriendly: true
+      }
+    };
+  }
+
+  function normalizePrepModel(value) {
+    const defaults = defaultPrepModel();
+    const model = Object.assign({}, defaults, value || {});
+    if (!["cook_fresh", "dinner_leftovers", "weekly_bulk_prep"].includes(model.scenario)) model.scenario = defaults.scenario;
+    model.bulkPrep = Object.assign({}, defaults.bulkPrep, model.bulkPrep || {});
+    model.bulkPrep.prepDaysCount = clampNumber(model.bulkPrep.prepDaysCount, 1, 7, 5);
+    model.bulkPrep.batchRecipeCount = clampNumber(model.bulkPrep.batchRecipeCount, 1, 4, 3);
+    model.bulkPrep.fridgeDays = clampNumber(model.bulkPrep.fridgeDays, 1, 5, 3);
+    if (!Array.isArray(model.bulkPrep.mealsToPrep) || !model.bulkPrep.mealsToPrep.length) model.bulkPrep.mealsToPrep = ["lunch", "dinner"];
+    model.bulkPrep.mealsToPrep = model.bulkPrep.mealsToPrep.filter((slot) => ["breakfast", "lunch", "dinner"].includes(slot));
+    if (!model.bulkPrep.mealsToPrep.length) model.bulkPrep.mealsToPrep = ["lunch", "dinner"];
+    model.bulkPrep.includeSnacks = model.bulkPrep.includeSnacks === true;
+    return model;
+  }
+
+  function clampNumber(value, min, max, fallback) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.max(min, Math.min(max, Math.round(n)));
+  }
+
+  function readPrepModel() {
+    return normalizePrepModel(readJSON(PREP_KEY, null));
+  }
+
+  function writePrepModel(model) {
+    const normalized = normalizePrepModel(model);
+    normalized.updatedAt = new Date().toISOString();
+    writeJSON(PREP_KEY, normalized);
+    try { localStorage.setItem(LEGACY_LEFTOVER_KEY, normalized.scenario === "dinner_leftovers" ? "true" : "false"); } catch {}
+    return normalized;
+  }
+
+  function compactMealForSavedPlan(meal) {
+    const n = meal && meal.nutrition ? meal.nutrition : {};
+    return {
+      slot: meal && meal.slot,
+      title: meal && meal.title,
+      detail: meal && (meal.detail || meal.subtitle || ""),
+      containerLabel: meal && meal.containerLabel,
+      batchId: meal && meal.batchId,
+      cycleLabel: meal && meal.cycleLabel,
+      nutrition: {
+        kcal: Math.round(Number(n.kcal || 0)),
+        protein: Math.round(Number(n.protein || 0)),
+        carbs: Math.round(Number(n.carbs || 0)),
+        fat: Math.round(Number(n.fat || 0)),
+        fibre: Math.round(Number(n.fibre || n.fiber || 0))
+      }
+    };
+  }
+
+  function persistBulkPrepPlan(plan, prepModel) {
+    if (!plan || !prepModel || prepModel.scenario !== "weekly_bulk_prep") return null;
+    const saved = {
+      version: "v77",
+      generatedAt: new Date().toISOString(),
+      prepModel: normalizePrepModel(prepModel),
+      prepPlan: plan.prepPlan || {},
+      shoppingList: Array.isArray(plan.shoppingList) ? plan.shoppingList.slice(0, 80) : [],
+      days: Array.isArray(plan.days) ? plan.days.map((day) => ({
+        dayName: day.dayName,
+        date: day.date,
+        cycleDay: day.cycleDay,
+        cycleLabel: day.cycleLabel,
+        inPrepRange: day.inPrepRange,
+        totals: day.totals || {},
+        meals: Array.isArray(day.meals) ? day.meals.map(compactMealForSavedPlan) : []
+      })) : []
+    };
+    writeJSON(BULK_PREP_PLAN_KEY, saved);
+    return saved;
+  }
+
+  function readSavedBulkPrepPlan() {
+    return readJSON(BULK_PREP_PLAN_KEY, null);
   }
 
   function isProteinLogged(slot) {
@@ -151,37 +246,63 @@
     writeJSON(LOG_KEY, logs);
   }
 
-  function leftoversEnabled() {
-    return localStorage.getItem(LEFTOVER_KEY) === "true";
-  }
-
-  function setLeftoversEnabled(value) {
-    localStorage.setItem(LEFTOVER_KEY, value ? "true" : "false");
-  }
-
   function createMealsBridge(options) {
     options = options || {};
     const ui = options.ui || {};
+    const engine = options.engine || window.HeartyMealsEngineV77 || window.HeartyMealsEngineV76 || window.HeartyMealsEngineV73 || window.HeartyMealsEngineV72 || window.HeartyMealsEngineV71 || window.heartyMealsEngine;
 
     const bridge = {
       state: {
         selectedDayIndex: Number(localStorage.getItem("heartyMealsCurrentDay") || 0),
+        profile: options.initialProfile || {},
+        prepModel: readPrepModel(),
+        plan: null,
         week: [],
         shoppingList: [],
+        planSeed: readPlanSeed(),
         adjustments: loadMealAdjustments()
       },
 
       init() {
-        this.syncSupportModeFromStorage();
-        this.state.week = buildWeek(this.state.adjustments);
-        applyLeftovers(this.state.week);
         this.bind();
-        this.render();
+        this.regenerateWeek(false);
       },
 
       syncSupportModeFromStorage() {
-        this.state.adjustments = loadMealAdjustments();
+        this.state.adjustments = Object.assign({}, this.state.adjustments || {}, loadMealAdjustments());
         return this.state.adjustments;
+      },
+
+      syncPrepModelFromStorage() {
+        this.state.prepModel = readPrepModel();
+        return this.state.prepModel;
+      },
+
+      buildPlan() {
+        this.syncSupportModeFromStorage();
+        this.syncPrepModelFromStorage();
+        this.state.profile = Object.assign({}, this.state.profile || {}, { snacksEnabled: true, snackEnabled: true });
+
+        if (!engine || typeof engine.generateWeekPlan !== "function") {
+          throw new Error("Hearty v73 meal engine was not available.");
+        }
+
+        const plan = engine.generateWeekPlan({
+          profile: this.state.profile,
+          adjustments: this.state.adjustments,
+          prepModel: this.state.prepModel,
+          planSeed: this.state.planSeed
+        });
+
+        this.state.plan = plan;
+        this.state.week = plan.days || [];
+        this.state.shoppingList = plan.shoppingList || [];
+        if (this.state.prepModel && this.state.prepModel.scenario === "weekly_bulk_prep") {
+          this.state.savedBulkPrepPlan = persistBulkPrepPlan(plan, this.state.prepModel);
+        } else {
+          this.state.savedBulkPrepPlan = readSavedBulkPrepPlan();
+        }
+        return plan;
       },
 
       bind() {
@@ -192,10 +313,8 @@
           dayTabs.addEventListener("click", (event) => {
             const btn = event.target.closest("button");
             if (!btn) return;
-
             const buttons = Array.from(dayTabs.querySelectorAll("button"));
             const idx = buttons.indexOf(btn);
-
             if (idx >= 0) {
               this.state.selectedDayIndex = idx;
               localStorage.setItem("heartyMealsCurrentDay", String(idx));
@@ -204,8 +323,8 @@
           });
         }
 
-        if (!document.__heartyMealsBridgeBound) {
-          document.__heartyMealsBridgeBound = true;
+        if (!document.__heartyMealsBridgeBoundV73) {
+          document.__heartyMealsBridgeBoundV73 = true;
 
           document.addEventListener("click", (event) => {
             const proteinBtn = event.target.closest("[data-log-protein]");
@@ -215,357 +334,181 @@
               return;
             }
 
+            const scenarioBtn = event.target.closest("[data-prep-scenario]");
+            if (scenarioBtn) {
+              const next = Object.assign({}, this.state.prepModel, { scenario: scenarioBtn.getAttribute("data-prep-scenario") });
+              this.state.prepModel = writePrepModel(next);
+              this.regenerateWeek();
+              return;
+            }
+
             const supportBtn = event.target.closest("[data-support-mode], [data-support]");
             if (supportBtn) {
               const selectedMode = supportBtn.getAttribute("data-support-mode") || supportBtn.getAttribute("data-support");
               this.state.adjustments.supportMode = writeGlobalSupportMode(selectedMode, "meals");
-              this.state.adjustments.lowAppetite = this.state.adjustments.supportMode === "low_appetite";
               this.regenerateWeek();
               return;
             }
 
             if (event.target.closest("[data-support-off], .support-chip-off, #supportOffBtn, [data-support-clear]")) {
               this.state.adjustments.supportMode = writeGlobalSupportMode(null, "meals");
-              this.state.adjustments.lowAppetite = false;
               this.regenerateWeek();
+              return;
+            }
+
+            if (event.target.closest("[data-regenerate-bulk-prep]")) {
+              this.regeneratePrepPlanOnly();
               return;
             }
 
             if (event.target.closest("[data-regenerate-week]")) {
-              this.syncSupportModeFromStorage();
-              this.state.week = buildWeek(this.state.adjustments);
-              applyLeftovers(this.state.week);
-              this.render();
+              this.regenerateWeek(true, { forceNew: true });
               return;
             }
 
             if (event.target.closest("[data-regenerate-day]")) {
-              this.syncSupportModeFromStorage();
-              this.state.week[this.state.selectedDayIndex] = buildDay(this.state.selectedDayIndex + 1, this.state.adjustments);
-              applyLeftovers(this.state.week);
-              this.render();
+              this.regenerateDay(this.state.selectedDayIndex);
             }
           });
 
           document.addEventListener("change", (event) => {
-            const toggle = event.target.closest("[data-leftover-toggle]");
-            if (toggle) {
-              setLeftoversEnabled(toggle.checked);
-              this.syncSupportModeFromStorage();
-              this.state.week = buildWeek(this.state.adjustments);
-              applyLeftovers(this.state.week);
-              this.render();
+            const field = event.target.closest("[data-bulk-prep-field]");
+            if (!field) return;
+
+            const current = normalizePrepModel(this.state.prepModel);
+            const bulk = Object.assign({}, current.bulkPrep || {});
+            const name = field.getAttribute("data-bulk-prep-field");
+
+            if (name === "prepDay") bulk.prepDay = field.value || "Sunday";
+            if (name === "prepDaysCount") bulk.prepDaysCount = clampNumber(field.value, 1, 7, 5);
+            if (name === "batchRecipeCount") bulk.batchRecipeCount = clampNumber(field.value, 1, 4, 3);
+            if (name === "fridgeDays") bulk.fridgeDays = clampNumber(field.value, 1, 5, 3);
+            if (name === "includeSnacks") bulk.includeSnacks = !!field.checked;
+            if (name === "mealsToPrep") {
+              bulk.mealsToPrep = Array.from(document.querySelectorAll("[data-bulk-meal-slot]:checked")).map((input) => input.value);
             }
+
+            this.state.prepModel = writePrepModel(Object.assign({}, current, { bulkPrep: bulk }));
+            this.regenerateWeek();
           });
         }
 
-        if (!window.__heartyMealsBridgeStorageBound) {
-          window.__heartyMealsBridgeStorageBound = true;
+        if (!window.__heartyMealsBridgeStorageBoundV73) {
+          window.__heartyMealsBridgeStorageBoundV73 = true;
           window.addEventListener("storage", (event) => {
-            if (event.key === SUPPORT_STORAGE_KEY || event.key === LEGACY_SUPPORT_KEY) {
-              this.regenerateWeek();
-            }
+            if ([SUPPORT_STORAGE_KEY, LEGACY_SUPPORT_KEY, PREP_KEY].includes(event.key)) this.regenerateWeek();
           });
+          window.addEventListener("hearty:support-mode-changed", () => this.regenerateWeek());
+          window.addEventListener("hearty-support-mode-changed", () => this.regenerateWeek());
         }
       },
 
       render() {
         this.syncSupportModeFromStorage();
-        renderTabs(this.state.selectedDayIndex, ui.dayTabs);
+        renderTabs(this.state.selectedDayIndex, ui.dayTabs, this.state.week);
         renderSupportState(this.state.adjustments.supportMode);
-        renderLeftoverToggle();
+        renderPrepControls(this.state.prepModel, this.state.plan);
+        renderPrepSummary(this.state.plan);
+        renderSavedBulkPrep(this.state.savedBulkPrepPlan || readSavedBulkPrepPlan(), this.state.prepModel);
         renderMeals(this.state.week[this.state.selectedDayIndex], ui.mealList, this.state.adjustments);
         renderProteinMeter();
-        this.state.shoppingList = buildShoppingList(this.state.adjustments);
       },
 
-      regenerateWeek() {
-        this.syncSupportModeFromStorage();
-        this.state.week = buildWeek(this.state.adjustments);
-        applyLeftovers(this.state.week);
+      regenerateWeek(shouldRender = true, options = {}) {
+        if (options && options.forceNew) {
+          this.state.planSeed = bumpPlanSeed();
+        } else {
+          this.state.planSeed = readPlanSeed();
+        }
+        this.buildPlan();
+        if (this.state.selectedDayIndex > this.state.week.length - 1) this.state.selectedDayIndex = 0;
         this.render();
+        if (options && options.forceNew) showMealsToast("New weekly plan created.");
       },
 
       generateWeek() {
-        this.regenerateWeek();
+        this.regenerateWeek(true, { forceNew: true });
+      },
+
+      regeneratePrepPlanOnly() {
+        this.syncPrepModelFromStorage();
+        this.syncSupportModeFromStorage();
+        this.state.profile = Object.assign({}, this.state.profile || {}, { snacksEnabled: true, snackEnabled: true });
+
+        if (!this.state.plan || !Array.isArray(this.state.week) || !this.state.week.length) {
+          this.buildPlan();
+        }
+
+        if (!this.state.prepModel || this.state.prepModel.scenario !== "weekly_bulk_prep") {
+          showMealsToast("Prep plan refresh is only for Weekly bulk prep mode.");
+          this.render();
+          return;
+        }
+
+        if (engine && typeof engine.refreshPrepPlanFromExistingPlan === "function") {
+          const refreshed = engine.refreshPrepPlanFromExistingPlan({
+            plan: this.state.plan || { days: this.state.week },
+            profile: this.state.profile,
+            prepModel: this.state.prepModel,
+            refreshSeed: Date.now()
+          });
+          this.state.plan = refreshed || this.state.plan;
+          this.state.week = (this.state.plan && this.state.plan.days) || this.state.week || [];
+          this.state.shoppingList = (this.state.plan && this.state.plan.shoppingList) || this.state.shoppingList || [];
+        }
+
+        this.state.savedBulkPrepPlan = persistBulkPrepPlan(this.state.plan, this.state.prepModel);
+        this.render();
+        showMealsToast("Prep plan refreshed. Weekly meals kept the same.");
+      },
+
+      regenerateDay(index) {
+        index = Number.isFinite(Number(index)) ? Number(index) : this.state.selectedDayIndex;
+        this.state.planSeed = bumpPlanSeed();
+        this.buildPlan();
+        this.state.selectedDayIndex = Math.max(0, Math.min(6, index));
+        localStorage.setItem("heartyMealsCurrentDay", String(this.state.selectedDayIndex));
+        this.render();
       },
 
       refresh() {
         this.render();
       },
 
+      refreshMealsUI() {
+        this.render();
+      },
+
+      renderMeals() {
+        this.render();
+      },
+
       getShoppingList() {
-        this.syncSupportModeFromStorage();
-        return buildShoppingList(this.state.adjustments);
+        if (!this.state.shoppingList || !this.state.shoppingList.length) this.buildPlan();
+        return this.state.shoppingList || [];
       }
     };
 
     return bridge;
   }
 
-  function finalEngineInput() {
-    return {
-      region: localStorage.getItem("heartyMealsCountry") || localStorage.getItem("heartyCountry") || "SA",
-      proteins: ["chicken", "beef", "fish", "eggs", "dairy", "pork"],
-      breakfastItems: ["eggs", "yoghurt", "protein_shake", "oats"],
-      snackProteins: ["yoghurt", "cottage_cheese", "boiled_eggs", "biltong", "tuna", "protein_shake", "chicken_strips"],
-      starches: ["rice", "pasta", "sweet_potato"],
-      vegetables: ["spinach", "tomato", "onion", "carrot", "baby marrow", "green beans", "mushrooms", "peppers", "broccoli", "cucumber", "lettuce"],
-      leftoverLunches: leftoversEnabled(),
-      lowerStarch: false
-    };
-  }
-
-  function toAppMeal(slot, meal, supportAdjusted) {
-    meal = meal || {};
-    const protein = meal.protein ? `Approx. ${meal.protein} protein` : "Approx. protein";
-    return {
-      slot,
-      title: meal.name || "Meal idea",
-      subtitle: meal.detail || "Basic method not available yet.",
-      protein,
-      supportAdjusted: !!supportAdjusted
-    };
-  }
-
-  function adaptFinalEngineDay(day, supportAdjusted) {
-    const meals = [toAppMeal("breakfast", day.breakfast, supportAdjusted)];
-    if (snacksEnabled()) meals.push(toAppMeal("morningSnack", day.morningSnack, supportAdjusted));
-    meals.push(toAppMeal("lunch", day.lunch, supportAdjusted));
-    if (snacksEnabled()) meals.push(toAppMeal("afternoonSnack", day.afternoonSnack, supportAdjusted));
-    meals.push(toAppMeal("dinner", day.dinner, supportAdjusted));
-    return { day: day.day, meals, supportAdjusted: !!supportAdjusted, engineSource: "hearty-meal-engine-final" };
-  }
-
-  function buildFinalEngineWeek(adjustments) {
-    const engine = window.HeartyMealEngine;
-    if (!engine || typeof engine.generatePlan !== "function") return null;
-    const result = engine.generatePlan(finalEngineInput());
-    if (!result || !result.days || !result.days.length) {
-      console.warn("[Hearty Meals] Final engine did not return a usable week", result);
-      return null;
-    }
-    return result.days.map((day) => adaptFinalEngineDay(day, false));
-  }
-
-  function buildWeek(adjustments) {
-    adjustments = adjustments || loadMealAdjustments();
-    if (normaliseSupportMode(adjustments.supportMode)) {
-      return [1, 2, 3, 4, 5, 6, 7].map((dayNumber) => buildDay(dayNumber, adjustments));
-    }
-    const finalWeek = buildFinalEngineWeek(adjustments);
-    if (finalWeek) return finalWeek;
-    return [1, 2, 3, 4, 5, 6, 7].map((dayNumber) => buildDay(dayNumber, adjustments));
-  }
-
-  function buildDay(n, adjustments) {
-    adjustments = adjustments || loadMealAdjustments();
-
-    const supportDay = buildSupportDay(n, adjustments.supportMode);
-    if (supportDay) return supportDay;
-
-    const finalWeek = buildFinalEngineWeek(adjustments);
-    if (finalWeek && finalWeek[n - 1]) return finalWeek[n - 1];
-
-    return { day: n, meals: [
-      { slot: "breakfast", title: "High-protein yogurt bowl", subtitle: "Greek-style yogurt with berries or fruit and cinnamon.", protein: "Approx. 20g protein" },
-      { slot: "morningSnack", title: "Cottage cheese rice cakes", subtitle: "Low-fat cottage cheese on rice cakes or cracker-bread with cucumber or tomato.", protein: "Approx. 18g protein" },
-      { slot: "lunch", title: "Chicken vegetable soup bowl", subtitle: "Cooked chicken simmered with soft vegetables and broth.", protein: "Approx. 33g protein" },
-      { slot: "afternoonSnack", title: "Boiled egg with cucumber", subtitle: "One boiled egg with cucumber and tomato.", protein: "Approx. 7g protein" },
-      { slot: "dinner", title: "Chicken curry with rice", subtitle: "Chicken cooked with tomato, onion, mild curry spices and vegetables. Serve with ½ cup cooked rice.", protein: "Approx. 35g protein" }
-    ].filter((meal) => snacksEnabled() || !String(meal.slot).toLowerCase().includes("snack")), supportAdjusted: false, engineSource: "safe-fallback" };
-  }
-
-  function buildSupportDay(n, supportMode) {
-    supportMode = normaliseSupportMode(supportMode);
-    if (!supportMode) return null;
-
-    const supportPlans = {
-      nausea: [
-        [
-          "Low-fat yoghurt bowl with banana",
-          "Plain crackers with tuna and cucumber",
-          "Chicken soup with soft cooked carrots and baby marrow",
-          "Small low-fat yoghurt or dry crackers"
-        ],
-        [
-          "Oats bowl with low-fat milk and banana",
-          "Boiled eggs with cucumber and plain rice cakes",
-          "White fish with soft cooked vegetables",
-          "Apple slices or low-fat yoghurt"
-        ],
-        [
-          "Low-fat yoghurt bowl with berries",
-          "Chicken soup cup with soft vegetables",
-          "Simple chicken plate with carrots and a small sweet potato portion",
-          "Cottage cheese on rice cakes"
-        ]
-      ],
-      bloating: [
-        [
-          "2 x Eggs scrambled with spinach",
-          "Chicken with cooked carrots and green beans",
-          "White fish with baby marrow and spinach",
-          "Low-fat yoghurt"
-        ],
-        [
-          "Low-fat yoghurt bowl with berries",
-          "Egg salad bowl with cucumber and tomato",
-          "Chicken strips with soft cooked baby marrow and carrots",
-          "Cottage cheese on rice cakes"
-        ],
-        [
-          "Oats bowl with low-fat milk",
-          "Tuna with cucumber and rice cakes",
-          "Chicken soup with soft vegetables",
-          "Small handful biltong"
-        ]
-      ],
-      exhaustion: [
-        [
-          "Low-fat yoghurt bowl with berries",
-          "Easy chicken protein plate with carrots and green beans",
-          "Quick white fish with soft vegetables",
-          "Cottage cheese or low-fat yoghurt"
-        ],
-        [
-          "Overnight oats with low-fat milk and blueberries",
-          "Tuna salad with rice cakes",
-          "Chicken tray bake with baby marrow and peppers",
-          "Fruit + small handful nuts"
-        ],
-        [
-          "2 x Eggs on 1 slice whole wheat toast",
-          "Leftover-style chicken bowl with cooked vegetables",
-          "Lean mince bowl with tomato, onion and vegetables",
-          "Low-fat yoghurt"
-        ]
-      ],
-      low_appetite: [
-        [
-          "Small protein shake or low-fat yoghurt bowl",
-          "Boiled eggs with apple slices",
-          "Small chicken plate with soft cooked vegetables",
-          "Low-fat yoghurt"
-        ],
-        [
-          "Low-fat yoghurt bowl with banana",
-          "Tuna on rice cakes with cucumber",
-          "Small white fish plate with carrots and baby marrow",
-          "Cottage cheese"
-        ],
-        [
-          "2 x Eggs scrambled softly",
-          "Chicken soup cup with soft vegetables",
-          "Small lean beef stew portion with carrots",
-          "Biltong or low-fat yoghurt"
-        ]
-      ]
-    };
-
-    const options = supportPlans[supportMode] || supportPlans.nausea;
-    const p = options[(n - 1) % options.length];
-
-    const subtitles = {
-      nausea: [
-        "Support Mode: cool, plain and gentle on nausea.",
-        "Support Mode: small, bland protein-first lunch.",
-        "Support Mode: warm, soft and easy to manage.",
-        "Support Mode snack: optional and gentle."
-      ],
-      bloating: [
-        "Support Mode: simple protein, lighter starch load.",
-        "Support Mode: cooked vegetables and simple seasoning.",
-        "Support Mode: light dinner with soft cooked vegetables.",
-        "Support Mode snack: keep it simple."
-      ],
-      exhaustion: [
-        "Support Mode: no-fuss breakfast.",
-        "Support Mode: quick protein-first lunch.",
-        "Support Mode: minimal-prep dinner.",
-        "Support Mode snack: easy protein option."
-      ],
-      low_appetite: [
-        "Support Mode: small protein-first option.",
-        "Support Mode: smaller meal, still protein-led.",
-        "Support Mode: half-size plate if needed.",
-        "Support Mode snack: optional top-up."
-      ]
-    };
-
-    const notes = subtitles[supportMode] || subtitles.nausea;
-
-    const meals = [
-      {
-        slot: "breakfast",
-        title: p[0],
-        subtitle: notes[0],
-        protein: "Support meal",
-        supportAdjusted: true
-      },
-      {
-        slot: "lunch",
-        title: p[1],
-        subtitle: notes[1],
-        protein: "Support meal",
-        supportAdjusted: true
-      },
-      {
-        slot: "dinner",
-        title: p[2],
-        subtitle: notes[2],
-        protein: "Support meal",
-        supportAdjusted: true
-      }
-    ];
-
-    if (snacksEnabled()) {
-      meals.splice(1, 0, {
-        slot: "snack",
-        title: p[3],
-        subtitle: notes[3],
-        protein: "Support snack",
-        supportAdjusted: true
-      });
-    }
-
-    return {
-      day: n,
-      meals,
-      supportAdjusted: true,
-      supportMode
-    };
-  }
-
-  function applyLeftovers(week) {
-    if (!leftoversEnabled()) return;
-
-    for (let i = 1; i < week.length; i++) {
-      // Do not overwrite support-mode lunches. Support Mode must be the stronger rule.
-      if (week[i] && week[i].supportAdjusted) continue;
-
-      const yesterdayDinner = week[i - 1].meals.find((m) => m.slot === "dinner");
-      const lunchIndex = week[i].meals.findIndex((m) => m.slot === "lunch");
-
-      if (yesterdayDinner && lunchIndex >= 0) {
-        week[i].meals[lunchIndex] = {
-          slot: "lunch",
-          title: "Yesterday’s dinner leftovers — no extra starch",
-          subtitle: yesterdayDinner.title,
-          protein: "Protein meal"
-        };
-      }
-    }
-  }
-
-  function renderTabs(idx, dayTabs) {
+  function renderTabs(idx, dayTabs, week) {
     dayTabs = dayTabs || $("plannerDays");
     if (!dayTabs) return;
 
-    dayTabs.querySelectorAll("button").forEach((btn, i) => {
-      btn.classList.toggle("is-active", i === idx);
-      btn.classList.toggle("active", i === idx);
-    });
+    const days = week && week.length ? week : [];
+    dayTabs.innerHTML = Array.from({ length: 7 }).map((_, i) => {
+      const day = days[i] || {};
+      const sub = day.cycleLabel ? `${niceShortDate(day.date)} • ${day.cycleLabel}` : (day.date ? niceShortDate(day.date) : "Day " + (i + 1));
+      return `<button class="planner-day ${i === idx ? "is-active active" : ""}" type="button"><span>${escapeHtml(day.dayName || "Day " + (i + 1))}</span><small>${escapeHtml(sub)}</small></button>`;
+    }).join("");
+  }
+
+  function niceShortDate(iso) {
+    try {
+      const d = new Date(iso + "T00:00:00");
+      return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch { return iso; }
   }
 
   function renderSupportState(activeMode) {
@@ -584,134 +527,260 @@
       btn.setAttribute("aria-pressed", !activeMode ? "true" : "false");
     });
 
-    const led = $("supportLed") || document.querySelector(".support-led");
-    if (led) led.classList.toggle("active", !!activeMode);
-
-    const status = $("supportStatus") || document.querySelector("[data-support-status]");
-    if (status) status.textContent = activeMode ? SUPPORT_LABELS[activeMode] : "Support off";
+    const status = $("supportPill") || $("supportStatus") || document.querySelector("[data-support-status]");
+    if (status) status.textContent = activeMode ? SUPPORT_LABELS[activeMode] || "Support on" : "Okay";
 
     document.body.classList.toggle("support-mode-active", !!activeMode);
     if (activeMode) document.body.setAttribute("data-support-mode", activeMode);
     else document.body.removeAttribute("data-support-mode");
   }
 
-  function renderLeftoverToggle() {
-    const planner = document.querySelector(".planner-card");
-    const days = $("plannerDays");
-    if (!planner || !days) return;
+  function renderPrepControls(prepModel, plan) {
+    prepModel = normalizePrepModel(prepModel);
+    const card = $("mealPrepCard");
+    if (!card) return;
 
-    let wrap = $("leftoverToggleWrap");
+    card.querySelectorAll("[data-prep-scenario]").forEach((btn) => {
+      const active = btn.getAttribute("data-prep-scenario") === prepModel.scenario;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
 
-    if (!wrap) {
-      wrap = document.createElement("div");
-      wrap.id = "leftoverToggleWrap";
-      wrap.className = "support-banner";
-      planner.insertBefore(wrap, days);
+    const bulkWrap = $("bulkPrepOptions");
+    if (bulkWrap) bulkWrap.hidden = prepModel.scenario !== "weekly_bulk_prep";
+
+    setValue("bulkPrepDay", prepModel.bulkPrep.prepDay);
+    setValue("bulkPrepDaysCount", prepModel.bulkPrep.prepDaysCount);
+    setValue("bulkBatchRecipeCount", prepModel.bulkPrep.batchRecipeCount);
+    setValue("bulkFridgeDays", prepModel.bulkPrep.fridgeDays);
+
+    const includeSnacks = $("bulkIncludeSnacks");
+    if (includeSnacks) includeSnacks.checked = !!prepModel.bulkPrep.includeSnacks;
+
+    document.querySelectorAll("[data-bulk-meal-slot]").forEach((input) => {
+      input.checked = prepModel.bulkPrep.mealsToPrep.includes(input.value);
+    });
+
+    const container = $("containerSummary");
+    const containerPlan = plan && plan.prepPlan && plan.prepPlan.containerPlan;
+    if (container && containerPlan) {
+      const advice = Array.isArray(containerPlan.advice) ? containerPlan.advice.slice(0, 3) : [];
+      container.innerHTML = `
+        <strong>${escapeHtml(containerPlan.summary)}</strong>
+        ${containerPlan.labels && containerPlan.labels.length ? `<span>${escapeHtml(containerPlan.labels.slice(0, 5).join(", "))}${containerPlan.labels.length > 5 ? "…" : ""}</span>` : ""}
+        ${advice.length ? `<ul class="container-advice-list">${advice.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+      `;
+    }
+  }
+
+  function setValue(id, value) {
+    const el = $(id);
+    if (el && String(el.value) !== String(value)) el.value = value;
+  }
+
+  function renderPrepSummary(plan) {
+    const summary = $("prepPlanSummary");
+    if (!summary || !plan || !plan.prepPlan) return;
+    const prep = plan.prepPlan;
+    const containers = prep.containerPlan || {};
+    const scenario = prep.scenario || (plan.prepModel && plan.prepModel.scenario) || "";
+    const batches = Array.isArray(prep.batchRecipes) ? prep.batchRecipes : [];
+
+    summary.innerHTML = `
+      <div class="prep-summary-main">
+        <span class="prep-summary-pill">${escapeHtml(prep.label || "Prep model")}</span>
+        <div>
+          <strong>${escapeHtml(prep.summary || "Your prep plan is ready.")}</strong>
+          <span>${escapeHtml(containers.summary || "")}</span>
+        </div>
+      </div>
+      ${scenario === "weekly_bulk_prep" && batches.length ? `<div class="prep-mini-row">${batches.slice(0, 3).map((batch) => `<span>${escapeHtml(batch.title)} • ${escapeHtml(batch.portions)} portions</span>`).join("")}</div>` : ""}
+    `;
+  }
+
+  function compactPortionText(items, maxItems) {
+    const list = Array.isArray(items) ? items.filter(Boolean).slice(0, maxItems || 3) : [];
+    return list.join(" • ");
+  }
+
+  function renderPrepCookList(batches) {
+    batches = Array.isArray(batches) ? batches.filter(Boolean) : [];
+    if (!batches.length) return "";
+    return `
+      <div class="prep-cook-list">
+        <h4 class="prep-cook-title">What to cook</h4>
+        ${batches.map((batch) => {
+          const portion = compactPortionText(batch.portionGuide, 3);
+          const firstStep = Array.isArray(batch.prepSteps) && batch.prepSteps.length ? batch.prepSteps[0] : "Cook, portion and label.";
+          return `
+            <div class="prep-cook-item">
+              <strong>${escapeHtml(batch.title || "Batch recipe")}</strong>
+              <span>Make ${escapeHtml(String(batch.portions || 1))} portion${Number(batch.portions || 1) === 1 ? "" : "s"}</span>
+              ${portion ? `<p>Per portion: ${escapeHtml(portion)}</p>` : ""}
+              <p>${escapeHtml(firstStep)}</p>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  function renderSavedBulkPrep(saved, prepModel) {
+    const wrap = $("savedBulkPrepPlan");
+    if (!wrap) return;
+    prepModel = normalizePrepModel(prepModel);
+    if (prepModel.scenario !== "weekly_bulk_prep") {
+      wrap.hidden = true;
+      wrap.innerHTML = "";
+      return;
     }
 
+    const prep = saved && saved.prepPlan ? saved.prepPlan : null;
+    const containers = prep && prep.containerPlan ? prep.containerPlan : {};
+    const batches = prep && Array.isArray(prep.batchRecipes) ? prep.batchRecipes : [];
+    const generated = saved && saved.generatedAt ? niceSavedDate(saved.generatedAt) : "Not saved yet";
+    const steps = prep && Array.isArray(prep.steps) ? prep.steps.slice(0, 4) : [];
+    const advice = prep && Array.isArray(prep.containerAdvice) ? prep.containerAdvice.slice(0, 4) : [];
+
+    wrap.hidden = false;
     wrap.innerHTML = `
-      <label style="display:flex;align-items:center;gap:10px;font-weight:750;">
-        <input type="checkbox" data-leftover-toggle ${leftoversEnabled() ? "checked" : ""}>
-        Use dinner for tomorrow’s lunch
-      </label>
+      <div class="saved-prep-head">
+        <div>
+          <div class="section-label">SAVED PREP</div>
+          <h3 class="saved-prep-title">Your weekly prep plan</h3>
+          <p>Saved ${escapeHtml(generated)}. Use this until you regenerate your prep plan.</p>
+        </div>
+        <button class="planner-action primary" data-regenerate-bulk-prep type="button">Refresh prep plan</button>
+      </div>
+      <div class="saved-prep-stats">
+        <span><strong>${escapeHtml(String(containers.total || 0))}</strong> containers</span>
+        <span><strong>${escapeHtml(String(batches.length || 0))}</strong> batch recipes</span>
+        <span><strong>3</strong> day cycle</span>
+      </div>
+      ${renderPrepCookList(batches)}
+      <div class="prep-pack-strip">
+        <strong>Container advice:</strong> ${escapeHtml(containers.summary || "Use simple labelled containers.")}
+        ${Array.isArray(containers.labels) && containers.labels.length ? `<div class="prep-label-preview">${containers.labels.slice(0, 6).map((label) => `<span>${escapeHtml(label)}</span>`).join("")}${containers.labels.length > 6 ? `<span>+${escapeHtml(String(containers.labels.length - 6))} more</span>` : ""}</div>` : ""}
+      </div>
+      <details class="saved-prep-details">
+        <summary>Full prep notes and container labels</summary>
+        ${steps.length ? `<ol>${steps.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>` : ""}
+        ${advice.length ? `<ul>${advice.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+        ${Array.isArray(containers.labels) && containers.labels.length ? `<ul>${containers.labels.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : ""}
+      </details>
     `;
+  }
+
+  function niceSavedDate(iso) {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch { return "recently"; }
   }
 
   function renderMeals(day, mealList, adjustments) {
     mealList = mealList || $("mealList");
     if (!mealList || !day) return;
+    const supportMode = normaliseSupportMode(day.supportMode || (adjustments && adjustments.supportMode));
+    const totals = day.totals || {};
 
-    const supportMode = normaliseSupportMode(day.supportMode || adjustments?.supportMode);
+    mealList.innerHTML = `
+      <div class="meal-day-summary">
+        <div>
+          <div class="section-label">${escapeHtml(day.dayName || "Today")}${day.cycleLabel ? " • " + escapeHtml(day.cycleLabel) : ""}</div>
+          <h3>${escapeHtml(day.date ? niceLongDate(day.date) : "Today’s meals")}</h3>
+          <p>Estimated day total: ±${Math.round(totals.kcal || 0)} kcal incl. buffer</p>
+        </div>
+        <div class="meal-total-pill">Protein ±${Math.round(totals.protein || 0)}g<br>Carbs ±${Math.round(totals.carbs || 0)}g • Fat ±${Math.round(totals.fat || 0)}g • Fibre ±${Math.round(totals.fibre || 0)}g</div>
+      </div>
+      ${day.meals.map((meal) => renderMealCard(meal, supportMode)).join("")}
+    `;
+  }
 
-    mealList.innerHTML = day.meals.map((meal) => {
-      const logged = isProteinLogged(meal.slot);
-      const isSnack = String(meal.slot).toLowerCase().includes("snack");
-      const supportBadge = meal.supportAdjusted || supportMode ? `<span class="meal-card__support">Support adjusted</span>` : "";
+  function renderMealCard(meal, supportMode) {
+    const logged = isProteinLogged(meal.slot);
+    const isSnack = String(meal.slot).toLowerCase().includes("snack");
+    const supportBadge = meal.supportAdjusted || supportMode ? `<span class="meal-card__support">Support</span>` : "";
+    const leftoverBadge = meal.leftoverOf ? `<span class="meal-card__support meal-card__leftover">Leftover</span>` : "";
+    const batchBadge = meal.batchId ? `<span class="meal-card__support meal-card__batch">Batch</span>` : "";
+    const nutrition = meal.nutrition || {};
+    const portionGuide = Array.isArray(meal.portionGuide) ? meal.portionGuide.filter(Boolean).slice(0, 6) : [];
+    const compactPortionCount = isSnack ? 2 : 3;
+    const compactPortion = compactPortionText(portionGuide, compactPortionCount);
+    const extraPortionGuide = portionGuide.slice(compactPortionCount);
+    const expandedPortionGuide = extraPortionGuide.length ? extraPortionGuide : portionGuide;
+    const expandedPortionTitle = extraPortionGuide.length ? "Extra portion detail" : "Full portion detail";
+    const prepSteps = Array.isArray(meal.prepSteps) ? meal.prepSteps.filter(Boolean).slice(0, 5) : [];
+    const packNotes = [];
+    if (meal.containerLabel) packNotes.push("Container: " + meal.containerLabel);
+    if (meal.storageNote) packNotes.push(meal.storageNote);
+    if (meal.batchInstruction) packNotes.push(meal.batchInstruction);
+    const detailId = "meal-detail-" + escapeHtml(String(meal.slot || "meal")) + "-" + Math.random().toString(36).slice(2, 7);
 
-      return `
-        <article class="meal-card ${meal.supportAdjusted || supportMode ? "is-support-adjusted" : ""}" data-slot="${meal.slot}">
-          <div class="meal-card__header">
-            <div>
-              <div class="meal-card__eyebrow">${label(meal.slot)} ${supportBadge}</div>
-              <h3 class="meal-card__title">${meal.title}</h3>
-              <div class="meal-card__subtitle">${meal.subtitle || ""}</div>
-            </div>
-            <div class="meal-card__protein">${isSnack ? "Optional" : logged ? "Logged" : meal.protein}</div>
+    return `
+      <article class="meal-card ${meal.supportAdjusted || supportMode ? "is-support-adjusted" : ""}" data-slot="${escapeHtml(meal.slot)}">
+        <div class="meal-card__header">
+          <div>
+            <div class="meal-card__eyebrow">${escapeHtml(label(meal.slot))} ${supportBadge}${leftoverBadge}${batchBadge}</div>
+            <h3 class="meal-card__title">${escapeHtml(meal.title)}</h3>
+            <div class="meal-card__subtitle">${escapeHtml(meal.detail || meal.subtitle || "")}</div>
+            ${meal.servingNote ? `<div class="meal-serving-note">${escapeHtml(meal.servingNote)}</div>` : ""}
+            ${compactPortion ? `<div class="meal-visible-portion"><strong>Cook / serve:</strong> ${escapeHtml(compactPortion)}</div>` : ""}
           </div>
-
-          ${isSnack ? "" : `
-            <div class="meal-card__actions">
-              <button type="button" data-log-protein="${meal.slot}">
-                ${logged ? "Protein logged ✓" : "Log protein"}
-              </button>
+          <div class="meal-card__protein">${isSnack ? "Optional" : logged ? "Logged" : "±" + Math.round(nutrition.protein || 0) + "g protein"}</div>
+        </div>
+        <div class="meal-meta-row" aria-label="Estimated meal macros">
+          <span>±${Math.round(nutrition.kcal || 0)} kcal</span>
+          <span>Carbs ±${Math.round(nutrition.carbs || 0)}g</span>
+          <span>Fat ±${Math.round(nutrition.fat || 0)}g</span>
+          <span>Fibre ±${Math.round(nutrition.fibre || 0)}g</span>
+        </div>
+        ${packNotes.length ? `<div class="meal-pack-note">${packNotes.slice(0, 2).map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>` : ""}
+        ${(portionGuide.length || prepSteps.length || meal.prepNote) ? `
+          <details class="meal-detail-collapse" id="${detailId}">
+            <summary>View portion + prep</summary>
+            <div class="meal-detail-grid">
+              ${expandedPortionGuide.length ? `<div class="meal-detail-panel"><strong>${escapeHtml(expandedPortionTitle)}</strong><ul>${expandedPortionGuide.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>` : ""}
+              ${prepSteps.length ? `<div class="meal-detail-panel"><strong>Prep</strong><ol>${prepSteps.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol></div>` : ""}
             </div>
-          `}
-        </article>
-      `;
-    }).join("");
+            ${meal.prepNote ? `<div class="meal-prep-note">${escapeHtml(meal.prepNote)}</div>` : ""}
+          </details>
+        ` : ""}
+        ${meal.supportNote ? `<div class="meal-support-note">${escapeHtml(meal.supportNote)}</div>` : ""}
+        ${isSnack ? "" : `
+          <div class="meal-card__actions">
+            <button type="button" data-log-protein="${escapeHtml(meal.slot)}">${logged ? "Protein logged ✓" : "Log protein"}</button>
+          </div>
+        `}
+      </article>
+    `;
+  }
+
+  function niceLongDate(iso) {
+    try {
+      const d = new Date(iso + "T00:00:00");
+      return d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+    } catch { return iso; }
   }
 
   function renderProteinMeter() {
     const slots = ["breakfast", "lunch", "dinner"];
     const count = slots.filter(isProteinLogged).length;
-
     const meter = $("proteinMeter");
     const text = $("proteinMeterText");
     const pips = $("proteinMeterPips");
 
     if (meter) meter.style.setProperty("--protein-percent", Math.round((count / 3) * 100));
     if (text) text.textContent = `${count} / 3 protein meals`;
-
-    if (pips) {
-      pips.innerHTML = slots.map((slot) =>
-        `<span class="protein-pip ${isProteinLogged(slot) ? "is-filled" : ""}"></span>`
-      ).join("");
-    }
+    if (pips) pips.innerHTML = slots.map((slot) => `<span class="protein-pip ${isProteinLogged(slot) ? "is-filled" : ""}"></span>`).join("");
 
     document.querySelectorAll(".protein-chip").forEach((chip) => {
-      const name = chip.querySelector(".protein-name")?.textContent?.toLowerCase();
+      const name = chip.querySelector(".protein-name") && chip.querySelector(".protein-name").textContent.toLowerCase();
       const done = isProteinLogged(name);
-
       chip.classList.toggle("done", done);
-
       const state = chip.querySelector(".protein-state");
       if (state) state.textContent = done ? "Logged" : "Pending";
     });
-  }
-
-  function buildShoppingList(adjustments) {
-    const supportMode = normaliseSupportMode(adjustments?.supportMode || readGlobalSupportMode());
-
-    if (supportMode) {
-      return [
-        { name: "Eggs", qty7: "10–14 eggs", qty30: "43–60 eggs" },
-        { name: "Chicken breast / strips", qty7: "1–1.3 kg", qty30: "4.3–5.6 kg" },
-        { name: "White fish / hake", qty7: "700–900 g", qty30: "3–4 kg" },
-        { name: "Canned tuna", qty7: "3–4 tins", qty30: "13–17 tins" },
-        { name: "Low-fat yoghurt", qty7: "2–2.5 kg", qty30: "8.5–11 kg" },
-        { name: "Low-fat cottage cheese", qty7: "500–750 g", qty30: "2–3.2 kg" },
-        { name: "Rice cakes / plain crackers", qty7: "1–2 packs", qty30: "4–8 packs" },
-        { name: "Soft-cook vegetables", qty7: "3–5 kg mixed", qty30: "13–22 kg mixed" },
-        { name: "Fruit", qty7: "7–10 portions", qty30: "30–43 portions" },
-        { name: "Sweet potato / oats / rice", qty7: "4–7 gentle starch portions", qty30: "17–30 portions" },
-        { name: "Optional support snacks", qty7: snacksEnabled() ? "7 gentle snack portions" : "Off", qty30: snacksEnabled() ? "30 gentle snack portions" : "Off" }
-      ];
-    }
-
-    return [
-      { name: "Eggs", qty7: "12–14 eggs", qty30: "52–60 eggs" },
-      { name: "Chicken breast / strips", qty7: "1.2–1.5 kg", qty30: "5–6.5 kg" },
-      { name: "Fish / hake / salmon", qty7: "700–900 g", qty30: "3–4 kg" },
-      { name: "Canned tuna", qty7: "3–4 tins", qty30: "13–17 tins" },
-      { name: "Lean beef / mince", qty7: "700–900 g", qty30: "3–4 kg" },
-      { name: "Low-fat yoghurt", qty7: "1.5–2 kg", qty30: "6.5–8.5 kg" },
-      { name: "Low-fat cottage cheese", qty7: "500–750 g", qty30: "2–3.2 kg" },
-      { name: "Vegetables / salad", qty7: "4–6 kg mixed", qty30: "17–26 kg mixed" },
-      { name: "Fruit", qty7: "7–10 portions", qty30: "30–43 portions" },
-      { name: "Rice / couscous / sweet potato", qty7: "7 starch portions", qty30: "30 starch portions" },
-      { name: "Low-calorie dressing", qty7: "1 bottle", qty30: "3–4 bottles" },
-      { name: "Optional snacks", qty7: snacksEnabled() ? "7 snack portions" : "Off", qty30: snacksEnabled() ? "30 snack portions" : "Off" }
-    ];
   }
 
   function label(slot) {
@@ -724,7 +793,8 @@
   }
 
   window.createMealsBridge = createMealsBridge;
-
+  window.HeartyMealsBridgeVersion = BRIDGE_VERSION;
+  window.createHeartyMealsBridge = createMealsBridge;
   window.HeartyMealsSupport = window.HeartyMealsSupport || {
     read: readGlobalSupportMode,
     write: writeGlobalSupportMode,

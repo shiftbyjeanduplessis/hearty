@@ -2,7 +2,7 @@
   "use strict";
   var deferredPrompt = null;
   var shown = false;
-  var VERSION = "v33-top-banner";
+  var VERSION = "v84-chrome-install-card";
 
   function isStandalone() {
     try { return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true; }
@@ -17,7 +17,7 @@
   }
 
   function dismissed(){
-    try { return localStorage.getItem("heartyInstallDismissed") === "true"; } catch(_) { return false; }
+    try { return localStorage.getItem("heartyInstallDismissedV84") === "true"; } catch(_) { return false; }
   }
 
   function installInstructions(){
@@ -63,14 +63,14 @@
     banner.className = "hearty-install-banner-v33";
     banner.setAttribute("data-hearty-install", VERSION);
     banner.setAttribute("aria-label", "Install Hearty");
-    banner.innerHTML = '<div class="hearty-install-icon" aria-hidden="true">↗</div>'+
-      '<div class="hearty-install-copy"><strong>Install Hearty</strong><span>Open it like an app from your phone screen.</span></div>'+
-      '<div class="hearty-install-actions"><button id="heartyInstallBtn" type="button">Install</button><button id="heartyInstallClose" type="button" aria-label="Dismiss install prompt">×</button></div>';
+    banner.innerHTML = '<div class="hearty-install-icon" aria-hidden="true">⌂</div>'+
+      '<div class="hearty-install-copy"><strong>Install Hearty on this device</strong><span>Chrome users can add Hearty and open it like an app.</span></div>'+
+      '<div class="hearty-install-actions"><button id="heartyInstallBtn" type="button">Install app</button><button id="heartyInstallClose" type="button" aria-label="Dismiss install prompt">×</button></div>';
     placeBanner(banner);
 
     var close = document.getElementById("heartyInstallClose");
     if (close) close.onclick = function(){
-      try{localStorage.setItem("heartyInstallDismissed","true");}catch(_){}
+      try{localStorage.setItem("heartyInstallDismissedV84","true");}catch(_){}
       banner.remove();
     };
 

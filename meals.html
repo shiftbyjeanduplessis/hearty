@@ -12,44 +12,34 @@
 <div class="meals-help-head">
 <div>
 <div class="section-label">MEALS GUIDE</div>
-<h2 class="meals-help-title" id="mealsHelpTitle">How Meals Works</h2>
-<p class="compact-copy">Your meals are built to help you get enough protein, keep eating simple, and support you through GLP-1 appetite changes.</p>
+<h2 class="meals-help-title" id="mealsHelpTitle">How this plan works</h2>
+<p class="compact-copy">Your plan is built around your prep model: cook fresh, dinner leftovers, or weekly bulk prep. Portions and prep steps sit inside each meal card.</p>
 </div>
 <button aria-label="Close" class="meals-help-close" id="closeMealsHelpBtn" type="button">×</button>
 </div>
 <div class="meals-help-section">
-<h3>Daily plan</h3>
-<p>Each day gives you breakfast, lunch, dinner, and optional snacks if snacks are enabled.</p>
+<h3>Pick a prep model</h3>
+<p>Cook as you go gives fresh meals. Dinner → next lunch cooks dinner as two portions. Weekly bulk prep saves a separate prep plan with a 3-day repeat cycle.</p>
 </div>
 <div class="meals-help-section">
-<h3>Portions</h3>
-<ul>
-<li>Protein = 1 portion</li>
-<li>Starch = 1 portion</li>
-<li>Vegetables = 1–2 portions</li>
-<li>Yoghurt = 1 cup</li>
-<li>Fruit = 1 fruit or 1 small serving</li>
-</ul>
+<h3>What to cook</h3>
+<p>Each meal shows a quick Cook / serve line. Open “View portion + prep” for exact portion guides and simple cooking steps.</p>
+</div>
+<div class="meals-help-section">
+<h3>Bulk prep</h3>
+<p>Bulk prep is saved as your weekly prep plan. It shows batch recipes, portions to cook, container count, labels, and simple storage advice.</p>
+</div>
+<div class="meals-help-section">
+<h3>Macros</h3>
+<p>Calories, protein, carbs, fat and fibre are estimates per meal and per day. They are a guide, not strict tracking.</p>
 </div>
 <div class="meals-help-section">
 <h3>Snacks</h3>
-<p>Snacks are optional. Use them when appetite is low, protein is difficult, or you need something small between meals.</p>
+<p>Snacks are optional protein top-ups. Eat one if you need it, skip it if you do not.</p>
 </div>
 <div class="meals-help-section">
-<h3>Swaps</h3>
-<p>You can swap meals when needed. Try to swap like-for-like: protein for protein, starch for starch, and snack for snack.</p>
-</div>
-<div class="meals-help-section">
-<h3>Leftovers</h3>
-<p>If leftovers are enabled, dinner may become the next day’s lunch.</p>
-</div>
-<div class="meals-help-section">
-<h3>Support Mode</h3>
-<p>Support Mode is for harder GLP-1 days. When appetite is low or side effects are active, meals may become smaller, simpler, softer, or snack-based for the day. Turning Support Mode off should return you to your standard meal plan.</p>
-</div>
-<div class="meals-help-section">
-<h3>Shopping list</h3>
-<p>Use the shopping list after generating your weekly meals. You can download or copy it without leaving the app.</p>
+<h3>Build new weekly plan</h3>
+<p>Use “Build new weekly plan” when you want a new set of meals. In Weekly bulk prep mode, “Refresh prep plan” only refreshes the saved prep plan, containers and packing guidance for the current meals.</p>
 </div>
 </div>
 </section>
@@ -99,41 +89,7 @@
       overflow-x:hidden;
     }
 
-    .shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px}
-
-    .topbar{
-      min-height:88px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:18px;
-      padding:0 18px;
-      border:1px solid var(--line);
-      border-radius:22px;
-      background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));
-      box-shadow:var(--shadow-soft);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-    }
-
-    .brand{display:flex;align-items:center;gap:8px;min-width:0;padding-left:8px}
-    .brand-logo{display:block;height:48px;width:auto;object-fit:contain;object-position:left center;max-width:min(72vw,300px)}
-
-    .icon-btn{
-      width:44px;
-      height:44px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:var(--surface-button);
-      color:var(--muted);
-      display:grid;
-      place-items:center;
-      box-shadow:var(--shadow-soft);
-      text-decoration:none;
-    }
-
-    .icon-btn svg,.nav-item svg{
+    .nav-item svg{
       width:20px;
       height:20px;
       stroke:currentColor;
@@ -161,14 +117,7 @@
       margin-bottom:12px;
     }
 
-    .headline{
-      font-size:clamp(1.55rem,2.4vw,2.15rem);
-      line-height:1.05;
-      margin:.22rem 0 .22rem;
-      font-weight:760;
-      letter-spacing:-.035em;
-      color:var(--ink);
-    }
+    
 
     .subline{color:var(--muted);font-size:.96rem;line-height:1.5;margin:0}
 
@@ -688,9 +637,6 @@
     @media(max-width:1080px){.layout{grid-template-columns:1fr}}
 
     @media(max-width:760px){
-      .shell{padding:14px 14px 104px}
-      .topbar{min-height:78px;padding:0 14px;border-radius:20px}
-      .brand-logo{height:42px;max-width:min(68vw,230px)}
       .layout{gap:16px}
       .status-pills{justify-content:flex-start;width:100%}
       .card{padding:18px;border-radius:22px}
@@ -702,67 +648,300 @@
       .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}
       .nav-item svg{width:18px;height:18px}
     }
-  </style>
-<style id="hearty-page-selector-safe-lock">
-/* Safe local page selector lock — no shared JS, no nav rebuild. */
-.bottom-nav .nav-item svg,
-#bottomNav .nav-item svg{
-  width:20px!important;
-  height:20px!important;
-  max-width:22px!important;
-  max-height:22px!important;
-  display:block!important;
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  overflow:visible!important;
-}
-.bottom-nav .nav-item svg *,
-#bottomNav .nav-item svg *{
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  vector-effect:non-scaling-stroke!important;
-}
-.bottom-nav .nav-item,
-#bottomNav .nav-item{
-  overflow:hidden!important;
-}
+
+    /* v69 prep scenario UI */
+    .planner-day small{display:block;margin-top:3px;font-size:.66rem;font-weight:700;opacity:.72}
+    .prep-plan-summary{margin:14px 0 14px;padding:14px;border-radius:18px;background:rgba(255,255,255,.62);border:1px solid rgba(12,91,151,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+    .prep-summary-main{display:flex;gap:12px;align-items:flex-start}
+    .prep-summary-main strong{display:block;font-size:.92rem;color:var(--text-strong,#17324a)}
+    .prep-summary-main span:not(.prep-summary-pill){display:block;margin-top:3px;font-size:.8rem;color:var(--text-muted,#5d7183);line-height:1.4}
+    .prep-summary-pill{flex:0 0 auto;display:inline-flex;align-items:center;border-radius:999px;padding:7px 10px;font-size:.72rem;font-weight:900;letter-spacing:.02em;background:rgba(12,91,151,.1);color:var(--accent,#0c5b97);border:1px solid rgba(12,91,151,.14)}
+    .prep-batch-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .prep-batch-row span{display:inline-flex;border-radius:999px;padding:7px 9px;background:rgba(255,255,255,.78);border:1px solid rgba(23,50,74,.08);font-size:.72rem;font-weight:800;color:var(--text-muted,#5d7183)}
+    .prep-scenario-list{display:grid;gap:8px;margin-top:12px}
+    .prep-scenario-btn{width:100%;text-align:left;border:1px solid rgba(23,50,74,.12);border-radius:16px;background:rgba(255,255,255,.68);padding:11px 12px;color:var(--text-strong,#17324a);cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+    .prep-scenario-btn:hover{transform:translateY(-1px);border-color:rgba(12,91,151,.28)}
+    .prep-scenario-btn.is-active{background:rgba(12,91,151,.1);border-color:rgba(12,91,151,.28);box-shadow:0 10px 24px rgba(12,91,151,.08)}
+    .prep-scenario-btn strong{display:block;font-size:.84rem;font-weight:900}
+    .prep-scenario-btn span{display:block;margin-top:3px;font-size:.74rem;font-weight:700;color:var(--text-muted,#5d7183);line-height:1.35}
+    .bulk-prep-options{margin-top:12px;padding-top:12px;border-top:1px solid rgba(23,50,74,.1)}
+    .bulk-prep-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .bulk-prep-field{display:grid;gap:5px;font-size:.74rem;font-weight:900;color:var(--text-muted,#5d7183)}
+    .bulk-prep-field input,.bulk-prep-field select{width:100%;border:1px solid rgba(23,50,74,.14);border-radius:14px;background:rgba(255,255,255,.85);padding:10px 11px;font:inherit;color:var(--text-strong,#17324a)}
+    .bulk-checkbox-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .bulk-checkbox-row label{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(23,50,74,.1);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.65);font-size:.74rem;font-weight:850;color:var(--text-strong,#17324a)}
+    .container-summary{display:grid;gap:3px;margin-top:12px;border-radius:16px;padding:11px 12px;background:rgba(255,255,255,.68);border:1px solid rgba(23,50,74,.09);font-size:.78rem;color:var(--text-muted,#5d7183);line-height:1.35}
+    .container-summary strong{color:var(--text-strong,#17324a)}
+    .meal-day-summary{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px;padding:13px 14px;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(23,50,74,.08)}
+    .meal-day-summary h3{margin:2px 0 0;font-size:1rem;color:var(--text-strong,#17324a)}
+    .meal-total-pill{flex:0 0 auto;max-width:320px;border-radius:999px;padding:8px 11px;background:rgba(12,91,151,.09);color:var(--accent,#0c5b97);font-size:.75rem;font-weight:900;line-height:1.35;text-align:right}
+    .meal-meta-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .meal-meta-row span{display:inline-flex;border-radius:999px;padding:6px 8px;background:rgba(255,255,255,.72);border:1px solid rgba(23,50,74,.08);font-size:.7rem;font-weight:850;color:var(--text-muted,#5d7183)}
+    .meal-prep-note,.meal-support-note{margin-top:10px;border-radius:14px;padding:9px 10px;font-size:.76rem;font-weight:750;line-height:1.4}
+    .meal-prep-note{background:rgba(12,91,151,.07);color:var(--text-muted,#5d7183);border:1px solid rgba(12,91,151,.1)}
+
+    .meal-card__subtitle{font-size:.9rem;color:var(--text-muted,#5d7183);line-height:1.5;margin-top:5px}
+    .meal-serving-note{margin-top:7px;font-size:.76rem;font-weight:800;color:var(--text-muted,#5d7183)}
+    .meal-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .meal-detail-panel{border:1px solid rgba(23,50,74,.08);background:rgba(255,255,255,.56);border-radius:15px;padding:10px 11px}
+    .meal-detail-panel strong{display:block;margin-bottom:6px;color:var(--text-strong,#17324a);font-size:.76rem;letter-spacing:.05em;text-transform:uppercase}
+    .meal-detail-panel ul,.meal-detail-panel ol{margin:0;padding-left:18px;color:var(--text-muted,#5d7183);font-size:.78rem;font-weight:700;line-height:1.45}
+    .meal-detail-panel li{margin:3px 0}
+    .meal-pack-note{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .meal-pack-note span{border-radius:999px;padding:6px 8px;background:rgba(43,148,120,.08);border:1px solid rgba(43,148,120,.12);font-size:.7rem;font-weight:850;color:#18785f}
+    .meal-support-note{background:rgba(233,53,120,.08);color:var(--text-strong,#17324a);border:1px solid rgba(233,53,120,.12)}
+    .meal-card__support{display:inline-flex;margin-left:5px;border-radius:999px;padding:3px 6px;background:rgba(233,53,120,.1);color:#b6225d;font-size:.62rem;font-weight:900;vertical-align:middle}
+    .meal-card__leftover{background:rgba(12,91,151,.1);color:var(--accent,#0c5b97)}
+    .meal-card__batch{background:rgba(43,148,120,.1);color:#18785f}
+    .meal-macro-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(23,50,74,.09)}
+    .meal-macro-strip span{font-size:.75rem;font-weight:850;color:var(--text-muted,#5d7183)}
+
+    .prep-cycle-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .prep-cycle-row span{display:inline-flex;border-radius:999px;padding:7px 9px;background:rgba(12,91,151,.08);border:1px solid rgba(12,91,151,.11);font-size:.72rem;font-weight:850;color:var(--accent,#0c5b97)}
+    .prep-advice-list,.container-advice-list{margin:10px 0 0;padding-left:18px;color:var(--text-muted,#5d7183);font-size:.76rem;font-weight:700;line-height:1.45}
+    .prep-advice-list li,.container-advice-list li{margin:4px 0}
+    .meal-day-macros span:first-child{color:var(--text-strong,#17324a);font-weight:950}
+    @media(max-width:720px){.prep-summary-main,.meal-day-summary{display:grid}.meal-total-pill{max-width:none;text-align:left}.bulk-prep-grid{grid-template-columns:1fr}.prep-summary-pill{width:max-content}.meal-detail-grid{grid-template-columns:1fr}}
+
+  
+
+
+    /* v77 Meals mobile IA: move prep model above the week on phone/tablet */
+    .prep-card-anchor{display:none!important}
+    .meal-prep-mobile-slot:empty{display:none!important}
+    .meal-prep-mobile-slot{display:block;margin:0 0 12px}
+    .planner-card > .meal-prep-card{box-shadow:var(--shadow-soft);background:rgba(255,255,255,.70)}
+
+    /* v73 Meals information architecture: less busy, saved bulk prep, collapsed prep detail */
+    .planner-card{gap:16px}
+    .prep-plan-summary{padding:12px 13px;margin:10px 0 10px;background:rgba(255,255,255,.54)}
+    .prep-mini-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+    .prep-mini-row span{display:inline-flex;border-radius:999px;padding:6px 8px;background:rgba(43,148,120,.08);border:1px solid rgba(43,148,120,.12);font-size:.7rem;font-weight:850;color:#18785f}
+    .meal-day-summary{padding:14px 15px;margin-bottom:10px;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.52))}
+    .meal-day-summary p{margin:5px 0 0;color:var(--text-muted,#5d7183);font-size:.82rem;font-weight:760}
+    .meal-total-pill{border-radius:18px;text-align:left;line-height:1.45;min-width:230px}
+    .meal-card{padding:15px 16px;gap:10px;border-radius:21px}
+    .meal-card__title{font-size:1rem}
+    .meal-card__subtitle{font-size:.84rem;line-height:1.42}
+    .meal-serving-note{font-size:.74rem;margin-top:5px}
+    .meal-meta-row{gap:6px;margin-top:8px}
+    .meal-meta-row span{font-size:.68rem;padding:5px 7px;background:rgba(255,255,255,.62)}
+    .meal-detail-collapse{margin-top:2px;border:1px solid rgba(23,50,74,.08);border-radius:15px;background:rgba(255,255,255,.42);overflow:hidden}
+    .meal-detail-collapse summary{cursor:pointer;list-style:none;padding:10px 11px;font-size:.78rem;font-weight:900;color:var(--accent,#0c5b97)}
+    .meal-detail-collapse summary::-webkit-details-marker{display:none}
+    .meal-detail-collapse summary::after{content:"＋";float:right;color:var(--text-muted,#5d7183)}
+    .meal-detail-collapse[open] summary::after{content:"−"}
+    .meal-detail-collapse .meal-detail-grid{margin:0;padding:0 10px 10px}
+    .meal-detail-collapse .meal-prep-note{margin:0 10px 10px}
+    .meal-detail-panel{background:rgba(255,255,255,.62)}
+    .meal-pack-note{margin-top:6px}
+    .meal-pack-note span{font-size:.68rem;padding:5px 7px}
+    .meal-support-note{margin-top:6px;font-size:.74rem}
+    .meal-card__actions{margin-top:0}
+    .meal-card__actions button{min-height:34px;font-size:.78rem}
+    .saved-bulk-prep{margin-top:14px;padding-top:14px;border-top:1px solid rgba(23,50,74,.1)}
+    .saved-prep-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .saved-prep-head p{margin:4px 0 0;color:var(--text-muted,#5d7183);font-size:.78rem;font-weight:700;line-height:1.35}
+    .saved-prep-title{margin:0;font-size:.98rem;color:var(--text-strong,#17324a);letter-spacing:-.02em}
+    .saved-prep-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+    .saved-prep-stats span{display:grid;gap:2px;border-radius:14px;padding:9px;background:rgba(255,255,255,.62);border:1px solid rgba(23,50,74,.08);font-size:.68rem;font-weight:850;color:var(--text-muted,#5d7183);text-align:center}
+    .saved-prep-stats strong{font-size:1rem;color:var(--text-strong,#17324a)}
+    .prep-batch-row.compact span{font-size:.68rem;padding:6px 8px}
+    .saved-prep-details{margin-top:10px;border-radius:15px;border:1px solid rgba(23,50,74,.08);background:rgba(255,255,255,.46);overflow:hidden}
+    .saved-prep-details summary{cursor:pointer;padding:10px 11px;font-size:.76rem;font-weight:900;color:var(--accent,#0c5b97);list-style:none}
+    .saved-prep-details summary::-webkit-details-marker{display:none}
+    .saved-prep-details ol,.saved-prep-details ul{margin:0;padding:0 14px 12px 30px;color:var(--text-muted,#5d7183);font-size:.75rem;font-weight:700;line-height:1.45}
+    .saved-prep-details li{margin:4px 0}
+    @media(max-width:720px){.meal-total-pill{min-width:0}.saved-prep-head{display:grid}.saved-prep-stats{grid-template-columns:1fr 1fr 1fr}}
+
+
+    /* v74 Meals layout cleanup */
+    body[data-page="meals"] .hearty-support-panel{
+      margin:0 0 32px !important;
+      padding:14px 14px 12px !important;
+      position:relative;
+      z-index:2;
+    }
+    body[data-page="meals"] .layout{margin-top:8px;align-items:start;}
+    body[data-page="meals"] .hearty-support-head{gap:12px;}
+    body[data-page="meals"] .hearty-support-options{padding-bottom:1px;}
+    body[data-page="meals"] .planner-actions{align-items:center;}
+    body[data-page="meals"] .meal-visible-portion{
+      margin-top:9px;
+      padding:10px 11px;
+      border-radius:15px;
+      background:rgba(255,255,255,.56);
+      border:1px solid rgba(23,50,74,.08);
+      color:var(--text-muted,#5d7183);
+      font-size:.78rem;
+      font-weight:720;
+      line-height:1.42;
+    }
+    body[data-page="meals"] .meal-visible-portion strong{
+      color:var(--text-strong,#17324a);
+      font-weight:900;
+    }
+    body[data-page="meals"] .prep-cook-list{
+      margin-top:12px;
+      display:grid;
+      gap:8px;
+    }
+    body[data-page="meals"] .prep-cook-title{
+      margin:0;
+      color:var(--text-strong,#17324a);
+      font-size:.9rem;
+      font-weight:900;
+      letter-spacing:-.01em;
+    }
+    body[data-page="meals"] .prep-cook-item{
+      border:1px solid rgba(23,50,74,.08);
+      background:rgba(255,255,255,.58);
+      border-radius:15px;
+      padding:10px 11px;
+      display:grid;
+      gap:4px;
+    }
+    body[data-page="meals"] .prep-cook-item strong{
+      color:var(--text-strong,#17324a);
+      font-size:.84rem;
+      line-height:1.25;
+    }
+    body[data-page="meals"] .prep-cook-item span{
+      color:var(--accent,#0c5b97);
+      font-size:.75rem;
+      font-weight:900;
+    }
+    body[data-page="meals"] .prep-cook-item p{
+      margin:0;
+      color:var(--text-muted,#5d7183);
+      font-size:.74rem;
+      font-weight:720;
+      line-height:1.36;
+    }
+    body[data-page="meals"] .prep-pack-strip{
+      margin-top:10px;
+      border-radius:15px;
+      padding:10px 11px;
+      background:rgba(12,91,151,.07);
+      border:1px solid rgba(12,91,151,.12);
+      color:var(--text-muted,#5d7183);
+      font-size:.76rem;
+      font-weight:760;
+      line-height:1.4;
+    }
+    body[data-page="meals"] .prep-pack-strip strong{color:var(--text-strong,#17324a);font-weight:900;}
+    body[data-page="meals"] .prep-label-preview{
+      margin-top:7px;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    body[data-page="meals"] .prep-label-preview span{
+      border-radius:999px;
+      padding:5px 7px;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(23,50,74,.08);
+      color:var(--text-muted,#5d7183);
+      font-size:.67rem;
+      font-weight:850;
+    }
+    @media(max-width:720px){
+      body[data-page="meals"] .hearty-support-panel{margin-bottom:18px !important;}
+      body[data-page="meals"] .planner-actions{width:100%;}
+      body[data-page="meals"] .planner-actions .planner-action{flex:1 1 auto;}
+      body[data-page="meals"] .meal-visible-portion{font-size:.75rem;}
+    }
+
 </style>
-<link href="css/hearty-theme.css?v=36" rel="stylesheet"/>
+<link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
 <script src="js/hearty-theme.js?v=36"></script>
-<script src="hearty-meal-engine-final.js?v=36-meals-repair"></script>
-<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
-<link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=36" rel="stylesheet"/>
-<link href="css/hearty-step5n-theme-beauty.css?v=36" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=36"></script>
+<link href="css/hearty-phase1-visual-fixes.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
+<script src="js/hearty-production-guard.js?v=77"></script>
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
 </head>
 <body data-page="meals">
 <div class="shell"><div data-shell-mount="topbar"></div>
 
-<section aria-label="Meals status" class="status-strip">
+<section aria-label="Meals overview" class="status-strip">
 <div>
-<div class="eyebrow">MEAL PLANNER</div>
-<h1 class="headline">Your meals for today</h1>
-<p class="subline">Protein-forward GLP-1 meals. Starter plan first, customise when ready.</p><p style="margin:8px 0 0"><a class="soft-btn" href="/meals-onboarding.html">Make this plan fit me</a></p>
+<div class="eyebrow">MEALS</div>
+<h1 class="page-heading">Your meals for today</h1>
+<p class="subline">Protein-forward GLP-1 meals with fresh, leftovers or weekly prep options.</p>
 </div>
-<div class="status-pills support-status-controls">
-<div class="support-pill is-off" id="supportPill">Support Off</div>
-<button class="support-off-btn support-off-top" data-support-off="" hidden="" id="supportOffBtn" type="button">Support Off</button>
-<div class="day-pill" id="todayLabel">Today</div>
+</section>
+<section class="card hearty-support-panel" data-hearty-support-panel data-support-context="meals" aria-label="Support today">
+<div class="hearty-support-head">
+  <div class="hearty-support-title">
+    <div class="section-label">TODAY</div>
+    <h2 class="compact-title">Feeling today</h2>
+  </div>
+  <div class="hearty-support-actions">
+    <span class="hearty-support-current" id="supportPill">Okay</span>
+    <button class="hearty-support-off" data-support-off type="button">Turn off</button>
+  </div>
 </div>
+<div class="hearty-support-options" data-hearty-support-selector>
+  <button class="hearty-support-option" data-support-off type="button">Okay</button>
+  <button class="hearty-support-option" data-support-reason="nausea" type="button">Nausea</button>
+  <button class="hearty-support-option" data-support-reason="bloating" type="button">Bloated</button>
+  <button class="hearty-support-option" data-support-reason="constipation" type="button">Constipated</button>
+  <button class="hearty-support-option" data-support-reason="low_appetite" type="button">Low appetite</button>
+  <button class="hearty-support-option" data-support-reason="fatigue" type="button">Tired</button>
+</div>
+<p class="hearty-support-mini" data-support-status-copy>Normal day. Tap a chip if you need extra support.</p>
 </section>
 <div class="layout">
 <main class="stack">
+<section aria-label="Meal plan" class="card planner-card">
+<div class="planner-head">
+<div>
+<div class="section-label">TODAY + WEEK</div>
+<h2 class="compact-title">Your current plan</h2>
+<p class="compact-copy">Meals stay simple. Open portion and prep only when you need the detail.</p>
+</div>
+<div class="planner-actions">
+<button class="planner-action" id="openMealsHelpBtn" type="button">How this plan works</button>
+<button class="planner-action primary" data-regenerate-week="" type="button">Build new weekly plan</button>
+</div>
+</div>
+<div class="prep-plan-summary" id="prepPlanSummary" aria-live="polite">
+  <div class="prep-summary-main">
+    <span class="prep-summary-pill">Prep model</span>
+    <div><strong>Building your prep plan…</strong><span>Choose how you want to cook and pack meals.</span></div>
+  </div>
+</div>
+<div id="mealPrepMobileSlot" class="meal-prep-mobile-slot"></div>
+<div aria-label="Choose day" class="planner-days" id="plannerDays">
+<button class="planner-day is-active" type="button">Day 1</button>
+<button class="planner-day" type="button">Day 2</button>
+<button class="planner-day" type="button">Day 3</button>
+<button class="planner-day" type="button">Day 4</button>
+<button class="planner-day" type="button">Day 5</button>
+<button class="planner-day" type="button">Day 6</button>
+<button class="planner-day" type="button">Day 7</button>
+</div>
+<div class="meal-list" id="mealList">
+<article class="meal-card">
+<div class="meal-card__header">
+<div>
+<div class="meal-card__eyebrow">Loading</div>
+<h3 class="meal-card__title">Loading your meals</h3>
+<div class="meal-card__subtitle">If this stays here, check that meals-engine.js and meals-bridge.js are in the repo.</div>
+</div>
+<div class="meal-card__protein">—</div>
+</div>
+</article>
+</div>
+<div class="boot-warning" id="bootWarning">
+            Meal engine did not boot. Check that meals-engine.js and meals-bridge.js are present.
+          </div>
+</section>
 <section aria-label="Protein meter" class="card protein-card">
 <div class="section-label">PROTEIN METER</div>
 <div class="protein-row">
@@ -791,67 +970,64 @@
 </div>
 </div>
 </section>
-<section aria-label="Meal plan" class="card planner-card">
-<div class="planner-head">
+<section aria-label="Personalise meals" class="card">
 <div>
-<div class="section-label">7-DAY PLAN</div>
-<h2 class="compact-title">Generated week</h2>
-<p class="compact-copy">Your meals update from your preferences, support status and snack setting.</p>
+<h2 class="section-title" style="margin:0 0 6px">Make this plan fit you</h2>
+<p class="subline" style="margin:0">Adjust the starter plan around your portions, preferences and weekly rhythm.</p>
 </div>
-<div class="planner-actions">
-<button class="planner-action" id="openMealsHelpBtn" type="button">How Meals Works</button>
-<button class="planner-action" data-regenerate-day="" type="button">Regenerate day</button>
-<button class="planner-action primary" data-regenerate-week="" type="button">Generate week</button>
-</div>
-</div>
-<div aria-label="Choose day" class="planner-days" id="plannerDays">
-<button class="planner-day is-active" type="button">Day 1</button>
-<button class="planner-day" type="button">Day 2</button>
-<button class="planner-day" type="button">Day 3</button>
-<button class="planner-day" type="button">Day 4</button>
-<button class="planner-day" type="button">Day 5</button>
-<button class="planner-day" type="button">Day 6</button>
-<button class="planner-day" type="button">Day 7</button>
-</div>
-<div class="meal-list" id="mealList">
-<article class="meal-card">
-<div class="meal-card__header">
-<div>
-<div class="meal-card__eyebrow">Loading</div>
-<h3 class="meal-card__title">Loading your meals</h3>
-<div class="meal-card__subtitle">If this stays here, check that meals-engine.js and meals-bridge.js are in the repo.</div>
-</div>
-<div class="meal-card__protein">—</div>
-</div>
-</article>
-</div>
-<div class="boot-warning" id="bootWarning">
-            Meal engine did not boot. Check that meals-engine.js and meals-bridge.js are present.
-          </div>
+<div style="margin-top:14px"><a class="soft-btn" href="./meals-onboarding.html">Make this plan fit me</a></div>
 </section>
 </main>
 <aside class="stack">
-<section class="card meal-control-card">
-<div class="section-label">TODAY'S SETTINGS</div>
-<div class="control-row">
-<div>
-<strong>Support mode</strong>
-<span id="supportModeLabel">Off</span>
+<div id="mealPrepDesktopSlot" class="prep-card-anchor" aria-hidden="true"></div>
+<section class="card meal-prep-card" id="mealPrepCard">
+<div class="section-label">PREP MODEL</div>
+<h2 class="compact-title">How do you want to prep?</h2>
+<p class="compact-copy">Choose once, then use the saved prep plan for the week.</p>
+<div class="prep-scenario-list" aria-label="Choose prep scenario">
+  <button class="prep-scenario-btn" data-prep-scenario="cook_fresh" type="button">
+    <strong>Cook as you go</strong>
+    <span>Each meal is made fresh when eaten.</span>
+  </button>
+  <button class="prep-scenario-btn" data-prep-scenario="dinner_leftovers" type="button">
+    <strong>Dinner → next lunch</strong>
+    <span>Cook dinner as 2 portions and pack tomorrow’s lunch.</span>
+  </button>
+  <button class="prep-scenario-btn" data-prep-scenario="weekly_bulk_prep" type="button">
+    <strong>Weekly bulk prep</strong>
+    <span>Cook once, portion meals into labelled containers.</span>
+  </button>
 </div>
-<span class="support-mode-note" id="supportModeNote">Standard meals</span>
+<div class="bulk-prep-options" id="bulkPrepOptions" hidden>
+  <div class="bulk-prep-grid">
+    <label class="bulk-prep-field">Prep day
+      <select id="bulkPrepDay" data-bulk-prep-field="prepDay">
+        <option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+      </select>
+    </label>
+    <label class="bulk-prep-field">Prep days
+      <input id="bulkPrepDaysCount" data-bulk-prep-field="prepDaysCount" type="number" min="1" max="7" value="5">
+    </label>
+    <label class="bulk-prep-field">Batch recipes
+      <input id="bulkBatchRecipeCount" data-bulk-prep-field="batchRecipeCount" type="number" min="1" max="4" value="3">
+    </label>
+    <label class="bulk-prep-field">Fridge days
+      <input id="bulkFridgeDays" data-bulk-prep-field="fridgeDays" type="number" min="1" max="5" value="3">
+    </label>
+  </div>
+  <div class="bulk-checkbox-row" aria-label="Meals to prep">
+    <label><input type="checkbox" data-bulk-prep-field="mealsToPrep" data-bulk-meal-slot value="breakfast"> Breakfast</label>
+    <label><input type="checkbox" data-bulk-prep-field="mealsToPrep" data-bulk-meal-slot value="lunch" checked> Lunch</label>
+    <label><input type="checkbox" data-bulk-prep-field="mealsToPrep" data-bulk-meal-slot value="dinner" checked> Dinner</label>
+    <label><input id="bulkIncludeSnacks" type="checkbox" data-bulk-prep-field="includeSnacks"> Pack optional snack containers</label>
+  </div>
+  <p class="compact-copy" style="margin-top:10px">Bulk prep repeats a simple 3-day cycle. Use one main container size, label by day and meal, and freeze later meals if you prep more than 3 days.</p>
 </div>
-<div class="control-row">
-<div>
-<strong>Snacks</strong>
-<span id="snackToggleLabel">On</span>
-</div>
-<button aria-pressed="true" class="switch-btn is-on" id="snackToggleBtn" type="button">
-<span></span>
-</button>
-</div>
+<div class="container-summary" id="containerSummary"><strong>Container plan loading…</strong></div>
+<div class="saved-bulk-prep" id="savedBulkPrepPlan" hidden></div>
 </section>
 <section class="card">
-<div class="section-label">SHOPPING LIST</div>
+<div class="section-label">SHOPPING</div>
 <h2 class="compact-title">Shopping list</h2>
 <p class="compact-copy">Download or copy your shopping list without leaving the app.</p>
 <div class="planner-actions" style="margin-top:14px">
@@ -862,906 +1038,300 @@
 </aside>
 </div>
 
+<script src="meals-engine.js?v=77"></script>
+<script src="meals-bridge.js?v=77"></script>
 <script>
     (function(){
       "use strict";
 
-      var SNACKS_KEY = "heartyMealsSnacksOn";
+      var SNACKS_KEY = "heartyMealsSnacksOn"; // legacy key ignored from v71: snacks are optional plan items, not a tracker switch.
 
-      function safeSet(key, value){
-        try { localStorage.setItem(key, value); } catch(e) {}
+      function $(id){ return document.getElementById(id); }
+      function readJSON(key, fallback){ try{ var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
+      function safeSet(key, value){ try{ localStorage.setItem(key, value); }catch(e){} }
+      function getSnacksOn(){ return true; }
+
+      function normaliseRegion(value){
+        var raw = String(value || "SA").trim().toUpperCase();
+        if (raw === "ZA") return "SA";
+        if (["SA","US","UK","AU","CA"].indexOf(raw) !== -1) return raw;
+        return raw || "SA";
       }
 
-      function getSnacksOn(){
-        try { return localStorage.getItem(SNACKS_KEY) !== "false"; } catch(e) { return true; }
-      }
+      function readAppOnboardingProfile(){ return readJSON("hearty_basic_user_profile_v1", {}) || {}; }
+      function readAppMealTargets(){ return readJSON("heartyMealTargetsV1", null) || readJSON("heartyNutritionTargetsV1", null) || {}; }
 
-      function setSnacksOn(value){
-        safeSet(SNACKS_KEY, value ? "true" : "false");
-
-        var bridge = window.heartyMealsBridge;
-        if (bridge && bridge.state) {
-          bridge.state.adjustments = bridge.state.adjustments || {};
-          bridge.state.adjustments.snacksOn = !!value;
-        }
-
-        if (bridge && typeof bridge.generateWeek === "function") bridge.generateWeek();
-        else if (bridge && typeof bridge.regenerateWeek === "function") bridge.regenerateWeek();
-        else if (bridge && typeof bridge.refresh === "function") bridge.refresh();
-        else if (bridge && typeof bridge.init === "function") bridge.init();
-      }
-
-      function syncSnackToggle(){
-        var btn = document.getElementById("snackToggleBtn");
-        var label = document.getElementById("snackToggleLabel");
-        var on = getSnacksOn();
-
-        if (btn) {
-          btn.classList.toggle("is-on", on);
-          btn.setAttribute("aria-pressed", String(on));
-        }
-
-        if (label) label.textContent = on ? "On" : "Off";
-      }
-
-      function bindSnackToggle(){
-        var btn = document.getElementById("snackToggleBtn");
-        if (!btn || btn.__bound) return;
-
-        btn.__bound = true;
-        syncSnackToggle();
-
-        btn.addEventListener("click", function(){
-          setSnacksOn(!getSnacksOn());
-          syncSnackToggle();
+      function withAppOnboardingProfile(profile){
+        profile = profile || {};
+        var basic = readAppOnboardingProfile();
+        var targets = readAppMealTargets();
+        var targetWrap = targets.targets || targets || {};
+        var region = normaliseRegion(basic.region || basic.country || profile.region || profile.country || profile.selectedCountry || localStorage.getItem("heartyRegion") || localStorage.getItem("heartyCountry") || "SA");
+        var engineTargets = Object.assign({}, profile.targets || {}, {
+          kcal: Number(targetWrap.kcal || targetWrap.calories || targetWrap.calorieTarget || targetWrap.calorieFloor || 1250),
+          calories: Number(targetWrap.calories || targetWrap.kcal || targetWrap.calorieTarget || targetWrap.calorieFloor || 1250),
+          protein: Number(targetWrap.protein || targetWrap.proteinTarget || targetWrap.proteinMin || 100),
+          proteinMin: Number(targetWrap.proteinMin || targetWrap.protein || 90),
+          carbs: Number(targetWrap.carbs || targetWrap.carbTarget || 110),
+          fat: Number(targetWrap.fat || targetWrap.fatTarget || 42),
+          fibre: Number(targetWrap.fibre || targetWrap.fiber || targetWrap.fibreMin || 24),
+          fibreMin: Number(targetWrap.fibreMin || targetWrap.fibre || targetWrap.fiber || 22)
+        });
+        return Object.assign({}, profile, {
+          appOnboardingProfile: basic,
+          appProfileComplete: basic.onboardingComplete === true || basic.setupComplete === true || localStorage.getItem("app_onboarding_complete") === "true",
+          country: region,
+          selectedCountry: region,
+          region: region,
+          units: basic.units || basic.unit || profile.units || localStorage.getItem("heartyUnitsSystem") || "metric",
+          age: basic.age || profile.age || "",
+          sex: basic.sex || profile.sex || "",
+          heightCm: basic.heightCm || profile.heightCm || "",
+          currentWeightKg: basic.currentWeightKg || profile.currentWeightKg || "",
+          startingWeightKg: basic.startingWeightKg || profile.startingWeightKg || "",
+          dailyActivity: basic.dailyActivity || profile.dailyActivity || "",
+          exerciseActivity: basic.exerciseActivity || profile.exerciseActivity || "",
+          nutritionTargets: targets,
+          mealTargets: targets,
+          targets: engineTargets
         });
       }
 
-      function normaliseSupportReasonForMeals(value){
-        if (!value) return "";
-        var raw = String(value).trim();
-        if (!raw) return "";
-        var lower = raw.toLowerCase();
-        if (["off","false","0","none","null","undefined"].indexOf(lower) !== -1) return "";
-        var map = {
-          "nausea":"nausea",
-          "bloating":"bloating",
-          "fatigue":"fatigue",
-          "exhaustion":"fatigue",
-          "low energy":"fatigue",
-          "low_energy":"fatigue",
-          "tired":"fatigue",
-          "low appetite":"low_appetite",
-          "low_appetite":"low_appetite",
-          "low-appetite":"low_appetite",
-          "appetite":"low_appetite"
-        };
-        return map[lower] || "";
+      function readMealProfile(){
+        var state = readJSON("heartyMealsPageStateVFinal", null) ||
+          readJSON("heartyMealsStateVFinal", null) ||
+          readJSON("heartyMealsStateV1", null) ||
+          readJSON("heartyMealProfile", null) ||
+          readJSON("heartyMealsProfile", null);
+        if (!state) return null;
+        var profile = state.preferences || state.onboarding || state.profile || state.mealProfile || state;
+        return withAppOnboardingProfile(profile || {});
       }
 
-      function readGlobalSupport(){
-        try {
-          var canonicalRaw = localStorage.getItem("hearty_support_mode_v1");
-
-          // Canonical key is the authority. If it exists and is off, do NOT fall back
-          // to old Meals-only keys, because that is what resurrected Support Mode.
-          if (canonicalRaw) {
-            try {
-              var canonical = JSON.parse(canonicalRaw);
-              if (canonical && (canonical.active === true || canonical.isActive === true)) {
-                return normaliseSupportReasonForMeals(canonical.reason || canonical.primarySymptom || canonical.symptom || canonical.mode || canonical.type || "");
-              }
-              return "";
-            } catch(e) {
-              return "";
-            }
-          }
-
-          // Legacy fallback is now conservative: only accept an explicit active object
-          // or a plain valid reason. An explicit off object must block stale meals_support_mode.
-          var raw = localStorage.getItem("heartySupportMode") || localStorage.getItem("supportMode") || "";
-          if (raw && raw.charAt(0) === "{") {
-            var parsed = JSON.parse(raw);
-            if (parsed && (parsed.isActive === true || parsed.active === true)) {
-              return normaliseSupportReasonForMeals(parsed.reason || parsed.primarySymptom || parsed.symptom || parsed.mode || parsed.type || "");
-            }
-            return "";
-          }
-
-          var plain = normaliseSupportReasonForMeals(raw);
-          if (plain) return plain;
-
-          // Last resort only. This key is old and often stale, so only use it if it is
-          // a clean valid reason and no explicit off key exists above.
-          return normaliseSupportReasonForMeals(localStorage.getItem("meals_support_mode") || "");
-        } catch(e) {
-          return "";
-        }
-      }
-
-      function writeGlobalSupport(reason){
-        var now = new Date().toISOString();
-
-        if (reason) {
-          safeSet("meals_support_mode", reason);
-
-          safeSet("hearty_support_mode_v1", JSON.stringify({
-            active:true,
-            isActive:true,
-            reason:reason,
-            mode:reason,
-            sourcePage:"meals",
-            startedAt:now,
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-
-          safeSet("heartySupportMode", JSON.stringify({
-            isActive:true,
-            active:true,
-            reason:reason,
-            sourcePage:"meals",
-            startedAt:now,
-            updatedAt:now
-          }));
-        } else {
-          safeSet("meals_support_mode", "");
-          safeSet("hearty_support_mode", "off");
-          safeSet("heartySupportActive", "false");
-
-          // This is the key the bridge reads. It must be explicitly off before regeneration.
-          safeSet("hearty_support_mode_v1", JSON.stringify({
-            active:false,
-            isActive:false,
-            reason:null,
-            symptom:null,
-            type:null,
-            mode:null,
-            sourcePage:"meals",
-            startedAt:null,
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-
-          safeSet("heartySupportMode", JSON.stringify({
-            isActive:false,
-            active:false,
-            reason:null,
-            sourcePage:"meals",
-            endedAt:now,
-            updatedAt:now
-          }));
-        }
-      }
-
-      function updateSupportBanner(reason){
-        var isOn = !!reason;
-        var pill = document.getElementById("supportPill");
-        var label = document.getElementById("supportModeLabel");
-        var note = document.getElementById("supportModeNote");
-        var offBtn = document.getElementById("supportOffBtn");
-
-        if (pill) {
-          pill.textContent = isOn ? "Support On" : "Support Off";
-          pill.classList.toggle("is-on", isOn);
-          pill.classList.toggle("is-off", !isOn);
-        }
-
-        if (label) label.textContent = isOn ? "On" : "Off";
-        if (note) note.textContent = isOn ? "Softer meals active" : "Standard meals";
-        if (offBtn) offBtn.hidden = !isOn;
-      }
-
-      function clearSupportMealCaches(){
-        [
-          "heartySupportMealPlan",
-          "heartySupportMealOverride",
-          "heartyMealSupportAdjustment",
-          "heartyMealsSupportSnapshot",
-          "heartySupportMealsToday",
-          "heartyMealsSupportDay",
-          "hearty_meals_support_override",
-          "hearty_support_meals_cache",
-          "heartyMealsSupportPlan",
-          "heartyMealsGeneratedSupportWeek",
-          "heartyMealsSupportWeek",
-          "heartyMealsAdjustedWeek",
-          "heartyMealsCurrentSupportWeek",
-          "heartyMealsSupportCache",
-          "heartySupportAdjustedMeals",
-          "heartyMealsSupportModeCache",
-          "heartyMealsRenderedSupportDay",
-          "heartyMealsCurrentMode",
-          "heartyMealsSupportSnapshotV1",
-          "heartyMealsWeekSupport",
-          "heartyMealsWeekAdjusted",
-          "heartyMealsSupportActiveWeek",
-          "heartyMealsLastSupportWeek",
-          "heartyMealsTodaySupport",
-          "heartyMealsSupportMeals",
-          "heartyMealsGeneratedWeek_support",
-          "heartyMealsGeneratedWeekSupport"
-        ].forEach(function(key){
-          try { localStorage.removeItem(key); } catch(e) {}
+      function buildStarterMealProfile(){
+        var basic = readAppOnboardingProfile();
+        var region = normaliseRegion(basic.region || basic.country || localStorage.getItem("heartyRegion") || localStorage.getItem("heartyCountry") || "SA");
+        safeSet("heartyMealsCountry", region);
+        safeSet("heartyMealsStarterPlanActive", "true");
+        return withAppOnboardingProfile({
+          profileComplete:false,
+          starterPlan:true,
+          country:region,
+          selectedCountry:region,
+          dietType:"omnivore",
+          snacksEnabled:getSnacksOn(),
+          dinnerForLunch:true
         });
       }
 
-      function forceBridgeIntoStandardMealMode(){
-        var bridge = window.heartyMealsBridge;
-
-        if (bridge && bridge.state) {
-          bridge.state.adjustments = bridge.state.adjustments || {};
-          bridge.state.adjustments.supportMode = null;
-          bridge.state.adjustments.supportActive = false;
-          bridge.state.adjustments.lowAppetite = false;
-          bridge.state.adjustments.easyDigestion = false;
-          bridge.state.adjustments.softTextureBias = false;
-          bridge.state.adjustments.lighterMeals = false;
-          bridge.state.adjustments.lowerBulkBias = false;
-          bridge.state.adjustments.quick = false;
-          bridge.state.adjustments.lowPrep = false;
-          bridge.state.adjustments.leftoversPreferred = false;
-
-          // Clear common in-memory support/generated plan fields.
-          [
-            "supportWeek",
-            "supportPlan",
-            "adjustedWeek",
-            "renderedSupportDay",
-            "supportMeals",
-            "supportGeneratedWeek",
-            "activeSupportWeek",
-            "currentSupportWeek",
-            "supportDay",
-            "supportSnapshot"
-          ].forEach(function(key){
-            try {
-              if (Object.prototype.hasOwnProperty.call(bridge.state, key)) bridge.state[key] = null;
-            } catch(e) {}
-          });
-        }
-
-        return bridge;
-      }
-
-      function clearVisibleMealsBeforeStandardRepaint(){
-        var list = document.getElementById("mealList");
-        if (!list) return;
-        list.innerHTML = '<article class="meal-card"><div class="meal-card__header"><div><div class="meal-card__eyebrow">Refreshing</div><h3 class="meal-card__title">Restoring standard meals</h3><div class="meal-card__subtitle">Support Mode is off. Rebuilding your standard plan…</div></div><div class="meal-card__protein">—</div></div></article>';
-      }
-
-      function refreshBridgeMeals(){
-        var bridge = window.heartyMealsBridge;
-        if (!bridge) return;
-
-        if (typeof bridge.refreshMealsUI === "function") {
-          bridge.refreshMealsUI();
-          return;
-        }
-
-        if (typeof bridge.renderMeals === "function") {
-          bridge.renderMeals();
-          return;
-        }
-
-        if (typeof bridge.render === "function") {
-          bridge.render();
-          return;
-        }
-
-        if (typeof bridge.refresh === "function") {
-          bridge.refresh();
-          return;
-        }
-      }
-
-      function regenerateStandardMeals(options){
-        options = options || {};
-        clearSupportMealCaches();
-        clearVisibleMealsBeforeStandardRepaint();
-
-        var bridge = forceBridgeIntoStandardMealMode();
-        if (!bridge) return;
-
-        // Some bridge versions expose a support toggle. Use it, then force state again.
-        if (typeof bridge.toggleSupportMode === "function") {
-          try { bridge.toggleSupportMode(null); } catch(e) {}
-          forceBridgeIntoStandardMealMode();
-        }
-
-        // Force a standard week first. This is more reliable than only regenerating one day
-        // from a week that was originally built during Support Mode.
-        if (typeof bridge.generateWeek === "function") {
-          bridge.generateWeek();
-        } else if (typeof bridge.regenerateWeek === "function") {
-          bridge.regenerateWeek();
-        } else if (typeof bridge.init === "function") {
-          bridge.init();
-        }
-
-        forceBridgeIntoStandardMealMode();
-
-        // Only after the standard week exists, regenerate the active day if requested.
-        if (options.day === true && typeof bridge.regenerateDay === "function") {
-          try {
-            var index = Number(bridge.state && (
-              bridge.state.activeDayIndex ??
-              bridge.state.selectedDayIndex ??
-              bridge.state.currentDayIndex ??
-              bridge.state.dayIndex
-            ));
-            if (!Number.isFinite(index)) index = 0;
-            bridge.regenerateDay(index);
-          } catch(e) {
-            console.warn("[Hearty Meals] standard regenerateDay failed:", e);
-          }
-        }
-
-        forceBridgeIntoStandardMealMode();
-        refreshBridgeMeals();
-        setTimeout(function(){
-          forceBridgeIntoStandardMealMode();
-          refreshBridgeMeals();
-        }, 75);
-        setTimeout(function(){
-          forceBridgeIntoStandardMealMode();
-          refreshBridgeMeals();
-        }, 300);
-      }
-
-      function turnSupportOffAndRestoreStandardMeals(){
-        var now = new Date().toISOString();
-
-        // 1) Write every support system to OFF before the bridge regenerates.
-        // The bridge reads hearty_support_mode_v1, so this key must be off first.
-        writeGlobalSupport("");
-
-        try {
-          localStorage.setItem("hearty_support_mode_v1", JSON.stringify({
-            active:false,
-            isActive:false,
-            reason:null,
-            symptom:null,
-            type:null,
-            mode:null,
-            sourcePage:"meals",
-            startedAt:null,
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-        } catch(e) {}
-
-        try { localStorage.removeItem("meals_support_mode"); } catch(e) {}
-        try { localStorage.removeItem("supportMode"); } catch(e) {}
-        try { localStorage.removeItem("meals_low_appetite"); } catch(e) {}
-        try { localStorage.removeItem("meals_busy_day"); } catch(e) {}
-        try { localStorage.removeItem("meals_extra_hunger"); } catch(e) {}
-        try { localStorage.setItem("hearty_support_mode", "off"); } catch(e) {}
-        try { localStorage.setItem("heartySupportActive", "false"); } catch(e) {}
-
-        try {
-          localStorage.setItem("heartySupportMode", JSON.stringify({
-            isActive:false,
-            active:false,
-            reason:null,
-            primarySymptom:null,
-            mode:null,
-            sourcePage:"meals",
-            endedAt:now,
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-        } catch(e) {}
-
-        try {
-          localStorage.setItem("heartySupportState", JSON.stringify({
-            active:false,
-            isActive:false,
-            reason:null,
-            primarySymptom:null,
-            mode:null,
-            sourcePage:"meals",
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-        } catch(e) {}
-
-        try {
-          localStorage.setItem("hearty_support_state", JSON.stringify({
-            active:false,
-            isActive:false,
-            reason:null,
-            primarySymptom:null,
-            mode:null,
-            sourcePage:"meals",
-            updatedAt:now,
-            lastChangedAt:now
-          }));
-        } catch(e) {}
-
-        try {
-          var canonical = JSON.parse(localStorage.getItem("hearty:data:v1") || "{}");
-          canonical.support = Object.assign({}, canonical.support || {}, {
-            active:false,
-            isActive:false,
-            active_state:"",
-            reason:null,
-            primarySymptom:null,
-            mode:null,
-            sourcePage:"meals",
-            updated_at:now,
-            updatedAt:now,
-            lastChangedAt:now
-          });
-          localStorage.setItem("hearty:data:v1", JSON.stringify(canonical));
-        } catch(e) {}
-
-        // 2) Clear cached support meals and update the visible banner.
-        clearSupportMealCaches();
-        updateSupportBanner("");
-        clearVisibleMealsBeforeStandardRepaint();
-
-        // 3) Force the existing bridge state to standard mode, then regenerate.
-        forceBridgeIntoStandardMealMode();
-        regenerateStandardMeals({ day:false });
-
-        // 4) Notify any page/listener that Support Mode is now off.
-        try {
-          var offDetail = {
-            active:false,
-            isActive:false,
-            reason:null,
-            mode:null,
-            source:"meals",
-            sourcePage:"meals",
-            updatedAt:now,
-            lastChangedAt:now
-          };
-
-          window.dispatchEvent(new CustomEvent("hearty:support-mode-changed", { detail:offDetail }));
-          window.dispatchEvent(new CustomEvent("hearty:support-changed", { detail:offDetail }));
-          window.dispatchEvent(new CustomEvent("hearty-support-mode-changed", { detail:offDetail }));
-        } catch(e) {}
-
-        setTimeout(function(){
-          forceBridgeIntoStandardMealMode();
-          refreshBridgeMeals();
-        }, 400);
-
-        showMealsToast("Support Mode off. Standard meals restored.");
-      }
-
-      function bindSupportOffButton(){
-        var btn = document.getElementById("supportOffBtn");
-        if (!btn || btn.__bound) return;
-
-        btn.__bound = true;
-
-        btn.addEventListener("click", function(event){
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-          turnSupportOffAndRestoreStandardMeals();
-        }, true);
-      }
-
-      function bindStandardRegenerateOverrides(){
-        if (document.__heartyStandardRegenerateOverridesBound) return;
-        document.__heartyStandardRegenerateOverridesBound = true;
-
-        document.addEventListener("click", function(event){
-          var dayBtn = event.target && event.target.closest && event.target.closest("[data-regenerate-day]");
-          var weekBtn = event.target && event.target.closest && event.target.closest("[data-regenerate-week]");
-
-          if (!dayBtn && !weekBtn) return;
-
-          // Only override when Support is off. If Support is on, allow support regeneration.
-          if (readGlobalSupport()) return;
-
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-
-          regenerateStandardMeals({ day: !!dayBtn });
-          showMealsToast(dayBtn ? "Standard day regenerated." : "Standard week generated.");
-        }, true);
+      function readSupportMode(){
+        try{
+          var raw = localStorage.getItem("hearty_support_mode_v1");
+          if (!raw) return null;
+          var state = JSON.parse(raw);
+          if (!state || !(state.active === true || state.isActive === true)) return null;
+          var value = String(state.reason || state.mode || state.type || state.symptom || "").toLowerCase().replace(/\s+/g,"_");
+          var map = { bloated:"bloating", tired:"fatigue", low_energy:"fatigue" };
+          value = map[value] || value;
+          return ["nausea","bloating","constipation","low_appetite","fatigue"].indexOf(value) !== -1 ? value : null;
+        }catch(e){ return null; }
       }
 
       function syncTodayLabel(){
-        var el = document.getElementById("todayLabel");
+        var el = $("todayLabel");
         if (!el) return;
-        var d = new Date();
-        el.textContent = d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+        el.textContent = new Date().toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
       }
 
-      function escapeHtml(value){
-        return String(value == null ? "" : value).replace(/[&<>"]/g, function(ch){
-          return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[ch];
-        });
+      function showMealsToast(message){
+        var toast = $("mealsToast");
+        if (!toast) return;
+        toast.textContent = message || "";
+        toast.classList.add("show");
+        clearTimeout(showMealsToast._timer);
+        showMealsToast._timer = setTimeout(function(){ toast.classList.remove("show"); }, 2200);
       }
 
       function collectShoppingItems(){
         var bridge = window.heartyMealsBridge;
-
-        if (bridge && typeof bridge.getShoppingList === "function") {
-          return bridge.getShoppingList();
-        }
-
-        if (bridge && bridge.state && Array.isArray(bridge.state.shoppingList)) {
-          return bridge.state.shoppingList;
-        }
-
-        return [
-          { name:"Eggs", qty7:"12–14 eggs", qty30:"52–60 eggs" },
-          { name:"Chicken breast / strips", qty7:"1.2–1.5 kg", qty30:"5–6.5 kg" },
-          { name:"Fish / hake / salmon", qty7:"700–900 g", qty30:"3–4 kg" },
-          { name:"Canned tuna", qty7:"3–4 tins", qty30:"13–17 tins" },
-          { name:"Lean beef / mince", qty7:"700–900 g", qty30:"3–4 kg" },
-          { name:"Low-fat yoghurt", qty7:"1.5–2 kg", qty30:"6.5–8.5 kg" },
-          { name:"Vegetables / salad", qty7:"4–6 kg mixed", qty30:"17–26 kg mixed" },
-          { name:"Fruit", qty7:"7–10 portions", qty30:"30–43 portions" },
-          { name:"Rice / couscous / sweet potato", qty7:"7 portions", qty30:"30 portions" },
-          { name:"Low-calorie dressing", qty7:"1 bottle", qty30:"3–4 bottles" },
-          { name:"Optional snacks", qty7:getSnacksOn() ? "7 snack portions" : "Off", qty30:getSnacksOn() ? "30 snack portions" : "Off" }
-        ];
+        if (bridge && typeof bridge.getShoppingList === "function") return bridge.getShoppingList();
+        if (bridge && bridge.state && Array.isArray(bridge.state.shoppingList)) return bridge.state.shoppingList;
+        return [];
       }
 
       function buildShoppingListText(){
         var items = collectShoppingItems();
         var lines = [];
         var today = new Date().toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
-
         lines.push("Hearty Shopping List");
         lines.push("Generated: " + today);
         lines.push("");
-        lines.push("7-day and 30-day quantities generated from your current meal plan.");
+        lines.push("Generated from your current Meals plan and prep model.");
         lines.push("");
-
         items.forEach(function(item){
-          var name = item.name || item.item || item.label || item[0] || "";
-          var qty7 = item.qty7 || item.weekQty || item.quantity7 || item[1] || "";
-          var qty30 = item.qty30 || item.monthQty || item.quantity30 || item[2] || "";
-
-          if (!qty30 && qty7) qty30 = "≈ 4.3 × 7-day quantity";
-
+          var name = item.name || item.item || item.label || "";
+          var qty7 = item.qty7 || item.weekQty || item.quantity7 || "";
+          var qty30 = item.qty30 || item.monthQty || item.quantity30 || "";
+          if (!name) return;
           lines.push("- " + name);
           if (qty7) lines.push("  7 days: " + qty7);
           if (qty30) lines.push("  30 days: " + qty30);
           lines.push("");
         });
-
         return lines.join("\n");
       }
 
-      function showMealsToast(message){
-        var toast = document.getElementById("mealsToast");
-        if (!toast) return;
-        toast.textContent = message || "";
-        toast.classList.add("show");
-        clearTimeout(showMealsToast._timer);
-        showMealsToast._timer = setTimeout(function(){
-          toast.classList.remove("show");
-        }, 2200);
-      }
-
-      function downloadShoppingList(){
-        var text = buildShoppingListText();
-        var blob = new Blob([text], { type:"text/plain;charset=utf-8" });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-
-        a.href = url;
-        a.download = "hearty-shopping-list.txt";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
-        showMealsToast("Shopping list downloaded.");
-      }
-
-      async function copyShoppingList(){
-        var text = buildShoppingListText();
-
-        try {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(text);
-          } else {
-            var area = document.createElement("textarea");
-            area.value = text;
-            area.setAttribute("readonly", "");
-            area.style.position = "fixed";
-            area.style.left = "-9999px";
-            document.body.appendChild(area);
-            area.select();
-            document.execCommand("copy");
-            area.remove();
-          }
-
-          showMealsToast("Shopping list copied.");
-        } catch(error) {
-          console.warn("[Hearty Meals] Copy shopping list failed:", error);
-          showMealsToast("Could not copy. Try download instead.");
-        }
-      }
-
       function bindShoppingListActions(){
-        var downloadBtn = document.getElementById("shoppingDownloadBtn");
-        var copyBtn = document.getElementById("shoppingCopyBtn");
-
-        if (downloadBtn && !downloadBtn.__bound) {
-          downloadBtn.__bound = true;
-          downloadBtn.addEventListener("click", downloadShoppingList);
+        var downloadBtn = $("shoppingDownloadBtn");
+        var copyBtn = $("shoppingCopyBtn");
+        if (downloadBtn && !downloadBtn.__boundV73) {
+          downloadBtn.__boundV73 = true;
+          downloadBtn.addEventListener("click", function(){
+            var blob = new Blob([buildShoppingListText()], { type:"text/plain;charset=utf-8" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "hearty-shopping-list.txt";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+            showMealsToast("Shopping list downloaded.");
+          });
         }
-
-        if (copyBtn && !copyBtn.__bound) {
-          copyBtn.__bound = true;
-          copyBtn.addEventListener("click", copyShoppingList);
+        if (copyBtn && !copyBtn.__boundV73) {
+          copyBtn.__boundV73 = true;
+          copyBtn.addEventListener("click", async function(){
+            var text = buildShoppingListText();
+            try{
+              if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(text);
+              else {
+                var area = document.createElement("textarea");
+                area.value = text;
+                area.setAttribute("readonly", "");
+                area.style.position = "fixed";
+                area.style.left = "-9999px";
+                document.body.appendChild(area);
+                area.select();
+                document.execCommand("copy");
+                area.remove();
+              }
+              showMealsToast("Shopping list copied.");
+            }catch(e){ showMealsToast("Could not copy. Try download instead."); }
+          });
         }
-      }
-
-      function openMealsHelp(){
-        var modal = document.getElementById("mealsHelpModal");
-        if (!modal) return;
-        modal.hidden = false;
-        modal.setAttribute("aria-hidden", "false");
-        try { localStorage.setItem("heartyMealsHelpSeen", "true"); } catch(e) {}
-      }
-
-      function closeMealsHelp(){
-        var modal = document.getElementById("mealsHelpModal");
-        if (!modal) return;
-        modal.hidden = true;
-        modal.setAttribute("aria-hidden", "true");
       }
 
       function bindMealsHelp(){
-        var openBtn = document.getElementById("openMealsHelpBtn");
-        var closeBtn = document.getElementById("closeMealsHelpBtn");
-        var modal = document.getElementById("mealsHelpModal");
-
-        if (openBtn && !openBtn.__bound) {
-          openBtn.__bound = true;
-          openBtn.addEventListener("click", openMealsHelp);
-        }
-
-        if (closeBtn && !closeBtn.__bound) {
-          closeBtn.__bound = true;
-          closeBtn.addEventListener("click", closeMealsHelp);
-        }
-
-        if (modal && !modal.__bound) {
-          modal.__bound = true;
-          modal.addEventListener("click", function(event){
-            if (event.target === modal) closeMealsHelp();
-          });
-          document.addEventListener("keydown", function(event){
-            if (event.key === "Escape" && !modal.hidden) closeMealsHelp();
-          });
-        }
+        var modal = $("mealsHelpModal");
+        var openBtn = $("openMealsHelpBtn");
+        var closeBtn = $("closeMealsHelpBtn");
+        if (!modal || !openBtn || openBtn.__boundV73) return;
+        openBtn.__boundV73 = true;
+        function open(){ modal.hidden = false; document.body.classList.add("modal-open"); }
+        function close(){ modal.hidden = true; document.body.classList.remove("modal-open"); }
+        openBtn.addEventListener("click", open);
+        if (closeBtn) closeBtn.addEventListener("click", close);
+        modal.addEventListener("click", function(event){ if (event.target === modal) close(); });
+        document.addEventListener("keydown", function(event){ if (event.key === "Escape" && !modal.hidden) close(); });
       }
 
-      function loadScript(src){
-        return new Promise(function(resolve, reject){
-          if (document.querySelector('script[src="'+src+'"]')) return resolve();
-          var s = document.createElement("script");
-          s.src = src;
-          s.async = false;
-          s.onload = resolve;
-          s.onerror = function(){ reject(new Error("Could not load " + src)); };
-          document.body.appendChild(s);
-        });
-      }
 
-      async function loadFirst(paths){
-        var lastError = null;
-
-        for (var i = 0; i < paths.length; i++) {
-          try {
-            await loadScript(paths[i]);
-            return paths[i];
-          } catch(e) {
-            lastError = e;
-          }
+      function syncMealPrepPlacement(){
+        var card = $("mealPrepCard");
+        var mobileSlot = $("mealPrepMobileSlot");
+        var desktopSlot = $("mealPrepDesktopSlot");
+        if (!card || !mobileSlot || !desktopSlot || !desktopSlot.parentNode) return;
+        var useMobile = false;
+        try { useMobile = window.matchMedia && window.matchMedia("(max-width: 1079px)").matches; }
+        catch(e) { useMobile = window.innerWidth < 1080; }
+        if (useMobile) {
+          if (card.parentNode !== mobileSlot) mobileSlot.appendChild(card);
+        } else if (card.parentNode !== desktopSlot.parentNode || card.previousElementSibling !== desktopSlot) {
+          desktopSlot.parentNode.insertBefore(card, desktopSlot.nextSibling);
         }
-
-        throw lastError || new Error("No scripts loaded");
-      }
-
-      function findEngine(){
-        return window.HeartyMealsEngineV6 ||
-          window.HeartyMealsEngine ||
-          window.heartyMealsEngine ||
-          window.MealsEngine ||
-          window.mealsEngine ||
-          window.HEARTY_MEALS_ENGINE ||
-          null;
-      }
-
-      function findBridgeFactory(){
-        return window.createMealsBridge ||
-          window.createHeartyMealsBridge ||
-          window.createHeartyMealsDBBridge ||
-          window.HeartyMealsBridge ||
-          window.HeartyMealsDBBridge ||
-          window.heartyCreateMealsBridge ||
-          null;
       }
 
       function showBootWarning(message){
-        var warn = document.getElementById("bootWarning");
+        var warn = $("bootWarning");
         if (!warn) return;
         warn.textContent = message || warn.textContent;
         warn.classList.add("show");
       }
 
-      function readJsonStorage(key){
-        try {
-          var raw = localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : null;
-        } catch(e) {
-          return null;
-        }
-      }
-
-      function readMealProfile(){
-        var state = readJsonStorage("heartyMealsPageStateVFinal") ||
-          readJsonStorage("heartyMealsStateVFinal") ||
-          readJsonStorage("heartyMealsStateV1") ||
-          readJsonStorage("heartyMealProfile") ||
-          readJsonStorage("heartyMealsProfile");
-
-        if (!state) return null;
-
-        var profile = state.preferences || state.onboarding || state.profile || state.mealProfile || state;
-        var complete = state.profileComplete === true ||
-          state.onboardingComplete === true ||
-          state.mealsOnboardingComplete === true ||
-          profile.profileComplete === true ||
-          profile.onboardingComplete === true ||
-          Object.keys(profile || {}).length > 2;
-
-        return complete ? profile : null;
-      }
-
-      function redirectToMealsOnboarding(){
-        var current = (window.location.pathname || "").toLowerCase();
-        if (current.indexOf("meals-onboarding") !== -1) return;
-        window.location.href = "/meals-onboarding.html";
-      }
-
-      function buildStarterMealProfile(){
-        var basic = readJsonStorage("hearty_basic_user_profile_v1") || {};
-        var region = basic.region || basic.country || localStorage.getItem("heartyRegion") || localStorage.getItem("heartyCountry") || "SA";
-        if (region === "ZA") region = "SA";
-        try {
-          localStorage.setItem("heartyMealsCountry", region);
-          localStorage.setItem("heartyMealsStarterPlanActive", "true");
-        } catch(e) {}
-        return {
-          profileComplete: false,
-          starterPlan: true,
-          country: region,
-          selectedCountry: region,
-          dietType: "omnivore",
-          proteins: ["chicken", "beef", "fish", "eggs", "dairy"],
-          breakfast: ["eggs", "yoghurt", "oats"],
-          starches: ["rice", "pasta", "sweet_potato"],
-          vegetables: ["spinach", "tomato", "carrot", "baby_marrow", "green_beans", "broccoli"],
-          snackPreferences: ["yoghurt", "cottage_cheese", "boiled_eggs"],
-          snacksEnabled: localStorage.getItem("heartyMealsSnacksOn") !== "false",
-          dinnerForLunch: true
-        };
-      }
-
-      async function bootMeals(){
+      function bootMeals(){
         syncTodayLabel();
-        updateSupportBanner(readGlobalSupport());
-        bindSnackToggle();
-        bindSupportOffButton();
-        bindStandardRegenerateOverrides();
         bindShoppingListActions();
         bindMealsHelp();
+        syncMealPrepPlacement();
 
-        try {
-          var mealProfile = readMealProfile();
+        try{
+          var engine = window.HeartyMealsEngineV77 || window.HeartyMealsEngineV76 || window.HeartyMealsEngineV74 || window.HeartyMealsEngineV73 || window.HeartyMealsEngineV72 || window.HeartyMealsEngineV71;
+          var factory = window.createHeartyMealsBridge;
+          if (!engine || typeof engine.generateWeekPlan !== "function") throw new Error("New meals-engine.js did not load.");
+          if (typeof factory !== "function") throw new Error("New meals-bridge.js did not load.");
 
-          if (!mealProfile) {
-            mealProfile = buildStarterMealProfile();
-          }
-
-          await loadFirst([
-            "./meals-engine-v6.5.js",
-            "./js/meals-engine-v6.5.js",
-            "./meals-engine.js",
-            "./js/meals-engine.js",
-            "./hearty-meals-engine.js",
-            "./js/hearty-meals-engine.js"
-          ]);
-
-          await loadFirst([
-            "./meals-bridge.js",
-            "./js/meals-bridge.js",
-            "./hearty-meals-bridge.js",
-            "./js/hearty-meals-bridge.js"
-          ]);
-
-          try {
-            await loadFirst([
-              "./hearty-meals-db-bridge.js",
-              "./js/hearty-meals-db-bridge.js"
-            ]);
-          } catch(dbBridgeError) {
-            console.info("[Hearty Meals] DB bridge not loaded; continuing with local meals bridge.", dbBridgeError);
-          }
-
-          var engine = findEngine();
-          var factory = findBridgeFactory();
-
-          if (factory && typeof factory !== "function" && typeof factory.create === "function") {
-            factory = factory.create.bind(factory);
-          }
-
-          if (!engine || typeof factory !== "function") {
-            throw new Error("Meal engine or bridge factory was not found on window.");
-          }
-
-          var supportMode = readGlobalSupport();
+          var mealProfile = readMealProfile() || buildStarterMealProfile();
+          mealProfile.snacksEnabled = getSnacksOn();
+          mealProfile.snackEnabled = getSnacksOn();
 
           var bridge = factory({
             engine: engine,
             initialProfile: mealProfile,
             ui: {
-              dayTabs: document.getElementById("plannerDays"),
-              mealList: document.getElementById("mealList"),
+              dayTabs: $("plannerDays"),
+              mealList: $("mealList"),
               shoppingList: null
             }
           });
 
           if (bridge && bridge.state) {
             bridge.state.adjustments = bridge.state.adjustments || {};
-            bridge.state.adjustments.supportMode = supportMode || bridge.state.adjustments.supportMode || null;
+            bridge.state.adjustments.supportMode = readSupportMode();
             bridge.state.adjustments.snacksOn = getSnacksOn();
           }
 
           window.heartyMealsBridge = bridge;
-
           if (bridge && typeof bridge.init === "function") bridge.init();
-
-        } catch(error) {
+          try {
+            var params = new URLSearchParams(window.location.search || "");
+            if (params.get("generate") === "1" && bridge && typeof bridge.regenerateWeek === "function") {
+              bridge.regenerateWeek(true, { forceNew: true });
+              params.delete("generate");
+              params.delete("v");
+              var clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "") + (window.location.hash || "");
+              if (window.history && window.history.replaceState) window.history.replaceState(null, "", clean);
+            }
+          } catch(e) {}
+        }catch(error){
           console.warn("[Hearty Meals] Boot failed:", error);
-          showBootWarning("Meal engine did not boot: " + error.message + ". Check that meals-engine.js and meals-bridge.js exist.");
+          showBootWarning("Meal engine did not boot: " + error.message + ". Check meals-engine.js and meals-bridge.js.");
         }
       }
 
-      window.addEventListener("storage", function(){
-        updateSupportBanner(readGlobalSupport());
+
+      window.addEventListener("resize", function(){
+        clearTimeout(window.__heartyMealsPrepPlacementTimer);
+        window.__heartyMealsPrepPlacementTimer = setTimeout(syncMealPrepPlacement, 120);
       });
 
-      window.addEventListener("hearty:support-mode-changed", function(event){
-        var reason = readGlobalSupport();
-        updateSupportBanner(reason);
-
-        if (!reason && event && event.detail && event.detail.active === false) {
-          // Support may have been switched off from another page.
-          // Rebuild standard meals instead of only repainting the current support week.
-          clearSupportMealCaches();
-          forceBridgeIntoStandardMealMode();
-          regenerateStandardMeals({ day:false });
+      window.addEventListener("storage", function(event){
+        if (["hearty_support_mode_v1", "hearty_meals_prep_model_v1", "hearty_bulk_prep_plan_v1"].indexOf(event.key) !== -1 && window.heartyMealsBridge) {
+          window.heartyMealsBridge.regenerateWeek();
         }
       });
 
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", bootMeals);
-      } else {
-        bootMeals();
-      }
+      window.addEventListener("hearty:support-mode-changed", function(){
+        if (window.heartyMealsBridge && typeof window.heartyMealsBridge.regenerateWeek === "function") window.heartyMealsBridge.regenerateWeek();
+      });
+
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootMeals);
+      else bootMeals();
     })();
   </script>
-<script src="js/hearty-support-state.js?v=38"></script>
+<script src="js/hearty-support-state.js?v=77"></script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=36"></script>
-
-<div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
+<script defer="" src="js/hearty-shell-template.js?v=91"></script>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>
 </html>

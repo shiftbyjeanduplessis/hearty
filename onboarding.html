@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="clean_blue">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+<title>Hearty — Profile setup</title>
+<meta name="theme-color" content="#f6f9fe"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/hearty-icon-192.png"/>
+<link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
+<script src="js/hearty-theme.js"></script>
+<link href="css/hearty-phase1-visual-fixes.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
+<script src="hearty-target-calculator.js"></script>
+<style id="hearty-app-onboarding-css">
+  /* v65 — onboarding visual polish only. Saved fields and keys are unchanged. */
+  .onboarding-layout{max-width:1080px;margin:14px auto 0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+  .onboarding-card{position:relative;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 88%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--card,rgba(255,255,255,.94)) 94%,white 6%),var(--card,rgba(255,255,255,.92)));box-shadow:0 16px 38px rgba(14,31,53,.075);border-radius:28px;padding:20px;backdrop-filter:blur(12px);overflow:hidden}
+  .onboarding-card:first-child:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--theme-accent,var(--accent,#2f6df6)),color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 42%,transparent));opacity:.9}
+  .onboarding-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:2px 0 20px;padding:0;position:relative}
+  .onboarding-step-pill{min-height:30px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 90%,transparent);background:color-mix(in srgb,var(--surface-chip,rgba(255,255,255,.76)) 78%,transparent);color:var(--muted,#6d7b8c);border-radius:999px;padding:0 9px;font-size:.66rem;font-weight:830;letter-spacing:.07em;text-transform:uppercase;display:inline-flex;align-items:center;justify-content:center;text-align:center;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+  .onboarding-step-pill.active{background:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 13%,var(--card,#fff));border-color:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 38%,transparent);color:var(--theme-accent,var(--accent,#2f6df6));box-shadow:0 8px 18px color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 10%,transparent)}
+  .onboarding-step[hidden]{display:none!important}
+  .onboarding-step{animation:obFade .18s ease both}
+  @keyframes obFade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .onboarding-step .section-title{margin:0;font-size:clamp(1.32rem,2.2vw,1.78rem);line-height:1.08;letter-spacing:-.04em;font-weight:720;color:var(--ink,#152033)}
+  .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px!important}
+  .field-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .field{display:grid;gap:6px;min-width:0;padding:0}
+  .field.full{grid-column:1/-1}
+  .field label,.field-label{font-size:.68rem;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#6d7b8c)}
+  .field input,.field select,.field textarea,.onboarding-input{width:100%;min-height:46px;border-radius:16px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 92%,transparent);background:color-mix(in srgb,var(--surface-input,rgba(255,255,255,.90)) 90%,transparent);color:var(--ink,#152033);font:inherit;font-size:.96rem;font-weight:640;padding:10px 12px;outline:none;box-sizing:border-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.50);transition:border-color .14s ease,box-shadow .14s ease,background .14s ease}
+  .field input:focus,.field select:focus,.onboarding-input:focus{border-color:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 46%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 11%,transparent),inset 0 1px 0 rgba(255,255,255,.55);background:var(--card,#fff)}
+  .unit-toggle,.day-grid{display:flex;flex-wrap:wrap;gap:7px}
+  .unit-toggle button,.day-grid button{min-height:38px;border-radius:999px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 90%,transparent);background:color-mix(in srgb,var(--surface-button,rgba(255,255,255,.82)) 86%,transparent);color:var(--muted,#6d7b8c);font:inherit;font-size:.8rem;font-weight:820;padding:0 12px;cursor:pointer;box-shadow:none;transition:background .14s ease,border-color .14s ease,color .14s ease,transform .14s ease}
+  .unit-toggle button:hover,.day-grid button:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 26%,transparent)}
+  .unit-toggle button.active,.day-grid button.active{background:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 13%,var(--card,#fff));border-color:color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 40%,transparent);color:var(--theme-accent,var(--accent,#2f6df6))}
+  .helper,.onboarding-note{margin:7px 0 0;color:var(--muted,#6d7b8c);font-size:.9rem;line-height:1.48;font-weight:520;max-width:58rem}
+  .onboarding-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:20px;flex-wrap:wrap;padding-top:14px;border-top:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.20)) 70%,transparent)}
+  .onboarding-actions .btn,.onboarding-card .btn{border:0;border-radius:999px;min-height:44px;padding:0 17px;font:inherit;font-size:.92rem;font-weight:850;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+  .btn.primary{background:linear-gradient(180deg,var(--theme-accent,var(--accent,#2f6df6)),color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 78%,#123));color:white;box-shadow:0 12px 28px color-mix(in srgb,var(--theme-accent,var(--accent,#2f6df6)) 22%,transparent)}
+  .btn.secondary{background:color-mix(in srgb,var(--surface-button,rgba(255,255,255,.78)) 88%,transparent);border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.24)) 90%,transparent);color:var(--ink,#152033);box-shadow:none}
+  .target-preview{display:grid;gap:10px}
+  .target-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.16)) 80%,transparent);padding:0 0 10px}
+  .target-row:last-child{border-bottom:0;padding-bottom:0}
+  .target-label{color:var(--muted,#6d7b8c);font-size:.68rem;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+  .target-value{font-weight:850;color:var(--ink,#152033);text-align:right;font-size:.92rem;line-height:1.25}
+  .med-custom-row[hidden],.interval-row[hidden],.next-date-row[hidden],.day-picker-row[hidden]{display:none!important}
+  .completion-panel{display:grid;gap:10px}
+  .save-state{min-height:20px;color:var(--muted,#6d7b8c);font-size:.82rem;font-weight:700;margin-top:6px}
+  main.onboarding-layout aside.onboarding-card{position:sticky;top:18px;background:linear-gradient(180deg,color-mix(in srgb,var(--card,rgba(255,255,255,.92)) 86%,transparent),color-mix(in srgb,var(--card,rgba(255,255,255,.92)) 70%,transparent));box-shadow:0 10px 26px rgba(14,31,53,.055)}
+  main.onboarding-layout aside.onboarding-card .section-title{font-size:1.12rem;line-height:1.15;letter-spacing:-.03em}
+  @media(max-width:900px){.onboarding-layout{grid-template-columns:1fr;gap:12px;margin-top:12px}.field-grid,.field-grid.three{grid-template-columns:1fr}.onboarding-card{padding:16px;border-radius:22px}.onboarding-steps{display:flex;overflow-x:auto;gap:6px;margin-bottom:16px;scrollbar-width:none}.onboarding-steps::-webkit-scrollbar{display:none}.onboarding-step-pill{flex:0 0 auto;min-width:92px}.onboarding-actions{align-items:stretch}.onboarding-actions>div{width:100%;justify-content:flex-end}.onboarding-actions .btn{min-height:42px}main.onboarding-layout aside.onboarding-card{position:relative;top:auto}}
+  @media(max-width:460px){.onboarding-card{padding:14px}.onboarding-step .section-title{font-size:1.28rem}.field input,.field select{min-height:44px}.onboarding-actions{gap:8px}.onboarding-actions>button{order:2}.onboarding-actions>div{order:1}.onboarding-actions .btn{flex:1}}
+</style>
+</head>
+<body data-page="onboarding">
+<div class="shell">
+  <div data-shell-mount="topbar"></div>
+  <section class="status-strip" aria-label="Profile setup overview">
+    <div>
+      <div class="eyebrow">PROFILE SETUP</div>
+      <h1 class="page-heading">Personalise Hearty</h1>
+      <p class="subline">Add your profile, body stats and medication rhythm. Meals can use this for better estimates without changing your food preferences.</p>
+    </div>
+  </section>
+
+  <main class="onboarding-layout" data-onboarding-root>
+    <section class="onboarding-card" aria-labelledby="onboardingStepTitle">
+      <div class="onboarding-steps" aria-label="Setup steps">
+        <span class="onboarding-step-pill active" data-step-pill="0">Profile</span>
+        <span class="onboarding-step-pill" data-step-pill="1">Body</span>
+        <span class="onboarding-step-pill" data-step-pill="2">Activity</span>
+        <span class="onboarding-step-pill" data-step-pill="3">Medication</span>
+        <span class="onboarding-step-pill" data-step-pill="4">Review</span>
+      </div>
+
+      <div class="onboarding-step" data-step="0">
+        <h2 class="section-title" id="onboardingStepTitle">Basic profile</h2>
+        <p class="onboarding-note">This gives the app a stable profile to use across Home, Meals, Exercise and Progress.</p>
+        <div class="field-grid" style="margin-top:16px">
+          <div class="field"><label for="obName">Name</label><input id="obName" autocomplete="given-name" placeholder="First name"/></div>
+          <div class="field"><label for="obCountry">Country / region</label><select id="obCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="UK">United Kingdom</option><option value="AU">Australia</option><option value="CA">Canada</option><option value="OTHER">Other / not listed</option></select></div>
+          <div class="field full"><label>Units</label><div class="unit-toggle" role="group" aria-label="Unit system"><button type="button" data-unit-choice="metric">Metric · kg/cm</button><button type="button" data-unit-choice="imperial">Imperial · lb/ft/in</button></div></div>
+        </div>
+      </div>
+
+      <div class="onboarding-step" data-step="1" hidden>
+        <h2 class="section-title">Body details</h2>
+        <p class="onboarding-note">No goal weight here. A progress target should be guided later. These fields are only for estimates.</p>
+        <div class="field-grid" style="margin-top:16px">
+          <div class="field"><label for="obAge">Age</label><input id="obAge" type="number" inputmode="numeric" min="18" max="95" placeholder="Used for estimate"/></div>
+          <div class="field"><label for="obSex">Calorie formula</label><select id="obSex"><option value="">Use general estimate</option><option value="female">Female formula</option><option value="male">Male formula</option></select></div>
+          <div class="field metric-field"><label for="obHeightCm">Height</label><input id="obHeightCm" type="number" inputmode="decimal" min="120" max="230" step="0.1" placeholder="cm"/></div>
+          <div class="field imperial-field" hidden><label for="obHeightFt">Height · feet</label><input id="obHeightFt" type="number" inputmode="numeric" min="3" max="7" placeholder="ft"/></div>
+          <div class="field imperial-field" hidden><label for="obHeightIn">Height · inches</label><input id="obHeightIn" type="number" inputmode="decimal" min="0" max="11.9" step="0.1" placeholder="in"/></div>
+          <div class="field metric-field"><label for="obStartingWeightKg">Starting weight</label><input id="obStartingWeightKg" type="number" inputmode="decimal" min="35" max="260" step="0.1" placeholder="kg"/></div>
+          <div class="field metric-field"><label for="obCurrentWeightKg">Current weight</label><input id="obCurrentWeightKg" type="number" inputmode="decimal" min="35" max="260" step="0.1" placeholder="kg"/></div>
+          <div class="field imperial-field" hidden><label for="obStartingWeightLb">Starting weight</label><input id="obStartingWeightLb" type="number" inputmode="decimal" min="75" max="575" step="0.1" placeholder="lb"/></div>
+          <div class="field imperial-field" hidden><label for="obCurrentWeightLb">Current weight</label><input id="obCurrentWeightLb" type="number" inputmode="decimal" min="75" max="575" step="0.1" placeholder="lb"/></div>
+        </div>
+      </div>
+
+      <div class="onboarding-step" data-step="2" hidden>
+        <h2 class="section-title">Activity level</h2>
+        <p class="onboarding-note">This separates normal daily movement from exercise so Meals does not overestimate your targets.</p>
+        <div class="field-grid" style="margin-top:16px">
+          <div class="field"><label for="obDailyActivity">Normal daily movement</label><select id="obDailyActivity"><option value="">Choose later</option><option value="mostly_sitting">Mostly sitting</option><option value="light_daily">Light daily movement</option><option value="on_feet">On my feet a lot</option><option value="physical_job">Physical job / very active routine</option></select></div>
+          <div class="field"><label for="obExerciseActivity">Exercise / training</label><select id="obExerciseActivity"><option value="">Choose later</option><option value="none">No structured exercise right now</option><option value="light_1_2">Light exercise 1–2 times/week</option><option value="regular_3_4">Exercise 3–4 times/week</option><option value="hard_5plus">Hard training 5+ times/week</option><option value="very_hard">Very hard training / sport most days</option></select></div>
+        </div>
+      </div>
+
+      <div class="onboarding-step" data-step="3" hidden>
+        <h2 class="section-title">Medication rhythm</h2>
+        <p class="onboarding-note">The medication name is only a label. It does not control the schedule.</p>
+        <div class="field-grid" style="margin-top:16px">
+          <div class="field"><label for="obMedication">Medication label</label><select id="obMedication"><option value="">Set later</option><option>Wegovy</option><option>Ozempic</option><option>Mounjaro</option><option>Zepbound</option><option>Saxenda</option><option>Victoza</option><option>Rybelsus</option><option>Trulicity</option><option>Byetta</option><option>Bydureon</option><option>Compounded semaglutide</option><option>Compounded tirzepatide</option><option>Other GLP-1</option><option>Not sure yet</option><option>Prefer not to say</option><option>Not currently using medication</option><option value="Other">Other / type my medication</option></select></div>
+          <div class="field med-custom-row" hidden><label for="obMedicationCustom">Medication name</label><input id="obMedicationCustom" placeholder="Type medication name"/></div>
+          <div class="field"><label for="obScheduleType">Schedule</label><select id="obScheduleType"><option value="not_tracking">Not tracking schedule</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="every_x_days">Every X days</option><option value="specific_days">Specific days of the week</option></select></div>
+          <div class="field interval-row" hidden><label for="obIntervalDays">Repeat every X days</label><input id="obIntervalDays" type="number" inputmode="numeric" min="1" max="60" placeholder="e.g. 5"/></div>
+          <div class="field next-date-row"><label for="obNextDoseDate">Next dose / reminder date</label><input id="obNextDoseDate" type="date"/></div>
+          <div class="field"><label for="obReminderEnabled">Reminder</label><select id="obReminderEnabled"><option value="true">Remind me</option><option value="false">No reminder for now</option></select></div>
+          <div class="field full day-picker-row"><label>Days of the week</label><div class="day-grid" aria-label="Medication days"><button type="button" data-med-day="1">Mon</button><button type="button" data-med-day="2">Tue</button><button type="button" data-med-day="3">Wed</button><button type="button" data-med-day="4">Thu</button><button type="button" data-med-day="5">Fri</button><button type="button" data-med-day="6">Sat</button><button type="button" data-med-day="0">Sun</button></div><p class="helper">Select as many days as your prescribed rhythm needs, including three times per week or any other pattern.</p></div>
+        </div>
+      </div>
+
+      <div class="onboarding-step" data-step="4" hidden>
+        <h2 class="section-title">Review & save</h2>
+        <p class="onboarding-note">Hearty will save your profile and create rough nutrition targets for Meals. No goal weight is stored from this setup.</p>
+        <div class="completion-panel" id="reviewPanel"></div>
+      </div>
+
+      <div class="onboarding-actions">
+        <button class="btn secondary" type="button" id="obBackBtn">Back</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn secondary" href="home.html">Cancel</a><button class="btn primary" type="button" id="obNextBtn">Next</button></div>
+      </div>
+      <div class="save-state" id="obSaveState" aria-live="polite"></div>
+    </section>
+
+    <aside class="onboarding-card">
+      <div class="eyebrow">MEALS BRIDGE</div>
+      <h2 class="section-title" style="margin-top:8px">Current estimate</h2>
+      <p class="onboarding-note">Meals will use these values when available. If anything is missing, it will keep using the default starter GLP-1 plan.</p>
+      <div class="target-preview" id="targetPreview" style="margin-top:16px"></div>
+    </aside>
+  </main>
+</div>
+<script src="js/hearty-production-guard.js?v=54"></script>
+<script defer src="js/hearty-onboarding.js?v=65"></script>
+<script defer src="js/hearty-shell-template.js?v=91"></script>
+</body>
+</html>

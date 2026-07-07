@@ -13,11 +13,11 @@
 <meta content="Hearty" name="apple-mobile-web-app-title"/>
 <link href="manifest.json" rel="manifest"/>
 <link href="icons/hearty-icon-192.png" rel="apple-touch-icon"/>
-<link as="style" href="css/hearty-home-v15-refactor-aesthetic.css" rel="preload"/>
-<link href="css/hearty-home-v15-refactor-aesthetic.css" rel="stylesheet"/>
+<link as="style" href="css/hearty-home-v15-refactor-aesthetic.css?v=59" rel="preload"/>
+<link href="css/hearty-home-v15-refactor-aesthetic.css?v=59" rel="stylesheet"/>
 <script src="js/hearty-data-layer.v1.js"></script>
 <script src="hearty-target-calculator.js"></script>
-<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js"></script>
+<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js?v=84"></script>
 <meta content="yes" name="mobile-web-app-capable"/>
 <style id="hearty-medication-day-picker-css">
     .day-toggle-grid{
@@ -46,99 +46,33 @@
       .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
   </style>
-<style id="hearty-page-selector-safe-lock">
-/* Safe local page selector lock — no shared JS, no nav rebuild. */
-.bottom-nav .nav-item svg,
-#bottomNav .nav-item svg{
-  width:20px!important;
-  height:20px!important;
-  max-width:22px!important;
-  max-height:22px!important;
-  display:block!important;
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  overflow:visible!important;
-}
-.bottom-nav .nav-item svg *,
-#bottomNav .nav-item svg *{
-  stroke:currentColor!important;
-  fill:none!important;
-  stroke-width:1.9!important;
-  stroke-linecap:round!important;
-  stroke-linejoin:round!important;
-  vector-effect:non-scaling-stroke!important;
-}
-.bottom-nav .nav-item,
-#bottomNav .nav-item{
-  overflow:hidden!important;
-}
-</style>
-<link href="css/hearty-theme.css" rel="stylesheet"/>
+<link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
 <script src="js/hearty-theme.js"></script>
-<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
-<link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=49" rel="stylesheet"/>
-<link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=49"></script>
-<style id="hearty-nav-v10-visible-fix">
-/* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
-html body[data-page] [data-shell-mount="bottom-nav"]#bottomNav{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  position:fixed !important;
-  left:0 !important;
-  right:0 !important;
-  bottom:0 !important;
-  transform:none !important;
-  z-index:2147483647 !important;
-  pointer-events:none !important;
-  width:100vw !important;
-  max-width:100vw !important;
-  height:auto !important;
-  min-height:0 !important;
-  padding:0 10px calc(8px + env(safe-area-inset-bottom,0px)) !important;
-  margin:0 !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-}
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{
-  display:grid !important;
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  bottom:auto !important;
-  transform:none !important;
-  width:min(860px,calc(100vw - 20px)) !important;
-  max-width:720px !important;
-  height:74px !important;
-  min-height:74px !important;
-  margin:0 auto !important;
-  padding:7px 6px !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
-  gap:4px !important;
-  pointer-events:auto !important;
-  opacity:1 !important;
-  visibility:visible !important;
-}
-html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)) !important;}
+<link href="css/hearty-phase1-visual-fixes.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
+<script src="js/hearty-production-guard.js?v=54"></script>
+  <link rel="stylesheet" href="pwa-install.css?v=84">
+
+<style id="hearty-v84-update-card-css">
+  .hearty-update-card{border-color:color-mix(in srgb,var(--theme-accent,#2f6df6) 22%,var(--line,rgba(143,163,184,.24)));background:linear-gradient(180deg,color-mix(in srgb,var(--theme-accent,#2f6df6) 7%,var(--card,#fff)),var(--card,#fff));}
+  .hearty-update-card[hidden]{display:none!important;}
+  .update-list{margin:10px 0 0;padding-left:18px;color:var(--muted,#6f7c8d);font-size:.86rem;line-height:1.45;font-weight:650;}
+  .update-list li{margin:3px 0;}
 </style>
-  <link rel="stylesheet" href="/pwa-install.css?v=34">
 </head>
 <body data-page="home">
 <div class="shell" id="app"><div data-shell-mount="topbar"></div>
 
-<section class="status-strip home-welcome-only">
-<h1 class="headline" id="welcomeTitle">Welcome to Hearty</h1>
+<section aria-label="Home overview" class="status-strip">
+<div>
+<div class="eyebrow">HOME</div>
+<h1 class="page-heading" id="welcomeTitle">Welcome to Hearty</h1>
+<p class="subline">Your daily GLP-1 rhythm in one place.</p>
+</div>
 </section>
 <section aria-label="How to use Hearty" class="first-time-guide-card" id="firstTimeGuideCard">
 <div>
@@ -151,6 +85,34 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
 <button class="btn secondary" id="dismissGuideBanner" type="button">Dismiss</button>
 </div>
 </section>
+<section aria-label="Profile setup" class="first-time-guide-card" id="profileSetupCard">
+<div>
+<div class="eyebrow">Profile setup</div>
+<h2 class="section-title" style="margin:0 0 6px">Personalise your estimates</h2>
+<p class="subline" style="margin:0">Add your body stats, activity level and medication rhythm. Meals can use this information without forcing food preferences.</p>
+</div>
+<div class="guide-actions">
+<a class="action-btn primary" href="onboarding.html">Set up profile</a>
+</div>
+</section>
+
+<section aria-label="What is new in Hearty" class="first-time-guide-card hearty-update-card" id="heartyUpdateCard" hidden>
+<div>
+<div class="eyebrow">What’s new</div>
+<h2 class="section-title" style="margin:0 0 6px">Hearty has been upgraded</h2>
+<p class="subline" style="margin:0">Meals now has prep modes and clearer portions, Progress has photo comparison and injection alerts, and Recipes has replaced Social.</p>
+<ul class="update-list">
+<li>Meals rebuilt with cook-fresh, leftovers and weekly prep options.</li>
+<li>Progress photos, comparison and injection timeline added.</li>
+<li>Recipe library added with GLP-1 friendly meal ideas.</li>
+<li>Support Mode cleaned up across the app.</li>
+</ul>
+</div>
+<div class="guide-actions">
+<button class="action-btn primary" id="dismissUpdateCard" type="button">Got it</button>
+</div>
+</section>
+
 <main class="home-grid">
 <section class="main-stack">
 <section aria-label="Progress summary" class="card hero-card">
@@ -216,12 +178,26 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
 </section>
 </section>
 <aside class="side-stack">
-<section aria-label="Support mode" class="card support-card is-off" data-support-active="false" data-support-state="off" id="supportCard">
-<span aria-hidden="true" class="led" id="supportLed"></span>
-<div class="section-label">Support mode</div>
-<h2 class="card-title" id="supportTitle">Do you need some support?</h2>
-<p class="card-copy" id="supportSubtext">If side effects are getting in the way, switch to a softer day from the Support page.</p>
-<div class="support-actions-row legacy-support-actions" hidden><a class="soft-btn" href="support.html" id="supportPrimary" tabindex="-1">I need support</a><button class="ghost-btn" id="supportOff" type="button" hidden>Turn off</button></div>
+<section class="card hearty-support-panel" data-hearty-support-panel data-support-context="home" aria-label="Support today">
+<div class="hearty-support-head">
+  <div class="hearty-support-title">
+    <div class="section-label">TODAY</div>
+    <h2 class="compact-title">Feeling today</h2>
+  </div>
+  <div class="hearty-support-actions">
+    <span class="hearty-support-current" id="supportPill">Okay</span>
+    <button class="hearty-support-off" data-support-off type="button">Turn off</button>
+  </div>
+</div>
+<div class="hearty-support-options" data-hearty-support-selector>
+  <button class="hearty-support-option" data-support-off type="button">Okay</button>
+  <button class="hearty-support-option" data-support-reason="nausea" type="button">Nausea</button>
+  <button class="hearty-support-option" data-support-reason="bloating" type="button">Bloated</button>
+  <button class="hearty-support-option" data-support-reason="constipation" type="button">Constipated</button>
+  <button class="hearty-support-option" data-support-reason="low_appetite" type="button">Low appetite</button>
+  <button class="hearty-support-option" data-support-reason="fatigue" type="button">Tired</button>
+</div>
+<p class="hearty-support-mini" data-support-status-copy>Normal day. Tap a chip if you need extra support.</p>
 </section>
 <section aria-label="Hydration logger" class="card hydration-card">
 <div class="compact-head hydration-head"><div><div class="section-label">Hydration</div></div></div>
@@ -278,78 +254,7 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
 <div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
 </div>
 </section>
-<section aria-hidden="true" class="sheet-overlay" hidden="" id="coreSetupSheet">
-<div aria-labelledby="coreSetupTitle" aria-modal="true" class="task-sheet setup-sheet" role="dialog">
-<div class="sheet-handle"></div>
-<div class="sheet-head"><div><h2 class="sheet-title" id="coreSetupTitle">Let’s personalise Hearty</h2><p class="sheet-copy" id="coreSetupCopy">A few details help Home show the right daily rhythm.</p></div></div>
-<div class="setup-step" data-step="0"><label class="field-label" for="coreSetupName">What shall we call you?</label><input autocomplete="given-name" class="field-input" id="coreSetupName" placeholder="First name"/><label class="field-label" for="coreSetupCountry" style="margin-top:14px">Where are you based?</label><select class="field-input" id="coreSetupCountry"><option value="ZA">South Africa</option><option value="US">United States</option><option value="UK">United Kingdom</option><option value="AU">Australia</option><option value="CA">Canada</option><option value="OTHER">Other / not listed</option></select><div aria-label="Unit preference" class="unit-toggle" role="group"><button data-unit="metric" type="button">kg</button><button data-unit="imperial" type="button">lb</button></div><p class="sheet-copy">This is general app setup. Meals can use your country and units as defaults, but food preferences are set separately inside Meals.</p></div>
-<div class="setup-step" data-step="1" hidden=""><label class="field-label" for="coreSetupStartingWeight">Current / starting weight</label><input class="field-input" id="coreSetupStartingWeight" inputmode="decimal" max="400" min="20" placeholder="Needed for protein estimate" step="0.1" type="number"/><label class="field-label" for="coreSetupTargetWeight" style="margin-top:14px">Goal weight</label><input class="field-input" id="coreSetupTargetWeight" inputmode="decimal" max="400" min="20" placeholder="Optional" step="0.1" type="number"/><label class="field-label" for="coreSetupHeightCm" style="margin-top:14px">Height</label><input class="field-input" id="coreSetupHeightCm" inputmode="decimal" max="230" min="120" placeholder="cm, e.g. 165" step="0.1" type="number"/><label class="field-label" for="coreSetupAge" style="margin-top:14px">Age</label><input class="field-input" id="coreSetupAge" inputmode="numeric" max="95" min="18" placeholder="Used for calorie estimate" type="number"/><label class="field-label" for="coreSetupSex" style="margin-top:14px">Calorie formula</label><select class="field-input" id="coreSetupSex"><option value="">Choose later</option><option value="female">Female formula</option><option value="male">Male formula</option></select><p class="sheet-copy">These details let Hearty estimate calories and protein. If you skip them, Meals will use a safe starter estimate.</p></div>
-<div class="setup-step" data-step="2" hidden=""><label class="field-label" for="coreSetupDailyActivity">Normal daily movement</label><select class="field-input" id="coreSetupDailyActivity"><option value="">Choose later</option><option value="mostly_sitting">Mostly sitting</option><option value="light_daily">Light daily movement</option><option value="on_feet">On my feet a lot</option><option value="physical_job">Physical job / very active routine</option></select><label class="field-label" for="coreSetupExerciseActivity" style="margin-top:14px">Exercise / training</label><select class="field-input" id="coreSetupExerciseActivity"><option value="">Choose later</option><option value="none">No structured exercise right now</option><option value="light_1_2">Light exercise 1–2 times/week</option><option value="regular_3_4">Exercise 3–4 times/week</option><option value="hard_5plus">Hard training 5+ times/week</option><option value="very_hard">Very hard training / sport most days</option></select><label class="field-label" for="coreSetupNutritionGoal" style="margin-top:14px">Meal plan goal</label><select class="field-input" id="coreSetupNutritionGoal"><option value="lose">Steady fat loss</option><option value="faster">Faster fat loss</option><option value="recomp">Keep/build muscle while losing</option><option value="maintain">Keep me steady</option></select><p class="sheet-copy">This is for rough meal targets only. You can update it later.</p></div>
-<div class="setup-step" data-step="3" hidden=""><label class="field-label" for="coreSetupMedication">Medication label</label><select class="field-input" id="coreSetupMedication"><option value="">Set later</option><option>Mounjaro</option><option>Ozempic</option><option>Wegovy</option><option>Zepbound</option><option>Saxenda</option><option>Trulicity</option><option>Victoza</option><option>Rybelsus</option><option value="Other">Other / type my medication</option><option value="Prefer not to say">I don’t want to say</option><option value="Not using medication yet">Not using medication yet</option></select><input class="field-input" id="coreSetupMedicationCustom" placeholder="Type medication name" style="display:none;margin-top:12px"/><p class="sheet-copy">The medication name is only a label. It does not control your schedule.</p></div>
-<div class="setup-step" data-step="4" hidden=""><label class="field-label" for="coreSetupFrequency">Injection / reminder rhythm</label><select class="field-input" id="coreSetupFrequency"><option selected="" value="set_later">Set this later</option><option value="weekly">Once weekly</option><option value="every_2_weeks">Every 2 weeks</option><option value="twice_weekly">Twice weekly</option><option value="every_x_days">Every X days</option><option value="custom_next_date">Custom next reminder date</option><option value="no_fixed">No fixed schedule / I’ll log manually</option><option value="not_using">I’m not using medication yet</option></select><p class="sheet-copy">This is only for reminders. You can edit the full injection setup later from Progress or Settings.</p></div>
-<div class="setup-step" data-step="5" hidden=""><label class="field-label" id="coreSetupDaysTitle">Schedule details</label><div aria-label="Medication days" class="unit-toggle day-toggle-grid" id="coreSetupDaysField" role="group"><button data-med-day="1" type="button">Mon</button><button data-med-day="2" type="button">Tue</button><button data-med-day="3" type="button">Wed</button><button data-med-day="4" type="button">Thu</button><button data-med-day="5" type="button">Fri</button><button data-med-day="6" type="button">Sat</button><button data-med-day="0" type="button">Sun</button></div><input class="field-input" id="coreSetupIntervalDays" inputmode="numeric" min="2" max="60" placeholder="Repeat every how many days?" style="display:none;margin-top:12px" type="number"/><input class="field-input" id="coreSetupNextDate" style="display:none;margin-top:12px" type="date"/><select class="field-input" id="coreSetupReminder" style="margin-top:12px"><option selected="" value="true">Remind me</option><option value="false">No reminder for now</option></select><p class="sheet-copy" id="coreSetupDaysHint">Choose the details for your reminder, or leave it for later.</p><p class="sheet-copy" id="coreSetupDaysError" style="display:none;color:#b45309;font-weight:800;margin-top:8px">Please select the required medication days.</p></div>
-<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" id="coreSetupBackBtn" type="button">Back</button><button class="sheet-btn sheet-btn-primary" id="coreSetupNextBtn" type="button">Next</button></div>
-</div>
-</section>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
-<script id="hearty-core-onboarding-expanded-fields">
-  (function(){
-    function $(id){ return document.getElementById(id); }
-    function set(key, value){ try { localStorage.setItem(key, String(value == null ? '' : value)); } catch(e) {} }
-    function setJSON(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {} }
-    function readVal(id){ var el = $(id); return el ? String(el.value || '').trim() : ''; }
-    function selectedDays(){ return Array.prototype.slice.call(document.querySelectorAll('[data-med-day].active')).map(function(btn){ return String(btn.getAttribute('data-med-day')); }); }
-    function dayNameFromValue(value){ var names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; var n = Number(value); return Number.isFinite(n) && n >= 0 && n <= 6 ? names[n] : ''; }
-    function visibleMedicationName(){ var med = readVal('coreSetupMedication'); var custom = readVal('coreSetupMedicationCustom'); return med === 'Other' && custom ? custom : med; }
-    function syncExpandedCoreOnboarding(){
-      var now = new Date().toISOString();
-      var name = readVal('coreSetupName');
-      var country = readVal('coreSetupCountry') || 'ZA';
-      var startingWeight = readVal('coreSetupStartingWeight');
-      var targetWeight = readVal('coreSetupTargetWeight');
-      var heightCm = readVal('coreSetupHeightCm');
-      var age = readVal('coreSetupAge');
-      var sex = readVal('coreSetupSex');
-      var dailyActivity = readVal('coreSetupDailyActivity');
-      var exerciseActivity = readVal('coreSetupExerciseActivity');
-      var nutritionGoal = readVal('coreSetupNutritionGoal') || 'lose';
-      var medication = visibleMedicationName();
-      var medicationRaw = readVal('coreSetupMedication');
-      var medicationCustom = readVal('coreSetupMedicationCustom');
-      var frequency = readVal('coreSetupFrequency') || 'set_later';
-      var days = selectedDays();
-      var dayValue = days[0] || '';
-      var intervalDays = readVal('coreSetupIntervalDays');
-      var nextDoseDate = readVal('coreSetupNextDate');
-      var reminder = readVal('coreSetupReminder') !== 'false';
-      var unit = (document.querySelector('[data-unit].active') || {}).dataset && (document.querySelector('[data-unit].active') || {}).dataset.unit || localStorage.getItem('heartyUnitsSystem') || 'metric';
-      var existingProfile = {}; try { existingProfile = JSON.parse(localStorage.getItem('hearty_basic_user_profile_v1') || '{}') || {}; } catch(e) {}
-      var existingComplete = existingProfile.onboardingComplete === true || existingProfile.setupComplete === true || localStorage.getItem('heartyCoreSetupDone') === 'true';
-      var profile = Object.assign({}, existingProfile, { name:name, firstName:name, country:country, region:country, units:unit, unit:unit, currentWeight:startingWeight || existingProfile.currentWeight || '', startingWeight:startingWeight || existingProfile.startingWeight || '', goalWeight:targetWeight || existingProfile.goalWeight || '', heightCm:heightCm || existingProfile.heightCm || '', age:age || existingProfile.age || '', sex:sex || existingProfile.sex || '', dailyActivity:dailyActivity || existingProfile.dailyActivity || '', exerciseActivity:exerciseActivity || existingProfile.exerciseActivity || '', nutritionGoal:nutritionGoal || existingProfile.nutritionGoal || 'lose', onboardingComplete:existingComplete, setupComplete:existingComplete, updatedAt:now });
-      try {
-        var calc = window.HeartyTargetCalculator;
-        var targets = calc && calc.calculate ? calc.calculate({units:'metric', sex:profile.sex, age:profile.age, heightCm:profile.heightCm, weightKg:startingWeight || existingProfile.startingWeightKg || existingProfile.weightKg || '', dailyActivity:profile.dailyActivity, exerciseActivity:profile.exerciseActivity, goal:profile.nutritionGoal}) : null;
-        if(!targets || !targets.ok) targets = calc && calc.defaultTargets ? Object.assign(calc.defaultTargets(), {needsMoreInfo:true}) : {ok:true, skipped:true, needsMoreInfo:true, calorieMin:1400, calorieMax:1650, proteinMin:85, proteinMax:105, fibreMin:20, fibreMax:25, fatMin:40, tier:2};
-        profile.targets = targets; profile.calorieTargetMin = targets.calorieMin; profile.calorieTargetMax = targets.calorieMax; profile.proteinTargetMin = targets.proteinMin; profile.proteinTargetMax = targets.proteinMax;
-        setJSON('heartyNutritionTargetsV1', targets); setJSON('heartyMealTargetsV1', targets);
-      } catch(e) {}
-      if(name){ set('heartyUserName', name); set('heartyFirstName', name); }
-      set('heartyCountry', country); set('heartyRegion', country); set('heartyUnitsSystem', unit);
-      if(startingWeight){ set('heartyStartingWeightKg', startingWeight); set('heartyCurrentWeightKg', startingWeight); set('heartyWeightStartingKg', startingWeight); set('heartyWeightCurrentKg', startingWeight); }
-      if(targetWeight){ set('heartyTargetWeightKg', targetWeight); set('heartyWeightTargetKg', targetWeight); set('heartyProgressTargetWeightKg', targetWeight); }
-      setJSON('hearty_basic_user_profile_v1', profile);
-      set('heartyMedicationType', medication); set('heartyInjectionName', medication); set('heartyMedicationCustomName', medicationCustom);
-      set('heartyMedicationFrequency', frequency); set('heartyInjectionFrequency', frequency); set('heartyMedicationDays', days.join(',')); set('heartyInjectionDays', days.join(','));
-      set('heartyInjectionDay', dayValue); set('heartyInjectionDayName', dayNameFromValue(dayValue)); set('heartyMedicationNextDate', nextDoseDate); set('heartyNextDoseDate', nextDoseDate); set('heartyInjectionReminderEnabled', reminder ? 'true' : 'false');
-      var schedule = { medication:medication, medicationRaw:medicationRaw, customMedicationName:medicationCustom, frequency:frequency, scheduleType:frequency, day:dayValue, days:days, dayName:dayNameFromValue(dayValue), intervalDays:intervalDays ? Number(intervalDays) : null, nextDoseDate:nextDoseDate || '', reminderEnabled:reminder, source:'home-onboarding', updatedAt:now };
-      setJSON('heartyInjectionSchedule', schedule); setJSON('heartyMedication', Object.assign({ type:medication }, schedule)); setJSON('heartyMedicationSetupV1', schedule);
-      try { window.dispatchEvent(new CustomEvent('hearty:onboardingProfileUpdated', { detail:profile })); window.dispatchEvent(new CustomEvent('hearty:medicationSetupUpdated', { detail:schedule })); } catch(e) {}
-    }
-    document.addEventListener('change', function(event){ if(event.target && event.target.closest && event.target.closest('#coreSetupSheet')) syncExpandedCoreOnboarding(); }, true);
-    document.addEventListener('click', function(event){ if(event.target && event.target.closest && event.target.closest('#coreSetupNextBtn')) setTimeout(syncExpandedCoreOnboarding, 0); }, true);
-    window.HeartyCoreOnboarding = window.HeartyCoreOnboarding || {}; window.HeartyCoreOnboarding.syncExpandedFields = syncExpandedCoreOnboarding;
-  })();
-  </script>
 <!-- Hearty v40: old home-only Support Mode script removed. Shared js/hearty-support-state.js is the only support contract. -->
 <script id="hearty-home-first-load-stability">
   (function(){
@@ -396,10 +301,26 @@ html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)
   });
 })();
 </script>
-<script src="js/hearty-support-state.js?v=40"></script>
-<script defer="" src="js/hearty-shell-template.js?v=49"></script>
-<script defer src="/pwa-install.js?v=34"></script>
 
-<div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
+<script id="hearty-v84-update-card-script">
+(function(){
+  var version = 'v84';
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    var card = document.getElementById('heartyUpdateCard');
+    var btn = document.getElementById('dismissUpdateCard');
+    if(!card) return;
+    try{ if(localStorage.getItem('hearty_last_seen_update_version') !== version) card.hidden = false; }catch(e){ card.hidden = false; }
+    btn && btn.addEventListener('click', function(){
+      card.hidden = true;
+      try{ localStorage.setItem('hearty_last_seen_update_version', version); }catch(e){}
+    });
+  });
+})();
+</script>
+<script src="js/hearty-support-state.js?v=65"></script>
+<script defer="" src="js/hearty-shell-template.js?v=91"></script>
+<script defer src="pwa-install.js?v=84"></script>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>
 </html>

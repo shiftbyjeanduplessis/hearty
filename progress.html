@@ -1,1753 +1,277 @@
 <!DOCTYPE html>
-
 <html data-theme="clean_blue" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
-
 <title>Hearty — Progress</title>
-<!-- Production pass: single theme authority retained; injection data intentionally local-only. -->
-<style>
-:root{
-  --bg-1:#eef4fb;
-  --bg-2:#f8fbff;
-  --ink:#102033;
-  --muted:#6d7b8c;
-  --line:rgba(143,163,184,.24);
-  --card:rgba(255,255,255,.92);
-  --shadow:0 18px 44px rgba(14,31,53,.10);
-  --shadow-soft:0 8px 22px rgba(14,31,53,.06);
-  --blue:#2f6df6;
-  --blue-soft:#eaf1ff;
-  --teal:#22b8a7;
-  --teal-soft:#e8fbf8;
-  --violet:#8b5cf6;
-  --violet-soft:#f2ebff;
-  --amber:#f59e0b;
-  --amber-soft:#fff7e8;
-  --rose:#ef5da8;
-  --rose-soft:#fff0f7;
-  --success:#16a34a;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-  min-height:100vh;
-  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 500px at 0% -10%, rgba(47,109,246,.10), transparent 50%),
-    radial-gradient(1000px 450px at 100% 0%, rgba(20,184,166,.08), transparent 45%),
-    linear-gradient(180deg, var(--bg-2), var(--bg-1));
-  overflow-x:hidden;
-}
-.shell{max-width:1280px;margin:0 auto;padding:20px 20px 32px;}
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding:0 18px;min-height:88px;
-  border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:22px;box-shadow:var(--shadow-soft);
-}
-.brand{display:flex;align-items:center;gap:8px;min-width:0;padding-left:8px}
-.brand-logo{display:block;height:48px;width:auto;object-fit:contain;object-position:left center;max-width:min(72vw, 300px);flex:0 0 auto}
-.icon-btn{
-  border:1px solid var(--line);background:rgba(255,255,255,.9);color:#5d6c7d;width:44px;height:44px;border-radius:16px;
-  display:grid;place-items:center;box-shadow:var(--shadow-soft);cursor:default;margin-right:2px;padding:0;flex:0 0 auto;
-}
-.icon-btn svg,.nav-item svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0 0 18px;padding:8px 4px 2px}
-.page-greeting{margin:0;font-size:clamp(2.2rem,4vw,3rem);line-height:1.08;letter-spacing:-.03em;font-weight:430;color:#162334}
-.page-header-subcopy{margin:10px 0 0;color:#6f7d8e;font-size:1.02rem;line-height:1.55;font-weight:500;max-width:56ch}
-.status-pill{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid var(--line);
-  box-shadow:var(--shadow-soft);font-size:.96rem;color:#58677a;font-weight:700;white-space:nowrap
-}
-.status-pill .pill-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(245,158,11,.14)}
-.main-stack{display:grid;gap:18px}
-.card{
-  background:var(--card);border:1px solid rgba(150,166,186,.18);border-radius:28px;box-shadow:var(--shadow);padding:22px;
-  backdrop-filter: blur(10px);
-}
-.section-kicker{font-size:.78rem;letter-spacing:.18em;color:#7d8998;font-weight:800;text-transform:uppercase;margin-bottom:14px}
-.glance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.ring-card{padding:18px;border-radius:24px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,255,.94));min-height:230px;display:flex;flex-direction:column;justify-content:flex-start}
-.ring-wrap{position:relative;width:126px;height:126px;margin:4px auto 10px;display:grid;place-items:center}
-.ring-wrap svg{width:126px;height:126px;transform:rotate(-90deg);overflow:visible}
-.ring-track{fill:none;stroke:#dfe7f1;stroke-width:12}
-.ring-progress{fill:none;stroke-linecap:round;stroke-width:12;stroke-dasharray:339.292;filter:drop-shadow(0 6px 12px rgba(16,24,40,.06))}
-.ring-progress.blue{stroke:url(#gradBlue)}
-.ring-progress.teal{stroke:url(#gradTeal)}
-.ring-progress.violet{stroke:url(#gradViolet)}
-.ring-center{position:absolute;inset:18px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.96));border:1px solid rgba(160,178,201,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.95);text-align:center}
-.ring-center > div{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;transform:translateY(-1px)}
-.ring-card > div:last-child{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0; margin-top:0}
-.ring-value{font-size:1.92rem;font-weight:780;letter-spacing:-.045em;line-height:1;color:#1a2636;text-align:center;min-height:1em;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
-.ring-unit{font-size:.82rem;font-weight:650;color:#788699;margin-top:5px;letter-spacing:0;text-align:center}
-.ring-title{font-size:1.12rem;font-weight:520;letter-spacing:-.03em;text-align:center;color:#1b293a;min-height:0;display:flex;align-items:center;justify-content:center;line-height:1.12}
-.ring-copy{margin-top:8px;color:#768394;font-size:.96rem;line-height:1.42;text-align:center;font-weight:500;min-height:2.4em;display:flex;align-items:flex-start;justify-content:center}
-.ring-copy strong{color:#4b5c72;font-weight:800}
-.ring-action-hint{margin-top:8px;text-align:center;font-size:.84rem;font-weight:700;color:#5b6b80}
-.ring-action-hint.blue{color:#2f6df6}
-.ring-action-hint.teal{color:#149988}
-.ring-card.is-button{cursor:pointer;transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease}
-.ring-card.is-button:hover{transform:translateY(-1px);box-shadow:0 20px 42px rgba(14,31,53,.12)}
-.ring-card.is-button:active{transform:scale(.985)}
-.ring-card.is-button .ring-wrap::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(47,109,246,.10);opacity:0;transform:scale(.96);transition:opacity .2s ease, transform .2s ease}
-.ring-card.is-button.pulse .ring-wrap::after{opacity:1;transform:scale(1.04)}
-.ring-mini-actions{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
-.ring-mini-chip{border:none;border-radius:999px;padding:8px 12px;font:inherit;font-size:.78rem;font-weight:800;background:#eef4ff;color:#2f6df6;border:1px solid rgba(47,109,246,.12);cursor:pointer}
-.ring-mini-chip.ghost{background:rgba(255,255,255,.86);color:#627286;border:1px solid rgba(160,178,201,.18)}
-
-.rhythm-card{padding:22px}
-.rhythm-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
-.rhythm-title{font-size:1.5rem;font-weight:520;letter-spacing:-.04em;margin:0;color:#172435}
-.rhythm-copy{margin:6px 0 0;color:#738193;line-height:1.5;font-size:.98rem;font-weight:500}
-.day-score{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.86);border:1px solid rgba(160,178,201,.18);font-size:.86rem;font-weight:800;color:#58687b;white-space:nowrap}
-.task-list{display:grid;gap:12px}
-.task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 16px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.task-row.completed{background:linear-gradient(180deg, rgba(240,252,246,.98), rgba(255,255,255,.95));border-color:rgba(22,163,74,.20)}
-.task-row.soon{background:linear-gradient(180deg, rgba(255,248,238,.98), rgba(255,255,255,.95));border-color:rgba(245,158,11,.18)}
-.task-icon{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;border:1px solid rgba(160,178,201,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.96)}
-.task-icon svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.task-icon.blue{background:var(--blue-soft);color:var(--blue)}
-.task-icon.teal{background:var(--teal-soft);color:var(--teal)}
-.task-icon.violet{background:var(--violet-soft);color:var(--violet)}
-.task-icon.amber{background:var(--amber-soft);color:var(--amber)}
-.task-main{min-width:0}
-.task-title{font-size:1.04rem;font-weight:520;letter-spacing:-.03em;color:#1a2838}
-.task-sub{margin-top:4px;color:#748293;font-size:.95rem;line-height:1.45;font-weight:500}
-.task-state{padding:10px 14px;border-radius:999px;font-size:.82rem;font-weight:800;white-space:nowrap;border:1px solid rgba(160,178,201,.18);background:rgba(255,255,255,.8);color:#607084}
-.task-state.done{background:rgba(220,252,231,.9);border-color:rgba(22,163,74,.16);color:#15803d}
-.task-state.live{background:rgba(219,246,242,.9);border-color:rgba(34,184,167,.16);color:#0f8a7c}
-.task-state.next{background:rgba(255,244,214,.95);border-color:rgba(245,158,11,.18);color:#a16207}
-.lower-grid{display:grid;grid-template-columns:1fr .94fr;gap:18px}
-.lesson-card{padding:22px;border-radius:28px;background:linear-gradient(180deg, rgba(245,242,255,.98), rgba(255,255,255,.96));border:1px solid rgba(147,126,255,.20);box-shadow:0 14px 30px rgba(88,72,190,.08)}
-.lesson-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-.lesson-badge{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.88);border:1px solid rgba(147,126,255,.18);color:#6b5be6;font-size:.8rem;font-weight:800;white-space:nowrap}
-.lesson-title{margin:10px 0 0;font-size:1.34rem;font-weight:520;letter-spacing:-.04em;color:#172435}
-.lesson-copy{margin:10px 0 16px;color:#667486;line-height:1.58;font-weight:500}
-.lesson-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.lesson-highlight{font-size:.95rem;color:#5847cb;font-weight:800}
-.lesson-btn{padding:12px 16px;border-radius:16px;background:linear-gradient(180deg, #7d6cf2, #6a58e0);color:#fff;font-weight:800;border:none}
-.support-card{padding:22px;border-radius:28px;background:linear-gradient(180deg, rgba(255,248,240,.98), rgba(255,255,255,.96));border:1px solid rgba(245,158,11,.20)}
-.support-heart{width:50px;height:50px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.9);border:1px solid rgba(245,158,11,.16);color:#ef5da8;margin-bottom:14px}
-.support-heart svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.support-title{margin:0;font-size:1.28rem;font-weight:520;letter-spacing:-.04em;color:#172435}
-.support-copy{margin:10px 0 14px;color:#6c7888;line-height:1.58;font-weight:500}
-.support-points{display:grid;gap:10px;margin-bottom:16px}
-.support-point{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.85);border:1px solid rgba(160,178,201,.16);color:#5f6e80;font-weight:700;font-size:.92rem}
-.support-btn{width:100%;padding:14px 16px;border-radius:18px;border:none;background:linear-gradient(180deg, #f5b13a, #f09a12);color:#fff;font-size:.96rem;font-weight:800}
-.bottom-nav{
-  margin-top:18px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:10px;border-radius:26px;background:rgba(255,255,255,.74);
-  border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;bottom:12px;z-index:40;
-}
-.bottom-nav .nav-item{display:grid;gap:6px;justify-items:center;align-items:center;padding:12px 8px 10px;border-radius:18px;color:#627286;transition:all .22s ease;text-align:center;font-size:.78rem;font-weight:600;appearance:none;border:none;background:transparent;cursor:pointer;font:inherit;text-decoration:none;box-shadow:none;outline:none}
-.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:#1f4ec0;background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 10px 18px rgba(47,109,246,.10)}
-.bottom-nav .nav-item:focus-visible{outline:2px solid rgba(47,109,246,.45);outline-offset:2px}
-.bottom-nav .nav-item svg{width:22px;height:22px}
-@media (max-width:1024px){
-  .glance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .lower-grid{grid-template-columns:1fr}
-}
-@media (max-width:760px){
-  .shell{padding:14px 14px 24px}
-  .topbar{min-height:78px;padding:0 14px;border-radius:20px}
-  .brand-logo{height:40px}
-  .page-header{margin:0 0 16px;padding:2px 2px 0;gap:12px;flex-direction:column;align-items:flex-start}
-  .page-header-subcopy{font-size:.95rem;margin-top:6px}
-  .glance-grid{grid-template-columns:1fr;gap:12px}
-  .ring-card{min-height:210px}
-  .ring-wrap{width:118px;height:118px}
-  .ring-wrap svg{width:118px;height:118px}
-  .ring-center{inset:16px}
-  .ring-value{font-size:1.62rem}
-  .card,.lesson-card,.support-card{padding:18px;border-radius:22px}
-  .rhythm-head,.lesson-top{flex-direction:column;align-items:flex-start}
-  .task-row{grid-template-columns:auto minmax(0,1fr);gap:12px}
-  .task-state{grid-column:2/3;justify-self:start}
-  .injection-manage-grid,.compare-controls,.compare-grid,.gallery-grid{grid-template-columns:1fr}
-  .angle-toggle{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .injection-summary{align-items:flex-start}
-  .injection-summary-right{width:100%;justify-content:space-between}
-  .bottom-nav{gap:4px;padding:6px;border-radius:18px}
-  .bottom-nav .nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}
-  .bottom-nav .nav-item svg{width:18px;height:18px}
-}
-  
-
-.progress-stack{display:grid;gap:22px}
-.progress-card{background:var(--card);border:1px solid rgba(150,166,186,.18);border-radius:28px;box-shadow:var(--shadow);padding:26px;backdrop-filter:blur(10px)}
-.progress-hero{display:grid;gap:22px}
-.progress-summary{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
-.progress-kicker{font-size:.78rem;letter-spacing:.18em;color:#7d8998;font-weight:800;text-transform:uppercase;margin-bottom:10px}
-.progress-headline{margin:0;font-size:clamp(2.1rem,4vw,3rem);line-height:1.06;letter-spacing:-.04em;font-weight:640;color:#162334}
-.progress-subcopy{margin:8px 0 0;color:#6f7d8e;font-size:1rem;line-height:1.5;font-weight:500}
-.weight-hero{display:grid;gap:22px;align-content:start}
-.weight-value{font-size:3.8rem;line-height:1;letter-spacing:-.065em;font-weight:780;color:#162334}
-.weight-loss{font-size:1.05rem;font-weight:700;color:#2f6df6;line-height:1.4}
-
-#currentWeight{display:inline-block;max-width:12ch;line-height:1.08;padding:0 0 6px;word-break:break-word}
-#currentWeight.is-empty{font-size:clamp(1.85rem,3.2vw,2.55rem);letter-spacing:-.045em;max-width:10ch}
-#currentWeight:not(.is-empty){max-width:none;padding-bottom:0}
-
-.weight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.weight-metric{padding:18px 20px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.weight-metric-label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#7a8796;font-weight:800}
-.weight-metric-value{margin-top:9px;font-size:1.34rem;font-weight:700;letter-spacing:-.03em;color:#162334}
-.weight-meta{display:grid;gap:16px}
-.weight-side{display:grid;gap:12px;min-width:0}.full-width-chart{width:100%}
-.fatloss-chart-shell{padding:24px 26px;border-radius:24px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94));box-shadow:var(--shadow-soft);display:grid;gap:18px;min-height:100%}
-.fatloss-chart-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
-.fatloss-chart-title{font-size:1.04rem;font-weight:700;color:#172435}
-.fatloss-chart-copy{margin-top:6px;color:#6f7d8e;font-size:.95rem;line-height:1.5;font-weight:500}
-.fatloss-mini-note{font-size:.88rem;font-weight:700;color:#3157a8;background:#eef4ff;border:1px solid rgba(47,109,246,.12);padding:10px 12px;border-radius:999px;white-space:nowrap}.fatloss-mini-note.on-track{color:#18794e;background:rgba(22,163,74,.10);border-color:rgba(22,163,74,.16)}.fatloss-mini-note.ahead{color:#1d4ed8;background:rgba(47,109,246,.10);border-color:rgba(47,109,246,.16)}.fatloss-mini-note.behind{color:#b45309;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.18)}
-.fatloss-chart-wrap{padding:20px 22px 16px;border-radius:20px;background:linear-gradient(180deg,#fff,#f7faff);border:1px solid rgba(154,173,197,.12)}
-.fatloss-chart{width:100%;height:auto;display:block;min-height:500px}
-.chart-legend{display:flex;gap:12px;flex-wrap:wrap}
-.legend-item{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.86);border:1px solid rgba(160,178,201,.18);font-size:.8rem;font-weight:800;color:#5e6f82}
-.legend-swatch{width:18px;height:8px;border-radius:999px;display:inline-block}
-.legend-swatch.goal{background:linear-gradient(90deg, rgba(139,92,246,.4), rgba(139,92,246,.8))}
-.legend-swatch.actual{background:linear-gradient(90deg, rgba(47,109,246,.35), rgba(47,109,246,.95))}
-.section-title{margin:0;font-size:1.44rem;font-weight:560;letter-spacing:-.04em;color:#172435}
-.section-copy{margin:8px 0 0;color:#6f7d8e;font-size:1rem;line-height:1.55;font-weight:500}
-.progress-section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px}
-.injection-glance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}
-.info-tile{padding:20px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.info-label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#7a8796;font-weight:800}
-.info-value{margin-top:8px;font-size:1.14rem;font-weight:700;letter-spacing:-.03em;color:#162334}
-.info-copy{margin-top:6px;color:#6f7d8e;font-size:.94rem;line-height:1.45;font-weight:500}
-.injection-shell{padding:18px 20px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.injection-summary{list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center;cursor:pointer}
-.injection-summary::-webkit-details-marker{display:none}
-.injection-summary-main{display:grid;gap:6px}.injection-title{font-size:1rem;font-weight:700;color:#172435}.injection-sub{font-size:.9rem;color:#6f7d8e;font-weight:600}
-.injection-summary-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.injection-chip-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.injection-chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:#eef4ff;color:#2f6df6;font-size:.78rem;font-weight:800}
-.disclosure-icon{width:34px;height:34px;border-radius:12px;border:1px solid rgba(160,178,201,.18);background:#fff;display:grid;place-items:center;color:#627286;box-shadow:var(--shadow-soft);flex:0 0 auto;transition:transform .2s ease}
-.injection-shell[open] .disclosure-icon{transform:rotate(180deg)}
-.disclosure-icon svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.injection-panel{display:grid;gap:16px;margin-top:18px}.injection-manage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.field-card{padding:16px 18px;border-radius:20px;border:1px solid rgba(154,173,197,.16);background:#fff}.field-card .control-label{margin-bottom:10px}.history-list{display:grid;gap:12px}.history-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:15px 17px;border-radius:18px;border:1px solid rgba(154,173,197,.16);background:#fff}.history-main{display:grid;gap:4px}.history-date{font-size:.92rem;font-weight:700;color:#172435}.history-copy{font-size:.84rem;color:#6f7d8e;font-weight:600}.history-dose{font-size:.86rem;font-weight:800;color:#3157a8}
-.compare-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:20px}
-.control-card{padding:16px 18px;border-radius:20px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.control-card.full-row{grid-column:1/-1}
-.control-label{display:block;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#7a8796;font-weight:800;margin-bottom:8px}
-.progress-select{width:100%;border:1px solid rgba(150,166,186,.22);background:#fff;border-radius:14px;padding:12px 14px;font:inherit;color:#162334;font-weight:600}
-.date-picker-shell{position:relative}
-.date-picker-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(150,166,186,.22);background:#fff;border-radius:16px;padding:18px 20px;font:inherit;color:#162334;font-weight:700;box-shadow:var(--shadow-soft);min-height:86px;text-align:left}
-.date-picker-btn .meta{font-size:.84rem;color:#6f7d8e;font-weight:700}
-.date-picker-btn svg{width:18px;height:18px;stroke:#627286;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.date-picker-menu{position:absolute;left:0;right:0;top:calc(100% + 8px);display:none;z-index:20;padding:8px;border-radius:18px;border:1px solid rgba(154,173,197,.16);background:rgba(255,255,255,.98);box-shadow:var(--shadow);backdrop-filter:blur(10px);max-height:240px;overflow:auto}
-.date-picker-menu.open{display:grid;gap:8px}
-.date-option{appearance:none;border:none;background:#fff;border:1px solid rgba(160,178,201,.18);color:#172435;padding:12px 14px;border-radius:14px;font:inherit;font-size:.9rem;font-weight:700;text-align:left;display:flex;justify-content:space-between;gap:10px}
-.date-option .tag{font-size:.78rem;color:#6f7d8e;font-weight:800}
-.date-option.active{background:rgba(47,109,246,.08);border-color:rgba(47,109,246,.22);color:#1f4ec0}
-.angle-toggle{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.angle-btn{border:none;border-radius:999px;padding:14px 12px;background:linear-gradient(180deg, rgba(239,244,250,.98), rgba(230,237,246,.96));color:#607084;font:inherit;font-size:.92rem;font-weight:800;white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.92)}
-.angle-btn.active{background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));color:#1f4ec0;box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 10px 18px rgba(47,109,246,.10)}
-.compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.photo-panel{padding:18px;border-radius:24px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.photo-panel-label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#7a8796;font-weight:800;margin-bottom:12px}
-.photo-frame{aspect-ratio:4/5;border-radius:22px;border:1px solid rgba(154,173,197,.18);background:radial-gradient(120% 120% at 20% 0%, rgba(47,109,246,.08), transparent 45%), radial-gradient(120% 120% at 100% 0%, rgba(34,184,167,.08), transparent 42%), linear-gradient(180deg, #fbfdff, #f0f5fb);display:grid;place-items:center;overflow:hidden}
-.photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
-.photo-placeholder{display:grid;place-items:center;text-align:center;padding:28px 22px;min-height:100%;color:#708094;font-weight:600;line-height:1.5}
-.gallery-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.gallery-item{padding:16px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94));cursor:default;display:grid;gap:14px}.gallery-item.is-a{border-color:rgba(139,92,246,.28);box-shadow:0 10px 22px rgba(139,92,246,.10)}.gallery-item.is-b{border-color:rgba(47,109,246,.24);box-shadow:0 10px 22px rgba(47,109,246,.10)}
-.gallery-top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:0}
-.gallery-date{font-size:.9rem;font-weight:700;color:#172435}
-.gallery-day{font-size:.78rem;font-weight:800;color:#6f7d8e}
-.gallery-angles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.gallery-thumb{aspect-ratio:4/5;border-radius:16px;border:1px solid rgba(154,173,197,.18);background:linear-gradient(180deg,#f7faff,#eef4fb);display:grid;place-items:center;overflow:hidden;color:#7a8796;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
-.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}.gallery-actions{display:flex;gap:8px;flex-wrap:wrap}.gallery-action-btn{appearance:none;border:none;background:#fff;border:1px solid rgba(160,178,201,.18);color:#5e6f82;padding:9px 12px;border-radius:999px;font:inherit;font-size:.8rem;font-weight:800;cursor:pointer;box-shadow:var(--shadow-soft)}.gallery-action-btn.active-a{background:rgba(139,92,246,.10);border-color:rgba(139,92,246,.22);color:#6d4ad5}.gallery-action-btn.active-b{background:rgba(47,109,246,.10);border-color:rgba(47,109,246,.22);color:#2f6df6}
-.adherence-list{display:grid;gap:14px}
-.adherence-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;padding:20px;border-radius:22px;border:1px solid rgba(154,173,197,.16);background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))}
-.adherence-icon{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;border:1px solid rgba(160,178,201,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.96)}
-.adherence-icon svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.adherence-icon.blue{background:var(--blue-soft);color:var(--blue)}
-.adherence-icon.teal{background:var(--teal-soft);color:var(--teal)}
-.adherence-icon.violet{background:var(--violet-soft);color:var(--violet)}
-.adherence-main{min-width:0;display:grid;gap:12px}.adherence-name{font-size:1.05rem;font-weight:600;letter-spacing:-.03em;color:#1a2838}.adherence-sub{margin-top:0;color:#748293;font-size:.96rem;line-height:1.5;font-weight:500}.adherence-track{display:flex;gap:8px;flex-wrap:wrap}.adherence-pill{height:10px;border-radius:999px;background:#dfe7f1;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}.adherence-pill.exercise{width:30px}.adherence-pill.week{width:22px}.adherence-pill.blue.active{background:linear-gradient(180deg, rgba(47,109,246,.24), rgba(47,109,246,.46));border:1px solid rgba(47,109,246,.14)}.adherence-pill.teal.active{background:linear-gradient(180deg, rgba(34,184,167,.24), rgba(34,184,167,.46));border:1px solid rgba(34,184,167,.14)}.adherence-pill.violet.active{background:linear-gradient(180deg, rgba(139,92,246,.22), rgba(139,92,246,.44));border:1px solid rgba(139,92,246,.14)}.adherence-pill.muted{background:linear-gradient(180deg, rgba(234,240,247,.95), rgba(223,231,241,.9));border:1px solid rgba(160,178,201,.12)}
-
-@media (min-width:1100px){.progress-stack{gap:24px}.progress-card{padding:28px}.weight-grid{gap:16px}.fatloss-chart{min-height:540px}.compare-controls{gap:18px}.compare-grid{gap:18px}.gallery-grid{gap:16px}.adherence-list{gap:16px}}
-@media (max-width:1180px){.progress-summary{grid-template-columns:1fr}.gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fatloss-chart{min-height:440px}}
-@media (max-width:760px){.progress-card{padding:18px;border-radius:22px}.weight-value{font-size:2.8rem}.fatloss-chart-shell{padding:18px}.fatloss-chart-wrap{padding:16px 16px 12px}.fatloss-chart{min-height:320px}.weight-grid,.injection-glance,.injection-manage-grid,.compare-controls,.compare-grid,.gallery-grid{grid-template-columns:1fr}.adherence-row{grid-template-columns:auto minmax(0,1fr)}}
-
-.empty-photo-copy{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  text-align:center;
-  max-width:220px;
-  margin:0 auto;
-  padding:24px 18px;
-}
-.empty-photo-copy .empty-title{
-  font-size:1rem;
-  font-weight:700;
-  letter-spacing:-.02em;
-  color:#1a2838;
-  line-height:1.24;
-}
-.empty-photo-copy .empty-sub{
-  font-size:.87rem;
-  color:#748293;
-  line-height:1.45;
-}
-
-
-.chart-meta.chart-meta-compact{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-  margin-top:4px;
-}
-.chart-meta.chart-meta-compact .chart-meta-item{
-  padding:14px 16px;
-  border-radius:18px;
-  border:1px solid rgba(154,173,197,.16);
-  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94));
-}
-.chart-meta.chart-meta-compact .chart-meta-label{
-  font-size:.76rem;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:#7d8998;
-  font-weight:800;
-  margin-bottom:6px;
-}
-.chart-meta.chart-meta-compact .chart-meta-value{
-  font-size:1rem;
-  font-weight:650;
-  letter-spacing:-.02em;
-  color:#1a2838;
-  line-height:1.25;
-}
-.chart-meta.chart-meta-compact .chart-meta-copy{display:none}
-@media (max-width:900px){
-  .chart-meta.chart-meta-compact{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width:560px){
-  .chart-meta.chart-meta-compact{grid-template-columns:1fr}
-}
-
-.compare-controls{
-  max-width:780px;
-  margin:0 auto;
-}
-.control-card{
-  max-width:380px;
-}
-.chart-meta.chart-meta-compact{
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  max-width:760px;
-  margin:4px auto 0;
-}
-.chart-meta.chart-meta-compact .chart-meta-item{
-  min-width:0;
-}
-@media (max-width:760px){
-  .control-card{max-width:none}
-  .chart-meta.chart-meta-compact{grid-template-columns:1fr;max-width:none}
-}
-
-
-.date-picker-btn > span{display:grid;gap:4px;min-width:0}
-.date-picker-btn .meta{font-size:.82rem;color:#748293;font-weight:700;line-height:1.2}
-.chart-meta.chart-meta-compact{grid-template-columns:repeat(4,minmax(0,1fr));max-width:920px;margin:8px auto 0}
-.chart-meta.chart-meta-compact .chart-meta-item{padding:14px 14px}
-@media (max-width:980px){
-  .chart-meta.chart-meta-compact{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
-}
-@media (max-width:560px){
-  .chart-meta.chart-meta-compact{grid-template-columns:1fr}
-}
-
-
-/* Layer 6.3: Progress empty states and spacing */
-.progress-headline{margin-bottom:8px !important;}
-#currentWeight.is-empty{display:inline-block;max-width:100% !important;line-height:1.12 !important;padding:0 0 8px !important;}
-.fatloss-chart-wrap{position:relative;}
-.fatloss-empty-state{display:none;min-height:320px;border-radius:18px;border:1px dashed rgba(154,173,197,.28);background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(248,250,255,.72));align-items:center;justify-content:center;text-align:center;padding:28px 20px;}
-.fatloss-empty-inner{max-width:380px;margin:0 auto;}
-.fatloss-empty-icon{width:58px;height:58px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center;background:var(--surface-chip, rgba(255,255,255,.9));border:1px solid var(--line);color:var(--theme-accent,#2f6df6);box-shadow:var(--shadow-soft);}
-.fatloss-empty-icon svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-.fatloss-empty-title{font-size:1.04rem;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
-.fatloss-empty-copy{margin-top:6px;font-size:.92rem;line-height:1.5;color:var(--muted);font-weight:600;}
-.fatloss-chart-shell.no-data .fatloss-empty-state{display:flex;}
-.fatloss-chart-shell.no-data .fatloss-chart,.fatloss-chart-shell.no-data .chart-legend{display:none !important;}
-html[data-theme="midnight"] .fatloss-empty-state,html[data-theme="legacy_rose_aurora_disabled"] .fatloss-empty-state{background:var(--surface-inner, var(--card)) !important;border-color:var(--line) !important;}
-
-.gallery-empty-note{display:block;width:100%;padding:10px 12px;border-radius:14px;background:var(--surface-chip,rgba(255,255,255,.86));border:1px solid var(--line);color:var(--muted);font-size:.82rem;font-weight:700;line-height:1.35;text-align:center}
-.date-option:disabled{opacity:.72;cursor:not-allowed}
-.doctor-note{margin-top:8px;color:var(--muted);font-size:.86rem;font-weight:700;line-height:1.4}
-
-</style>
-<!-- HEARTY THEME BACKGROUND / SURFACE FIX v1 -->
-<style id="hearty-layer1-chrome-unification">
-:root{--hearty-chrome-line:var(--line,rgba(143,163,184,.22));--hearty-chrome-shadow:var(--shadow-soft,0 8px 22px rgba(14,31,53,.06));--hearty-chrome-accent:var(--theme-accent,var(--accent,#1f4ec0));}
-.shell{max-width:1280px !important;margin:0 auto !important;padding:20px 20px 32px !important;}
-.topbar{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:16px !important;min-height:88px !important;margin-bottom:18px !important;padding:0 18px !important;border-radius:22px !important;border:1px solid var(--hearty-chrome-line) !important;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.62)) !important;backdrop-filter:blur(12px) !important;-webkit-backdrop-filter:blur(12px) !important;box-shadow:var(--hearty-chrome-shadow) !important;}
-.brand{display:flex !important;align-items:center !important;gap:8px !important;min-width:0 !important;padding-left:8px !important;}.brand-logo{display:block !important;height:48px !important;width:auto !important;object-fit:contain !important;object-position:left center !important;max-width:min(72vw,300px) !important;flex:0 0 auto !important;}
-.icon-btn{width:44px !important;height:44px !important;border-radius:16px !important;border:1px solid var(--hearty-chrome-line) !important;background:rgba(255,255,255,.90) !important;color:#5d6c7d !important;display:grid !important;place-items:center !important;box-shadow:var(--hearty-chrome-shadow) !important;padding:0 !important;margin-right:2px !important;text-decoration:none !important;cursor:pointer !important;flex:0 0 auto !important;}
-.icon-btn svg,.bottom-nav .nav-item svg{width:20px !important;height:20px !important;stroke:currentColor !important;stroke-width:1.8 !important;fill:none !important;stroke-linecap:round !important;stroke-linejoin:round !important;vector-effect:non-scaling-stroke !important;display:block !important;}
-.bottom-nav{margin-top:18px !important;display:grid !important;grid-template-columns:repeat(7,minmax(0,1fr)) !important;gap:6px !important;padding:8px !important;border-radius:24px !important;background:rgba(255,255,255,.78) !important;border:1px solid var(--hearty-chrome-line) !important;box-shadow:0 12px 28px rgba(14,31,53,.10) !important;backdrop-filter:blur(14px) !important;-webkit-backdrop-filter:blur(14px) !important;position:sticky !important;bottom:12px !important;z-index:40 !important;}
-.bottom-nav .nav-item{appearance:none !important;border:none !important;background:transparent !important;text-decoration:none !important;cursor:pointer !important;display:grid !important;gap:4px !important;justify-items:center !important;align-items:center !important;align-content:center !important;width:100% !important;min-height:54px !important;padding:9px 4px 7px !important;border-radius:16px !important;color:#627286 !important;transition:background .22s ease,color .22s ease,box-shadow .22s ease,transform .18s ease !important;text-align:center !important;font:inherit !important;font-size:.72rem !important;font-weight:600 !important;line-height:1.08 !important;box-shadow:none !important;outline:none !important;}
-.bottom-nav .nav-item span{display:block !important;color:inherit !important;white-space:nowrap !important;font:inherit !important;line-height:1.08 !important;}.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:var(--hearty-chrome-accent) !important;background:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96)) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 16px rgba(47,109,246,.10) !important;}
-.bottom-nav .nav-item:hover{transform:translateY(-1px) !important;box-shadow:0 8px 16px rgba(14,31,53,.08) !important;}.bottom-nav .nav-item:focus-visible{outline:2px solid rgba(47,109,246,.45) !important;outline-offset:2px !important;}.bottom-nav .nav-item svg{width:19px !important;height:19px !important;}
-html[data-theme="midnight"] .topbar,html[data-theme="legacy_rose_aurora_disabled"] .topbar{background:linear-gradient(180deg,var(--surface-top,rgba(19,31,52,.82)),var(--surface-bottom,rgba(19,31,52,.72))) !important;}html[data-theme="midnight"] .bottom-nav,html[data-theme="legacy_rose_aurora_disabled"] .bottom-nav{background:var(--pill-bg,rgba(19,31,52,.72)) !important;}
-@media(max-width:700px){.shell{padding:14px 14px 24px !important;}.topbar{min-height:78px !important;padding:0 14px !important;border-radius:18px !important;gap:10px !important;}.brand-logo{height:42px !important;max-width:min(68vw,230px) !important;}.icon-btn{width:42px !important;height:42px !important;border-radius:14px !important;}.bottom-nav{gap:4px !important;padding:6px !important;border-radius:18px !important;}.bottom-nav .nav-item{min-height:50px !important;padding:7px 2px 6px !important;font-size:.62rem !important;}.bottom-nav .nav-item svg{width:18px !important;height:18px !important;}}
-</style>
-<script id="hearty-layer1-nav-unification">
-(function(){
-var pages=[
-['home.html','Home','<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>'],
-['meals.html','Meals','<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8h-4.5"></path>'],
-['exercise.html','Exercise','<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>'],
-['progress.html','Progress','<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>'],
-['support.html','Support','<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>'],
-['social.html','Social','<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="10" cy="7" r="4"></circle><path d="M21 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'],
-['settings.html','Settings','<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 3a1.65 1.65 0 0 0 1-1.51V1a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8c.14.31.4.55.72.67.17.07.35.1.53.1H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path>']
-];
-function current(){var p=(location.pathname.split('/').pop()||'home.html').toLowerCase();if(!p||p==='index.html')return 'home.html';var m=p.match(/(?:^|[_-])(home|meals|exercise|progress|support|social|settings)(?:[_-].*)?\.html$/);return m?m[1]+'.html':p;}
-function buildNav(){var nav=document.querySelector('.bottom-nav');if(!nav)return;var cur=current();nav.innerHTML=pages.map(function(item){var active=item[0]===cur;return '<a class="nav-item '+(active?'active':'')+'" '+(active?'aria-current="page"':'')+' href="./'+item[0]+'" data-nav-target="'+item[0]+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+item[2]+'</svg><span>'+item[1]+'</span></a>';}).join('');}
-function wireTopbar(){var btn=document.querySelector('.topbar .icon-btn');if(!btn)return;if(btn.tagName.toLowerCase()==='a')btn.setAttribute('href','./settings.html');btn.setAttribute('aria-label','Settings');btn.addEventListener('click',function(e){if(btn.tagName.toLowerCase()!=='a'){e.preventDefault();location.href='./settings.html';}});}
-document.addEventListener('DOMContentLoaded',function(){buildNav();wireTopbar();});
-})();
-</script>
-<style id="hearty-layer-2-page-intro-unification">
-/* Layer 2: unify the first page intro block across all app pages. No engines or page logic changed. */
-.shell > .page-header,
-.shell > .status-strip,
-.shell main > .section-intro,
-main.stack > .hero{
-  position:relative !important;
-  margin:0 0 18px !important;
-  padding:24px !important;
-  border-radius:28px !important;
-  border:1px solid var(--line) !important;
-  background:var(--card) !important;
-  box-shadow:var(--shadow) !important;
-  backdrop-filter:blur(10px) !important;
-  -webkit-backdrop-filter:blur(10px) !important;
-  overflow:hidden !important;
-}
-.shell > .page-header::before,
-.shell > .status-strip::before,
-.shell main > .section-intro::before,
-main.stack > .hero::before{
-  content:"" !important;
-  position:absolute !important;
-  inset:0 0 auto 0 !important;
-  height:1px !important;
-  background:linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,255,255,0)) !important;
-  pointer-events:none !important;
-}
-.shell > .status-strip,
-.shell > .page-header{
-  display:flex !important;
-  align-items:flex-start !important;
-  justify-content:space-between !important;
-  gap:18px !important;
-  flex-wrap:wrap !important;
-}
-.shell main > .section-intro{
-  display:block !important;
-}
-main.stack > .hero{
-  display:block !important;
-}
-.shell > .page-header .kicker,
-.shell > .page-header .progress-kicker,
-.shell > .status-strip .eyebrow,
-.shell main > .section-intro::before,
-main.stack > .hero .section-label{
-  font-size:.74rem !important;
-  font-weight:800 !important;
-  letter-spacing:.17em !important;
-  color:var(--muted) !important;
-  text-transform:uppercase !important;
-  margin-bottom:12px !important;
-}
-.shell > .page-header .page-title,
-.shell > .page-header .page-greeting,
-.shell > .status-strip .headline,
-.shell main > .section-intro h1,
-main.stack > .hero h1{
-  margin:0 0 10px !important;
-  font-size:clamp(1.7rem, 3vw, 2.5rem) !important;
-  line-height:1.02 !important;
-  letter-spacing:-.04em !important;
-  font-weight:680 !important;
-  color:var(--ink) !important;
-}
-.shell > .page-header .page-copy,
-.shell > .page-header .page-header-subcopy,
-.shell > .status-strip .subline,
-.shell main > .section-intro p,
-main.stack > .hero p{
-  margin:0 !important;
-  max-width:42rem !important;
-  color:var(--muted) !important;
-  font-size:1rem !important;
-  line-height:1.55 !important;
-  font-weight:500 !important;
-}
-.shell > .status-strip .day-pill,
-.shell > .page-header .status-pill,
-main.stack > .hero .location-toggle{
-  align-self:flex-start !important;
-  margin-top:2px !important;
-}
-/* Social had its intro outside the card language; keep it visually identical to Settings. */
-.shell main > .section-intro h1 + p{margin-top:0 !important;}
-@media (max-width:760px){
-  .shell > .page-header,
-  .shell > .status-strip,
-  .shell main > .section-intro,
-  main.stack > .hero{
-    padding:18px !important;
-    border-radius:22px !important;
-    margin-bottom:16px !important;
-  }
-  .shell > .page-header,
-  .shell > .status-strip{
-    flex-direction:column !important;
-    align-items:flex-start !important;
-    gap:12px !important;
-  }
-  .shell > .status-strip .day-pill,
-  .shell > .page-header .status-pill{
-    width:auto !important;
-  }
-}
-</style>
-<style id="hearty-layer-3-header-copy-lock">
-/* Layer 3: identical page intro typography and punctuation rules across app pages */
-.shell > .status-strip{
-  display:flex !important;
-  align-items:flex-start !important;
-  justify-content:space-between !important;
-  gap:18px !important;
-  margin:4px 0 20px !important;
-  padding:24px !important;
-  border-radius:28px !important;
-  border:1px solid var(--line) !important;
-  background:var(--card) !important;
-  box-shadow:var(--shadow) !important;
-  backdrop-filter:blur(10px) !important;
-  -webkit-backdrop-filter:blur(10px) !important;
-}
-.shell > .status-strip > div:first-child{min-width:0 !important;}
-.shell > .status-strip .eyebrow{
-  margin:0 0 10px !important;
-  font-size:.74rem !important;
-  line-height:1 !important;
-  font-weight:800 !important;
-  letter-spacing:.17em !important;
-  text-transform:uppercase !important;
-  color:var(--muted) !important;
-}
-.shell > .status-strip .headline{
-  margin:0 !important;
-  font-size:clamp(1.72rem,3vw,2.5rem) !important;
-  line-height:1.04 !important;
-  letter-spacing:-.045em !important;
-  font-weight:760 !important;
-  color:var(--ink) !important;
-}
-.shell > .status-strip .subline{
-  margin:10px 0 0 !important;
-  max-width:56rem !important;
-  color:var(--muted) !important;
-  font-size:1rem !important;
-  line-height:1.55 !important;
-  font-weight:500 !important;
-}
-.shell > .status-strip .day-pill{
-  flex:0 0 auto !important;
-  align-self:flex-start !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  gap:8px !important;
-  padding:10px 14px !important;
-  border-radius:999px !important;
-  border:1px solid var(--line) !important;
-  background:var(--surface-chip,rgba(255,255,255,.86)) !important;
-  color:var(--muted) !important;
-  font-size:.86rem !important;
-  font-weight:800 !important;
-  white-space:nowrap !important;
-  box-shadow:var(--shadow-soft) !important;
-}
-.shell > .page-header,.shell main > .section-intro{display:none !important;}
-@media(max-width:760px){
-  .shell > .status-strip{padding:18px !important;border-radius:22px !important;flex-direction:column !important;gap:12px !important;}
-  .shell > .status-strip .headline{font-size:clamp(1.5rem,8vw,2rem) !important;}
-  .shell > .status-strip .day-pill{white-space:normal !important;}
-}
-</style>
-<!-- =========================================================
-  Layer 4: Authoritative Theme System
-  Purpose: one shared theme reader/writer across all pages.
-  Does not change page content or app logic.
-========================================================= -->
-<script id="hearty-layer4-theme-authority">
-(function(){
-  var VALID = ['clean_blue','pink_lemonade','midnight','soft_rose','deep_berry','partner_neutral'];
-  var DEFAULT_THEME = 'clean_blue';
-  var USER_SELECTED_KEY = 'heartyThemeUserSelected';
-  function valid(t){ t = String(t || '').replace(/[-\s]+/g,'_'); var legacy = {sunlit:'pink_lemonade', rose_aurora:'soft_rose', fresh_green:'partner_neutral'}; t = legacy[t] || t; return VALID.indexOf(t) >= 0 ? t : DEFAULT_THEME; }
-  function firstUse(){ try { return localStorage.getItem('heartyCoreSetupDone') !== 'true'; } catch(e){ return false; } }
-  function readTheme(){
-    try{
-      var userPicked = localStorage.getItem(USER_SELECTED_KEY) === 'true';
-      if(firstUse() && !userPicked) return DEFAULT_THEME;
-      return valid(localStorage.getItem('heartyTheme') || localStorage.getItem('hearty-theme') || document.documentElement.getAttribute('data-theme') || DEFAULT_THEME);
-    }catch(e){ return valid(document.documentElement.getAttribute('data-theme') || DEFAULT_THEME); }
-  }
-  function syncLogo(theme){
-    try{
-      var logo = document.querySelector('.brand-logo');
-      if(!logo) return;
-      var src = logo.getAttribute('data-default-logo') || logo.getAttribute('src');
-      if(theme === 'midnight' && logo.getAttribute('data-midnight-logo')) src = logo.getAttribute('data-midnight-logo');
-      if(theme === 'soft_rose' && logo.getAttribute('data-rose-aurora-logo')) src = logo.getAttribute('data-rose-aurora-logo');
-      if(theme === 'deep_berry' && logo.getAttribute('data-rose-aurora-logo')) src = logo.getAttribute('data-rose-aurora-logo');
-      if(src) logo.setAttribute('src', src);
-      document.documentElement.classList.add('logo-ready');
-    }catch(e){}
-  }
-  function paintTheme(theme, opts){
-    theme = valid(theme); opts = opts || {};
-    document.documentElement.setAttribute('data-theme', theme);
-    if(document.body) document.body.setAttribute('data-theme', theme);
-    try{
-      localStorage.setItem('heartyTheme', theme);
-      localStorage.setItem('hearty-theme', theme);
-      if(opts.userSelected) localStorage.setItem(USER_SELECTED_KEY, 'true');
-    }catch(e){}
-    try{
-      document.querySelectorAll('.theme-option[data-theme], [data-theme-choice]').forEach(function(el){
-        var choice = el.getAttribute('data-theme') || el.getAttribute('data-theme-choice');
-        var on = choice === theme;
-        el.classList.toggle('active', on);
-        el.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-      document.querySelectorAll('select[name="theme"], #themeSelect, .theme-select').forEach(function(sel){ if(sel.value !== theme) sel.value = theme; });
-    }catch(e){}
-    syncLogo(theme);
-  }
-  window.heartyApplyTheme = function(theme){ paintTheme(theme, {userSelected:true}); };
-  window.heartyReadTheme = readTheme;
-  paintTheme(readTheme(), {userSelected:false});
-  document.addEventListener('DOMContentLoaded', function(){ paintTheme(readTheme(), {userSelected:false}); }, true);
-  requestAnimationFrame(function(){ paintTheme(readTheme(), {userSelected:false}); });
-  document.addEventListener('click', function(e){
-    var btn = e.target && e.target.closest ? e.target.closest('.theme-option[data-theme], [data-theme-choice]') : null;
-    if(btn){ paintTheme(btn.getAttribute('data-theme') || btn.getAttribute('data-theme-choice'), {userSelected:true}); }
-  }, true);
-  document.addEventListener('change', function(e){
-    var t = e.target;
-    if(t && (t.matches('select[name="theme"]') || t.matches('#themeSelect') || t.matches('.theme-select') || t.matches('[data-theme-input]'))){ paintTheme(t.value, {userSelected:true}); }
-  }, true);
-  window.addEventListener('storage', function(e){
-    if(e.key === 'heartyTheme' || e.key === 'hearty-theme' || e.key === USER_SELECTED_KEY || e.key === 'heartyCoreSetupDone'){ paintTheme(readTheme(), {userSelected:false}); }
-  });
-})();
-</script>
-<style id="hearty-layer4-theme-vars">
-:root,html[data-theme="clean_blue"]{--bg-1:#eef4fb;--bg-2:#f8fbff;--bg-base:#f6f9fe;--bg-layer-1:radial-gradient(circle at 18% 8%,rgba(108,150,235,.05),transparent 30%);--bg-layer-2:radial-gradient(circle at 88% 12%,rgba(132,174,244,.04),transparent 28%);--bg-layer-3:linear-gradient(180deg,#fbfdff 0%,#f2f6fc 100%);--ink:#132235;--muted:#6f7c8d;--line:rgba(143,163,184,.22);--card:rgba(255,255,255,.94);--shadow:0 18px 44px rgba(14,31,53,.08);--shadow-soft:0 8px 22px rgba(14,31,53,.05);--surface-top:rgba(255,255,255,.82);--surface-bottom:rgba(255,255,255,.68);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,255,255,.96);--accent:#2f6df6;--accent-2:#14b8a6;--theme-accent:#2f6df6;--topbar-bg:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));--icon-bg:var(--surface-button);--pill-bg:var(--surface-chip)}
-html[data-theme="legacy_sunlit_disabled"]{--bg-1:#f6ead2;--bg-2:#fffaf0;--bg-base:#fff7e6;--bg-layer-1:radial-gradient(circle at 18% 8%,rgba(245,158,11,.12),transparent 32%);--bg-layer-2:radial-gradient(circle at 88% 12%,rgba(20,184,166,.08),transparent 30%);--bg-layer-3:linear-gradient(180deg,#fffaf0 0%,#f7ecd5 100%);--ink:#1f170d;--muted:#7a643f;--line:rgba(196,172,112,.24);--card:rgba(255,253,247,.94);--shadow:0 18px 44px rgba(91,61,22,.10);--shadow-soft:0 8px 22px rgba(91,61,22,.06);--surface-top:rgba(255,255,255,.88);--surface-bottom:rgba(255,249,238,.74);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,250,240,.96);--accent:#ea580c;--accent-2:#f59e0b;--theme-accent:#ea580c;--topbar-bg:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));--icon-bg:var(--surface-button);--pill-bg:var(--surface-chip)}
-html[data-theme="midnight"]{--bg-1:#0b1424;--bg-2:#050b15;--bg-base:#0a111b;--bg-layer-1:radial-gradient(900px 320px at 18% -8%,rgba(126,155,255,.12),transparent 48%);--bg-layer-2:radial-gradient(760px 280px at 82% 0%,rgba(116,145,235,.08),transparent 46%);--bg-layer-3:linear-gradient(180deg,#0a1120 0%,#0b1322 52%,#0a101b 100%);--ink:#edf3fb;--muted:#9faec1;--line:rgba(124,148,180,.16);--card:rgba(16,24,36,.78);--shadow:0 18px 44px rgba(2,8,23,.30);--shadow-soft:0 8px 22px rgba(2,8,23,.20);--surface-top:rgba(18,27,39,.76);--surface-bottom:rgba(14,22,33,.64);--surface-button:rgba(21,30,43,.86);--surface-chip:rgba(21,30,43,.90);--accent:#89a8ff;--accent-2:#22d3ee;--theme-accent:#89a8ff;--topbar-bg:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));--icon-bg:var(--surface-button);--pill-bg:var(--surface-chip)}
-html[data-theme="legacy_rose_aurora_disabled"]{--bg-1:#1a0f1a;--bg-2:#2a1428;--bg-base:#0d0a10;--bg-layer-1:radial-gradient(900px 320px at 18% -8%,rgba(210,143,178,.14),transparent 48%);--bg-layer-2:radial-gradient(760px 280px at 82% 0%,rgba(165,128,190,.10),transparent 46%);--bg-layer-3:linear-gradient(180deg,#18111a 0%,#171118 52%,#130d14 100%);--ink:#f8f0f5;--muted:#b89fac;--line:rgba(195,148,172,.14);--card:rgba(22,16,26,.82);--shadow:0 22px 52px rgba(6,2,10,.44);--shadow-soft:0 10px 26px rgba(6,2,10,.30);--surface-top:rgba(30,21,36,.80);--surface-bottom:rgba(20,15,24,.68);--surface-button:rgba(36,26,42,.88);--surface-chip:rgba(38,27,44,.92);--accent:#d89abb;--accent-2:#c9955c;--theme-accent:#d89abb;--topbar-bg:linear-gradient(180deg,var(--surface-top),var(--surface-bottom));--icon-bg:var(--surface-button);--pill-bg:var(--surface-chip)}
-body{background:var(--bg-base)!important;color:var(--ink)!important}body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:var(--bg-layer-1),var(--bg-layer-2),var(--bg-layer-3),var(--bg-base)!important}.topbar{background:var(--topbar-bg)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.icon-btn{background:var(--icon-bg)!important;border-color:var(--line)!important;color:var(--muted)!important}.bottom-nav{background:color-mix(in srgb,var(--surface-chip) 78%,transparent)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"]{color:var(--theme-accent)!important}html[data-theme="midnight"] .card,html[data-theme="midnight"] .settings-card,html[data-theme="midnight"] .settings-panel,html[data-theme="midnight"] .tile,html[data-theme="midnight"] .placeholder-card,html[data-theme="legacy_rose_aurora_disabled"] .card,html[data-theme="legacy_rose_aurora_disabled"] .settings-card,html[data-theme="legacy_rose_aurora_disabled"] .settings-panel,html[data-theme="legacy_rose_aurora_disabled"] .tile,html[data-theme="legacy_rose_aurora_disabled"] .placeholder-card{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink)!important}html[data-theme="midnight"] input,html[data-theme="midnight"] select,html[data-theme="midnight"] textarea,html[data-theme="legacy_rose_aurora_disabled"] input,html[data-theme="legacy_rose_aurora_disabled"] select,html[data-theme="legacy_rose_aurora_disabled"] textarea{background:rgba(255,255,255,.04)!important;color:var(--ink)!important;border-color:var(--line)!important}
-</style>
-<style id="hearty-progress-day-medication-css">
-.medication-days-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.medication-days-grid button{min-height:42px;border-radius:14px;border:1px solid rgba(150,166,186,.22);background:#fff;color:#607084;font:inherit;font-size:.84rem;font-weight:800;cursor:pointer;box-shadow:var(--shadow-soft)}
-.medication-days-grid button.active{background:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));color:var(--theme-accent,#2f6df6);border-color:rgba(47,109,246,.24)}
-.medication-days-grid button:disabled{opacity:.55;cursor:not-allowed}
-@media(max-width:560px){.medication-days-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-</style>
-<link href="css/hearty-theme.css" rel="stylesheet"/>
+<meta content="#f6f9fe" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Hearty" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="icons/hearty-icon-192.png" rel="apple-touch-icon"/>
+<link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
 <script src="js/hearty-theme.js"></script>
-<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
-<script src="js/hearty-production-guard.js?v=34"></script>
-<style id="hearty-nav-v10-visible-fix">
-/* HOTFIX V10: #bottomNav was hidden by legacy shell CSS because the container itself did not carry data-shell-template=bottom-nav. Force the container and inner nav visible. */
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"],
-html body[data-page] [data-shell-mount="bottom-nav"]#bottomNav{
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  position:fixed !important;
-  left:0 !important;
-  right:0 !important;
-  bottom:0 !important;
-  transform:none !important;
-  z-index:2147483647 !important;
-  pointer-events:none !important;
-  width:100vw !important;
-  max-width:100vw !important;
-  height:auto !important;
-  min-height:0 !important;
-  padding:0 10px calc(8px + env(safe-area-inset-bottom,0px)) !important;
-  margin:0 !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-}
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .bottom-nav,
-html body[data-page] #bottomNav[data-shell-mount="bottom-nav"] .hearty-shell-bottom-nav{
-  display:grid !important;
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  bottom:auto !important;
-  transform:none !important;
-  width:min(860px,calc(100vw - 20px)) !important;
-  max-width:720px !important;
-  height:74px !important;
-  min-height:74px !important;
-  margin:0 auto !important;
-  padding:7px 6px !important;
-  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
-  gap:4px !important;
-  pointer-events:auto !important;
-  opacity:1 !important;
-  visibility:visible !important;
-}
-html body[data-page]{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px)) !important;}
-</style>
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icons/hearty-icon-192.png">
-</head>
+<link href="css/hearty-phase1-visual-fixes.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
+<link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=88" rel="stylesheet"/>
+<link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
+<script src="js/hearty-production-guard.js?v=54"></script>
 <script src="js/hearty-data-layer.v1.js"></script>
-<link href="css/hearty-phase1-visual-fixes.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-atmosphere.css" rel="stylesheet"/>
-<link href="css/hearty-step5i-shell-fix.css" rel="stylesheet"/>
-<link href="css/hearty-step5ib-foundation.css" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=34" rel="stylesheet"/>
-<link href="css/hearty-step5n-theme-beauty.css" rel="stylesheet"/>
+<style id="hearty-progress-v83-css">
+  :root{--progress-radius:24px;--progress-card-pad:18px;--progress-gap:14px;}
+  *{box-sizing:border-box}
+  body{min-height:100vh;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);overflow-x:hidden}
+  .progress-stack{display:grid;gap:14px;margin-top:16px;padding-bottom:20px}
+  .progress-card{background:var(--card,rgba(255,255,255,.94));border:1px solid var(--line,rgba(143,163,184,.22));border-radius:var(--progress-radius);box-shadow:var(--shadow-soft,0 10px 26px rgba(14,31,53,.06));padding:var(--progress-card-pad);backdrop-filter:blur(10px)}
+  .progress-card.is-hero{padding:18px;border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--card,#fff) 95%,transparent),color-mix(in srgb,var(--card,#fff) 82%,transparent));}
+  .progress-card-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}
+  .progress-card-title{margin:0;font-size:1.08rem;line-height:1.12;font-weight:680;letter-spacing:-.035em;color:var(--ink,#132235)}
+  .progress-card-copy{margin:6px 0 0;color:var(--muted,#6f7c8d);font-size:.86rem;line-height:1.42;font-weight:540;max-width:64ch}
+  .progress-kicker{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted,#6f7c8d);font-weight:850;margin-bottom:6px}
+  .progress-hero-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}
+  .progress-hero-title{margin:0;font-size:1.24rem;line-height:1.05;font-weight:690;letter-spacing:-.045em;color:var(--ink,#132235)}
+  .progress-hero-copy{margin:5px 0 0;color:var(--muted,#6f7c8d);font-size:.86rem;line-height:1.42;font-weight:540;max-width:58ch}
+  .metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .metric-tile{padding:12px 13px;border-radius:18px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 86%,transparent);background:color-mix(in srgb,var(--surface-chip,rgba(255,255,255,.96)) 92%,transparent);box-shadow:none}
+  .metric-label{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted,#6f7c8d);font-weight:850;margin-bottom:5px}
+  .metric-value{font-size:1.12rem;line-height:1.05;font-weight:760;letter-spacing:-.04em;color:var(--ink,#132235)}
+  .metric-note{margin-top:4px;color:var(--muted,#6f7c8d);font-size:.72rem;font-weight:620;line-height:1.25}
+  .progress-panel{border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 82%,transparent);border-radius:20px;background:color-mix(in srgb,var(--card,#fff) 88%,transparent);padding:14px;box-shadow:none}
+  .progress-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:stretch}
+  .weight-log-form{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end;margin-top:12px}
+  .field{display:grid;gap:5px;min-width:0}
+  .field label,.field-label{font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted,#6f7c8d);font-weight:850}
+  .field input,.field select,.field textarea{width:100%;border:1px solid var(--line,rgba(143,163,184,.22));background:var(--surface-button,rgba(255,255,255,.94));color:var(--ink,#132235);border-radius:14px;padding:10px 12px;font:inherit;font-size:.9rem;font-weight:650;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+  .field textarea{min-height:68px;resize:vertical;line-height:1.35}
+  .progress-btn{appearance:none;border:none;border-radius:999px;background:linear-gradient(180deg,var(--theme-accent,#2f6df6),color-mix(in srgb,var(--theme-accent,#2f6df6) 82%,#102033));color:#fff;font:inherit;font-size:.86rem;font-weight:850;padding:10px 14px;min-height:40px;cursor:pointer;box-shadow:0 10px 18px color-mix(in srgb,var(--theme-accent,#2f6df6) 18%,transparent);white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .progress-btn.secondary{background:var(--surface-chip,rgba(255,255,255,.96));color:var(--ink,#132235);border:1px solid var(--line,rgba(143,163,184,.22));box-shadow:none}
+  .progress-btn.ghost{background:transparent;color:var(--muted,#6f7c8d);border:1px solid var(--line,rgba(143,163,184,.22));box-shadow:none}
+  .progress-btn.danger{background:rgba(239,68,68,.08);color:#b91c1c;border:1px solid rgba(239,68,68,.18);box-shadow:none}
+  .progress-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .trend-wrap{position:relative;min-height:238px;border-radius:20px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 78%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--card,#fff) 95%,white),color-mix(in srgb,var(--card,#fff) 82%,transparent));padding:10px;overflow:hidden}
+  .trend-svg{width:100%;height:auto;display:block;min-height:215px;color:var(--muted,#6f7c8d)}
+  .trend-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted,#6f7c8d);font-weight:650;line-height:1.42;font-size:.9rem}
+  .trend-empty[hidden]{display:none!important}
+  .progress-details{border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 70%,transparent);background:color-mix(in srgb,var(--surface-chip,rgba(255,255,255,.96)) 72%,transparent);border-radius:18px;padding:0;margin-top:12px;overflow:hidden}
+  .progress-details summary{list-style:none;cursor:pointer;padding:11px 13px;font-size:.82rem;font-weight:850;color:var(--ink,#132235);display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .progress-details summary::-webkit-details-marker{display:none}
+  .progress-details summary:after{content:'Open';font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#6f7c8d);font-weight:850}
+  .progress-details[open] summary:after{content:'Close'}
+  .progress-details-body{padding:0 10px 10px}
+  .recent-list{display:grid;gap:7px;max-height:250px;overflow:auto;padding-right:2px}
+  .recent-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:10px 11px;border-radius:14px;border:1px solid color-mix(in srgb,var(--line,rgba(143,163,184,.22)) 78%,transparent);background:var(--surface-chip,rgba(255,255,255,.96))}
+  .recent-date{font-size:.86rem;font-weight:760;color:var(--ink,#132235)}
+  .recent-meta{font-size:.73rem;color:var(--muted,#6f7c8d);font-weight:630;margin-top:2px}
+  .recent-value{font-size:.86rem;font-weight:850;color:var(--theme-accent,#2f6df6);white-space:nowrap}
+  .tiny-btn{appearance:none;border:none;border-radius:999px;padding:6px 8px;background:transparent;color:var(--muted,#6f7c8d);font:inherit;font-size:.74rem;font-weight:850;cursor:pointer}
+  .med-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:12px}
+  .med-log-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  .dose-list{display:grid;gap:7px;margin-top:0}
+  .pill-note{display:inline-flex;align-items:center;gap:7px;border-radius:999px;border:1px solid var(--line,rgba(143,163,184,.22));background:var(--surface-chip,rgba(255,255,255,.96));padding:7px 10px;color:var(--muted,#6f7c8d);font-size:.74rem;font-weight:800;white-space:nowrap}
+  .private-note{display:flex;gap:8px;align-items:flex-start;margin:0 0 12px;padding:10px 11px;border-radius:16px;border:1px solid color-mix(in srgb,var(--theme-accent,#2f6df6) 18%,var(--line));background:color-mix(in srgb,var(--theme-accent,#2f6df6) 6%,var(--card,#fff));color:var(--muted,#6f7c8d);font-size:.82rem;line-height:1.38;font-weight:600}.private-note strong{color:var(--ink,#132235)}
+  .photo-shell{display:grid;gap:12px}
+  .photo-tabs{display:flex;gap:7px;overflow:auto;padding-bottom:2px;scrollbar-width:none}.photo-tabs::-webkit-scrollbar{display:none}
+  .photo-tab{appearance:none;border:none;border-radius:999px;background:var(--surface-chip,rgba(255,255,255,.96));border:1px solid var(--line,rgba(143,163,184,.22));color:var(--muted,#6f7c8d);font:inherit;font-size:.82rem;font-weight:850;padding:9px 13px;white-space:nowrap;cursor:pointer}
+  .photo-tab.active{background:color-mix(in srgb,var(--theme-accent,#2f6df6) 12%,var(--surface-chip,#fff));border-color:color-mix(in srgb,var(--theme-accent,#2f6df6) 28%,var(--line));color:var(--theme-accent,#2f6df6)}
+  .photo-panel{display:grid;gap:12px}.photo-panel[hidden]{display:none!important}
+  .photo-add-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo-add-grid .full{grid-column:1/-1}
+  .file-drop{border:1px dashed color-mix(in srgb,var(--theme-accent,#2f6df6) 30%,var(--line));border-radius:18px;background:color-mix(in srgb,var(--theme-accent,#2f6df6) 5%,var(--card,#fff));padding:13px;display:grid;gap:8px;text-align:center;color:var(--muted,#6f7c8d);font-size:.84rem;font-weight:620}
+  .gallery-date-group{display:grid;gap:9px;padding:12px;border-radius:18px;border:1px solid var(--line,rgba(143,163,184,.22));background:var(--surface-chip,rgba(255,255,255,.96))}
+  .gallery-date-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.gallery-date-title{font-weight:850;color:var(--ink,#132235)}.gallery-date-note{font-size:.74rem;font-weight:800;color:var(--muted,#6f7c8d)}
+  .gallery-thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .thumb{border:1px solid var(--line,rgba(143,163,184,.22));border-radius:16px;background:linear-gradient(180deg,var(--card,#fff),color-mix(in srgb,var(--card,#fff) 75%,transparent));overflow:hidden;min-height:122px;display:grid;grid-template-rows:minmax(0,1fr) auto}.thumb-img{aspect-ratio:4/5;display:grid;place-items:center;background:color-mix(in srgb,var(--theme-accent,#2f6df6) 6%,transparent);color:var(--muted,#6f7c8d);font-size:.8rem;font-weight:850;text-transform:capitalize}.thumb-img img{width:100%;height:100%;object-fit:cover;display:block}.thumb-label{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 9px;font-size:.72rem;text-transform:capitalize;color:var(--muted,#6f7c8d);font-weight:850}
+  .compare-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.compare-frame{border:1px solid var(--line,rgba(143,163,184,.22));border-radius:20px;background:var(--surface-chip,rgba(255,255,255,.96));overflow:hidden}.compare-label{padding:10px 11px;border-bottom:1px solid var(--line,rgba(143,163,184,.22));font-size:.77rem;font-weight:850;color:var(--muted,#6f7c8d)}.compare-image{min-height:320px;display:grid;place-items:center;text-align:center;color:var(--muted,#6f7c8d);font-size:.9rem;font-weight:650;background:color-mix(in srgb,var(--theme-accent,#2f6df6) 5%,transparent)}.compare-image img{width:100%;height:100%;max-height:520px;object-fit:contain;display:block;background:#111}
+  .check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.check-chip{display:flex;align-items:center;gap:8px;padding:10px 11px;border-radius:999px;border:1px solid var(--line,rgba(143,163,184,.22));background:var(--surface-chip,rgba(255,255,255,.96));font-size:.82rem;font-weight:760;color:var(--ink,#132235)}.check-chip input{accent-color:var(--theme-accent,#2f6df6)}
+  .save-state{margin-top:8px;min-height:18px;color:var(--muted,#6f7c8d);font-size:.8rem;font-weight:650}.save-state:empty{display:none}.empty-soft{padding:14px;border-radius:16px;border:1px solid var(--line,rgba(143,163,184,.22));color:var(--muted,#6f7c8d);font-size:.86rem;font-weight:650;background:var(--surface-chip,rgba(255,255,255,.96))}
+  @media(max-width:980px){.med-summary-grid,.metric-grid{grid-template-columns:1fr 1fr}.compare-controls{grid-template-columns:1fr}.check-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){:root{--progress-card-pad:15px;--progress-radius:22px}.progress-stack{gap:12px;margin-top:12px}.progress-card-head,.progress-hero-top{display:grid}.weight-log-form,.photo-add-grid,.med-summary-grid,.metric-grid,.compare-grid,.gallery-thumbs,.check-grid{grid-template-columns:1fr}.trend-wrap{min-height:230px}.trend-svg{min-height:210px}.recent-row{grid-template-columns:minmax(0,1fr) auto}.recent-row .tiny-btn{grid-column:1/-1;justify-self:start}.photo-tabs{margin-inline:-2px}.compare-image{min-height:245px}}
+</style>
+</head>
+<body data-page="progress">
+<div class="shell">
+  <div data-shell-mount="topbar"></div>
 
-<body data-current-dosage="" data-current-weight="" data-injection-day="" data-injection-day-name="Friday" data-last-injection="" data-medication="" data-next-injection="" data-page="progress" data-start-weight="" data-target-weight="" data-user-name="">
-<div class="shell"><div data-shell-mount="topbar"></div>
+  <section aria-label="Progress overview" class="status-strip">
+    <div>
+      <div class="eyebrow">PROGRESS</div>
+      <h1 class="page-heading">Your progress at a glance</h1>
+      <p class="subline">Track weight, medication rhythm, photos and weekly consistency privately on this device.</p>
+    </div>
+  </section>
 
-<div aria-label="Page intro" class="status-strip">
-<div>
-<div class="eyebrow">PROGRESS</div>
-<h1 class="headline">Your progress at a glance</h1>
-<div class="subline">Track your weight, photos, and weekly consistency in one place.</div>
+  <main class="progress-stack">
+    <section class="progress-card is-hero" aria-labelledby="progressHeroTitle">
+      <div class="progress-hero-top">
+        <div>
+          <div class="progress-kicker">Snapshot</div>
+          <h2 class="progress-hero-title" id="progressHeroTitle">Your progress</h2>
+          <p class="progress-hero-copy">A private, local record of weight, medication rhythm, photos and weekly consistency.</p>
+        </div>
+        <span class="pill-note" id="weightUnitPill">kg</span>
+      </div>
+      <div class="metric-grid" aria-label="Weight summary">
+        <div class="metric-tile"><div class="metric-label">Starting</div><div class="metric-value" id="startingWeightValue">—</div><div class="metric-note">From onboarding or first log</div></div>
+        <div class="metric-tile"><div class="metric-label">Latest</div><div class="metric-value" id="latestWeightValue">—</div><div class="metric-note" id="latestWeightNote">No log yet</div></div>
+        <div class="metric-tile"><div class="metric-label">Change</div><div class="metric-value" id="weightChangeValue">—</div><div class="metric-note">Compared with starting</div></div>
+      </div>
+    </section>
+
+    <section class="progress-card" aria-labelledby="weightTitle">
+      <div class="progress-card-head">
+        <div>
+          <div class="progress-kicker">Weight trend</div>
+          <h2 class="progress-card-title" id="weightTitle">Simple weight tracking</h2>
+          <p class="progress-card-copy">Log weight when it makes sense. The chart shows the trend without goal lines or judgement.</p>
+        </div>
+      </div>
+      <div class="progress-grid">
+        <div class="progress-panel">
+          <div class="trend-wrap">
+            <svg class="trend-svg" id="weightTrendChart" viewBox="0 0 720 280" role="img" aria-label="Weight trend chart"></svg>
+            <div class="trend-empty" id="weightTrendEmpty">Log your first weight to start a clear trend line.</div>
+          </div>
+          <form class="weight-log-form" id="weightLogForm">
+            <div class="field"><label for="weightDate">Date</label><input id="weightDate" type="date" required/></div>
+            <div class="field"><label for="weightValue">Weight</label><input id="weightValue" inputmode="decimal" placeholder="e.g. 92.4" required/></div>
+            <button class="progress-btn" type="submit">Save</button>
+          </form>
+          <div class="save-state" id="weightSaveState"></div>
+        </div>
+        <details class="progress-details">
+          <summary>Recent entries</summary>
+          <div class="progress-details-body"><div class="recent-list" id="weightLogList"></div></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="progress-card injection-card" aria-labelledby="medicationTitle">
+      <div class="progress-card-head">
+        <div>
+          <div class="progress-kicker">Injection tracker</div>
+          <h2 class="progress-card-title" id="medicationTitle">Injection rhythm</h2>
+          <p class="progress-card-copy">See what is planned, log injections and spot if a planned day has passed. This does not give dose advice.</p>
+        </div>
+        <a class="progress-btn secondary" href="onboarding.html">Change schedule</a>
+      </div>
+
+      <div class="injection-alert is-neutral" id="injectionAlert" aria-live="polite">
+        <span class="injection-alert-dot" aria-hidden="true"></span>
+        <div>
+          <div class="injection-alert-kicker">Status</div>
+          <h3 class="injection-alert-title">Injection schedule not set</h3>
+          <p class="injection-alert-copy">Add your medication rhythm in onboarding if you want injection alerts.</p>
+          <span class="injection-alert-status">Not tracking</span>
+        </div>
+      </div>
+
+      <div class="med-summary-grid">
+        <div class="metric-tile"><div class="metric-label">Medication</div><div class="metric-value" id="medNameValue">—</div><div class="metric-note">From onboarding</div></div>
+        <div class="metric-tile"><div class="metric-label">Rhythm</div><div class="metric-value" id="medRhythmValue">—</div><div class="metric-note" id="medDaysValue">No days set</div></div>
+        <div class="metric-tile"><div class="metric-label">Next planned</div><div class="metric-value" id="medNextValue">—</div><div class="metric-note" id="medNextNote">Not tracking</div></div>
+      </div>
+      <div class="med-log-row">
+        <button class="progress-btn" id="markDoseDoneBtn" type="button">Log injection today</button>
+        <button class="progress-btn ghost" id="markDoseYesterdayBtn" type="button">Log yesterday</button>
+        <span class="pill-note" id="lastDosePill">No injection logged yet</span>
+      </div>
+
+      <div class="injection-timeline-card">
+        <div class="injection-timeline-head">
+          <div>
+            <h3 class="injection-timeline-title">Injection timeline</h3>
+            <p class="injection-timeline-sub">Recent and upcoming planned injections from your saved rhythm.</p>
+          </div>
+          <div class="injection-legend" aria-label="Injection timeline legend">
+            <span><i class="legend-dot ok"></i>Logged</span>
+            <span><i class="legend-dot due"></i>Today</span>
+            <span><i class="legend-dot late"></i>Late</span>
+          </div>
+        </div>
+        <div class="injection-timeline" id="injectionTimeline" aria-label="Injection timeline"></div>
+      </div>
+
+      <details class="progress-details">
+        <summary>Injection history</summary>
+        <div class="progress-details-body"><div class="dose-list" id="doseHistoryList"></div></div>
+      </details>
+    </section>
+
+    <section class="progress-card" aria-labelledby="photoTitle">
+      <div class="progress-card-head">
+        <div>
+          <div class="progress-kicker">Photos</div>
+          <h2 class="progress-card-title" id="photoTitle">Progress photos</h2>
+          <p class="progress-card-copy">Add front, side or back photos and compare two dates without uploading anything.</p>
+        </div>
+        <span class="pill-note" id="photoCountPill">0 photos</span>
+      </div>
+      <div class="private-note"><strong>Private:</strong><span>Photos stay on this device. They are not uploaded or shared.</span></div>
+      <div class="photo-shell">
+        <div class="photo-tabs" role="tablist" aria-label="Progress photo tabs">
+          <button class="photo-tab active" data-photo-tab="add" type="button">Add</button>
+          <button class="photo-tab" data-photo-tab="gallery" type="button">Gallery</button>
+          <button class="photo-tab" data-photo-tab="compare" type="button">Compare</button>
+        </div>
+
+        <section class="photo-panel" id="photoPanelAdd">
+          <form id="photoAddForm" class="photo-add-grid">
+            <div class="field"><label for="photoDate">Date</label><input id="photoDate" type="date" required/></div>
+            <div class="field"><label for="photoAngle">Angle</label><select id="photoAngle"><option value="front">Front</option><option value="side">Side</option><option value="back">Back</option></select></div>
+            <div class="field full"><label for="photoFile">Photo</label><div class="file-drop"><input id="photoFile" type="file" accept="image/*" required/><span>Choose or take a photo. Large images are resized before saving.</span></div></div>
+            <div class="field full"><label for="photoNote">Note optional</label><textarea id="photoNote" placeholder="Optional note for this check-in"></textarea></div>
+            <div class="full"><button class="progress-btn" type="submit">Save photo</button></div>
+          </form>
+          <div class="save-state" id="photoSaveState"></div>
+        </section>
+
+        <section class="photo-panel" id="photoPanelGallery" hidden>
+          <div id="photoGallery"></div>
+        </section>
+
+        <section class="photo-panel" id="photoPanelCompare" hidden>
+          <div class="compare-controls">
+            <div class="field"><label for="compareAngle">Angle</label><select id="compareAngle"><option value="front">Front</option><option value="side">Side</option><option value="back">Back</option></select></div>
+            <div class="field"><label for="compareBefore">Before date</label><select id="compareBefore"></select></div>
+            <div class="field"><label for="compareAfter">After date</label><select id="compareAfter"></select></div>
+          </div>
+          <div class="compare-grid">
+            <div class="compare-frame"><div class="compare-label" id="compareBeforeLabel">Before</div><div class="compare-image" id="compareBeforeFrame">Choose two photos to compare.</div></div>
+            <div class="compare-frame"><div class="compare-label" id="compareAfterLabel">After</div><div class="compare-image" id="compareAfterFrame">Choose two photos to compare.</div></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="progress-card" aria-labelledby="checkinTitle">
+      <div class="progress-card-head">
+        <div>
+          <div class="progress-kicker">Weekly check-in</div>
+          <h2 class="progress-card-title" id="checkinTitle">A simple weekly snapshot</h2>
+          <p class="progress-card-copy">A light note for patterns. Not a scorecard.</p>
+        </div>
+      </div>
+      <form id="weeklyCheckinForm">
+        <div class="check-grid">
+          <label class="check-chip"><input type="checkbox" data-weekly-check="weight"/> Weight logged</label>
+          <label class="check-chip"><input type="checkbox" data-weekly-check="medication"/> Medication tracked</label>
+          <label class="check-chip"><input type="checkbox" data-weekly-check="movement"/> Movement done</label>
+          <label class="check-chip"><input type="checkbox" data-weekly-check="meals"/> Meals mostly okay</label>
+        </div>
+        <div class="field" style="margin-top:10px"><label for="weeklyNote">Note optional</label><textarea id="weeklyNote" placeholder="What helped this week?"></textarea></div>
+        <div class="progress-actions" style="margin-top:10px"><button class="progress-btn secondary" type="submit">Save check-in</button></div>
+        <div class="save-state" id="weeklySaveState"></div>
+      </form>
+    </section>
+  </main>
 </div>
-</div>
-<main class="progress-stack">
-<section class="progress-card progress-hero">
-<div class="progress-summary">
-<div class="weight-hero">
-<div>
-<div class="progress-kicker">Weight</div>
-<h2 class="progress-headline"><span id="currentWeight">No weight logged yet</span></h2>
-<div class="weight-loss" id="weightLost">Log your first weight to see your progress</div>
-</div>
-<div class="fatloss-chart-shell full-width-chart">
-<div class="fatloss-chart-head">
-<div>
-<div class="fatloss-chart-title">Fat loss trajectory</div>
-<div class="fatloss-chart-copy">Goal path against your actual weight trend.</div><div class="doctor-note">Target weight should be provided by your doctor.</div>
-</div>
-<div class="fatloss-mini-note" id="fatlossStatus">On track</div>
-</div>
-<div class="fatloss-chart-wrap">
-<div aria-live="polite" class="fatloss-empty-state" id="fatlossEmptyState" role="status"><div class="fatloss-empty-inner"><div aria-hidden="true" class="fatloss-empty-icon"><svg viewbox="0 0 24 24"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7.5 15.5l3.2-3.2 2.4 2.4 4.8-6"></path></svg></div><div class="fatloss-empty-title">No weight trend yet</div><div class="fatloss-empty-copy">Log your first weight to unlock your progress chart.</div></div></div>
-<svg aria-label="Fat loss trajectory chart" class="fatloss-chart" id="fatlossChart" viewbox="0 0 980 380"></svg>
-</div>
-<div class="chart-legend">
-<span class="legend-item"><span class="legend-swatch goal"></span>Goal path</span>
-<span class="legend-item"><span class="legend-swatch actual"></span>Actual path</span>
-</div>
-<div class="chart-meta chart-meta-compact">
-<div class="chart-meta-item">
-<div class="chart-meta-label">Start</div>
-<div class="chart-meta-value" id="chartStartValue">No data yet</div>
-</div>
-<div class="chart-meta-item">
-<div class="chart-meta-label">Goal</div>
-<div class="chart-meta-value" id="chartGoalValue">Set in Settings</div>
-</div>
-<div class="chart-meta-item">
-<div class="chart-meta-label">Expected now</div>
-<div class="chart-meta-value" id="chartExpectedValue">No data yet</div>
-</div>
-<div class="chart-meta-item">
-<div class="chart-meta-label">Actual now</div>
-<div class="chart-meta-value" id="chartActualValue">No data yet</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section class="progress-card">
-<div class="progress-section-head"><div><h2 class="section-title">Injections</h2><p class="section-copy">Only the next injection and dosage at a glance. Open the panel to manage schedule, dosage, and see your past entries.</p></div></div>
-<div class="injection-glance">
-<div class="info-tile"><div class="info-label">Next injection</div><div class="info-value" id="nextInjection">No injection logged yet</div><div class="info-copy" id="nextInjectionDetail">Set your medication schedule in Settings</div></div>
-<div class="info-tile"><div class="info-label">Current dosage</div><div class="info-value" id="currentDosage">1.0 mg</div><div class="info-copy">Tap below to manage the schedule.</div></div>
-</div>
-<details class="injection-shell">
-<summary class="injection-summary">
-<div class="injection-summary-main">
-<div class="injection-title">Injection schedule and dosage</div>
-<div class="injection-sub">Open to edit medication, timetable, dosage, and review every logged injection.</div>
-</div>
-<div class="injection-summary-right"><div class="injection-chip-row"><span class="injection-chip" id="medicationChip">Wegovy</span><span class="injection-chip" id="scheduleChip">Monday</span><span class="injection-chip" id="dosageChip">1.0 mg</span></div><span aria-hidden="true" class="disclosure-icon"><svg viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></span></div>
-</summary>
-<div class="injection-panel">
-<div class="injection-manage-grid">
-<div class="field-card"><label class="control-label" for="medicationSelect">Medication</label><select class="progress-select" id="medicationSelect"><option>Ozempic</option><option selected="">Wegovy</option><option>Mounjaro</option><option>Saxenda</option><option>Other</option></select></div>
-<div class="field-card"><label class="control-label" for="scheduleSelect">Injection day</label><select class="progress-select" id="scheduleSelect"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
-<div class="field-card"><label class="control-label" for="dosageSelect">Dosage</label><select class="progress-select" id="dosageSelect"><option>0.25 mg</option><option>0.5 mg</option><option selected="">1.0 mg</option><option>1.7 mg</option><option>2.4 mg</option></select></div>
-</div>
-<div class="field-card"><span class="control-label">Past injections</span><div class="field-card" id="medicationDaysCard">
-<label class="control-label">Medication day(s)</label>
-<div aria-label="Medication days" class="medication-days-grid" id="medicationDaysGrid" role="group">
-<button data-progress-med-day="1" type="button">Mon</button>
-<button data-progress-med-day="2" type="button">Tue</button>
-<button data-progress-med-day="3" type="button">Wed</button>
-<button data-progress-med-day="4" type="button">Thu</button>
-<button data-progress-med-day="5" type="button">Fri</button>
-<button data-progress-med-day="6" type="button">Sat</button>
-<button data-progress-med-day="0" type="button">Sun</button>
-</div>
-</div>
-<div class="history-list" id="injectionHistory"></div></div>
-</div>
-</details>
-</section>
-<section class="progress-card">
-<div class="progress-section-head"><div><h2 class="section-title">Compare photos</h2><p class="section-copy">Choose two dates and view the same angle side by side.</p></div></div>
-<div class="compare-controls">
-<div class="control-card date-picker-shell"><span class="control-label">Date A</span><button class="date-picker-btn" id="compareDateABtn" type="button"><span><span id="compareDateALabel">Choose date</span><span class="meta" id="compareDateAMeta"></span></span><svg viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></button><div class="date-picker-menu" id="compareDateAMenu"></div></div>
-<div class="control-card date-picker-shell"><span class="control-label">Date B</span><button class="date-picker-btn" id="compareDateBBtn" type="button"><span><span id="compareDateBLabel">Choose date</span><span class="meta" id="compareDateBMeta"></span></span><svg viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></button><div class="date-picker-menu" id="compareDateBMenu"></div></div>
-<div class="control-card full-row"><span class="control-label">Angle</span><div class="angle-toggle"><button class="angle-btn active" data-angle="front" type="button">Front</button><button class="angle-btn" data-angle="side" type="button">Side</button><button class="angle-btn" data-angle="back" type="button">Back</button></div></div>
-</div>
-<div class="compare-grid">
-<div class="photo-panel"><div class="photo-panel-label" id="panelLabelA">Date A • Front</div><div class="photo-frame" id="photoFrameA"></div></div>
-<div class="photo-panel"><div class="photo-panel-label" id="panelLabelB">Date B • Front</div><div class="photo-frame" id="photoFrameB"></div></div>
-</div>
-</section>
-<section class="progress-card">
-<div class="progress-section-head"><div><h2 class="section-title">Photo gallery</h2><p class="section-copy">Your saved front, side, and back check-ins in one place.</p></div></div>
-<div class="gallery-grid" id="galleryGrid"></div>
-</section>
-<section class="progress-card">
-<div class="progress-section-head"><div><h2 class="section-title">Adherence</h2><p class="section-copy">Exercise, water, and nutrition in simple terms.</p></div></div>
-<div class="adherence-list" id="adherenceList">
-<article class="adherence-row" data-adherence="exercise">
-<div class="adherence-icon violet"><svg viewbox="0 0 24 24"><path d="M2.5 10v4"></path><path d="M5.5 8v8"></path><path d="M18.5 8v8"></path><path d="M21.5 10v4"></path><path d="M5.5 12h13"></path></svg></div>
-<div class="adherence-main">
-<div class="adherence-name">Exercise</div>
-<div class="adherence-sub" id="exerciseCopy">Steady this week</div>
-<div class="adherence-track" id="exerciseTrack"></div>
-</div>
-</article>
-<article class="adherence-row" data-adherence="water">
-<div class="adherence-icon blue"><svg viewbox="0 0 24 24"><path d="M12 3c-3 4-5 6.6-5 10a5 5 0 0 0 10 0c0-3.4-2-6-5-10Z"></path></svg></div>
-<div class="adherence-main">
-<div class="adherence-name">Water</div>
-<div class="adherence-sub" id="waterCopy">Mostly on track</div>
-<div class="adherence-track" id="waterTrack"></div>
-</div>
-</article>
-<article class="adherence-row" data-adherence="nutrition">
-<div class="adherence-icon teal"><svg viewbox="0 0 24 24"><path d="M4.5 5.5h15"></path><path d="M6 5.5l1.4 10.5a2 2 0 0 0 2 1.7h5.2a2 2 0 0 0 2-1.7L18 5.5"></path><path d="M12 3.5c1 .6 1.5 1.5 1.5 2.7 0 1-.5 1.8-1.5 2.3-1-.5-1.5-1.3-1.5-2.3 0-1.2.5-2.1 1.5-2.7Z"></path></svg></div>
-<div class="adherence-main">
-<div class="adherence-name">Nutrition</div>
-<div class="adherence-sub" id="nutritionCopy">Consistent overall</div>
-<div class="adherence-track" id="nutritionTrack"></div>
-</div>
-</article>
-</div>
-</section>
-</main>
 
-<script>
-
-(() => {
-  const body = document.body;
-  const STORAGE_KEYS = {
-    weightHistory: 'heartyWeightHistory',
-    targetWeight: 'heartyTargetWeight',
-    goalDate: 'heartyGoalDate',
-    // Privacy rule: medication/injection data stays on-device only. Do not sync these keys to Supabase.
-    injectionSchedule: 'heartyInjectionSchedule',
-    dosage: 'heartyCurrentDosage',
-    medication: 'heartyMedicationType',
-    injectionLog: 'heartyInjectionLog',
-    photoLog: 'heartyPhotoLog',
-    adherence: 'heartyAdherence'
-  };
-
-  function readJSON(key, fallback){
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch (err) {
-      return fallback;
-    }
-  }
-
-  function writeJSON(key, value){
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-
-  function formatDateLabel(date){
-    return date.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).replace(/ /g, ' ');
-  }
-
-  function isoDate(date){
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0,10);
-  }
-
-  function parseDate(value){
-    return value instanceof Date ? value : new Date(value + 'T00:00:00');
-  }
-
-  function sameDay(a, b){
-    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-  }
-
-  const HEARTY_PROGRESS_KEY = 'heartyProgressV1';
-
-  function numberFrom(value){
-    const n = Number(String(value ?? '').replace(',', '.'));
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function normaliseWeightEntry(item){
-    if(!item || typeof item !== 'object') return null;
-    const date = item.date || item.day || (item.createdAt ? String(item.createdAt).slice(0,10) : '') || (item.loggedAt ? String(item.loggedAt).slice(0,10) : '');
-    const weight = numberFrom(item.weightKg ?? item.currentWeightKg ?? item.weight ?? item.value ?? item.kg);
-    if(!date || !Number.isFinite(weight) || weight <= 0) return null;
-    return { date, weight };
-  }
-
-  function readSharedProgress(){
-    const shared = readJSON(HEARTY_PROGRESS_KEY, {});
-    return shared && typeof shared === 'object' && !Array.isArray(shared) ? shared : {};
-  }
-
-  const sharedProgress = readSharedProgress();
-  const legacyProgress = readJSON('hearty_progress', {});
-  const profileProgress = readJSON('hearty_profile', {});
-
-  const combinedWeightSources = []
-    .concat(Array.isArray(sharedProgress.weighIns) ? sharedProgress.weighIns : [])
-    .concat(readJSON(STORAGE_KEYS.weightHistory, []))
-    .concat(readJSON('hearty_weight_logs', []));
-
-  const weightByDate = new Map();
-  combinedWeightSources.forEach(item => {
-    const entry = normaliseWeightEntry(item);
-    if(entry) weightByDate.set(entry.date, entry);
-  });
-
-  if(!weightByDate.size){
-    const fallbackWeight = numberFrom(
-      sharedProgress.currentWeightKg ??
-      sharedProgress.currentWeight ??
-      legacyProgress.currentWeightKg ??
-      legacyProgress.currentWeight ??
-      profileProgress.currentWeightKg ??
-      profileProgress.currentWeight ??
-      (profileProgress.progress && (profileProgress.progress.currentWeightKg ?? profileProgress.progress.currentWeight)) ??
-      localStorage.getItem('heartyCurrentWeightKg') ??
-      localStorage.getItem('heartyTodayWeightKg')
-    );
-    if(Number.isFinite(fallbackWeight) && fallbackWeight > 0){
-      weightByDate.set(isoDate(new Date()), { date: isoDate(new Date()), weight: fallbackWeight });
-    }
-  }
-
-  const weightHistory = Array.from(weightByDate.values())
-    .filter(item => item.date && Number.isFinite(item.weight))
-    .sort((a,b) => parseDate(a.date) - parseDate(b.date));
-
-  const hasWeightData = weightHistory.length > 0;
-  const startEntry = hasWeightData ? weightHistory[0] : null;
-  const currentEntry = hasWeightData ? weightHistory[weightHistory.length - 1] : null;
-  const startWeight = startEntry ? Number(startEntry.weight) : null;
-  const currentWeight = currentEntry ? Number(currentEntry.weight) : null;
-  const targetWeightRaw =
-    localStorage.getItem(STORAGE_KEYS.targetWeight) ||
-    sharedProgress.targetWeightKg ||
-    sharedProgress.targetWeight ||
-    legacyProgress.targetWeightKg ||
-    legacyProgress.targetWeight ||
-    (profileProgress.progress && (profileProgress.progress.targetWeightKg || profileProgress.progress.targetWeight)) ||
-    body.dataset.targetWeight ||
-    '';
-  const targetWeight = targetWeightRaw !== '' ? Number(targetWeightRaw) : null;
-  const goalDateString = localStorage.getItem(STORAGE_KEYS.goalDate) || '';
-  const goalDate = goalDateString ? parseDate(goalDateString) : null;
-  const lost = hasWeightData ? Math.max(0, startWeight - currentWeight) : null;
-
-  const currentWeightEl = document.getElementById('currentWeight');
-  currentWeightEl.textContent = hasWeightData ? `${currentWeight.toFixed(1)} kg` : 'No weight logged yet';
-  currentWeightEl.classList.toggle('is-empty', !hasWeightData);
-  document.getElementById('weightLost').textContent = hasWeightData ? `${lost.toFixed(1)} kg lost` : 'Log your first weight to start your progress view';
-
-  function getTrajectoryStatus(){
-    if(!hasWeightData || !Number.isFinite(targetWeight) || !goalDate){
-      return null;
-    }
-    const now = parseDate(currentEntry.date);
-    const startDate = parseDate(startEntry.date);
-    const totalDays = Math.max(1, Math.round((goalDate - startDate) / 86400000));
-    const daysPassed = Math.max(0, Math.min(totalDays, Math.round((now - startDate) / 86400000)));
-    const expectedNow = startWeight - ((startWeight - targetWeight) * (daysPassed / totalDays));
-    const delta = currentWeight - expectedNow;
-    let status = 'On track';
-    let copy = 'On track for your timeline';
-    if(delta <= -1){
-      status = 'Ahead of plan';
-      copy = '';
-    } else if(delta > 1){
-      status = 'Slightly behind';
-      copy = 'A little behind your target path';
-    }
-    return { status, copy, expectedNow, delta, startDate, now };
-  }
-
-  const trajectory = getTrajectoryStatus();
-  document.getElementById('fatlossStatus').textContent = trajectory ? trajectory.status : 'Waiting for data';
-  document.getElementById('chartGoalValue').textContent = Number.isFinite(targetWeight) && goalDate ? `${targetWeight.toFixed(1)} kg by ${formatDateLabel(goalDate)}` : 'Set in Settings';
-  document.getElementById('chartExpectedValue').textContent = trajectory ? `${trajectory.expectedNow.toFixed(1)} kg` : 'No data yet';
-  document.getElementById('chartActualValue').textContent = hasWeightData ? `${currentWeight.toFixed(1)} kg` : 'No data yet';
-
-  function renderFatlossChart(){
-    const svg = document.getElementById('fatlossChart');
-    if(!svg) return;
-    const chartShell = svg.closest('.fatloss-chart-shell');
-    if(!trajectory){
-      svg.innerHTML = '';
-      if(chartShell) chartShell.classList.add('no-data');
-      const statusEl = document.getElementById('fatlossStatus');
-      if(statusEl) statusEl.classList.remove('on-track','ahead','behind');
-      return;
-    }
-    if(chartShell) chartShell.classList.remove('no-data');
-    const width = 860, height = 340, left = 72, right = 34, top = 36, bottom = 58;
-    const plotW = width - left - right, plotH = height - top - bottom;
-    const allWeights = weightHistory.map(d => d.weight).concat([startWeight, targetWeight, trajectory.expectedNow]);
-    const maxW = Math.ceil(Math.max(...allWeights) + 1);
-    const minW = Math.floor(Math.min(...allWeights) - 1);
-    const totalSpan = Math.max(1, goalDate - trajectory.startDate);
-    const xForDate = date => left + (((date - trajectory.startDate) / totalSpan) * plotW);
-    const yForWeight = weight => top + ((maxW - weight) / Math.max(1, maxW - minW)) * plotH;
-    const goalPath = `M ${xForDate(trajectory.startDate)} ${yForWeight(startWeight)} L ${xForDate(goalDate)} ${yForWeight(targetWeight)}`;
-    const actualPath = weightHistory.map((entry, index) => {
-      const command = index === 0 ? 'M' : 'L';
-      return `${command} ${xForDate(parseDate(entry.date))} ${yForWeight(entry.weight)}`;
-    }).join(' ');
-    const yTicks = [maxW, Math.round((maxW+minW)/2), minW].filter((v, i, a) => a.indexOf(v) === i).sort((a,b) => b-a);
-    const todayX = xForDate(trajectory.now);
-    const expectedY = yForWeight(trajectory.expectedNow);
-    const actualY = yForWeight(currentWeight);
-    const axisLabels = [
-      { label: 'Start', date: trajectory.startDate },
-      { label: 'Today', date: trajectory.now },
-      { label: 'Goal', date: goalDate }
-    ];
-
-    svg.innerHTML = `
-      <g opacity=".55" stroke="#dce5f0" stroke-width="1">
-        ${yTicks.map(v => `<line x1="${left}" y1="${yForWeight(v)}" x2="${width-right}" y2="${yForWeight(v)}"></line>`).join('')}
-      </g>
-      <g>
-        ${yTicks.map(v => `<text x="${left-12}" y="${yForWeight(v)+4}" text-anchor="end" font-size="12" font-weight="700" fill="#7a8796">${v.toFixed(0)} kg</text>`).join('')}
-      </g>
-      <text x="${left}" y="20" font-size="13" font-weight="800" fill="#8b5cf6">Goal path</text>
-      <text x="${left+120}" y="20" font-size="13" font-weight="800" fill="#2f6df6">Your progress</text>
-      <path d="${goalPath}" fill="none" stroke="#c7b7ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 8"></path>
-      <path d="${actualPath}" fill="none" stroke="#2f6df6" stroke-width="5" stroke-linecap="round"></path>
-      <line x1="${todayX}" y1="${top}" x2="${todayX}" y2="${height-bottom+4}" stroke="#cfd9e7" stroke-width="1.5" stroke-dasharray="4 6"></line>
-      <text x="${todayX}" y="${top-10}" text-anchor="middle" font-size="12" font-weight="800" fill="#7a8796">Today</text>
-      <circle cx="${todayX}" cy="${expectedY}" r="5" fill="#fff" stroke="#8b5cf6" stroke-width="3"></circle>
-      <circle cx="${todayX}" cy="${actualY}" r="7" fill="#fff" stroke="#2f6df6" stroke-width="3"></circle>
-      ${weightHistory.map(entry => {
-        const pointX = xForDate(parseDate(entry.date));
-        const pointY = yForWeight(entry.weight);
-        return `<circle cx="${pointX}" cy="${pointY}" r="4.5" fill="#fff" stroke="#2f6df6" stroke-width="2.5"></circle>`;
-      }).join('')}
-      ${axisLabels.map(item => `<text x="${xForDate(item.date)}" y="${height-16}" text-anchor="middle" font-size="12" font-weight="700" fill="#7a8796">${item.label}</text>`).join('')}
-    `;
-    const statusEl = document.getElementById('fatlossStatus');
-    statusEl.classList.remove('on-track','ahead','behind');
-    if(trajectory.status === 'Ahead of plan') statusEl.classList.add('ahead');
-    else if(trajectory.status === 'Slightly behind') statusEl.classList.add('behind');
-    else statusEl.classList.add('on-track');
-  }
-
-  const weekdayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const dosageOptions = ['0.25 mg','0.5 mg','1.0 mg','1.7 mg','2.4 mg'];
-  const fallbackInjectionLog = [];
-
-  function canonicalData(){
-    try {
-      if(window.HeartyData && typeof window.HeartyData.export === 'function') return window.HeartyData.export();
-    } catch(e) {}
-    return readJSON('hearty:data:v1', null) || {};
-  }
-
-  function dayNameFromAny(value, fallback){
-    if(value == null || value === '') return fallback || 'Monday';
-    if(typeof value === 'number' || /^\d+$/.test(String(value))){
-      const n = Number(value);
-      return weekdayNames[n >= 0 && n <= 6 ? n : 1];
-    }
-    const raw = String(value).trim();
-    const found = weekdayNames.find(d => d.toLowerCase() === raw.toLowerCase());
-    return found || fallback || 'Monday';
-  }
-
-  function frequencyFromAny(value){
-    if(value === 'daily' || Number(value) === 1) return 1;
-    return 7;
-  }
-
-  const canonical = canonicalData();
-  const canonicalProfile = canonical.profile || {};
-  const canonicalProgress = canonical.progress || {};
-  const homeMedication = readJSON('heartyMedication', {}) || {};
-  const savedSchedule = readJSON(STORAGE_KEYS.injectionSchedule, null) || {};
-
-  let injectionSchedule = {
-    day: dayNameFromAny(
-      savedSchedule.day ||
-      localStorage.getItem('heartyInjectionDay') ||
-      localStorage.getItem('heartyInjectionDayName') ||
-      canonicalProfile.injection_day_name ||
-      canonicalProfile.injection_day ||
-      homeMedication.day ||
-      body.dataset.injectionDayName,
-      'Monday'
-    ),
-    frequency: Number(savedSchedule.frequency || frequencyFromAny(canonicalProfile.injection_frequency || homeMedication.frequency || localStorage.getItem('heartyInjectionFrequency') || 7))
-  };
-
-  let currentDosage = localStorage.getItem(STORAGE_KEYS.dosage) || localStorage.getItem('heartyInjectionDose') || body.dataset.currentDosage || 'Not set';
-  let currentMedication =
-    localStorage.getItem(STORAGE_KEYS.medication) ||
-    localStorage.getItem('heartyInjectionName') ||
-    canonicalProfile.medication_name ||
-    canonicalProfile.injection_name ||
-    homeMedication.type ||
-    body.dataset.medication ||
-    'Medication';
-
-  const canonicalInjectionLogs = canonicalProgress.injection_logs && typeof canonicalProgress.injection_logs === 'object'
-    ? Object.values(canonicalProgress.injection_logs)
-    : [];
-
-  let injectionLog = []
-    .concat(readJSON(STORAGE_KEYS.injectionLog, fallbackInjectionLog) || [])
-    .concat(canonicalInjectionLogs || [])
-    .map(item => ({ date: item.date, dose: item.dose || item.dosage || currentDosage, medication:item.medication || currentMedication }))
-    .filter(item => item.date)
-    .sort((a,b) => parseDate(b.date) - parseDate(a.date));
-
-  const uniqueInjectionLog = new Map();
-  injectionLog.forEach(item => uniqueInjectionLog.set(item.date, item));
-  injectionLog = Array.from(uniqueInjectionLog.values()).sort((a,b) => parseDate(b.date) - parseDate(a.date));
-
-  writeJSON(STORAGE_KEYS.injectionSchedule, injectionSchedule);
-  localStorage.setItem(STORAGE_KEYS.dosage, currentDosage);
-  localStorage.setItem(STORAGE_KEYS.medication, currentMedication);
-  localStorage.setItem('heartyInjectionDay', injectionSchedule.day);
-  localStorage.setItem('heartyInjectionFrequency', injectionSchedule.frequency === 1 ? 'daily' : 'weekly');
-  if(currentMedication && currentMedication !== 'Medication') localStorage.setItem('heartyInjectionName', currentMedication);
-
-  function weekdayIndex(dayName){
-    return weekdayNames.indexOf(dayName);
-  }
-
-  function nextWeekdayFrom(baseDate, dayName){
-    const targetDay = weekdayIndex(dayName);
-    const next = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-    let offset = (targetDay - next.getDay() + 7) % 7;
-    if(offset === 0) offset = 7;
-    next.setDate(next.getDate() + offset);
-    return next;
-  }
-
-  function getInjectionPlan(){
-    const today = new Date();
-    const lastLogged = injectionLog[0] ? parseDate(injectionLog[0].date) : null;
-    const frequency = Number(injectionSchedule.frequency || 7);
-    let nextDate;
-    let overdue = false;
-
-    if(lastLogged){
-      const basedOnHistory = new Date(lastLogged.getFullYear(), lastLogged.getMonth(), lastLogged.getDate());
-      basedOnHistory.setDate(basedOnHistory.getDate() + frequency);
-      if(weekdayNames[basedOnHistory.getDay()] === injectionSchedule.day){
-        nextDate = basedOnHistory;
-      } else {
-        nextDate = nextWeekdayFrom(today, injectionSchedule.day);
-      }
-      overdue = new Date(today.getFullYear(), today.getMonth(), today.getDate()) > new Date(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
-    } else {
-      nextDate = nextWeekdayFrom(today, injectionSchedule.day);
-    }
-
-    return { nextDate, overdue, lastLogged };
-  }
-
-  function nextInjectionLabel(plan){
-    if(plan.overdue) return 'Overdue';
-    const today = new Date();
-    const diffDays = Math.round((new Date(plan.nextDate.getFullYear(), plan.nextDate.getMonth(), plan.nextDate.getDate()) - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
-    if(diffDays <= 0) return 'Today';
-    if(diffDays === 1) return 'Tomorrow';
-    return `Due in ${diffDays} days`;
-  }
-
-  function renderInjectionHistory(){
-    const wrap = document.getElementById('injectionHistory');
-    wrap.innerHTML = '';
-    if(!injectionLog.length){
-      const empty = document.createElement('div');
-      empty.className = 'history-row';
-      empty.innerHTML = `<div class="history-main"><div class="history-date">No injections logged yet</div><div class="history-copy">Your medication history will appear here once you start logging.</div></div><div class="history-dose">—</div>`;
-      wrap.appendChild(empty);
-      return;
-    }
-    injectionLog.forEach(item => {
-      const row = document.createElement('div');
-      const date = parseDate(item.date);
-      row.className = 'history-row';
-      row.innerHTML = `<div class="history-main"><div class="history-date">${formatDateLabel(date)}</div><div class="history-copy">${weekdayNames[date.getDay()]}</div></div><div class="history-dose">${item.dose}</div>`;
-      wrap.appendChild(row);
-    });
-  }
-
-  function renderInjectionSummary(){
-    const plan = getInjectionPlan();
-    document.getElementById('nextInjection').textContent = nextInjectionLabel(plan);
-    document.getElementById('currentDosage').textContent = currentDosage;
-    document.getElementById('nextInjectionDetail').textContent = `${formatDateLabel(plan.nextDate)} • ${currentMedication} • ${currentDosage}`;
-    document.getElementById('scheduleChip').textContent = injectionSchedule.day;
-    document.getElementById('dosageChip').textContent = currentDosage;
-    document.getElementById('medicationChip').textContent = currentMedication;
-    document.getElementById('scheduleSelect').value = injectionSchedule.day;
-    document.getElementById('dosageSelect').value = currentDosage;
-    document.getElementById('medicationSelect').value = currentMedication;
-    document.getElementById('fatlossStatus');
-    const nextTile = document.getElementById('nextInjection').closest('.info-tile');
-    nextTile.style.borderColor = plan.overdue ? 'rgba(245,158,11,.26)' : 'rgba(154,173,197,.16)';
-    nextTile.style.background = plan.overdue ? 'linear-gradient(180deg, rgba(255,248,240,.98), rgba(255,255,255,.96))' : 'linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,255,.94))';
-    renderInjectionHistory();
-  }
-
-  document.getElementById('scheduleSelect').addEventListener('change', function(){
-    injectionSchedule.day = this.value;
-    writeJSON(STORAGE_KEYS.injectionSchedule, injectionSchedule);
-    localStorage.setItem('heartyInjectionDay', injectionSchedule.day);
-    localStorage.setItem('heartyInjectionDayName', injectionSchedule.day);
-    try { window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_day_name', injectionSchedule.day); } catch(e){}
-    renderInjectionSummary();
-  });
-
-  document.getElementById('dosageSelect').addEventListener('change', function(){
-    currentDosage = this.value;
-    localStorage.setItem(STORAGE_KEYS.dosage, currentDosage);
-    localStorage.setItem('heartyInjectionDose', currentDosage);
-    try { window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_dose', currentDosage); } catch(e){}
-    renderInjectionSummary();
-  });
-
-  document.getElementById('medicationSelect').addEventListener('change', function(){
-    currentMedication = this.value;
-    localStorage.setItem(STORAGE_KEYS.medication, currentMedication);
-    localStorage.setItem('heartyInjectionName', currentMedication);
-    try {
-      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.medication_name', currentMedication);
-      window.HeartyData && window.HeartyData.set && window.HeartyData.set('profile.injection_name', currentMedication);
-    } catch(e){}
-    renderInjectionSummary();
-  });
-  function makeEmptyFrame(angle, meta='Add photos from Home'){
-    const title = 'No progress photo yet';
-    const isPink = (document.documentElement.getAttribute('data-theme') || '').toLowerCase() === 'pink_lemonade';
-    const bgTop = isPink ? '#fff9fb' : '#f9fbff';
-    const bgBottom = isPink ? '#fff0f5' : '#edf4fb';
-    const dash = isPink ? '#efbfd1' : '#d4deea';
-    const outline = isPink ? '#efbfd1' : '#d7e1ed';
-    const titleColor = isPink ? '#8f5870' : '#5f7084';
-    const metaColor = isPink ? '#b07b92' : '#8a98a8';
-    return `data:image/svg+xml;utf8,${encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 520">
-        <defs>
-          <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="${bgTop}"/>
-            <stop offset="100%" stop-color="${bgBottom}"/>
-          </linearGradient>
-        </defs>
-        <rect width="420" height="520" rx="34" fill="url(#bg)"/>
-        <rect x="24" y="24" width="372" height="472" rx="28" fill="none" stroke="${dash}" stroke-width="2.5" stroke-dasharray="10 10"/>
-        <circle cx="210" cy="170" r="48" fill="#ffffff" stroke="${outline}" stroke-width="2"/>
-        <path d="M136 336c18-54 53-86 74-86s56 32 74 86" fill="#ffffff" stroke="${outline}" stroke-width="2" stroke-linecap="round"/>
-        <text x="210" y="402" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="${titleColor}">${title}</text>
-        <text x="210" y="434" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="${metaColor}">${meta}</text>
-      </svg>
-    `)}`;
-  }
-
-  const placeholderPhotoSets = [
-    {
-      key:'no-photos-yet',
-      label:'No photos yet',
-      day:'Add photos from Home',
-      placeholder:true,
-      front:makeEmptyFrame('front'),
-      side:makeEmptyFrame('side'),
-      back:makeEmptyFrame('back')
-    }
-  ];
-
-  function normalisePhotoRow(item){
-    if(!item || typeof item !== 'object') return null;
-    const date = item.date || item.day || (item.createdAt ? String(item.createdAt).slice(0,10) : '');
-    const type = item.type || item.angle || item.view || item.slot;
-    const image = item.image || item.previewUrl || item.url || item.dataUrl || item.src || '';
-    const dbKey = item.dbKey || item.idbKey || item.indexedDbKey || '';
-    if(!date || !type) return null;
-    if(!image && !dbKey) return null;
-    if(!['front','side','back'].includes(type)) return null;
-    return { date, type, image, dbKey };
-  }
-
-  function collectProgressPhotoRows(){
-    const rows = [];
-    const addRows = value => {
-      if(Array.isArray(value)){
-        value.forEach(item => {
-          const row = normalisePhotoRow(item);
-          if(row) rows.push(row);
-        });
-      }
-    };
-
-    addRows(sharedProgress.photoLogs);
-    addRows(readJSON(STORAGE_KEYS.photoLog, []));
-
-    const photoSets = readJSON('hearty_progress_photos', []);
-    if(Array.isArray(photoSets)){
-      photoSets.forEach(set => {
-        if(!set || !set.date || !set.slots) return;
-        ['front','side','back'].forEach(type => {
-          const slot = set.slots[type];
-          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src || '');
-          const dbKey = slot && (slot.dbKey || slot.idbKey || slot.indexedDbKey || '');
-          if(image || dbKey) rows.push({ date:set.date, type, image, dbKey });
-        });
-      });
-    }
-
-    if(sharedProgress.photoLogs && typeof sharedProgress.photoLogs === 'object' && !Array.isArray(sharedProgress.photoLogs)){
-      Object.keys(sharedProgress.photoLogs).forEach(date => {
-        const set = sharedProgress.photoLogs[date];
-        if(!set) return;
-        ['front','side','back'].forEach(type => {
-          const slot = set[type] || (set.slots && set.slots[type]);
-          const image = slot && (slot.previewUrl || slot.image || slot.url || slot.dataUrl || slot.src || (typeof slot === 'string' ? slot : ''));
-          if(image) rows.push({ date, type, image });
-        });
-      });
-    }
-
-    const unique = new Map();
-    rows.forEach(row => unique.set(`${row.date}:${row.type}`, row));
-    return Array.from(unique.values());
-  }
-
-  function buildPhotos(){
-    const saved = collectProgressPhotoRows();
-    if(!Array.isArray(saved) || !saved.length) return placeholderPhotoSets;
-    const grouped = new Map();
-    saved.forEach(item => {
-      if(!item || !item.date || !item.type || (!item.image && !item.dbKey)) return;
-      if(!grouped.has(item.date)) grouped.set(item.date, { key:item.date, label:formatDateLabel(parseDate(item.date)), day:formatDateLabel(parseDate(item.date)), placeholder:false, dbKeys:{} });
-      grouped.get(item.date)[item.type] = item.image || '';
-      if(item.dbKey) grouped.get(item.date).dbKeys[item.type] = item.dbKey;
-    });
-    const result = Array.from(grouped.values()).sort((a,b) => parseDate(a.key) - parseDate(b.key));
-    return result.length ? result : placeholderPhotoSets;
-  }
-
-  const photos = buildPhotos();
-  const usingPhotoPlaceholders = photos.every(item => item.placeholder);
-  const frameA = document.getElementById('photoFrameA');
-  const frameB = document.getElementById('photoFrameB');
-  const labelA = document.getElementById('panelLabelA');
-  const labelB = document.getElementById('panelLabelB');
-  const gallery = document.getElementById('galleryGrid');
-  const dateABtn = document.getElementById('compareDateABtn');
-  const dateBBtn = document.getElementById('compareDateBBtn');
-  const dateAMenu = document.getElementById('compareDateAMenu');
-  const dateBMenu = document.getElementById('compareDateBMenu');
-  const dateALabel = document.getElementById('compareDateALabel');
-  const dateBLabel = document.getElementById('compareDateBLabel');
-  const dateAMeta = document.getElementById('compareDateAMeta');
-  const dateBMeta = document.getElementById('compareDateBMeta');
-  let currentAngle = 'front';
-  let compareDateA = photos[0] ? photos[0].key : null;
-  let compareDateB = photos.length > 1 ? photos[photos.length - 1].key : (photos[0] ? photos[0].key : null);
-  if(compareDateA && compareDateA === compareDateB && photos.length > 1) compareDateB = photos[1].key;
-
-  function renderPhoto(frame, url, alt){
-    frame.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = url || makeEmptyFrame(currentAngle);
-    img.alt = alt;
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    frame.appendChild(img);
-  }
-
-  function closeDateMenus(){
-    dateAMenu.classList.remove('open');
-    dateBMenu.classList.remove('open');
-  }
-
-  function setCompareDate(target, key){
-    if(target === 'a'){
-      compareDateA = key;
-      if(compareDateA === compareDateB && photos.length > 1){
-        const alt = photos.find(photo => photo.key !== compareDateA);
-        if(alt) compareDateB = alt.key;
-      }
-    } else {
-      compareDateB = key;
-      if(compareDateA === compareDateB && photos.length > 1){
-        const alt = [...photos].reverse().find(photo => photo.key !== compareDateB);
-        if(alt) compareDateA = alt.key;
-      }
-    }
-    closeDateMenus();
-    updateCompare();
-  }
-
-  function renderDateMenu(menu, target, activeKey){
-    menu.innerHTML = '';
-    photos.forEach(item => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'date-option' + (item.key === activeKey ? ' active' : '');
-      btn.innerHTML = `<span>${item.label}</span><span class="tag">${item.day}</span>`;
-      btn.disabled = !!item.placeholder;
-      btn.addEventListener('click', () => { if(!item.placeholder) setCompareDate(target, item.key); });
-      menu.appendChild(btn);
-    });
-  }
-
-  function updateDateButtons(){
-    const a = photos.find(p => p.key === compareDateA) || photos[0];
-    const b = photos.find(p => p.key === compareDateB) || photos[photos.length - 1];
-    dateALabel.textContent = a.label;
-    dateBLabel.textContent = b.label;
-    if(dateAMeta) dateAMeta.textContent = a.day;
-    if(dateBMeta) dateBMeta.textContent = b.day;
-    renderDateMenu(dateAMenu, 'a', compareDateA);
-    renderDateMenu(dateBMenu, 'b', compareDateB);
-  }
-
-  function updateGalleryImages(){
-    Array.from(gallery.children).forEach((card, index) => {
-      const item = photos[index];
-      const thumbs = card.querySelectorAll('.gallery-thumb');
-      ['front','side','back'].forEach((angle, i) => {
-        const img = item[angle] ? `<img src="${item[angle]}" alt="${angle} ${item.label}" loading="lazy" decoding="async">` : `<span>${angle.charAt(0).toUpperCase()+angle.slice(1)}</span>`;
-        thumbs[i].innerHTML = img;
-      });
-      card.classList.toggle('is-a', item.key === compareDateA);
-      card.classList.toggle('is-b', item.key === compareDateB);
-      const setA = card.querySelector('[data-target="a"]');
-      const setB = card.querySelector('[data-target="b"]');
-      if(setA) setA.classList.toggle('active-a', item.key === compareDateA);
-      if(setB) setB.classList.toggle('active-b', item.key === compareDateB);
-    });
-  }
-
-  function updateCompare(){
-    if(compareDateA === compareDateB && photos.length > 1){
-      const fallback = photos.find(photo => photo.key !== compareDateA);
-      if(fallback) compareDateB = fallback.key;
-    }
-    const a = photos.find(p => p.key === compareDateA) || photos[0];
-    const b = photos.find(p => p.key === compareDateB) || photos[photos.length - 1];
-    const angleTitle = currentAngle.charAt(0).toUpperCase() + currentAngle.slice(1);
-    labelA.textContent = `${a.label} • ${angleTitle}`;
-    labelB.textContent = `${b.label} • ${angleTitle}`;
-    renderPhoto(frameA, a[currentAngle], `${currentAngle} ${a.label}`);
-    renderPhoto(frameB, b[currentAngle], `${currentAngle} ${b.label}`);
-    document.querySelectorAll('.angle-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.angle === currentAngle));
-    updateDateButtons();
-    updateGalleryImages();
-  }
-
-  photos.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'gallery-item';
-    card.dataset.key = item.key;
-    card.innerHTML = `<div class="gallery-top"><div class="gallery-date">${item.label}</div><div class="gallery-day">${item.day}</div></div><div class="gallery-angles"><div class="gallery-thumb">Front</div><div class="gallery-thumb">Side</div><div class="gallery-thumb">Back</div></div>${item.placeholder ? '<div class="gallery-actions"><span class="gallery-empty-note">Photos will appear here after they are added from Home.</span></div>' : '<div class="gallery-actions"><button class="gallery-action-btn" type="button" data-target="a">Set as A</button><button class="gallery-action-btn" type="button" data-target="b">Set as B</button></div>'}`;
-    if(!item.placeholder){
-      card.querySelector('[data-target="a"]').addEventListener('click', () => setCompareDate('a', item.key));
-      card.querySelector('[data-target="b"]').addEventListener('click', () => setCompareDate('b', item.key));
-    }
-    gallery.appendChild(card);
-  });
-
-  dateABtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const open = dateAMenu.classList.contains('open');
-    closeDateMenus();
-    if(!open) dateAMenu.classList.add('open');
-  });
-  dateBBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const open = dateBMenu.classList.contains('open');
-    closeDateMenus();
-    if(!open) dateBMenu.classList.add('open');
-  });
-  document.addEventListener('click', (e) => {
-    if(!e.target.closest('.date-picker-shell')) closeDateMenus();
-  });
-
-  document.querySelectorAll('.angle-btn').forEach(btn => btn.addEventListener('click', () => {
-    currentAngle = btn.dataset.angle;
-    updateCompare();
-  }));
-
-  function openHeartyPhotoDB(){
-    return new Promise((resolve,reject) => {
-      const req = indexedDB.open('hearty-home', 1);
-      req.onupgradeneeded = () => {
-        if(!req.result.objectStoreNames.contains('photos')) req.result.createObjectStore('photos');
-      };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  async function loadIndexedProgressPhotos(){
-    const needs = [];
-    photos.forEach(photo => {
-      if(photo.placeholder || !photo.dbKeys) return;
-      ['front','side','back'].forEach(angle => {
-        if(!photo[angle] && photo.dbKeys[angle]){
-          needs.push({photo, angle, key:photo.dbKeys[angle]});
-        }
-      });
-    });
-    if(!needs.length) return;
-
-    try{
-      const db = await openHeartyPhotoDB();
-      await Promise.all(needs.map(item => new Promise(resolve => {
-        const tx = db.transaction('photos','readonly');
-        const req = tx.objectStore('photos').get(item.key);
-        req.onsuccess = () => {
-          const blob = req.result;
-          if(blob) item.photo[item.angle] = URL.createObjectURL(blob);
-          resolve();
-        };
-        req.onerror = () => resolve();
-      })));
-      updateCompare();
-    }catch(e){
-      console.warn('[Hearty Progress] Could not load local progress photos', e);
-    }
-  }
-
-  updateCompare();
-  loadIndexedProgressPhotos();
-
-  const fallbackAdherence = {
-    exercise: [false, false, false],
-    water: [false, false, false, false, false, false, false],
-    nutrition: [false, false, false, false, false, false, false]
-  };
-  const adherenceData = readJSON(STORAGE_KEYS.adherence, fallbackAdherence);
-
-  function adherenceMessage(type, values){
-    const count = values.filter(Boolean).length;
-    if(type === 'exercise'){
-      if(count >= 3) return 'Excellent rhythm with all key sessions logged';
-      if(count >= 2) return 'Good weekly rhythm with sessions landing well';
-      if(count >= 1) return 'Movement is in place, with room to build';
-      return 'No sessions logged yet this week';
-    }
-    if(type === 'water'){
-      if(count >= 6) return 'Hydration has been strong on most days';
-      if(count >= 4) return 'Hydration is settling into a better rhythm';
-      if(count >= 1) return 'Some good hydration days are showing up';
-      return 'No full hydration days logged yet this week';
-    }
-    if(count >= 6) return 'Nutrition has looked steady for most of the week';
-    if(count >= 4) return 'Meals are mostly aligned with your plan';
-    if(count >= 1) return 'Some aligned days are in place this week';
-    return 'No aligned nutrition days logged yet this week';
-  }
-
-  function renderAdherenceTrack(id, values, accent, variant){
-    const el = document.getElementById(id);
-    el.innerHTML = '';
-    values.forEach(done => {
-      const pill = document.createElement('span');
-      pill.className = `adherence-pill ${variant} ${done ? `active ${accent}` : 'muted'}`;
-      el.appendChild(pill);
-    });
-  }
-
-  document.getElementById('exerciseCopy').textContent = adherenceMessage('exercise', adherenceData.exercise || []);
-  document.getElementById('waterCopy').textContent = adherenceMessage('water', adherenceData.water || []);
-  document.getElementById('nutritionCopy').textContent = adherenceMessage('nutrition', adherenceData.nutrition || []);
-  renderAdherenceTrack('exerciseTrack', adherenceData.exercise || [], 'violet', 'exercise');
-  renderAdherenceTrack('waterTrack', adherenceData.water || [], 'blue', 'week');
-  renderAdherenceTrack('nutritionTrack', adherenceData.nutrition || [], 'teal', 'week');
-
-  const topbarSettingsBtn = document.getElementById('topbarSettingsBtn');
-  if(topbarSettingsBtn){
-    topbarSettingsBtn.addEventListener('click', () => {
-      window.location.href = 'settings.html';
-    });
-  }
-
-  renderFatlossChart();
-  renderInjectionSummary();
-})();
-
-</script>
-<script>
-(function(){
-  function fmtDate(value){
-    try{
-      const d = new Date(value + 'T00:00:00');
-      return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).replace(/ /g,' ');
-    }catch(e){
-      return value;
-    }
-  }
-
-  function updateCompactChartMeta(){
-    try{
-      const body = document.body;
-      const raw = localStorage.getItem('heartyWeightHistory');
-      const history = raw ? JSON.parse(raw) : [];
-      const targetWeight = parseFloat(localStorage.getItem('heartyTargetWeight') || body.dataset.targetWeight || '');
-      const goalDate = localStorage.getItem('heartyGoalDate') || '';
-      if(!history.length || !Number.isFinite(targetWeight) || !goalDate) return;
-
-      const startEntry = history[0];
-      const currentEntry = history[history.length - 1];
-
-      const startDate = new Date(startEntry.date + 'T00:00:00');
-      const currentDate = new Date(currentEntry.date + 'T00:00:00');
-      const goalDt = new Date(goalDate + 'T00:00:00');
-
-      const totalDays = Math.max(1, Math.round((goalDt - startDate) / 86400000));
-      const daysPassed = Math.max(0, Math.min(totalDays, Math.round((currentDate - startDate) / 86400000)));
-
-      const startWeight = parseFloat(startEntry.weight);
-      const currentWeight = parseFloat(currentEntry.weight);
-      const expectedNow = startWeight - ((startWeight - targetWeight) * (daysPassed / totalDays));
-
-      const startEl = document.getElementById('chartStartValue');
-      const goalEl = document.getElementById('chartGoalValue');
-      const expectedEl = document.getElementById('chartExpectedValue');
-      const actualEl = document.getElementById('chartActualValue');
-
-      if(startEl) startEl.textContent = `${startWeight.toFixed(1)} kg · ${fmtDate(startEntry.date)}`;
-      if(goalEl) goalEl.textContent = `${targetWeight.toFixed(1)} kg · ${fmtDate(goalDate)}`;
-      if(expectedEl) expectedEl.textContent = `${expectedNow.toFixed(1)} kg`;
-      if(actualEl) actualEl.textContent = `${currentWeight.toFixed(1)} kg`;
-    }catch(e){}
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', updateCompactChartMeta);
-  } else {
-    updateCompactChartMeta();
-  }
-})();
-</script>
+<script src="js/hearty-progress.js?v=89"></script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script id="hearty-progress-day-medication-sync">
-(function(){
-"use strict";
-function $(id){return document.getElementById(id);}
-function readJSON(key,fallback){try{var raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}}
-function writeJSON(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
-function set(key,value){try{localStorage.setItem(key,String(value==null?"":value));}catch(e){}}
-function normaliseDays(value){if(Array.isArray(value))return value.map(String).filter(function(v){return /^[0-6]$/.test(v);});if(value==null||value==="")return [];return String(value).split(",").map(function(v){return v.trim();}).filter(function(v){return /^[0-6]$/.test(v);});}
-function dayName(day){return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][Number(day)]||"";}
-function dayNames(days){return normaliseDays(days).map(dayName);}
-function frequencyLabel(value){return ({daily:"Daily",weekly:"Weekly",twice_weekly:"Twice weekly",custom_days:"Custom days",not_sure:"Not sure yet",not_using:"Not using medication yet"})[value]||"Weekly";}
-function input(ids){for(var i=0;i<ids.length;i++){var el=$(ids[i]);if(el)return el;}return null;}
-function medInput(){return input(["medicationType","medicationName","injectionMedication","injectionName"]);}
-function freqInput(){return input(["medicationFrequency","injectionFrequency"]);}
-function reminderInput(){return input(["medicationReminder","injectionReminder","reminderEnabled"]);}
-function readMedicationState(){
- var med=readJSON("heartyMedication",{})||{}, setup=readJSON("heartyMedicationSetupV1",{})||{}, schedule=readJSON("heartyInjectionSchedule",{})||{};
- var merged=Object.assign({},med,setup,schedule);
- var frequency=merged.frequency||localStorage.getItem("heartyMedicationFrequency")||localStorage.getItem("heartyInjectionFrequency")||"weekly";
- var days=normaliseDays(merged.days||localStorage.getItem("heartyMedicationDays")||localStorage.getItem("heartyInjectionDays")||merged.day||localStorage.getItem("heartyInjectionDay")||"");
- var medication=merged.medication||merged.type||localStorage.getItem("heartyMedicationType")||localStorage.getItem("heartyInjectionName")||"";
- var reminderEnabled=merged.reminderEnabled!==false&&localStorage.getItem("heartyInjectionReminderEnabled")!=="false";
- return {type:medication,medication:medication,frequency:frequency,day:days[0]||"",days:days,dayName:days[0]?dayName(days[0]):"",dayNames:dayNames(days),nextDoseDate:"",reminderEnabled:reminderEnabled,updatedAt:new Date().toISOString()};
-}
-function saveMedicationState(state){
- var days=normaliseDays(state.days), primary=days[0]||"", names=dayNames(days);
- var payload={type:state.type||state.medication||"",medication:state.type||state.medication||"",frequency:state.frequency||"weekly",day:primary,days:days,dayName:primary?dayName(primary):"",dayNames:names,nextDoseDate:"",reminderEnabled:state.reminderEnabled!==false,source:"progress",updatedAt:new Date().toISOString()};
- writeJSON("heartyMedication",payload);writeJSON("heartyMedicationSetupV1",payload);writeJSON("heartyInjectionSchedule",payload);
- set("heartyMedicationType",payload.medication);set("heartyInjectionName",payload.medication);set("heartyMedicationFrequency",payload.frequency);set("heartyInjectionFrequency",payload.frequency);set("heartyMedicationDays",days.join(","));set("heartyInjectionDays",days.join(","));set("heartyInjectionDay",primary);set("heartyInjectionDayName",payload.dayName);set("heartyMedicationNextDate","");set("heartyNextDoseDate","");set("heartyInjectionReminderEnabled",payload.reminderEnabled?"true":"false");
- try{window.dispatchEvent(new CustomEvent("hearty:medicationSetupUpdated",{detail:payload}));}catch(e){}
- return payload;
-}
-function paintDayButtons(days){var selected=normaliseDays(days);document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){btn.classList.toggle("active",selected.indexOf(String(btn.getAttribute("data-progress-med-day")))>=0);});}
-function selectedDays(){return Array.prototype.slice.call(document.querySelectorAll("[data-progress-med-day].active")).map(function(btn){return String(btn.getAttribute("data-progress-med-day"));});}
-function updateDayButtons(){var f=freqInput()?freqInput().value:"weekly";document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){btn.disabled=f==="daily"||f==="not_sure"||f==="not_using";});if(f==="daily"||f==="not_sure"||f==="not_using")paintDayButtons([]);}
-function scheduleCopy(state){var names=dayNames(state.days);if(state.frequency==="daily")return "Daily medication reminder is active.";if(state.frequency==="weekly"&&names.length)return "Weekly reminder: "+names[0]+".";if(state.frequency==="twice_weekly"&&names.length)return "Twice-weekly reminder: "+names.join(" and ")+".";if(state.frequency==="custom_days"&&names.length)return "Reminder days: "+names.join(", ")+".";if(state.frequency==="not_using")return "Medication reminders are off for now.";if(state.frequency==="not_sure")return "Medication schedule not set yet.";return "Choose your medication days.";}
-function paintText(state){
- var med=state.medication||state.type||"Medication", freq=frequencyLabel(state.frequency), days=state.dayNames&&state.dayNames.length?state.dayNames.join(", "):"Not set", copy=scheduleCopy(state);
- [["medicationCurrentName",med],["currentMedication",med],["injectionNameValue",med],["medicationFrequencyValue",freq],["injectionFrequencyValue",freq],["medicationDaysValue",days],["injectionDayValue",days],["nextMedicationDateValue",copy],["nextInjectionDateValue",copy]].forEach(function(pair){var el=$(pair[0]);if(el)el.textContent=pair[1];});
- document.querySelectorAll("[data-medication-summary],[data-injection-summary]").forEach(function(el){el.textContent=copy;});
-}
-function loadIntoControls(){var state=readMedicationState(), mi=medInput(), fi=freqInput(), ri=reminderInput();if(mi&&state.medication)mi.value=state.medication;if(fi)fi.value=state.frequency||"weekly";if(ri)ri.value=state.reminderEnabled?"true":"false";paintDayButtons(state.days);updateDayButtons();paintText(state);}
-function saveFromControls(){
- var current=readMedicationState(), mi=medInput(), fi=freqInput(), ri=reminderInput(), frequency=fi?fi.value:(current.frequency||"weekly"), days=selectedDays();
- if(frequency==="daily"||frequency==="not_sure"||frequency==="not_using")days=[];
- var state={type:mi?mi.value:(current.medication||current.type||""),medication:mi?mi.value:(current.medication||current.type||""),frequency:frequency,days:days,reminderEnabled:ri?ri.value!=="false":current.reminderEnabled!==false};
- var saved=saveMedicationState(state);paintDayButtons(saved.days);updateDayButtons();paintText(saved);
-}
-document.addEventListener("DOMContentLoaded",function(){
- loadIntoControls();
- [medInput(),freqInput(),reminderInput()].forEach(function(el){if(el&&!el.__heartyMedicationBound){el.__heartyMedicationBound=true;el.addEventListener("change",saveFromControls);}});
- document.querySelectorAll("[data-progress-med-day]").forEach(function(btn){if(btn.__heartyMedicationDayBound)return;btn.__heartyMedicationDayBound=true;btn.addEventListener("click",function(){
-   var f=freqInput()?freqInput().value:"weekly";if(f==="daily"||f==="not_sure"||f==="not_using")return;
-   if(f==="weekly"){document.querySelectorAll("[data-progress-med-day]").forEach(function(other){if(other!==btn)other.classList.remove("active");});btn.classList.toggle("active");}
-   else if(f==="twice_weekly"){if(btn.classList.contains("active"))btn.classList.remove("active");else if(document.querySelectorAll("[data-progress-med-day].active").length<2)btn.classList.add("active");}
-   else{btn.classList.toggle("active");}
-   saveFromControls();
- });});
-});
-window.addEventListener("storage",function(event){if(["heartyMedication","heartyMedicationSetupV1","heartyInjectionSchedule","heartyMedicationDays","heartyInjectionDays","heartyMedicationFrequency","heartyInjectionFrequency"].indexOf(event.key)>=0)loadIntoControls();});
-})();
-</script>
-<script defer="" src="js/hearty-shell-template.js?v=34"></script>
-
-<div id="bottomNav" class="hearty-canonical-nav-mount" data-shell-mount="bottom-nav" data-shell-template="bottom-nav"></div>
+<script defer src="js/hearty-shell-template.js?v=91"></script>
+<div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>
 </html>

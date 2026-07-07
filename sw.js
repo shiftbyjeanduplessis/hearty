@@ -2,15 +2,17 @@
    Purpose: prevent / and /index.html from being served as the app shell.
    Safe rule: public root is always network-first and never redirected to home.html.
 */
-const CACHE_NAME = 'hearty-root-safe-2026-07-03';
-const APP_NAV_PAGES = new Set([
+const CACHE_NAME = 'hearty-root-safe-v91-recipes-route';
+const APP_ROUTE_PAGES = new Set([
   '/home.html',
   '/meals.html',
   '/exercise.html',
   '/progress.html',
   '/support.html',
+  '/recipes.html',
   '/social.html',
-  '/settings.html'
+  '/settings.html',
+  '/onboarding.html'
 ]);
 
 self.addEventListener('install', (event) => {
@@ -42,7 +44,7 @@ self.addEventListener('fetch', (event) => {
   }
 
   // App pages: network first, cached fallback only for the same requested page.
-  if (request.mode === 'navigate' && APP_NAV_PAGES.has(url.pathname)) {
+  if (request.mode === 'navigate' && APP_ROUTE_PAGES.has(url.pathname)) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
       try {
