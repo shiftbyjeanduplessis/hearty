@@ -96,19 +96,20 @@ html,body{background:var(--bg-1) !important;color:var(--ink) !important;}
 body{background:var(--bg-layer-1),var(--bg-layer-2),var(--bg-layer-3),var(--bg-base) !important;}
 body::before{background:transparent !important;} body::after{opacity:0 !important;background:none !important;}
 
-.topbar{background:linear-gradient(180deg,var(--surface-top),var(--surface-bottom)) !important;border-color:var(--line) !important;box-shadow:var(--shadow-soft) !important;}
-.icon-btn,.dose-icon-btn,.sheet-close,.wo-close{background:var(--surface-button) !important;border-color:var(--line) !important;color:var(--muted) !important;box-shadow:var(--shadow-soft) !important;}
 
-.card,.settings-card,.page-header,.hero-card,.progress-card,.support-card,.meal-card,.lesson-card,.tile,.placeholder-card,.quick-row,.stat-card,.empty-card,.composer-card,.profile-card,.people-card,.info-tile,.control-card,.field-card,.readout-card,.readout,.theme-option,.link-item,.ring-card,.task-row,.symptom-row,.photo-panel,.gallery-item,.post-card,.sheet-panel,.sheet-block,.status-strip,.hero,.planner-card,.support-hero,.rhythm-card,.guide-card,.guide-section,.help-card,.first-time-guide-card,.demo-banner{background:var(--surface-card) !important;border-color:var(--line) !important;color:var(--ink) !important;box-shadow:var(--shadow) !important;}
+.dose-icon-btn,
+.sheet-close,
+.wo-close{background:var(--surface-button) !important;border-color:var(--line) !important;color:var(--muted) !important;box-shadow:var(--shadow-soft) !important;}
+
+.card,.settings-card,.hero-card,.progress-card,.support-card,.meal-card,.lesson-card,.tile,.placeholder-card,.quick-row,.stat-card,.empty-card,.composer-card,.profile-card,.people-card,.info-tile,.control-card,.field-card,.readout-card,.readout,.theme-option,.link-item,.ring-card,.task-row,.symptom-row,.photo-panel,.gallery-item,.post-card,.sheet-panel,.sheet-block,.status-strip,.hero,.planner-card,.support-hero,.rhythm-card,.guide-card,.guide-section,.help-card,.first-time-guide-card,.demo-banner{background:var(--surface-card) !important;border-color:var(--line) !important;color:var(--ink) !important;box-shadow:var(--shadow) !important;}
 
 .input,.select,input,select,textarea,.ghost-btn,.btn.secondary,.status-pill,.day-pill,.compact-pill,.meta-pill,.soft-pill,.injection-chip,.legend-item,.weight-pill,.task-state,.meal-badge,.support-chip,.support-chip-off,.planner-action,.day-tab,.planner-day,.chip-btn,.mini-btn,.segmented,.segmented-btn,.reaction-btn,.action-btn.soft,.photo-action-row,.photo-checkin-card,.marker,.milestone-mini,.slider-row,.protocol-item,.ring-center,.ring-mini-chip,.support-point,.theme-check,.kv-row,.theme-select{background:var(--surface-button) !important;border-color:var(--line) !important;color:var(--ink) !important;}
 
-.bottom-nav{background:var(--nav-bg) !important;border-color:var(--line) !important;box-shadow:var(--shadow-soft) !important;}
-.bottom-nav .nav-item,.nav-item{color:var(--nav-ink) !important;}
-.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],.nav-item.active,.nav-item[aria-current="page"],.segmented-btn.active{color:var(--nav-active-ink) !important;background:var(--nav-active-bg) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 18px color-mix(in srgb,var(--theme-accent) 16%,transparent) !important;}
+
+.segmented-btn.active{color:var(--nav-active-ink) !important;background:var(--nav-active-bg) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 18px color-mix(in srgb,var(--theme-accent) 16%,transparent) !important;}
 
 h1,h2,h3,h4,.page-title,.settings-title,.section-title,.compact-title,.task-title,.meal-title,.rhythm-title,.support-title,.lesson-title,.headline,.hero-title,.symptom-name,.ring-title,.profile-chip strong,.post-user strong,.user-row strong,strong{color:var(--ink) !important;}
-p,small,.page-copy,.settings-copy,.section-copy,.compact-copy,.task-sub,.meal-desc,.meta,.subtle,.helper,.formula-note,.kicker,.section-kicker,.section-label,.eyebrow,.label,.theme-desc,.kv-key,.inline-switch-label,.readout-label,.subline,.page-header-subcopy,.ring-copy,.ring-unit,.status-line,.sheet-subtitle,.field small,.mini-note{color:var(--muted) !important;}
+p,small,.settings-copy,.section-copy,.compact-copy,.task-sub,.meal-desc,.meta,.subtle,.helper,.formula-note,.kicker,.section-kicker,.section-label,.eyebrow,.label,.theme-desc,.kv-key,.inline-switch-label,.readout-label,.subline-subcopy,.ring-copy,.ring-unit,.status-line,.sheet-subtitle,.field small,.mini-note{color:var(--muted) !important;}
 .theme-name,.kv-val,.readout-value,.ring-value,.count-big,.weight-value{color:var(--ink) !important;}
 
 .btn.primary,.primary-btn,.sheet-btn-primary,.action-btn.primary,.soft-btn,.lesson-btn,.support-btn,.planner-action.primary,.action-btn,.theme-option.active{background:linear-gradient(180deg,var(--theme-accent),color-mix(in srgb,var(--theme-accent) 76%,#000)) !important;color:var(--primary-text,#fff) !important;border-color:transparent !important;}
@@ -128,7 +129,6 @@ a,.link-item{color:var(--theme-accent) !important;} svg{color:currentColor;}
 .guide-stack{display:grid;gap:16px;}.guide-section{padding:20px;border-radius:24px;border:1px solid var(--line);}.guide-section ul,.guide-section ol{margin:12px 0 0 1.2rem;color:var(--muted);line-height:1.55}.guide-section li{margin:5px 0}.guide-pill{display:inline-flex;padding:7px 10px;border-radius:999px;background:var(--surface-chip);border:1px solid var(--line);color:var(--muted);font-size:.78rem;font-weight:800;}
 
 html[data-theme="midnight"] input,html[data-theme="midnight"] select,html[data-theme="midnight"] textarea,html[data-theme="deep_berry"] input,html[data-theme="deep_berry"] select,html[data-theme="deep_berry"] textarea{color:var(--ink) !important;background:var(--surface-button) !important;}
-html[data-theme="deep_berry"] .brand-logo,html[data-theme="midnight"] .brand-logo{filter:drop-shadow(0 8px 18px rgba(255,255,255,.05));}
 
 @media(max-width:720px){.theme-options-grid{grid-template-columns:1fr}.first-time-guide-card{display:grid}.guide-page{padding:14px 14px 112px}.guide-section{padding:16px;border-radius:20px}}
 

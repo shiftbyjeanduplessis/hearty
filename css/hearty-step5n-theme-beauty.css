@@ -208,14 +208,35 @@ html[data-theme="midnight"] body::after,
 html[data-theme="deep_berry"] body::after{opacity:.22 !important;mix-blend-mode:screen !important;}
 
 /* Higher-contrast surfaces: same structure, richer feel. */
-.hearty-shell-topbar,
 .hearty-page-strip,
-.card,.settings-card,.hero-card,.progress-card,.support-card,.meal-card,.planner-card,.rhythm-card,.guide-section,.help-card,.post-card,.composer-card,.profile-card,.people-card,.knowledge-card,.tool-item,.advice-item,.readout-card,.stat-card,.empty-card,.placeholder-card,.ring-block,
-.first-time-guide-card,.guide-card,.demo-banner{
+.card,
+.settings-card,
+.hero-card,
+.progress-card,
+.support-card,
+.meal-card,
+.planner-card,
+.rhythm-card,
+.guide-section,
+.help-card,
+.post-card,
+.composer-card,
+.profile-card,
+.people-card,
+.knowledge-card,
+.tool-item,
+.advice-item,
+.readout-card,
+.stat-card,
+.empty-card,
+.placeholder-card,
+.ring-block,
+.first-time-guide-card,
+.guide-card,
+.demo-banner{
   border-color:var(--hf-border) !important;
   box-shadow:var(--hf-shadow) !important;
 }
-.hearty-shell-topbar,
 .hearty-page-strip{
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--hf-surface-strong) 88%, var(--hf-primary) 12%), var(--hf-surface)) !important;
@@ -320,18 +341,7 @@ button.primary,#signinBtn,#signupBtn,#resetSendBtn,#savePasswordBtn{
 }
 
 /* Keep the shared shell consistent after visual enrichment. */
-.hearty-shell-bottom-nav,.bottom-nav,#bottomNav,.hearty-unified-nav{
-  background:var(--hf-nav-bg) !important;
-  border-color:var(--hf-border) !important;
-  box-shadow:0 18px 44px color-mix(in srgb,#000 10%,transparent), var(--hf-shadow-soft) !important;
-}
-.hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-.hearty-shell-bottom-nav .hearty-shell-nav-item[aria-current="page"],
-.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],
-#bottomNav .nav-item.active,#bottomNav .nav-item[aria-current="page"]{
-  background:var(--hf-nav-active-bg) !important;
-  color:var(--hf-nav-active-text) !important;
-}
+
 
 /* Keep real logo only. Do not generate theme logos here. */
 .hearty-real-logo-frame,.hearty-logo-frame{background:transparent !important;}
@@ -362,9 +372,7 @@ html[data-theme="deep_berry"] .hearty-logo-frame{
 
 
 /* Pink Lemonade: darker stage, lighter app surfaces on top */
-html[data-theme="pink_lemonade"] .hearty-shell-topbar,
 html[data-theme="pink_lemonade"] .hearty-page-strip,
-html[data-theme="pink_lemonade"] .bottom-nav,
 html[data-theme="pink_lemonade"] .card,
 html[data-theme="pink_lemonade"] .settings-card,
 html[data-theme="pink_lemonade"] .support-card,
@@ -376,24 +384,12 @@ html[data-theme="pink_lemonade"] .first-time-guide-card{
 
 
 /* Pink Lemonade shell polish: make the shell feel intentional against the lively background. */
-html[data-theme="pink_lemonade"] .hearty-shell-topbar{
-  background:
-    radial-gradient(220px 120px at 86% 0%, rgba(255,210,72,.30), transparent 70%),
-    linear-gradient(135deg, rgba(255,248,235,.98), rgba(255,236,206,.96)) !important;
-  border-color: rgba(255,196,43,.34) !important;
-}
+
 html[data-theme="pink_lemonade"] .hearty-page-strip{
   background:
     radial-gradient(220px 120px at 92% 0%, rgba(255,205,64,.26), transparent 70%),
     linear-gradient(135deg, rgba(255,250,242,.96), rgba(255,232,242,.95)) !important;
   border-color: rgba(255,170,205,.30) !important;
-}
-html[data-theme="pink_lemonade"] .hearty-shell-bottom-nav,
-html[data-theme="pink_lemonade"] .bottom-nav,
-html[data-theme="pink_lemonade"] #bottomNav,
-html[data-theme="pink_lemonade"] .hearty-unified-nav{
-  background: linear-gradient(180deg, rgba(255,248,236,.96), rgba(255,238,218,.94)) !important;
-  border-color: rgba(255,196,43,.24) !important;
 }
 
 
@@ -447,16 +443,6 @@ html[data-theme="pink_lemonade"] .support-ring-accent{
   border-color:rgba(255,205,84,.34) !important;
   box-shadow:0 10px 22px rgba(255,210,77,.18) !important;
 }
-
-
-/* Pink Lemonade: theme-specific logo frame and darker home action buttons with lighter icons. */
-html[data-theme="pink_lemonade"] .hearty-shell-logo-frame,
-html[data-theme="pink_lemonade"] .auth-brand-lockup .hearty-shell-logo-frame{
-  background:linear-gradient(180deg, rgba(255,247,225,.98), rgba(255,236,194,.96)) !important;
-  border-color:rgba(255,205,84,.34) !important;
-  box-shadow:0 10px 24px rgba(121,12,60,.10), inset 0 1px 0 rgba(255,255,255,.88) !important;
-  padding:8px 12px !important;
-}
 html[data-theme="pink_lemonade"] .task-icon-btn,
 html[data-theme="pink_lemonade"] .dose-icon-btn{
   background:linear-gradient(180deg,#b9155b 0%, #8f114a 100%) !important;
@@ -480,30 +466,6 @@ html[data-theme="pink_lemonade"] .task-icon-btn.done{
   background:linear-gradient(180deg,#1fa165 0%, #138151 100%) !important;
   border-color:rgba(9,104,64,.28) !important;
   color:#fff !important;
-}
-
-
-/* Pink Lemonade: make the custom theme logo slightly larger in the shared shell. */
-html[data-theme="pink_lemonade"] .hearty-shell-logo-frame{
-  height:72px !important;
-  max-width:min(72vw, 320px) !important;
-  padding:8px 14px !important;
-}
-html[data-theme="pink_lemonade"] .hearty-shell-logo-img{
-  height:62px !important;
-  max-width:min(68vw, 286px) !important;
-  width:auto !important;
-}
-@media (max-width:760px){
-  html[data-theme="pink_lemonade"] .hearty-shell-logo-frame{
-    height:60px !important;
-    max-width:min(66vw, 260px) !important;
-    padding:7px 12px !important;
-  }
-  html[data-theme="pink_lemonade"] .hearty-shell-logo-img{
-    height:50px !important;
-    max-width:min(62vw, 228px) !important;
-  }
 }
 
 
@@ -618,7 +580,6 @@ html[data-theme="pink_lemonade"]{
 }
 
 /* General legacy link/accent cleanup */
-html[data-theme="pink_lemonade"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
 html[data-theme="pink_lemonade"] .text-link,
 html[data-theme="pink_lemonade"] .link,
 html[data-theme="pink_lemonade"] .inline-link,
@@ -817,10 +778,6 @@ html[data-theme="pink_lemonade"] svg,
 html[data-theme="pink_lemonade"] svg *{
   stroke:currentColor !important;
 }
-html[data-theme="pink_lemonade"] .hearty-shell-logo-img,
-html[data-theme="pink_lemonade"] .hearty-shell-logo-img *{
-  filter:none !important;
-}
 
 
 /* HEARTY STEP 5N-C — final Pink Lemonade finishing pass */
@@ -985,13 +942,7 @@ html[data-theme="clean_blue"] body::after{
 }
 
 /* Ocean Blue shell polish: light, watery surfaces over the real ocean background. */
-html[data-theme="clean_blue"] .hearty-shell-topbar{
-  background:
-    radial-gradient(260px 140px at 50% 0%, rgba(255,255,255,.50), transparent 72%),
-    linear-gradient(135deg, rgba(255,255,255,.96), rgba(230,247,255,.92)) !important;
-  border-color:rgba(62,139,193,.20) !important;
-  box-shadow:0 16px 40px rgba(8,54,105,.12), inset 0 1px 0 rgba(255,255,255,.80) !important;
-}
+
 html[data-theme="clean_blue"] .hearty-page-strip{
   background:
     radial-gradient(360px 180px at 50% 0%, rgba(255,255,255,.46), transparent 72%),
@@ -999,21 +950,7 @@ html[data-theme="clean_blue"] .hearty-page-strip{
   border-color:rgba(62,139,193,.18) !important;
   box-shadow:0 18px 46px rgba(8,54,105,.12), inset 0 1px 0 rgba(255,255,255,.78) !important;
 }
-html[data-theme="clean_blue"] .hearty-shell-bottom-nav,
-html[data-theme="clean_blue"] .bottom-nav,
-html[data-theme="clean_blue"] #bottomNav,
-html[data-theme="clean_blue"] .hearty-unified-nav{
-  background:linear-gradient(180deg, rgba(248,253,255,.96), rgba(231,247,255,.94)) !important;
-  border-color:rgba(62,139,193,.20) !important;
-  box-shadow:0 16px 40px rgba(8,54,105,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
-}
-html[data-theme="clean_blue"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="clean_blue"] .bottom-nav .nav-item.active,
-html[data-theme="clean_blue"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg, rgba(210,240,255,.98), rgba(244,252,255,.98)) !important;
-  color:#105aa7 !important;
-  box-shadow:0 12px 24px rgba(23,105,194,.14), inset 0 1px 0 rgba(255,255,255,.85) !important;
-}
+
 
 /* Ocean Blue cards/buttons: keep existing blue identity, but make it feel more premium. */
 html[data-theme="clean_blue"] .card,
@@ -1097,13 +1034,7 @@ html[data-theme="clean_blue"] .off-btn.active{
   border-color:rgba(11,78,151,.24) !important;
   box-shadow:0 14px 32px rgba(11,78,151,.24) !important;
 }
-html[data-theme="clean_blue"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="clean_blue"] .bottom-nav .nav-item.active,
-html[data-theme="clean_blue"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg, rgba(191,227,252,.98), rgba(231,246,255,.98)) !important;
-  color:#0d4f98 !important;
-  box-shadow:0 12px 24px rgba(13,79,152,.14), inset 0 1px 0 rgba(255,255,255,.85) !important;
-}
+
 
 /* Meals: centre snack toggle more cleanly */
 html[data-theme="clean_blue"] .switch-btn{
@@ -1196,7 +1127,6 @@ html[data-theme="midnight"] body::after{
   filter:saturate(1.02) contrast(1.05) brightness(.88) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="midnight"] .hearty-shell-topbar,
 html[data-theme="midnight"] .hearty-page-strip,
 html[data-theme="midnight"] .card,
 html[data-theme="midnight"] .settings-card,
@@ -1225,21 +1155,8 @@ html[data-theme="midnight"] .ring-block{
   color:#f6f9ff !important;
   box-shadow:0 24px 60px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05) !important;
 }
-html[data-theme="midnight"] .hearty-shell-bottom-nav,
-html[data-theme="midnight"] .bottom-nav,
-html[data-theme="midnight"] #bottomNav,
-html[data-theme="midnight"] .hearty-unified-nav{
-  background:linear-gradient(180deg,rgba(13,24,39,.95),rgba(7,15,27,.94)) !important;
-  border-color:rgba(185,205,235,.16) !important;
-  box-shadow:0 18px 46px rgba(0,0,0,.50), inset 0 1px 0 rgba(255,255,255,.05) !important;
-}
-html[data-theme="midnight"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="midnight"] .bottom-nav .nav-item.active,
-html[data-theme="midnight"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,rgba(72,102,155,.86),rgba(28,48,78,.96)) !important;
-  color:#ffffff !important;
-  box-shadow:0 12px 26px rgba(99,147,255,.18), inset 0 1px 0 rgba(255,255,255,.10) !important;
-}
+
+
 html[data-theme="midnight"] .btn.primary,
 html[data-theme="midnight"] .action-btn.primary,
 html[data-theme="midnight"] .primary-btn,
@@ -1271,8 +1188,7 @@ html[data-theme="midnight"] .date-picker-btn{
   color:#d8e3f4 !important;
   border-color:rgba(185,205,235,.14) !important;
 }
-html[data-theme="midnight"] .hearty-logo-frame,
-html[data-theme="midnight"] .hearty-shell-logo-frame{
+html[data-theme="midnight"] .hearty-logo-frame{
   background:rgba(255,255,255,.96) !important;
   border-color:rgba(255,255,255,.24) !important;
 }
@@ -1313,7 +1229,6 @@ html[data-theme="soft_rose"] body::after{
   filter:saturate(1.04) contrast(1.02) brightness(1.02) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-topbar,
 html[data-theme="soft_rose"] .hearty-page-strip,
 html[data-theme="soft_rose"] .card,
 html[data-theme="soft_rose"] .settings-card,
@@ -1341,21 +1256,8 @@ html[data-theme="soft_rose"] .ring-block{
   border-color:rgba(182,126,83,.22) !important;
   box-shadow:0 20px 50px rgba(122,74,45,.14), inset 0 1px 0 rgba(255,255,255,.70) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav,
-html[data-theme="soft_rose"] .bottom-nav,
-html[data-theme="soft_rose"] #bottomNav,
-html[data-theme="soft_rose"] .hearty-unified-nav{
-  background:linear-gradient(180deg,rgba(255,249,241,.95),rgba(255,236,219,.93)) !important;
-  border-color:rgba(182,126,83,.22) !important;
-  box-shadow:0 16px 38px rgba(122,74,45,.16), inset 0 1px 0 rgba(255,255,255,.70) !important;
-}
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,rgba(246,214,169,.96),rgba(255,246,235,.98)) !important;
-  color:#7d4e28 !important;
-  box-shadow:0 12px 26px rgba(157,106,56,.18), inset 0 1px 0 rgba(255,255,255,.75) !important;
-}
+
+
 html[data-theme="soft_rose"] .btn.primary,
 html[data-theme="soft_rose"] .action-btn.primary,
 html[data-theme="soft_rose"] .primary-btn,
@@ -1433,7 +1335,6 @@ html[data-theme="deep_berry"] body::after{
   filter:saturate(1.04) contrast(1.03) brightness(.92) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="deep_berry"] .hearty-shell-topbar,
 html[data-theme="deep_berry"] .hearty-page-strip,
 html[data-theme="deep_berry"] .card,
 html[data-theme="deep_berry"] .settings-card,
@@ -1462,21 +1363,8 @@ html[data-theme="deep_berry"] .ring-block{
   color:#fff7fc !important;
   box-shadow:0 24px 62px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06) !important;
 }
-html[data-theme="deep_berry"] .hearty-shell-bottom-nav,
-html[data-theme="deep_berry"] .bottom-nav,
-html[data-theme="deep_berry"] #bottomNav,
-html[data-theme="deep_berry"] .hearty-unified-nav{
-  background:linear-gradient(180deg,rgba(45,12,52,.95),rgba(26,6,32,.94)) !important;
-  border-color:rgba(255,167,219,.18) !important;
-  box-shadow:0 18px 48px rgba(0,0,0,.50), inset 0 1px 0 rgba(255,255,255,.05) !important;
-}
-html[data-theme="deep_berry"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="deep_berry"] .bottom-nav .nav-item.active,
-html[data-theme="deep_berry"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,rgba(149,39,119,.94),rgba(70,17,78,.96)) !important;
-  color:#ffffff !important;
-  box-shadow:0 12px 26px rgba(239,99,182,.22), inset 0 1px 0 rgba(255,255,255,.10) !important;
-}
+
+
 html[data-theme="deep_berry"] .btn.primary,
 html[data-theme="deep_berry"] .action-btn.primary,
 html[data-theme="deep_berry"] .primary-btn,
@@ -1508,8 +1396,7 @@ html[data-theme="deep_berry"] .date-picker-btn{
   color:#e9c4d8 !important;
   border-color:rgba(255,167,219,.16) !important;
 }
-html[data-theme="deep_berry"] .hearty-logo-frame,
-html[data-theme="deep_berry"] .hearty-shell-logo-frame{
+html[data-theme="deep_berry"] .hearty-logo-frame{
   background:rgba(255,255,255,.96) !important;
   border-color:rgba(255,255,255,.24) !important;
 }
@@ -1593,7 +1480,6 @@ html[data-theme="soft_rose"]{
   --hf-nav-active-bg: linear-gradient(180deg,rgba(245,220,184,.98),rgba(255,247,238,.96)) !important;
   --hf-nav-active-text: #7d4e28 !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-topbar,
 html[data-theme="soft_rose"] .hearty-page-strip,
 html[data-theme="soft_rose"] .card,
 html[data-theme="soft_rose"] .settings-card,
@@ -1621,21 +1507,8 @@ html[data-theme="soft_rose"] .ring-block{
   border-color:rgba(184,140,89,.22) !important;
   box-shadow:0 20px 50px rgba(122,74,45,.12), inset 0 1px 0 rgba(255,255,255,.78) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav,
-html[data-theme="soft_rose"] .bottom-nav,
-html[data-theme="soft_rose"] #bottomNav,
-html[data-theme="soft_rose"] .hearty-unified-nav{
-  background:linear-gradient(180deg,rgba(255,250,244,.96),rgba(249,236,222,.94)) !important;
-  border-color:rgba(184,140,89,.22) !important;
-  box-shadow:0 16px 38px rgba(122,74,45,.14), inset 0 1px 0 rgba(255,255,255,.72) !important;
-}
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,rgba(246,218,173,.98),rgba(255,248,238,.98)) !important;
-  color:#875327 !important;
-  box-shadow:0 12px 24px rgba(165,107,48,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
-}
+
+
 html[data-theme="soft_rose"] .btn.primary,
 html[data-theme="soft_rose"] .action-btn.primary,
 html[data-theme="soft_rose"] .primary-btn,
@@ -1676,18 +1549,6 @@ html[data-theme="soft_rose"] .fatloss-empty-icon{
 }
 html[data-theme="soft_rose"] .ring-progress.ring-orange{stroke:#a56b30 !important;}
 html[data-theme="soft_rose"] .ring-progress.ring-teal{stroke:#d4a15d !important;}
-html[data-theme="soft_rose"] .hearty-shell-logo-frame,
-html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame{
-  background:linear-gradient(180deg, rgba(255,253,249,.98), rgba(251,239,225,.96)) !important;
-  border-color:rgba(184,140,89,.22) !important;
-  box-shadow:0 10px 24px rgba(148,96,45,.10), inset 0 1px 0 rgba(255,255,255,.88) !important;
-  padding:8px 12px !important;
-}
-html[data-theme="soft_rose"] .hearty-shell-logo-img{
-  height:46px !important;
-  width:auto !important;
-  max-width:min(70vw, 238px) !important;
-}
 
 
 /* HEARTY STEP 5Q — Aurora Pop theme trial.
@@ -1726,7 +1587,6 @@ html[data-theme="deep_berry"] body::after{
   filter:saturate(1.02) contrast(1.02) brightness(1.01) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="deep_berry"] .hearty-shell-topbar,
 html[data-theme="deep_berry"] .hearty-page-strip,
 html[data-theme="deep_berry"] .card,
 html[data-theme="deep_berry"] .settings-card,
@@ -1754,21 +1614,8 @@ html[data-theme="deep_berry"] .ring-block{
   border-color:rgba(140,87,240,.16) !important;
   box-shadow:0 20px 52px rgba(25,12,58,.16), inset 0 1px 0 rgba(255,255,255,.84) !important;
 }
-html[data-theme="deep_berry"] .hearty-shell-bottom-nav,
-html[data-theme="deep_berry"] .bottom-nav,
-html[data-theme="deep_berry"] #bottomNav,
-html[data-theme="deep_berry"] .hearty-unified-nav{
-  background:linear-gradient(180deg,rgba(251,246,255,.96),rgba(237,229,248,.95)) !important;
-  border-color:rgba(140,87,240,.16) !important;
-  box-shadow:0 16px 40px rgba(25,12,58,.16), inset 0 1px 0 rgba(255,255,255,.78) !important;
-}
-html[data-theme="deep_berry"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="deep_berry"] .bottom-nav .nav-item.active,
-html[data-theme="deep_berry"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,rgba(212,255,255,.98),rgba(238,247,255,.98)) !important;
-  color:#1dbcd2 !important;
-  box-shadow:0 12px 26px rgba(32,216,234,.18), inset 0 1px 0 rgba(255,255,255,.88) !important;
-}
+
+
 html[data-theme="deep_berry"] .btn.primary,
 html[data-theme="deep_berry"] .action-btn.primary,
 html[data-theme="deep_berry"] .primary-btn,
@@ -1800,8 +1647,7 @@ html[data-theme="deep_berry"] .date-picker-btn{
   color:#6a4f8c !important;
   border-color:rgba(140,87,240,.16) !important;
 }
-html[data-theme="deep_berry"] .hearty-logo-frame,
-html[data-theme="deep_berry"] .hearty-shell-logo-frame{
+html[data-theme="deep_berry"] .hearty-logo-frame{
   background:linear-gradient(180deg,rgba(251,246,255,.98),rgba(236,229,248,.96)) !important;
   border-color:rgba(140,87,240,.18) !important;
   box-shadow:0 12px 26px rgba(25,12,58,.12), inset 0 1px 0 rgba(255,255,255,.86) !important;
@@ -1948,7 +1794,6 @@ html[data-theme="midnight"] body::after{
   filter:saturate(.98) contrast(1.02) brightness(.92) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="midnight"] .hearty-shell-topbar,
 html[data-theme="midnight"] .hearty-page-strip,
 html[data-theme="midnight"] .card,
 html[data-theme="midnight"] .settings-card,
@@ -2021,18 +1866,6 @@ html[data-theme="midnight"] .community-switch[aria-pressed="false"]{
   color:#e2e6ff !important;
   border-color:rgba(203,211,255,.14) !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-frame,
-html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame{
-  background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(243,242,255,.96)) !important;
-  border-color:rgba(255,255,255,.22) !important;
-  box-shadow:0 12px 28px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.90) !important;
-  padding:8px 12px !important;
-}
-html[data-theme="midnight"] .hearty-shell-logo-img{
-  height:46px !important;
-  width:auto !important;
-  max-width:min(70vw, 238px) !important;
-}
 html[data-theme="midnight"] a,
 html[data-theme="midnight"] .accent-text,
 html[data-theme="midnight"] .link-accent,
@@ -2052,19 +1885,6 @@ html[data-theme="soft_rose"] body::after{
   background-attachment:fixed, fixed !important;
   filter:saturate(1.03) contrast(1.02) brightness(1.02) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-logo-frame,
-html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame{
-  padding:8px 12px !important;
-  background:linear-gradient(180deg, rgba(255,254,251,.98), rgba(249,239,227,.96)) !important;
-  border-color:rgba(184,140,89,.24) !important;
-  box-shadow:0 12px 26px rgba(148,96,45,.12), inset 0 1px 0 rgba(255,255,255,.90) !important;
-}
-html[data-theme="soft_rose"] .hearty-shell-logo-img{
-  height:48px !important;
-  width:auto !important;
-  max-width:min(70vw, 240px) !important;
-}
-html[data-theme="soft_rose"] .hearty-shell-topbar,
 html[data-theme="soft_rose"] .hearty-page-strip,
 html[data-theme="soft_rose"] .card,
 html[data-theme="soft_rose"] .settings-card,
@@ -2145,7 +1965,6 @@ html[data-theme="midnight"] body::after{
   filter:saturate(.98) contrast(1.01) brightness(.94) !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="midnight"] .hearty-shell-topbar,
 html[data-theme="midnight"] .hearty-page-strip,
 html[data-theme="midnight"] .card,
 html[data-theme="midnight"] .settings-card,
@@ -2172,16 +1991,12 @@ html[data-theme="midnight"] .ring-block,
 html[data-theme="midnight"] .hearty-privacy-note{
   background:linear-gradient(180deg,rgba(9,13,31,.88),rgba(7,10,24,.84)) !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-frame,
-html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
-html[data-theme="midnight"] .hearty-logo-frame,
-html[data-theme="midnight"] .hearty-real-logo-frame{
+html[data-theme="midnight"] .hearty-logo-frame,html[data-theme="midnight"] .hearty-real-logo-frame{
   background:linear-gradient(180deg, rgba(220,226,245,.94), rgba(193,202,234,.90)) !important;
   border-color:rgba(160,173,228,.26) !important;
   box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.74) !important;
   padding:8px 14px !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-img,
 html[data-theme="midnight"] .hearty-logo-img{
   height:46px !important;
   width:auto !important;
@@ -2218,15 +2033,12 @@ html[data-theme="soft_rose"] body::after{
 @media (max-width:900px){
   html[data-theme="soft_rose"] body::after{background-size:auto, cover !important;}
 }
-html[data-theme="soft_rose"] .hearty-shell-logo-frame,
-html[data-theme="soft_rose"] .auth-brand-lockup .hearty-shell-logo-frame,
 html[data-theme="soft_rose"] .hearty-logo-frame{
   background:transparent !important;
   border-color:transparent !important;
   box-shadow:none !important;
   padding:0 !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-logo-img,
 html[data-theme="soft_rose"] .hearty-logo-img{
   height:44px !important;
   width:auto !important;
@@ -2279,7 +2091,6 @@ html[data-theme="soft_rose"] .hearty-page-strip-pill{
   color:#9c6736 !important;
   box-shadow:0 8px 20px rgba(160,110,61,.10), inset 0 1px 0 rgba(255,255,255,.78) !important;
 }
-html[data-theme="soft_rose"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
 html[data-theme="soft_rose"] .text-link,
 html[data-theme="soft_rose"] .link,
 html[data-theme="soft_rose"] .inline-link,
@@ -2337,23 +2148,9 @@ html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
   color:#876048 !important;
   border-color:rgba(176,125,75,.18) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-settings-btn,
-html[data-theme="soft_rose"] .hearty-shell-settings-btn svg,
-html[data-theme="soft_rose"] .hearty-shell-gear-icon,
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item,
-html[data-theme="soft_rose"] .bottom-nav .nav-item,
-html[data-theme="soft_rose"] .bottom-nav .nav-item svg,
-html[data-theme="soft_rose"] .bottom-nav .nav-item svg *{
-  color:#86614a !important;
-  stroke:#86614a !important;
-}
 html[data-theme="soft_rose"] svg,
 html[data-theme="soft_rose"] svg *{
   stroke:inherit;
-}
-html[data-theme="soft_rose"] .hearty-shell-logo-img,
-html[data-theme="soft_rose"] .hearty-shell-logo-img *{
-  stroke:initial !important;
 }
 
 
@@ -2373,13 +2170,11 @@ html[data-theme="soft_rose"] body::after{
   opacity:.96 !important;
   filter:saturate(1.02) contrast(1.04) brightness(.98) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-logo-img,
 html[data-theme="soft_rose"] .hearty-logo-img{
   height:46px !important;
   width:auto !important;
   filter:drop-shadow(0 1px 0 rgba(255,255,255,.18)) drop-shadow(0 4px 10px rgba(104,63,27,.16)) !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-topbar,
 html[data-theme="soft_rose"] .hearty-page-strip,
 html[data-theme="soft_rose"] .card,
 html[data-theme="soft_rose"] .settings-card,
@@ -2413,7 +2208,6 @@ html[data-theme="soft_rose"] .hydration-drop-wrap,
 html[data-theme="soft_rose"] .empty-icon,
 html[data-theme="soft_rose"] .trend-empty-icon,
 html[data-theme="soft_rose"] .fatloss-empty-icon,
-html[data-theme="soft_rose"] .icon-btn,
 html[data-theme="soft_rose"] .photo-placeholder,
 html[data-theme="soft_rose"] .photo-slot,
 html[data-theme="soft_rose"] .gallery-thumb,
@@ -2515,7 +2309,6 @@ html[data-theme="soft_rose"] .community-switch[aria-pressed="false"]{
   background:linear-gradient(180deg,#fffaf3 0%, #f6e8d9 100%) !important;
   color:#7d5a3e !important;
 }
-html[data-theme="soft_rose"] a:not(.hearty-shell-logo-link):not(.hearty-shell-nav-item),
 html[data-theme="soft_rose"] .text-link,
 html[data-theme="soft_rose"] .link,
 html[data-theme="soft_rose"] .inline-link,
@@ -2529,21 +2322,8 @@ html[data-theme="soft_rose"] .support-card a,
 html[data-theme="soft_rose"] .meta,
 html[data-theme="soft_rose"] .muted,
 html[data-theme="soft_rose"] .helper,
-html[data-theme="soft_rose"] .body-copy,
-html[data-theme="soft_rose"] .hearty-shell-settings-btn,
-html[data-theme="soft_rose"] .hearty-shell-settings-btn svg,
-html[data-theme="soft_rose"] .hearty-shell-gear-icon,
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item,
-html[data-theme="soft_rose"] .bottom-nav .nav-item,
-html[data-theme="soft_rose"] .bottom-nav .nav-item svg,
-html[data-theme="soft_rose"] .bottom-nav .nav-item svg *{color:#8a623d !important;stroke:#8a623d !important;}
-html[data-theme="soft_rose"] .hearty-shell-bottom-nav .hearty-shell-nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item.active,
-html[data-theme="soft_rose"] .bottom-nav .nav-item[aria-current="page"]{
-  background:linear-gradient(180deg,#f0d9b1 0%, #e7c488 100%) !important;
-  color:#7d5324 !important;
-  box-shadow:0 12px 26px rgba(169,121,62,.20) !important;
-}
+html[data-theme="soft_rose"] .body-copy{color:#8a623d !important;stroke:#8a623d !important;}
+
 html[data-theme="soft_rose"] .ring-track{stroke:rgba(214,188,156,.55) !important;}
 html[data-theme="soft_rose"] .ring-progress.ring-orange{stroke:#a56b30 !important;}
 html[data-theme="soft_rose"] .ring-progress.ring-teal{stroke:#d4a15d !important;}
@@ -2553,15 +2333,12 @@ html[data-theme="soft_rose"] .segment-btn.active,
 html[data-theme="soft_rose"] .segmented-control button.active{background:linear-gradient(180deg,#c68a47 0%, #a56a32 100%) !important;color:#fffaf4 !important;}
 
 
-/* HEARTY STEP 5R-E — Champagne floral logo implementation */
-html[data-theme="soft_rose"] .hearty-shell-logo-frame,
 html[data-theme="soft_rose"] .hearty-logo-frame{
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
   padding: 0 !important;
 }
-html[data-theme="soft_rose"] .hearty-shell-logo-img,
 html[data-theme="soft_rose"] .hearty-logo-img{
   height: 42px !important;
   width: auto !important;
@@ -2570,7 +2347,6 @@ html[data-theme="soft_rose"] .hearty-logo-img{
   display: block !important;
 }
 @media (max-width: 640px){
-  html[data-theme="soft_rose"] .hearty-shell-logo-img,
   html[data-theme="soft_rose"] .hearty-logo-img{
     height: 34px !important;
     max-width: 210px !important;
@@ -2628,17 +2404,12 @@ html[data-theme="soft_rose"] body::after{
 }
 
 
-/* HEARTY STEP 5R-H — user QA fixes (Aurora Pop + Settings mobile) */
-html[data-theme="deep_berry"] .hearty-shell-logo-frame,
-html[data-theme="deep_berry"] .auth-brand-lockup .hearty-shell-logo-frame,
-html[data-theme="deep_berry"] .hearty-logo-frame,
-html[data-theme="deep_berry"] .hearty-real-logo-frame{
+html[data-theme="deep_berry"] .hearty-logo-frame,html[data-theme="deep_berry"] .hearty-real-logo-frame{
   background:transparent !important;
   border-color:transparent !important;
   box-shadow:none !important;
   padding:0 !important;
 }
-html[data-theme="deep_berry"] .hearty-shell-logo-img,
 html[data-theme="deep_berry"] .hearty-logo-img{
   filter:drop-shadow(0 6px 18px rgba(28,8,44,.18)) !important;
 }
@@ -2926,40 +2697,17 @@ html[data-theme="midnight"] body::after{
   background-attachment:fixed, fixed !important;
   filter:saturate(.94) contrast(1.01) brightness(.90) !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-frame,
-html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
-html[data-theme="midnight"] .hearty-logo-frame,
-html[data-theme="midnight"] .hearty-real-logo-frame{
+html[data-theme="midnight"] .hearty-logo-frame,html[data-theme="midnight"] .hearty-real-logo-frame{
   background:transparent !important;
   border-color:transparent !important;
   box-shadow:none !important;
   padding:0 !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-img,
-html[data-theme="midnight"] .hearty-logo-img,
-html[data-theme="midnight"] .hearty-real-logo-img{
+html[data-theme="midnight"] .hearty-logo-img,html[data-theme="midnight"] .hearty-real-logo-img{
   height:48px !important;
   width:auto !important;
   max-width:min(70vw, 242px) !important;
   filter:brightness(1.12) saturate(1.06) drop-shadow(0 8px 18px rgba(7,10,26,.34)) !important;
-}
-html[data-theme="midnight"] .hearty-shell-settings-btn,
-html[data-theme="midnight"] .topbar .icon-btn{
-  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.96)) !important;
-  border-color:rgba(203,211,255,.18) !important;
-  color:#d7ddff !important;
-  box-shadow:0 12px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05) !important;
-}
-html[data-theme="midnight"] .hearty-shell-settings-btn[aria-current="page"]{
-  background:linear-gradient(180deg,#5b74d8 0%, #394f9e 100%) !important;
-  color:#ffffff !important;
-  border-color:rgba(145,178,255,.34) !important;
-}
-html[data-theme="midnight"] .hearty-shell-settings-btn svg,
-html[data-theme="midnight"] .hearty-shell-gear-icon,
-html[data-theme="midnight"] .hearty-shell-settings-btn svg *{
-  stroke:currentColor !important;
-  color:inherit !important;
 }
 html[data-theme="midnight"] .protein-meter{
   background:conic-gradient(
@@ -3016,9 +2764,7 @@ html[data-theme="midnight"] .info-tile select{
   color:#eef2ff !important;
 }
 @media (max-width:760px){
-  html[data-theme="midnight"] .hearty-shell-logo-img,
-  html[data-theme="midnight"] .hearty-logo-img,
-  html[data-theme="midnight"] .hearty-real-logo-img{
+  html[data-theme="midnight"] .hearty-logo-img,html[data-theme="midnight"] .hearty-real-logo-img{
     height:44px !important;
     max-width:min(64vw, 220px) !important;
   }
@@ -3042,23 +2788,14 @@ html[data-theme="midnight"] body::after{
   filter:none !important;
   mix-blend-mode:normal !important;
 }
-html[data-theme="midnight"] .hearty-shell-topbar{
-  background:linear-gradient(180deg, rgba(8,12,30,.88), rgba(7,10,24,.84)) !important;
-  border-color:rgba(178,190,255,.18) !important;
-  box-shadow:0 18px 42px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05) !important;
-}
-html[data-theme="midnight"] .hearty-shell-logo-frame,
-html[data-theme="midnight"] .auth-brand-lockup .hearty-shell-logo-frame,
-html[data-theme="midnight"] .hearty-logo-frame,
-html[data-theme="midnight"] .hearty-real-logo-frame{
+
+html[data-theme="midnight"] .hearty-logo-frame,html[data-theme="midnight"] .hearty-real-logo-frame{
   background:transparent !important;
   border-color:transparent !important;
   box-shadow:none !important;
   padding:0 !important;
 }
-html[data-theme="midnight"] .hearty-shell-logo-img,
-html[data-theme="midnight"] .hearty-logo-img,
-html[data-theme="midnight"] .hearty-real-logo-img{
+html[data-theme="midnight"] .hearty-logo-img,html[data-theme="midnight"] .hearty-real-logo-img{
   height:48px !important;
   width:auto !important;
   max-width:min(70vw, 252px) !important;
@@ -3160,23 +2897,6 @@ html[data-theme="midnight"] .protein-chip{
 }
 html[data-theme="midnight"] .protein-name{color:#f5f7ff !important;}
 html[data-theme="midnight"] .protein-state{color:#bcc7e8 !important;}
-
-/* Gear icon: correct on topbar and active settings state */
-html[data-theme="midnight"] .hearty-shell-settings-btn{
-  background:linear-gradient(180deg, rgba(24,31,58,.94), rgba(13,18,35,.96)) !important;
-  border-color:rgba(203,211,255,.18) !important;
-  color:#d7ddff !important;
-}
-html[data-theme="midnight"] .hearty-shell-settings-btn[aria-current="page"]{
-  background:linear-gradient(180deg,#5b74d8 0%, #394f9e 100%) !important;
-  color:#ffffff !important;
-}
-html[data-theme="midnight"] .hearty-shell-settings-btn svg,
-html[data-theme="midnight"] .hearty-shell-gear-icon,
-html[data-theme="midnight"] .hearty-shell-settings-btn svg *{
-  stroke:currentColor !important;
-  color:inherit !important;
-}
 
 
 /* HEARTY STEP 5R-N — settings theme selector and Midnight support polish */
@@ -3513,18 +3233,8 @@ body[data-page="settings"] .formula-note{
   margin:0 !important;
 }
 
-/* Home header: only the welcome line remains */
-body[data-page="home"] .status-strip.home-welcome-only{
-  display:block !important;
-  padding:18px 20px !important;
-  margin:0 0 14px !important;
-}
-body[data-page="home"] .status-strip.home-welcome-only .headline{
-  margin:0 !important;
-}
 body[data-page="home"] #dailyStatusLine,
-body[data-page="home"] #homeDayPill,
-body[data-page="home"] .status-strip .eyebrow{
+body[data-page="home"] #homeDayPill{
   display:none !important;
 }
 
@@ -3536,4 +3246,30 @@ body[data-page="home"] .status-strip .eyebrow{
   body[data-page="settings"] .inline-switch{
     min-height:54px !important;
   }
+}
+
+
+/* v88 — keep Midnight and Aurora Pop logos transparent.
+   These themes use their own readable logo assets, so the shell must not add
+   a white/background frame behind the logo. */
+html[data-theme="midnight"] .topbar[data-shell-template="topbar"] .brand-logo,
+html[data-theme="deep_berry"] .topbar[data-shell-template="topbar"] .brand-logo,
+html[data-theme="midnight"] .auth-brand-lockup .brand-logo,
+html[data-theme="deep_berry"] .auth-brand-lockup .brand-logo,
+html[data-theme="midnight"] .hearty-logo-frame,
+html[data-theme="deep_berry"] .hearty-logo-frame,
+html[data-theme="midnight"] .hearty-real-logo-frame,
+html[data-theme="deep_berry"] .hearty-real-logo-frame{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+html[data-theme="midnight"] .topbar[data-shell-template="topbar"] .brand-logo,
+html[data-theme="deep_berry"] .topbar[data-shell-template="topbar"] .brand-logo,
+html[data-theme="midnight"] .hearty-logo-img,
+html[data-theme="deep_berry"] .hearty-logo-img,
+html[data-theme="midnight"] .hearty-real-logo-img,
+html[data-theme="deep_berry"] .hearty-real-logo-img{
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.24)) !important;
 }

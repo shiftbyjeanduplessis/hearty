@@ -20,7 +20,6 @@
 
 html,body{min-height:100%;}
 body{isolation:isolate;}
-.shell{position:relative;z-index:1;}
 
 /* ---------- Theme atmosphere + stronger contrast ---------- */
 html[data-theme="pink_lemonade"]{
@@ -120,13 +119,8 @@ html[data-theme="pink_lemonade"] body::after{
   mask-image:linear-gradient(180deg, #000 0%, #000 64%, transparent 100%);
 }
 
-/* ---------- Canonical theme logo object ---------- */
-.logo-ready .brand-logo,
-.logo-ready .auth-logo,
-.logo-ready .brand-lockup,
-.logo-ready .brand-fallback-mark,
-.logo-ready .brand-text{display:none !important;}
-.brand,.brand-link,.logo-wrap{
+.logo-ready .auth-logo,.logo-ready .brand-lockup,.logo-ready .brand-fallback-mark,.logo-ready .brand-text{display:none !important;}
+.brand-link,.logo-wrap{
   display:flex !important;
   align-items:center !important;
   gap:0 !important;
@@ -171,7 +165,8 @@ html[data-theme="deep_berry"] .hearty-logo-mark{color:#120a18 !important;}
 .auth-brand-lockup .hearty-logo-word{font-size:2.55rem !important;}
 
 /* ---------- One shell/menu strip language ---------- */
-.topbar,.status-strip,.first-time-guide-card,.page-header,.guide-header,.help-header,.bottom-nav,.auth-card{
+.first-time-guide-card,
+.auth-card{
   background:var(--atmo-strip) !important;
   color:var(--atmo-text) !important;
   border:1px solid var(--atmo-border) !important;
@@ -179,17 +174,17 @@ html[data-theme="deep_berry"] .hearty-logo-mark{color:#120a18 !important;}
   backdrop-filter:blur(18px) saturate(1.08) !important;
   -webkit-backdrop-filter:blur(18px) saturate(1.08) !important;
 }
-.topbar{
-  min-height:86px !important;
-  border-radius:26px !important;
-  padding:0 22px !important;
-  margin:0 0 18px !important;
-}
-.status-strip,.page-header,.guide-header,.help-header{
+
+.status-strip,.guide-header,.help-header{
   background:var(--atmo-hero) !important;
+  color:var(--atmo-text) !important;
+  border:1px solid var(--atmo-border) !important;
   border-radius:28px !important;
   padding:24px !important;
   margin:0 0 20px !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
 }
 .first-time-guide-card{
   display:flex !important;
@@ -268,19 +263,7 @@ html[data-theme="deep_berry"] .hearty-logo-mark{color:#120a18 !important;}
 }
 
 /* ---------- Bottom nav consistency ---------- */
-.bottom-nav{
-  background:var(--atmo-nav-bg) !important;
-  border:1px solid var(--atmo-border) !important;
-  box-shadow:0 18px 44px rgba(0,0,0,.10), var(--atmo-shadow-soft) !important;
-  border-radius:26px !important;
-  padding:10px !important;
-}
-.bottom-nav .nav-item,.nav-item{color:var(--atmo-muted) !important;font-weight:780 !important;border-radius:20px !important;}
-.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],.nav-item.active,.nav-item[aria-current="page"]{
-  background:var(--atmo-nav-active) !important;
-  color:var(--atmo-nav-active-text) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.24), 0 12px 22px color-mix(in srgb, var(--atmo-primary) 14%, transparent) !important;
-}
+
 
 /* Switch alignment stays mechanical. */
 .switch{width:56px !important;height:32px !important;flex:0 0 56px !important;position:relative !important;display:inline-block !important;}
@@ -290,15 +273,15 @@ html[data-theme="deep_berry"] .hearty-logo-mark{color:#120a18 !important;}
 .switch input:checked + .slider::before{transform:translateX(24px) !important;}
 
 h1,h2,h3,h4,.headline,.page-greeting,.card-title,.settings-title,.section-title,.hero-title,.compact-title,.task-title,.ring-title,.progress-main,.support-title{color:var(--atmo-text) !important;}
-p,.subline,.settings-copy,.mini-note,.task-sub,.ring-caption,.page-header-subcopy,.subtitle,.legal,.label,.kv-key,.theme-desc,.guide-section li{color:var(--atmo-muted) !important;}
+p,.subline,.settings-copy,.mini-note,.task-sub,.ring-caption-subcopy,.subtitle,.legal,.label,.kv-key,.theme-desc,.guide-section li{color:var(--atmo-muted) !important;}
 .eyebrow,.section-label,.section-kicker{color:color-mix(in srgb, var(--atmo-muted) 74%, var(--atmo-primary)) !important;}
 
 @media(max-width:760px){
-  .topbar{min-height:72px !important;border-radius:20px !important;padding:0 14px !important;}
+  
   .hearty-logo-mark{width:38px !important;height:38px !important;border-radius:14px !important;}
   .hearty-logo-word{font-size:1.85rem !important;}
-  .status-strip,.page-header,.guide-header,.help-header{padding:18px !important;border-radius:22px !important;}
+  .status-strip,.guide-header,.help-header{padding:18px !important;border-radius:22px !important;}
   .first-time-guide-card{display:grid !important;grid-template-columns:1fr !important;padding:16px !important;border-radius:22px !important;}
   .first-time-guide-card .guide-actions{justify-content:flex-start !important;}
-  .bottom-nav{border-radius:20px !important;padding:7px !important;}
+  
 }

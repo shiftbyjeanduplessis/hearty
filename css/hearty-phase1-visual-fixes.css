@@ -23,12 +23,10 @@
 }
 
 /* One shape language for page strips and menu bars */
-.topbar,
 .status-strip,
-.page-header,
+
 .guide-header,
-.help-header,
-.bottom-nav{
+.help-header{
   border:1px solid var(--line) !important;
   border-radius:28px !important;
   background:var(--theme-topbar-bg) !important;
@@ -36,7 +34,7 @@
   color:var(--ink) !important;
 }
 .status-strip,
-.page-header,
+
 .guide-header,
 .help-header{
   display:flex !important;
@@ -48,7 +46,6 @@
   overflow:hidden !important;
 }
 .status-strip .day-pill,
-.page-header .day-pill,
 .status-pill,
 .day-pill{
   background:var(--surface-chip) !important;
@@ -158,15 +155,7 @@ button.btn.secondary{
   color:var(--ink) !important;
   border-color:var(--line) !important;
 }
-.bottom-nav{
-  background:var(--nav-bg) !important;
-  box-shadow:var(--shadow-soft) !important;
-}
-.bottom-nav .nav-item,.nav-item{font-weight:750 !important;color:var(--nav-ink) !important;}
-.bottom-nav .nav-item.active,.bottom-nav .nav-item[aria-current="page"],.nav-item.active,.nav-item[aria-current="page"]{
-  background:var(--nav-active-bg) !important;
-  color:var(--nav-active-ink) !important;
-}
+
 
 /* Theme selector should be obvious */
 #theme-settings-card-quick{order:2 !important;}
@@ -177,7 +166,7 @@ button.btn.secondary{
 .theme-option.active *{color:var(--primary-text,#fff) !important;}
 
 @media(max-width:760px){
-  .status-strip,.page-header,.guide-header,.help-header{display:grid !important;padding:18px !important;border-radius:22px !important;}
+  .status-strip,.guide-header,.help-header{display:grid !important;padding:18px !important;border-radius:22px !important;}
   .first-time-guide-card{display:grid !important;align-items:start !important;padding:16px !important;border-radius:22px !important;}
   .first-time-guide-card .guide-actions{justify-content:flex-start !important;}
   .theme-options-grid{grid-template-columns:1fr !important;}

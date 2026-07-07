@@ -2,7 +2,7 @@
   'use strict';
 
   const KEY = {
-    profile:'heartyProfile', daily:'heartyDailyState', weightLogs:'heartyWeightLogs', water:'heartyWaterLog',
+    profile:'heartyProfile', daily:'heartyDailyState', weightLogs:'hearty_weight_logs_v1', water:'heartyWaterLog',
     photos:'heartyPhotoCheckins', medication:'heartyMedication', support:'heartySupportMode', theme:'heartyTheme', lessons:'heartyLessonsV1'
   };
   const PHOTO_INTERVAL_DAYS = 21;
@@ -244,7 +244,8 @@
   }
 
   function maybeShowInstallPrompt(force){
-    if (isInstalledMode() || document.getElementById('heartyInstallPrompt')) return;
+    // v84: pwa-install.js owns the Chrome/PWA install card.
+    return;
 
     try{
       const firstSeenKey = 'heartyInstallFirstSeenAtV2';
@@ -319,7 +320,7 @@
     if (!localStorage.getItem(KEY.profile) && oldProfile) writeJSON(KEY.profile, oldProfile);
     const oldTheme = localStorage.getItem('hearty-theme') || localStorage.getItem('hearty_theme');
     if (!localStorage.getItem(KEY.theme) && oldTheme) localStorage.setItem(KEY.theme, oldTheme);
-    const oldLogs = readJSON('hearty_weight_logs', null) || readJSON('heartyProgress', null)?.weightLogs;
+    const oldLogs = readJSON('hearty_weight_logs', null) || readJSON('heartyWeightLogs', null) || readJSON('heartyWeightHistory', null) || readJSON('heartyProgress', null)?.weightLogs;
     if (!localStorage.getItem(KEY.weightLogs) && Array.isArray(oldLogs)) writeJSON(KEY.weightLogs, oldLogs);
   }
 
@@ -458,12 +459,13 @@
   function unitLabel(){ return state.profile.unit === 'imperial' ? 'lb' : 'kg'; }
   function convertDisplay(kg){ return state.profile.unit === 'imperial' ? kg * 2.20462 : kg; }
   function convertToKg(value){ return state.profile.unit === 'imperial' ? value / 2.20462 : value; }
+  function weightKg(row){ return row ? num(row.kg ?? row.weightKg ?? row.weight_kg) : null; }
   function latestWeight(){
-    const sorted = state.weightLogs.slice().filter(x=>num(x.kg)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    const sorted = state.weightLogs.slice().filter(x=>num(weightKg(x))).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
     return sorted[sorted.length-1] || null;
   }
   function startWeight(){
-    const sorted = state.weightLogs.slice().filter(x=>num(x.kg)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    const sorted = state.weightLogs.slice().filter(x=>num(weightKg(x))).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
     return sorted[0] || null;
   }
 
@@ -493,25 +495,26 @@
   }
 
   function renderProgress(){
-    const cur = latestWeight(); const start = startWeight(); const targetKg = num(state.profile.targetWeightKg || state.profile.targetWeight);
+    const cur = latestWeight(); const start = startWeight(); const targetKg = null;
     const unit = unitLabel();
     if (!cur){
       $('weightProgressMain').textContent = 'Add your first weigh-in';
-      $('weightProgressMeta').textContent = 'Target weight must be provided by your doctor.';
-      $('startWeightLabel').textContent = 'Start —'; $('targetWeightLabel').textContent = 'Target —';
+      $('weightProgressMeta').textContent = 'Your trend will appear here after you log weight.';
+      $('startWeightLabel').textContent = 'Start —'; $('targetWeightLabel').textContent = 'Latest —';
       $('goalbarFill').style.width = '0%'; $('goalMarker').style.left = '100%'; return;
     }
-    const curD = convertDisplay(cur.kg); $('weightProgressMain').textContent = `Current ${curD.toFixed(1)} ${unit}`;
-    const startD = start ? convertDisplay(start.kg) : curD;
+    const curKg = weightKg(cur); const startKg = start ? weightKg(start) : curKg;
+    const curD = convertDisplay(curKg); $('weightProgressMain').textContent = `Current ${curD.toFixed(1)} ${unit}`;
+    const startD = startKg ? convertDisplay(startKg) : curD;
     $('startWeightLabel').textContent = `Start ${startD.toFixed(1)} ${unit}`;
     if (targetKg){
       const targetD = convertDisplay(targetKg); $('targetWeightLabel').textContent = `Target ${targetD.toFixed(1)} ${unit}`;
-      const total = Math.abs(start.kg - targetKg) || 1; const moved = Math.abs(start.kg - cur.kg);
+      const total = Math.abs(startKg - targetKg) || 1; const moved = Math.abs(startKg - curKg);
       const pct = clamp((moved/total)*100, 0, 100);
       $('weightProgressMeta').textContent = `${pct.toFixed(0)}% of doctor target path`;
       $('goalbarFill').style.width = pct + '%'; $('goalMarker').style.left = '100%';
     } else {
-      $('targetWeightLabel').textContent = 'Target —'; $('weightProgressMeta').textContent = 'Target weight must be provided by your doctor.';
+      $('targetWeightLabel').textContent = 'Target —'; $('weightProgressMeta').textContent = 'Your trend will appear here after you log weight.';
       $('goalbarFill').style.width = '20%'; $('goalMarker').style.left = '100%';
     }
   }
@@ -583,12 +586,9 @@
   }
 
   function renderSupport(){
-    const active = isSupportActiveValue(state.support.active);
-    $('supportLed').classList.toggle('active', active);
-    $('supportCard').classList.toggle('is-active', active);
-    $('supportCard').classList.toggle('is-off', !active);
-    $('supportSubtext').textContent = active ? 'Support Mode is active. Meals and movement should feel gentler today.' : 'If side effects are getting in the way, switch to a softer day from the Support page.';
-    $('supportOff').disabled = !active;
+    // Shared js/hearty-support-state.js owns the Home support selector.
+    // This guard prevents the legacy Home renderer from touching removed IDs.
+    return;
   }
 
 
@@ -655,12 +655,12 @@
     $('saveWeightBtn').addEventListener('click',()=>{
       const val = num($('weightValueInput').value); if(!val){ toast('Add a valid weight.'); return; }
       const kg = convertToKg(val); const today = localDate();
-      state.weightLogs = state.weightLogs.filter(x=>x.date !== today); state.weightLogs.push({date:today,kg,createdAt:new Date().toISOString()}); writeJSON(KEY.weightLogs,state.weightLogs);
+      state.weightLogs = state.weightLogs.filter(x=>x.date !== today); state.weightLogs.push({date:today,kg,weightKg:kg,source:'home',createdAt:new Date().toISOString()}); writeJSON(KEY.weightLogs,state.weightLogs);
       try{
         localStorage.setItem('heartyTodayWeightKg', String(kg));
         localStorage.setItem('heartyTodayWeightKg:' + today, String(kg));
         localStorage.setItem('heartyCurrentWeightKg', String(kg));
-        localStorage.setItem('hearty_weight_logs', JSON.stringify(state.weightLogs.map(x => ({date:x.date, weight_kg:x.kg, kg:x.kg, createdAt:x.createdAt}))));
+        localStorage.setItem('hearty_weight_logs', JSON.stringify(state.weightLogs.map(x => ({date:x.date, weight_kg:x.kg || x.weightKg, kg:x.kg || x.weightKg, weightKg:x.kg || x.weightKg, createdAt:x.createdAt}))));
       }catch(e){}
       hdWeight(kg);
       state.daily.tasks.weight = true; saveDaily(); closeSheets(); renderAll(); toast('Weight saved.');
@@ -686,7 +686,7 @@
       saveLessonState(lessonState);
       state.daily.tasks.lesson = true; saveDaily(); closeSheets(); renderAll();
     });
-    $('supportOff').addEventListener('click',()=>{ state.support.active=false; state.support.type=''; writeJSON(KEY.support,state.support); hdSupport(''); renderSupport(); toast('Support Mode off.'); });
+    $('supportOff')?.addEventListener('click',()=>{ state.support.active=false; state.support.type=''; writeJSON(KEY.support,state.support); hdSupport(''); renderSupport(); toast('Support Mode off.'); });
     $('logDoseBtn').addEventListener('click',()=>{
       const today = localDate();
       state.medication.lastDoseDate = today;
@@ -694,14 +694,19 @@
       writeJSON(KEY.medication,state.medication);
       saveInjectionBridge();
       try{
-        const log = readJSON('heartyInjectionLog', []);
-        const arr = Array.isArray(log) ? log : [];
         const dose = localStorage.getItem('heartyCurrentDosage') || 'Logged';
         const med = state.medication.type || localStorage.getItem('heartyMedicationType') || 'Medication';
-        const row = { date:today, dose, medication:med, source:'home', createdAt:new Date().toISOString() };
-        const filtered = arr.filter(x => x && x.date !== today);
-        filtered.unshift(row);
-        writeJSON('heartyInjectionLog', filtered);
+        const row = { id:'dose-' + today, date:today, dose, medication:med, source:'home', createdAt:new Date().toISOString() };
+        const canonical = readJSON('hearty_medication_logs_v1', []);
+        const canonArr = Array.isArray(canonical) ? canonical : [];
+        const nextCanon = canonArr.filter(x => x && x.date !== today);
+        nextCanon.push(row);
+        writeJSON('hearty_medication_logs_v1', nextCanon.sort((a,b)=>String(a.date).localeCompare(String(b.date))));
+        const legacy = readJSON('heartyInjectionLog', []);
+        const legacyArr = Array.isArray(legacy) ? legacy : [];
+        const nextLegacy = legacyArr.filter(x => x && x.date !== today);
+        nextLegacy.unshift(row);
+        writeJSON('heartyInjectionLog', nextLegacy);
         hdSet('progress.injection_logs.' + today, row);
       }catch(e){}
       renderMedication(); toast('Dose logged.');
@@ -723,7 +728,8 @@
     const count = Object.keys(state.photoDraft).length; const complete=$('completePhotoBtn'); complete.disabled=!state.photoDraft.front; complete.textContent=state.photoDraft.front?`Complete photo check-in (${count})`:'Add front photo to complete';
   }
   function bindPhotos(){
-    $('openPhotoBtn').addEventListener('click',()=>{ state.photoDraft={}; updatePhotoUI(); openSheet('photoSheet'); });
+    const photoBtn = $('openPhotoBtn');
+    if(photoBtn) photoBtn.addEventListener('click',()=>{ location.href = './progress.html#photoTitle'; });
     document.querySelectorAll('[data-photo-slot]').forEach(btn=>btn.addEventListener('click',()=>{ activePhotoSlot=btn.dataset.photoSlot; const input=$('photoInput'); input.value=''; const capture=activePhotoSlot==='front'?'user':'environment'; input.setAttribute('capture',capture); input.capture=capture; input.click(); }));
     $('photoInput').addEventListener('change',async e=>{
       const file=e.target.files && e.target.files[0]; if(!file || !activePhotoSlot) return;
@@ -751,245 +757,9 @@
   }
 
   function bindSetup(){
-    const TOTAL_SETUP_STEPS = 4;
-
-    function setIfExists(id, value){
-      const el = $(id);
-      if(el && value !== undefined && value !== null) el.value = value;
-    }
-
-    function selectedMedicationDays(){
-      return Array.from(document.querySelectorAll('[data-med-day].active')).map(btn => String(btn.dataset.medDay));
-    }
-
-    function paintMedicationDays(days){
-      const selected = normaliseMedicationDays(days);
-      document.querySelectorAll('[data-med-day]').forEach(btn => {
-        btn.classList.toggle('active', selected.includes(String(btn.dataset.medDay)));
-      });
-    }
-
-    function medicationNameFromInputs(){
-      const base = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
-      const custom = $('coreSetupMedicationCustom') ? $('coreSetupMedicationCustom').value.trim() : '';
-      return base === 'Other' && custom ? custom : base;
-    }
-
-    function updateMedicationCustomField(){
-      const field = $('coreSetupMedicationCustom');
-      if(!field) return;
-      const show = ($('coreSetupMedication') ? $('coreSetupMedication').value : '') === 'Other';
-      field.style.display = show ? 'block' : 'none';
-    }
-
-    function updateMedicationDayStep(){
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
-      const dayWrap = $('coreSetupDaysField');
-      const dayButtons = document.querySelectorAll('[data-med-day]');
-      const hint = $('coreSetupDaysHint');
-      const title = $('coreSetupDaysTitle');
-      const error = $('coreSetupDaysError');
-      const interval = $('coreSetupIntervalDays');
-      const nextDate = $('coreSetupNextDate');
-      const reminder = $('coreSetupReminder');
-
-      const needsDays = ['weekly','twice_weekly','custom_days'].includes(frequency);
-      const needsInterval = frequency === 'every_x_days';
-      const needsDate = ['every_2_weeks','every_x_days','custom_next_date'].includes(frequency);
-      const disabledDays = !needsDays;
-
-      if(dayWrap) dayWrap.style.display = needsDays ? '' : 'none';
-      dayButtons.forEach(btn => { btn.disabled = disabledDays; });
-      if(interval) interval.style.display = needsInterval ? 'block' : 'none';
-      if(nextDate) nextDate.style.display = needsDate ? 'block' : 'none';
-      if(reminder) reminder.style.display = ['not_using','no_fixed'].includes(frequency) ? 'none' : 'block';
-      if(error) error.style.display = 'none';
-
-      if(title){
-        if(frequency === 'weekly') title.textContent = 'Choose your injection day';
-        else if(frequency === 'twice_weekly') title.textContent = 'Choose your two injection days';
-        else if(frequency === 'every_2_weeks') title.textContent = 'Choose your next reminder date';
-        else if(frequency === 'every_x_days') title.textContent = 'Custom interval';
-        else if(frequency === 'custom_next_date') title.textContent = 'Next reminder date';
-        else title.textContent = 'Schedule details';
-      }
-
-      if(hint){
-        if(frequency === 'weekly') hint.textContent = 'Choose the one day you usually take it.';
-        else if(frequency === 'twice_weekly') hint.textContent = 'Choose exactly two days. Hearty will remind you on both.';
-        else if(frequency === 'every_2_weeks') hint.textContent = 'Choose the next reminder date. Hearty will treat this as a 14-day rhythm.';
-        else if(frequency === 'every_x_days') hint.textContent = 'Enter the interval and optionally the next reminder date.';
-        else if(frequency === 'custom_next_date') hint.textContent = 'Use this if the preset days do not match your schedule.';
-        else if(frequency === 'no_fixed') hint.textContent = 'No fixed reminder will be created. You can still log injections manually.';
-        else if(frequency === 'not_using') hint.textContent = 'Medication reminders are off.';
-        else hint.textContent = 'You can leave this for later and finish it from Progress.';
-      }
-    }
-
-    function medicationDayRequirement(){
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
-      if(frequency === 'weekly') return { min:1, max:1, message:'Please choose one injection day.' };
-      if(frequency === 'twice_weekly') return { min:2, max:2, message:'Please choose two injection days.' };
-      if(frequency === 'custom_days') return { min:1, max:7, message:'Please choose at least one reminder day.' };
-      return { min:0, max:7, message:'' };
-    }
-
-    function validateMedicationDays(){
-      const requirement = medicationDayRequirement();
-      const days = selectedMedicationDays();
-      const error = $('coreSetupDaysError');
-      const valid = days.length >= requirement.min && days.length <= requirement.max;
-      if(error){ error.textContent = requirement.message || ''; error.style.display = valid || !requirement.message ? 'none' : 'block'; }
-      return valid;
-    }
-
-    function syncSetupInputsFromState(){
-      setIfExists('coreSetupName', state.profile.name || localStorage.getItem('heartyFirstName') || '');
-      setIfExists('coreSetupCountry', state.profile.country || state.profile.region || localStorage.getItem('heartyCountry') || localStorage.getItem('heartyRegion') || 'ZA');
-      if(state.profile.startingWeightKg) setIfExists('coreSetupStartingWeight', convertDisplay(Number(state.profile.startingWeightKg)).toFixed(1));
-      if(state.profile.targetWeightKg) setIfExists('coreSetupTargetWeight', convertDisplay(Number(state.profile.targetWeightKg)).toFixed(1));
-      setIfExists('coreSetupMedication', state.medication.type === state.medication.customMedicationName ? 'Other' : (state.medication.type || ''));
-      setIfExists('coreSetupMedicationCustom', state.medication.customMedicationName || '');
-      setIfExists('coreSetupFrequency', state.medication.frequency || 'set_later');
-      setIfExists('coreSetupIntervalDays', state.medication.intervalDays || '');
-      setIfExists('coreSetupNextDate', state.medication.nextDoseDate || '');
-      paintMedicationDays(state.medication.days && state.medication.days.length ? state.medication.days : state.medication.day);
-      setIfExists('coreSetupReminder', state.medication.reminderEnabled === false ? 'false' : 'true');
-      updateMedicationCustomField();
-      updateMedicationDayStep();
-    }
-
-    function saveCurrentSetupStep(){
-      if(state.setupStep===0){
-        state.profile.name = $('coreSetupName') ? $('coreSetupName').value.trim() : state.profile.name;
-        state.profile.country = $('coreSetupCountry') ? $('coreSetupCountry').value : (state.profile.country || 'ZA');
-      }
-
-      if(state.setupStep===1){
-        const v = num($('coreSetupStartingWeight')?.value);
-        if(v){
-          const kg = convertToKg(v);
-          state.profile.startingWeightKg = kg;
-          try{
-            localStorage.setItem('heartyStartingWeightKg', String(kg));
-            localStorage.setItem('heartyCurrentWeightKg', String(kg));
-            localStorage.setItem('heartyWeightStartingKg', String(kg));
-            localStorage.setItem('heartyWeightCurrentKg', String(kg));
-          }catch(e){}
-          if(!state.weightLogs.length){
-            state.weightLogs.push({date:localDate(), kg, createdAt:new Date().toISOString(), source:'home-onboarding'});
-            writeJSON(KEY.weightLogs, state.weightLogs);
-          }
-          hdSet('profile.starting_weight_kg', kg);
-          hdSet('profile.current_weight_kg', kg);
-        }
-        const target = num($('coreSetupTargetWeight')?.value);
-        if(target) state.profile.targetWeightKg = convertToKg(target);
-      }
-
-      if(state.setupStep===2){
-        const base = $('coreSetupMedication') ? $('coreSetupMedication').value : '';
-        const custom = $('coreSetupMedicationCustom') ? $('coreSetupMedicationCustom').value.trim() : '';
-        state.medication.customMedicationName = custom;
-        state.medication.type = base === 'Other' && custom ? custom : base;
-      }
-
-      if(state.setupStep===3){
-        state.medication.frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
-        if(['set_later','not_using','no_fixed'].includes(state.medication.frequency)){
-          state.medication.days = [];
-          state.medication.day = '';
-          paintMedicationDays([]);
-        }
-      }
-
-      if(state.setupStep===4){
-        if(!validateMedicationDays()) return false;
-        const days = selectedMedicationDays();
-        state.medication.days = days;
-        state.medication.day = days[0] || '';
-        state.medication.intervalDays = $('coreSetupIntervalDays') && $('coreSetupIntervalDays').value ? Number($('coreSetupIntervalDays').value) : null;
-        state.medication.nextDoseDate = $('coreSetupNextDate') ? $('coreSetupNextDate').value : '';
-        state.medication.reminderEnabled = $('coreSetupReminder') ? $('coreSetupReminder').value !== 'false' : true;
-      }
-
-      saveProfile();
-      writeJSON(KEY.medication,state.medication);
-      saveInjectionBridge();
-      return true;
-    }
-
-    document.querySelectorAll('[data-unit]').forEach(btn=>btn.addEventListener('click',()=>{
-      state.profile.unit=btn.dataset.unit;
-      document.querySelectorAll('[data-unit]').forEach(b=>b.classList.toggle('active',b.dataset.unit===state.profile.unit));
-      syncSetupInputsFromState();
-    }));
-
-    document.querySelectorAll('[data-med-day]').forEach(btn=>btn.addEventListener('click',()=>{
-      const frequency = $('coreSetupFrequency') ? $('coreSetupFrequency').value : 'set_later';
-      if(!['weekly','twice_weekly','custom_days'].includes(frequency)) return;
-      if(frequency === 'weekly'){
-        document.querySelectorAll('[data-med-day]').forEach(b => { if(b !== btn) b.classList.remove('active'); });
-        btn.classList.toggle('active');
-      } else if(frequency === 'twice_weekly'){
-        if(btn.classList.contains('active')) btn.classList.remove('active');
-        else if(document.querySelectorAll('[data-med-day].active').length < 2) btn.classList.add('active');
-      } else {
-        btn.classList.toggle('active');
-      }
-      validateMedicationDays();
-    }));
-
-    $('coreSetupMedication')?.addEventListener('change',()=>{ updateMedicationCustomField(); });
-    $('coreSetupFrequency')?.addEventListener('change',()=>{
-      state.medication.frequency = $('coreSetupFrequency').value;
-      if(!['weekly','twice_weekly','custom_days'].includes(state.medication.frequency)) paintMedicationDays([]);
-      if(state.medication.frequency === 'weekly'){
-        const active = selectedMedicationDays();
-        if(active.length > 1) paintMedicationDays([active[0]]);
-      }
-      updateMedicationDayStep();
-      validateMedicationDays();
-    });
-
-    function showStep(){
-      document.querySelectorAll('.setup-step').forEach(el=>el.hidden=Number(el.dataset.step)!==state.setupStep);
-      $('coreSetupBackBtn').disabled=state.setupStep===0;
-      $('coreSetupNextBtn').textContent=state.setupStep>=TOTAL_SETUP_STEPS?'Finish':'Next';
-      updateMedicationCustomField();
-      updateMedicationDayStep();
-    }
-
-    $('coreSetupBackBtn').addEventListener('click',()=>{
-      saveCurrentSetupStep();
-      state.setupStep=Math.max(0,state.setupStep-1);
-      showStep();
-    });
-
-    $('coreSetupNextBtn').addEventListener('click',()=>{
-      if(saveCurrentSetupStep() === false) return;
-      if(state.setupStep>=TOTAL_SETUP_STEPS){
-        state.profile.setupComplete=true;
-        saveProfile();
-        writeJSON(KEY.medication,state.medication);
-        saveInjectionBridge();
-        hdSet('settings.onboarding_complete', true);
-        closeSheets();
-        renderAll();
-        toast('Hearty setup complete.');
-        return;
-      }
-      state.setupStep++;
-      showStep();
-    });
-
-    syncSetupInputsFromState();
-    document.querySelector(`[data-unit="${state.profile.unit||'metric'}"]`)?.classList.add('active');
-    if(!state.profile.setupComplete){
-      state.setupStep=0;
-      showStep();
-      openSheet('coreSetupSheet');
-    }
+    // v62: general app onboarding now lives on onboarding.html.
+    // The old Home modal was removed because it asked for goal weight/meal-plan goal.
+    return;
   }
 
   function bindClose(){

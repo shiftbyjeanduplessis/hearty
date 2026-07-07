@@ -111,7 +111,7 @@
 
   const THEME_UPGRADE_NOTICE_KEY = "heartyThemeUpgradeNotice202606";
   const THEME_UPGRADE_SESSION_KEY = "heartyThemeUpgradeNoticeSessionHidden";
-  const APP_PAGES_FOR_THEME_NOTICE = new Set(["home","meals","exercise","progress","support","social","settings"]);
+  const APP_PAGES_FOR_THEME_NOTICE = new Set(["home","meals","exercise","progress","support","recipes","settings"]);
 
   function isAppPageForThemeNotice(){
     try{
