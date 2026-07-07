@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#eef8fc',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
 <title>Hearty — Profile setup</title>
 <meta name="theme-color" content="#f6f9fe"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -16,7 +16,7 @@
 <link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=92" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=95" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
 <script src="hearty-target-calculator.js"></script>
 <style id="hearty-app-onboarding-css">
@@ -68,7 +68,7 @@
     <div>
       <div class="eyebrow">PROFILE SETUP</div>
       <h1 class="page-heading">Personalise Hearty</h1>
-      <p class="subline">Add your profile, body stats and medication rhythm. Meals can use this for better estimates without changing your food preferences.</p>
+      <p class="subline">Add your profile, body stats and medication rhythm. Meals can use this for better estimates, while injection rhythm is reviewed later from Support or Settings.</p>
     </div>
   </section>
 
@@ -119,7 +119,7 @@
 
       <div class="onboarding-step" data-step="3" hidden>
         <h2 class="section-title">Medication rhythm</h2>
-        <p class="onboarding-note">The medication name is only a label. It does not control the schedule.</p>
+        <p class="onboarding-note">The medication name is only a label. You can review this later from Support or Settings.</p>
         <div class="field-grid" style="margin-top:16px">
           <div class="field"><label for="obMedication">Medication label</label><select id="obMedication"><option value="">Set later</option><option>Wegovy</option><option>Ozempic</option><option>Mounjaro</option><option>Zepbound</option><option>Saxenda</option><option>Victoza</option><option>Rybelsus</option><option>Trulicity</option><option>Byetta</option><option>Bydureon</option><option>Compounded semaglutide</option><option>Compounded tirzepatide</option><option>Other GLP-1</option><option>Not sure yet</option><option>Prefer not to say</option><option>Not currently using medication</option><option value="Other">Other / type my medication</option></select></div>
           <div class="field med-custom-row" hidden><label for="obMedicationCustom">Medication name</label><input id="obMedicationCustom" placeholder="Type medication name"/></div>
@@ -153,7 +153,7 @@
   </main>
 </div>
 <script src="js/hearty-production-guard.js?v=54"></script>
-<script defer src="js/hearty-onboarding.js?v=65"></script>
-<script defer src="js/hearty-shell-template.js?v=92"></script>
+<script defer src="js/hearty-onboarding.js?v=95"></script>
+<script defer src="js/hearty-shell-template.js?v=95"></script>
 </body>
 </html>

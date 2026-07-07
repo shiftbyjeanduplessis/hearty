@@ -17,7 +17,7 @@
 <link href="css/hearty-home-v15-refactor-aesthetic.css?v=59" rel="stylesheet"/>
 <script src="js/hearty-data-layer.v1.js"></script>
 <script src="hearty-target-calculator.js"></script>
-<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js?v=84"></script>
+<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js?v=95"></script>
 <meta content="yes" name="mobile-web-app-capable"/>
 <style id="hearty-medication-day-picker-css">
     .day-toggle-grid{
@@ -52,7 +52,7 @@
 <link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=93" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=95" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
 <script src="js/hearty-production-guard.js?v=54"></script>
   <link rel="stylesheet" href="pwa-install.css?v=94">
@@ -100,10 +100,11 @@
 <div>
 <div class="eyebrow">What’s new</div>
 <h2 class="section-title" style="margin:0 0 6px">Hearty has been upgraded</h2>
-<p class="subline" style="margin:0">Meals now has prep modes and clearer portions, Progress has photo comparison and injection alerts, and Recipes has replaced Social.</p>
+<p class="subline" style="margin:0">Meals now has prep modes and clearer portions, Progress has photo comparison and weekly consistency, Support now handles injection tracking, and Recipes has replaced Social.</p>
 <ul class="update-list">
 <li>Meals rebuilt with cook-fresh, leftovers and weekly prep options.</li>
-<li>Progress photos, comparison and injection timeline added.</li>
+<li>Progress photos and comparison added.</li>
+<li>Injection tracking moved into Support.</li>
 <li>Recipe library added with GLP-1 friendly meal ideas.</li>
 <li>Support Mode cleaned up across the app.</li>
 </ul>
@@ -216,11 +217,11 @@
 <button aria-label="Undo water glass" class="water-undo-clean" id="waterUndo" type="button"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="22"><path d="M9 14 4 9l5-5" fill="none"></path><path d="M4 9h10a6 6 0 0 1 0 12h-1" fill="none"></path></svg></button>
 </div>
 </section>
-<section aria-label="Medication reminder" class="card medication-card" id="injectionCard">
-<div class="section-label">Medication</div>
-<h2 class="card-title" id="medicationTitle">Dose reminder</h2>
-<p class="card-copy" id="nextInjectionDateText">Set your medication schedule during setup.</p>
-<div class="injection-actions"><button aria-label="Mark dose logged" class="dose-icon-btn" id="logDoseBtn" type="button">✓</button></div>
+<section aria-label="Support and injection tracking" class="card medication-card" id="supportInjectionCard">
+<div class="section-label">Support</div>
+<h2 class="card-title">Support & injection tracking</h2>
+<p class="card-copy">Side-effect support and injection rhythm now live together on the Support page.</p>
+<div class="support-actions-row" style="justify-content:flex-start"><a class="soft-btn" href="support.html">Open Support</a></div>
 </section>
 </aside>
 </main>
@@ -319,7 +320,7 @@
 })();
 </script>
 <script src="js/hearty-support-state.js?v=65"></script>
-<script defer="" src="js/hearty-shell-template.js?v=93"></script>
+<script defer="" src="js/hearty-shell-template.js?v=95"></script>
 <script defer src="pwa-install.js?v=94"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>

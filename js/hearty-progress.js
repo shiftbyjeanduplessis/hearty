@@ -723,7 +723,7 @@
 
   function init(){
     renderWeight(); bindWeight();
-    renderMedication(); bindMedication();
+    // Injection rhythm now lives on Support. Progress owns weight, photos, trend and weekly consistency.
     bindPhotos(); loadPhotos();
     renderWeekly(); bindWeekly();
   }
