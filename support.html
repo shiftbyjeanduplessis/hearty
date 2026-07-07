@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#eef8fc',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
 <title>Hearty — Support & injection tracking</title>
 <script src="js/hearty-data-layer.v1.js"></script>
 <link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
@@ -12,7 +12,7 @@
 <link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=92" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=93" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
 <script src="js/hearty-production-guard.js?v=54"></script>
 <link rel="manifest" href="/manifest.json">
@@ -40,6 +40,26 @@
 
 /* v89 support cleanup: keep this page in the same simple card/button language as the rest of the app. */
 .support-page{gap:14px!important;max-width:1180px;margin:0 auto;color:var(--ink,#132235)!important;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}.support-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important;align-items:stretch!important}.support-stack{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}.support-card{border-radius:var(--radius-card,24px)!important;background:var(--card,rgba(255,255,255,.94))!important;border:1px solid var(--line,rgba(143,163,184,.22))!important;box-shadow:var(--shadow,0 18px 40px rgba(20,31,50,.10))!important;padding:18px!important;color:var(--ink,#132235)!important}.support-card.soft{box-shadow:var(--shadow-soft,0 8px 22px rgba(14,31,53,.06))!important}.support-card-head{margin-bottom:12px!important}.support-kicker{font-size:.68rem!important;letter-spacing:.1em!important;text-transform:uppercase!important;color:var(--muted,#6f7c8d)!important;font-weight:850!important}.support-card h2{margin:4px 0 0!important;font-size:1.08rem!important;line-height:1.15!important;font-weight:850!important;letter-spacing:-.03em!important;color:var(--ink,#132235)!important}.support-card p{font-size:.88rem!important;line-height:1.45!important;font-weight:620!important;color:var(--muted,#6f7c8d)!important}.support-field label{font-size:.68rem!important;letter-spacing:.09em!important;color:var(--muted,#6f7c8d)!important;font-weight:850!important}.support-input,.support-select,.support-textarea{border-radius:14px!important;border:1px solid var(--line,rgba(143,163,184,.22))!important;background:var(--surface-button,rgba(255,255,255,.94))!important;color:var(--ink,#132235)!important;font-size:.9rem!important;font-weight:650!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)!important}.support-row{display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:wrap!important}.support-btn{appearance:none!important;border:none!important;border-radius:999px!important;background:linear-gradient(180deg,var(--hf-primary,var(--theme-accent,#2f6df6)),color-mix(in srgb,var(--hf-primary,var(--theme-accent,#2f6df6)) 76%,#000))!important;color:var(--hf-primary-text,#fff)!important;font:inherit!important;font-size:.86rem!important;font-weight:900!important;line-height:1!important;min-height:40px!important;padding:10px 14px!important;box-shadow:0 10px 18px color-mix(in srgb,var(--hf-primary,var(--theme-accent,#2f6df6)) 18%,transparent)!important;text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;cursor:pointer!important;white-space:nowrap!important}.support-btn.secondary{background:var(--surface-chip,rgba(255,255,255,.96))!important;color:var(--ink,#132235)!important;border:1px solid var(--line,rgba(143,163,184,.22))!important;box-shadow:none!important}.support-mini-note{font-size:.8rem!important;font-weight:650!important;color:var(--muted,#6f7c8d)!important}.injection-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important}.injection-chart{grid-template-columns:repeat(8,minmax(68px,1fr))!important}.resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.resource-card,.support-log-row,.injection-alert,.injection-stat{border-radius:18px!important;background:var(--surface-chip,rgba(255,255,255,.96))!important;border:1px solid var(--line,rgba(143,163,184,.22))!important;box-shadow:var(--shadow-soft,0 8px 22px rgba(14,31,53,.06))!important}.injection-alert{margin-top:10px!important}.chart-legend span,.support-log-row span,.injection-step-label{color:var(--muted,#6f7c8d)!important}.hearty-support-panel{box-shadow:var(--shadow,0 18px 40px rgba(20,31,50,.10))!important}@media(max-width:760px){.support-card{padding:16px!important}.support-two,.injection-stats,.resource-grid{grid-template-columns:1fr!important}.support-btn{width:auto}.injection-chart{grid-template-columns:repeat(8,68px)!important}}
+
+
+/* v93 support layout fix: keep form controls inside the card and use the same app typography as other headers. */
+body[data-page="support"],
+body[data-page="support"] button,
+body[data-page="support"] input,
+body[data-page="support"] select,
+body[data-page="support"] textarea,
+body[data-page="support"] .status-strip,
+body[data-page="support"] .status-strip *{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+body[data-page="support"] .status-strip .page-heading{font-weight:850!important;letter-spacing:-.04em!important;}
+body[data-page="support"] .support-input,
+body[data-page="support"] .support-select,
+body[data-page="support"] .support-textarea{box-sizing:border-box!important;max-width:100%!important;}
+body[data-page="support"] .support-form,
+body[data-page="support"] .support-field,
+body[data-page="support"] .support-two{min-width:0!important;}
+body[data-page="support"] .support-page{padding-bottom:calc(var(--hst-nav-h,78px) + 54px + env(safe-area-inset-bottom,0px))!important;}
 
 </style>
 </head>
@@ -177,7 +197,7 @@
 <script src="js/hearty-support-state.js?v=65"></script>
 <script src="js/hearty-support-page.js?v=89"></script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer src="js/hearty-shell-template.js?v=92"></script>
+<script defer src="js/hearty-shell-template.js?v=93"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>
 </html>
