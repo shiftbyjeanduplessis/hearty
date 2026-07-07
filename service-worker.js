@@ -2,7 +2,7 @@
    Purpose: prevent / and /index.html from being served as the app shell.
    Safe rule: public root is always network-first and never redirected to home.html.
 */
-const CACHE_NAME = 'hearty-root-safe-v93-layout-flash-form-fix';
+const CACHE_NAME = 'hearty-root-safe-v94-install-prompt-stop-flash';
 const APP_ROUTE_PAGES = new Set([
   '/home.html',
   '/meals.html',
