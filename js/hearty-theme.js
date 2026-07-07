@@ -1,6 +1,6 @@
 (function(){
   const THEMES = [
-    { id: "clean_blue", name: "Ocean Blue", description: "Default calm ocean theme", logo: { src: "hearty-logo.png", variant: "blue", frame: "light" } },
+    { id: "clean_blue", name: "Ocean Blue", description: "Default calm ocean theme", logo: { src: "hearty-logo.png?v=92", variant: "blue", frame: "light" } },
     { id: "pink_lemonade", name: "Pink Lemonade", description: "Fun pink and yellow theme", logo: { src: "assets/logos/hearty-logo-pink-lemonade.svg", variant: "pink-lemonade", frame: "warm" } },
     { id: "midnight", name: "Midnight", description: "Black space theme", logo: { src: "assets/logos/hearty-logo-midnight-bright-thick.png", variant: "midnight", frame: "dark-safe" } },
     { id: "soft_rose", name: "Champagne Blush", description: "Nude gold luxury cosmetics theme", logo: { src: "assets/logos/hearty-logo-champagne-blush-floral.png", variant: "champagne-blush", frame: "rose" } },

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  const DEFAULT_LOGO_SRC = './hearty-logo.png';
+  const DEFAULT_LOGO_SRC = './hearty-logo.png?v=92';
   const MAIN_PAGES = new Set(['home','meals','exercise','progress','support','recipes','social','community','settings','how-to-use','help','onboarding']);
   const NAV = [
     { id:'home', label:'Home', href:'./home.html', icon:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>' },
@@ -33,7 +33,8 @@
 
   function logoSrc(){
     const cfg = logoConfig();
-    const src = cfg && cfg.src ? String(cfg.src) : DEFAULT_LOGO_SRC;
+    let src = cfg && cfg.src ? String(cfg.src) : DEFAULT_LOGO_SRC;
+    if(/(^|\/)hearty-logo\.png$/i.test(src)) src = src.replace(/hearty-logo\.png$/i, 'hearty-logo.png?v=92');
     if(/^\.?\//.test(src) || /^assets\//.test(src) || /^https?:/.test(src)) return src;
     return './' + src.replace(/^\/+/, '');
   }
