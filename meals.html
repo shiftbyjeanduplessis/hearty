@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#0c5b97',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
+<script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#eef8fc',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
 
 <title>Hearty — Meals</title>
 <section aria-hidden="true" class="meals-help-modal" hidden="" id="mealsHelpModal">
@@ -318,6 +318,43 @@
     .planner-card{display:grid;gap:14px}
     .planner-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .planner-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+    .planner-action,
+    .planner-action:visited,
+    .meals-setup-link,
+    .meals-setup-link:visited{
+      text-decoration:none;
+    }
+
+    .meals-setup-button{
+      min-height:38px;
+      padding:0 12px;
+      font-size:.82rem;
+      align-items:center;
+      display:inline-flex;
+      justify-content:center;
+      white-space:nowrap;
+    }
+
+    .meals-setup-button.is-hidden,
+    .meals-setup-prompt.is-hidden{display:none!important}
+
+    .meals-setup-prompt{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:13px 14px;
+      border-radius:20px;
+      border:1px solid rgba(47,109,246,.16);
+      background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(244,249,255,.72));
+      box-shadow:var(--shadow-soft);
+    }
+
+    .meals-setup-prompt .section-label{margin-bottom:5px;font-size:.68rem}
+    .meals-setup-title{margin:0;color:var(--ink);font-size:.98rem;font-weight:820;letter-spacing:-.02em}
+    .meals-setup-copy{margin:3px 0 0;color:var(--muted);font-size:.84rem;line-height:1.42}
+    .meals-setup-cta{flex:0 0 auto}
 
     .planner-action.primary{
       background:linear-gradient(180deg,color-mix(in srgb,var(--theme-accent) 92%,white),color-mix(in srgb,var(--theme-accent) 78%,black));
@@ -655,7 +692,7 @@
     .prep-summary-main{display:flex;gap:12px;align-items:flex-start}
     .prep-summary-main strong{display:block;font-size:.92rem;color:var(--text-strong,#17324a)}
     .prep-summary-main span:not(.prep-summary-pill){display:block;margin-top:3px;font-size:.8rem;color:var(--text-muted,#5d7183);line-height:1.4}
-    .prep-summary-pill{flex:0 0 auto;display:inline-flex;align-items:center;border-radius:999px;padding:7px 10px;font-size:.72rem;font-weight:900;letter-spacing:.02em;background:rgba(12,91,151,.1);color:var(--accent,#0c5b97);border:1px solid rgba(12,91,151,.14)}
+    .prep-summary-pill{flex:0 0 auto;display:inline-flex;align-items:center;border-radius:999px;padding:7px 10px;font-size:.72rem;font-weight:900;letter-spacing:.02em;background:rgba(12,91,151,.1);color:var(--accent,#eef8fc);border:1px solid rgba(12,91,151,.14)}
     .prep-batch-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
     .prep-batch-row span{display:inline-flex;border-radius:999px;padding:7px 9px;background:rgba(255,255,255,.78);border:1px solid rgba(23,50,74,.08);font-size:.72rem;font-weight:800;color:var(--text-muted,#5d7183)}
     .prep-scenario-list{display:grid;gap:8px;margin-top:12px}
@@ -674,7 +711,7 @@
     .container-summary strong{color:var(--text-strong,#17324a)}
     .meal-day-summary{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px;padding:13px 14px;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(23,50,74,.08)}
     .meal-day-summary h3{margin:2px 0 0;font-size:1rem;color:var(--text-strong,#17324a)}
-    .meal-total-pill{flex:0 0 auto;max-width:320px;border-radius:999px;padding:8px 11px;background:rgba(12,91,151,.09);color:var(--accent,#0c5b97);font-size:.75rem;font-weight:900;line-height:1.35;text-align:right}
+    .meal-total-pill{flex:0 0 auto;max-width:320px;border-radius:999px;padding:8px 11px;background:rgba(12,91,151,.09);color:var(--accent,#eef8fc);font-size:.75rem;font-weight:900;line-height:1.35;text-align:right}
     .meal-meta-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
     .meal-meta-row span{display:inline-flex;border-radius:999px;padding:6px 8px;background:rgba(255,255,255,.72);border:1px solid rgba(23,50,74,.08);font-size:.7rem;font-weight:850;color:var(--text-muted,#5d7183)}
     .meal-prep-note,.meal-support-note{margin-top:10px;border-radius:14px;padding:9px 10px;font-size:.76rem;font-weight:750;line-height:1.4}
@@ -691,13 +728,13 @@
     .meal-pack-note span{border-radius:999px;padding:6px 8px;background:rgba(43,148,120,.08);border:1px solid rgba(43,148,120,.12);font-size:.7rem;font-weight:850;color:#18785f}
     .meal-support-note{background:rgba(233,53,120,.08);color:var(--text-strong,#17324a);border:1px solid rgba(233,53,120,.12)}
     .meal-card__support{display:inline-flex;margin-left:5px;border-radius:999px;padding:3px 6px;background:rgba(233,53,120,.1);color:#b6225d;font-size:.62rem;font-weight:900;vertical-align:middle}
-    .meal-card__leftover{background:rgba(12,91,151,.1);color:var(--accent,#0c5b97)}
+    .meal-card__leftover{background:rgba(12,91,151,.1);color:var(--accent,#eef8fc)}
     .meal-card__batch{background:rgba(43,148,120,.1);color:#18785f}
     .meal-macro-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(23,50,74,.09)}
     .meal-macro-strip span{font-size:.75rem;font-weight:850;color:var(--text-muted,#5d7183)}
 
     .prep-cycle-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-    .prep-cycle-row span{display:inline-flex;border-radius:999px;padding:7px 9px;background:rgba(12,91,151,.08);border:1px solid rgba(12,91,151,.11);font-size:.72rem;font-weight:850;color:var(--accent,#0c5b97)}
+    .prep-cycle-row span{display:inline-flex;border-radius:999px;padding:7px 9px;background:rgba(12,91,151,.08);border:1px solid rgba(12,91,151,.11);font-size:.72rem;font-weight:850;color:var(--accent,#eef8fc)}
     .prep-advice-list,.container-advice-list{margin:10px 0 0;padding-left:18px;color:var(--text-muted,#5d7183);font-size:.76rem;font-weight:700;line-height:1.45}
     .prep-advice-list li,.container-advice-list li{margin:4px 0}
     .meal-day-macros span:first-child{color:var(--text-strong,#17324a);font-weight:950}
@@ -727,7 +764,7 @@
     .meal-meta-row{gap:6px;margin-top:8px}
     .meal-meta-row span{font-size:.68rem;padding:5px 7px;background:rgba(255,255,255,.62)}
     .meal-detail-collapse{margin-top:2px;border:1px solid rgba(23,50,74,.08);border-radius:15px;background:rgba(255,255,255,.42);overflow:hidden}
-    .meal-detail-collapse summary{cursor:pointer;list-style:none;padding:10px 11px;font-size:.78rem;font-weight:900;color:var(--accent,#0c5b97)}
+    .meal-detail-collapse summary{cursor:pointer;list-style:none;padding:10px 11px;font-size:.78rem;font-weight:900;color:var(--accent,#eef8fc)}
     .meal-detail-collapse summary::-webkit-details-marker{display:none}
     .meal-detail-collapse summary::after{content:"＋";float:right;color:var(--text-muted,#5d7183)}
     .meal-detail-collapse[open] summary::after{content:"−"}
@@ -748,7 +785,7 @@
     .saved-prep-stats strong{font-size:1rem;color:var(--text-strong,#17324a)}
     .prep-batch-row.compact span{font-size:.68rem;padding:6px 8px}
     .saved-prep-details{margin-top:10px;border-radius:15px;border:1px solid rgba(23,50,74,.08);background:rgba(255,255,255,.46);overflow:hidden}
-    .saved-prep-details summary{cursor:pointer;padding:10px 11px;font-size:.76rem;font-weight:900;color:var(--accent,#0c5b97);list-style:none}
+    .saved-prep-details summary{cursor:pointer;padding:10px 11px;font-size:.76rem;font-weight:900;color:var(--accent,#eef8fc);list-style:none}
     .saved-prep-details summary::-webkit-details-marker{display:none}
     .saved-prep-details ol,.saved-prep-details ul{margin:0;padding:0 14px 12px 30px;color:var(--text-muted,#5d7183);font-size:.75rem;font-weight:700;line-height:1.45}
     .saved-prep-details li{margin:4px 0}
@@ -807,7 +844,7 @@
       line-height:1.25;
     }
     body[data-page="meals"] .prep-cook-item span{
-      color:var(--accent,#0c5b97);
+      color:var(--accent,#eef8fc);
       font-size:.75rem;
       font-weight:900;
     }
@@ -849,6 +886,8 @@
       body[data-page="meals"] .hearty-support-panel{margin-bottom:18px !important;}
       body[data-page="meals"] .planner-actions{width:100%;}
       body[data-page="meals"] .planner-actions .planner-action{flex:1 1 auto;}
+      body[data-page="meals"] .meals-setup-prompt{display:grid;gap:10px;}
+      body[data-page="meals"] .meals-setup-cta{width:100%;}
       body[data-page="meals"] .meal-visible-portion{font-size:.75rem;}
     }
 
@@ -859,7 +898,7 @@
 <link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5ib-foundation.css?v=88" rel="stylesheet"/>
-<link href="css/hearty-shell-template.css?v=92" rel="stylesheet"/>
+<link href="css/hearty-shell-template.css?v=95" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
 <script src="js/hearty-production-guard.js?v=77"></script>
 <link rel="manifest" href="/manifest.json">
@@ -906,9 +945,18 @@
 <p class="compact-copy">Meals stay simple. Open portion and prep only when you need the detail.</p>
 </div>
 <div class="planner-actions">
+<a class="planner-action meals-setup-button is-hidden" id="mealsSetupSmallBtn" href="./meals-onboarding.html">Meals setup</a>
 <button class="planner-action" id="openMealsHelpBtn" type="button">How this plan works</button>
 <button class="planner-action primary" data-regenerate-week="" type="button">Build new weekly plan</button>
 </div>
+</div>
+<div class="meals-setup-prompt" id="mealsSetupPrompt" aria-label="Meals setup">
+  <div>
+    <div class="section-label">MEALS SETUP</div>
+    <h2 class="meals-setup-title">Make this plan fit you</h2>
+    <p class="meals-setup-copy">Save your country, protein choices, breakfasts, starches and snack preferences.</p>
+  </div>
+  <a class="planner-action primary meals-setup-cta meals-setup-link" href="./meals-onboarding.html">Make this plan fit me</a>
 </div>
 <div class="prep-plan-summary" id="prepPlanSummary" aria-live="polite">
   <div class="prep-summary-main">
@@ -969,13 +1017,6 @@
 </div>
 </div>
 </div>
-</section>
-<section aria-label="Personalise meals" class="card">
-<div>
-<h2 class="section-title" style="margin:0 0 6px">Make this plan fit you</h2>
-<p class="subline" style="margin:0">Adjust the starter plan around your portions, preferences and weekly rhythm.</p>
-</div>
-<div style="margin-top:14px"><a class="soft-btn" href="./meals-onboarding.html">Make this plan fit me</a></div>
 </section>
 </main>
 <aside class="stack">
@@ -1050,6 +1091,28 @@
       function readJSON(key, fallback){ try{ var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(e){ return fallback; } }
       function safeSet(key, value){ try{ localStorage.setItem(key, value); }catch(e){} }
       function getSnacksOn(){ return true; }
+
+      function isMealsSetupComplete(){
+        var onboarding = readJSON("heartyMealsOnboardingV1", {}) || {};
+        var pageState = readJSON("heartyMealsPageStateVFinal", {}) || {};
+        var uiState = readJSON("heartyMealsStateV1", {}) || {};
+        var profile = readJSON("heartyMealsProfile", {}) || {};
+        return localStorage.getItem("heartyMealsSetupCompleteV1") === "true" ||
+          onboarding.completedAt ||
+          pageState.profileComplete === true ||
+          uiState.profileComplete === true ||
+          profile.profileComplete === true;
+      }
+
+      function syncMealsSetupPrompt(){
+        var complete = !!isMealsSetupComplete();
+        var prompt = $("mealsSetupPrompt");
+        var smallBtn = $("mealsSetupSmallBtn");
+        if (prompt) prompt.classList.toggle("is-hidden", complete);
+        if (smallBtn) smallBtn.classList.toggle("is-hidden", !complete);
+      }
+
+      syncMealsSetupPrompt();
 
       function normaliseRegion(value){
         var raw = String(value || "SA").trim().toUpperCase();
@@ -1331,7 +1394,7 @@
   </script>
 <script src="js/hearty-support-state.js?v=77"></script>
 <script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=92"></script>
+<script defer="" src="js/hearty-shell-template.js?v=95"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 </body>
 </html>
