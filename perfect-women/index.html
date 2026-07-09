@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#06122F" />
   <title>Perfect Women Tracker</title>
+  <meta name="pw-build" content="1.3.6">
   <link rel="manifest" href="/perfect-women/manifest.json" />
   <link rel="apple-touch-icon" href="/perfect-women/assets/icon-192.png" />
-  <link rel="stylesheet" href="css/perfect-women.css" />
+  <link rel="stylesheet" href="css/perfect-women.css?v=135" />
 </head>
 <body>
   <div class="onboarding-overlay" id="onboardingOverlay" aria-hidden="true">
@@ -860,6 +861,7 @@
           <button class="primary full install-now-btn" id="installAppBtn" type="button" hidden>Install app on this phone</button>
           <p class="small muted" id="installStatusText">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
           <button class="secondary full" id="showOnboardingBtn">Show setup guide again</button>
+          <p class="small muted" style="margin-top:12px">App build 1.3.6</p>
         </article>
 
         <article class="card soft-card">
@@ -1006,9 +1008,9 @@
     </div>
   </dialog>
 
-  <script src="js/pw-storage.js" defer></script>
-  <script src="js/pw-recipes-data.js" defer></script>
-  <script src="js/pw-meal-ideas-data.js" defer></script>
-  <script src="js/pw-app.js" defer></script>
+  <script src="js/pw-storage-v136.js" defer></script>
+  <script src="js/pw-recipes-data.js?v=136" defer></script>
+  <script src="js/pw-meal-ideas-data.js?v=136" defer></script>
+  <script src="js/pw-app-v136.js" defer></script>
 </body>
 </html>
