@@ -1,74 +1,61 @@
-/* Hearty root-safe service worker
-   Purpose: prevent / and /index.html from being served as the app shell.
-   Safe rule: public root is always network-first and never redirected to home.html.
-*/
-const CACHE_NAME = 'hearty-root-safe-v96-meals-setup-prompt';
-const APP_ROUTE_PAGES = new Set([
-  '/home.html',
-  '/meals.html',
-  '/exercise.html',
-  '/progress.html',
-  '/support.html',
-  '/recipes.html',
-  '/social.html',
-  '/settings.html',
-  '/onboarding.html'
-]);
+const CACHE_NAME = 'perfect-women-tracker-v1.3.5-workout-launch-fix';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './css/perfect-women.css',
+  './js/pw-storage.js',
+  './js/pw-recipes-data.js',
+  './js/pw-meal-ideas-data.js',
+  './js/pw-app.js',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/perfect-women-logo.png'
+];
 
 self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => Promise.allSettled(ASSETS.map((asset) => cache.add(asset))))
+  );
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE_NAME));
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)));
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.filter((key) => key.startsWith('perfect-women-tracker-') && key !== CACHE_NAME).map((key) => caches.delete(key))
+    ))
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  if (request.method !== 'GET') return;
+  if (event.request.method !== 'GET') return;
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) return;
+  if (!requestUrl.pathname.startsWith('/perfect-women/')) return;
 
-  const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
-
-  const isRoot = url.pathname === '/' || url.pathname === '/index.html';
-
-  // Critical guard: never answer the sales-page root with the app shell.
-  if (request.mode === 'navigate' && isRoot) {
-    event.respondWith(fetch(request, { cache: 'no-store' }));
-    return;
-  }
-
-  // App pages: network first, cached fallback only for the same requested page.
-  if (request.mode === 'navigate' && APP_ROUTE_PAGES.has(url.pathname)) {
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      try {
-        const response = await fetch(request);
-        cache.put(request, response.clone());
+  const isCode = event.request.mode === 'navigate' || /\.(?:html|js|css)$/.test(requestUrl.pathname);
+  if (isCode) {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
         return response;
-      } catch (err) {
-        const cached = await cache.match(request);
-        return cached || Response.error();
-      }
-    })());
+      }).catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+    );
     return;
   }
 
-  // Static assets: simple network-first cache.
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    try {
-      const response = await fetch(request);
-      if (response && response.ok) cache.put(request, response.clone());
+  event.respondWith(
+    caches.match(event.request).then((cached) => cached || fetch(event.request).then((response) => {
+      if (response && response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+      }
       return response;
-    } catch (err) {
-      const cached = await cache.match(request);
-      return cached || Response.error();
-    }
-  })());
+    }))
+  );
 });
