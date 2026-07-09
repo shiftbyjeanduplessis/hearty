@@ -1,725 +1,779 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#06122F" />
-  <title>Perfect Women Tracker</title>
-  <link rel="manifest" href="/perfect-women/manifest.json" />
-  <link rel="apple-touch-icon" href="/perfect-women/assets/icon-192.png" />
-  <link rel="stylesheet" href="css/perfect-women.css" />
-</head>
-<body>
-  <div class="onboarding-overlay" id="onboardingOverlay" aria-hidden="true">
-    <div class="onboarding-card">
-      <div class="onboarding-top">
-        <img class="brand-logo small-logo" src="assets/perfect-women-logo.png" alt="Perfect Women logo" />
-        <div>
-          <p class="eyebrow pink">Start here</p>
-          <h1>Set up your tracker</h1>
-          <p class="muted">Add your name and starting weight. Your data stays on this phone in this version.</p>
-        </div>
-      </div>
+(function () {
+  'use strict';
 
-      <div class="form-grid single-on-mobile">
-        <label>Name<input id="onboardName" placeholder="Your name" autocomplete="given-name" /></label>
-        <label>Starting weight (kg)<input id="onboardWeight" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 84.6" /></label>
-      </div>
-      <button class="primary full" id="finishOnboardingBtn">Start tracking</button>
-      <button class="text-button full-text" id="skipOnboardingBtn">I'll do this later</button>
+  const KEY = 'perfectWomen.localTracker.v1';
+  const PHOTO_DB = 'perfectWomen.photos.v1';
+  const PHOTO_STORE = 'photos';
 
-      <div class="install-help">
-        <p class="eyebrow gold">Install on phone</p>
-        <div class="install-grid">
-          <div class="mini-card">
-            <h3>Android</h3>
-            <p>Open the hosted app link in Chrome, tap the three-dot menu, choose <strong>Install app</strong> or <strong>Add to Home screen</strong>, then confirm.</p>
-          </div>
-          <div class="mini-card">
-            <h3>iPhone</h3>
-            <p>Open the hosted app link in Safari, tap the <strong>Share</strong> button, choose <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</p>
-          </div>
-        </div>
-        <button class="primary full install-now-btn" id="onboardingInstallBtn" type="button" hidden>Install app on this phone</button>
-        <p class="small muted" id="onboardingInstallStatus">Note: installation works from the hosted app link. A downloaded <code>file://</code> preview is only for testing.</p>
-      </div>
-    </div>
-  </div>
+  function uid(prefix = 'id') {
+    if (crypto && crypto.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  }
 
-  <div class="app-shell">
-    <header class="app-header">
-      <div class="app-brand-card">
-        <div class="topbar-logo-wrap" aria-hidden="true">
-          <img class="brand-logo topbar-logo" src="assets/perfect-women-logo.png" alt="" />
-        </div>
-        <div class="brand-copy">
-          <p class="eyebrow">Perfect Women</p>
-          <h1 id="pageTitle">Today</h1>
-          <p class="brand-subtitle">Client tracker</p>
-        </div>
-        <button class="icon-button" id="quickSettings" aria-label="Open settings"><span class="ui-icon" data-icon="settings"></span></button>
-      </div>
-    </header>
+  function todayKey(date = new Date()) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
 
-    <main class="page-wrap">
-      <section class="page active" id="page-home" data-page="home">
-        <div class="welcome-card card hero-card">
-          <p class="eyebrow pink">Daily structure</p>
-          <h2 id="homeGreeting">Welcome back</h2>
-          <p id="homeCoachLine" class="muted">Small daily actions. Real progress over time.</p>
-          <div class="hero-actions">
-            <button class="primary" data-add-water="250">+250 ml water</button>
-            <button class="secondary" id="homeMovementBtn">Tick movement</button>
-          </div>
-        </div>
+  function addDays(date, amount) {
+    const next = new Date(date);
+    next.setDate(next.getDate() + amount);
+    return next;
+  }
 
-        <div class="grid two">
-          <article class="card stat-card">
-            <span class="card-icon ui-icon" data-icon="water"></span>
-            <p class="label">Water today</p>
-            <h3 id="homeWaterStat">0 / 2,000 ml</h3>
-            <div class="meter"><span id="homeWaterMeter"></span></div>
-          </article>
-          <article class="card stat-card">
-            <span class="card-icon ui-icon" data-icon="walk"></span>
-            <p class="label">Movement</p>
-            <h3 id="homeMovementStat">Not done</h3>
-            <p class="small muted" id="homeMovementDetail">A walk or simple movement counts.</p>
-          </article>
-        </div>
+  function mondayStart(date = new Date()) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
 
-        <article class="card callout" id="weighInCard">
-          <div>
-            <p class="eyebrow gold">Monday weigh-in</p>
-            <h3 id="weighInTitle">Weekly weight routine</h3>
-            <p class="muted" id="weighInText">Your main weigh-in is Monday morning.</p>
-          </div>
-          <button class="secondary" data-nav="track">Log weight</button>
-        </article>
+  function defaultState() {
+    return {
+      schemaVersion: 8,
+      localClientId: uid('pw_client'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      sync: {
+        status: 'local-only',
+        pending: false,
+        lastSyncedAt: null
+      },
+      client: {
+        name: '',
+        startDate: todayKey(),
+        onboarded: false,
+        startingWeightKg: null
+      },
+      settings: {
+        waterTargetMl: 2000,
+        weighInDay: 1,
+        units: {
+          weight: 'kg',
+          length: 'cm'
+        }
+      },
+      logs: {
+        water: {},
+        movement: {},
+        weights: {},
+        measurements: {},
+        checkins: {},
+        walks: [],
+        runs: [],
+        strengthSessions: []
+      },
+      programs: {
+        active: null
+      },
+      walkingProgram: {
+        started: false,
+        startDate: null,
+        targetWalksPerWeek: 4,
+        weeklyTargets: {}
+      },
+      joggingProgram: {
+        started: false,
+        startDate: null
+      },
+      strengthProgram: {
+        home: { started: false, startDate: null, activeWorkout: null },
+        gym: { started: false, startDate: null, activeWorkout: null },
+        progress: {
+          squat: { homeLevel: 1, homeWeightKg: 0, gymWeight: 40, nextWeightKg: { home: 0, gym: 40 } },
+          push: { homeLevel: 1, homeWeightKg: 0, gymWeight: 15, nextWeightKg: { home: 0, gym: 15 } },
+          pull: { homeLevel: 1, homeWeightKg: 0, gymWeight: 20, nextWeightKg: { home: 0, gym: 20 } },
+          hinge: { homeLevel: 1, homeWeightKg: 0, gymWeight: 20, nextWeightKg: { home: 0, gym: 20 } },
+          core: { homeLevel: 1, homeWeightKg: 0, gymWeight: 10, nextWeightKg: { home: 0, gym: 10 } },
+          legExtension: { homeLevel: 1, homeWeightKg: 0, gymWeight: 0, nextWeightKg: { home: 0, gym: 0 } }
+        }
+      },
+      photos: {
+        sets: []
+      },
+      recipes: {
+        favourites: []
+      }
+    };
+  }
 
-        <article class="card callout" id="homeCheckinCard">
-          <div>
-            <p class="eyebrow pink">Weekly check-in</p>
-            <h3 id="homeCheckinTitle">Check in once a week</h3>
-            <p class="muted" id="homeCheckinText">Save your win, struggle and what you need help with.</p>
-          </div>
-          <button class="secondary" data-nav="track">Open check-in</button>
-        </article>
+  function deepMerge(base, incoming) {
+    if (!incoming || typeof incoming !== 'object') return base;
+    const out = Array.isArray(base) ? [...base] : { ...base };
+    Object.keys(incoming).forEach((key) => {
+      const baseVal = out[key];
+      const inVal = incoming[key];
+      if (baseVal && typeof baseVal === 'object' && !Array.isArray(baseVal) && inVal && typeof inVal === 'object' && !Array.isArray(inVal)) {
+        out[key] = deepMerge(baseVal, inVal);
+      } else {
+        out[key] = inVal;
+      }
+    });
+    return out;
+  }
 
-        <article class="card walking-home-card" id="homeWalkingCard">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Walking program</p>
-              <h3 id="homeWalkingTitle">8-week walking program</h3>
-              <p class="muted" id="homeWalkingText">Log your 60-minute walks and track your weekly step average.</p>
-            </div>
-            <button class="secondary" data-nav="programs">Log walk</button>
-          </div>
-          <div class="walk-mini-stats" id="homeWalkingStats"></div>
-        </article>
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return defaultState();
+      return deepMerge(defaultState(), JSON.parse(raw));
+    } catch (err) {
+      console.warn('Perfect Women tracker: could not load state, using clean state.', err);
+      return defaultState();
+    }
+  }
 
-        <article class="card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">This week</p>
-              <h3>Progress rhythm</h3>
-            </div>
-            <button class="text-button" data-nav="progress">View progress</button>
-          </div>
-          <div class="weekly-strip" id="homeWeekStrip"></div>
-        </article>
+  let state = load();
 
-        <article class="card soft-card">
-          <p class="eyebrow gold">Focus</p>
-          <h3>Keep it boring enough to repeat.</h3>
-          <p class="muted">Water, movement, your plan, and your Monday check-in. The basics win when they are done consistently.</p>
-        </article>
-      </section>
+  function save(nextState) {
+    nextState.updatedAt = new Date().toISOString();
+    nextState.sync.pending = true;
+    state = nextState;
+    localStorage.setItem(KEY, JSON.stringify(state));
+    return state;
+  }
 
-      <section class="page" id="page-track" data-page="track">
-        <article class="card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Water tracker</p>
-              <h2 id="trackWaterTitle">0 ml</h2>
-              <p class="muted" id="trackWaterSub">Daily target: 2,000 ml</p>
-            </div>
-            <div class="ring" id="waterRing">0%</div>
-          </div>
-          <div class="button-row">
-            <button class="primary" data-add-water="250">+250 ml</button>
-            <button class="primary" data-add-water="500">+500 ml</button>
-            <button class="secondary" id="undoWaterBtn">Undo</button>
-          </div>
-          <div class="meter large"><span id="trackWaterMeter"></span></div>
-        </article>
+  function update(mutator) {
+    const draft = structuredClone ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+    mutator(draft);
+    return save(draft);
+  }
 
-        <article class="card">
-          <p class="eyebrow pink">Movement / walk</p>
-          <h2>Tick off today’s movement</h2>
-          <p class="muted">This replaces step tracking for now. A walk, home session, gym session, mobility or intentional movement counts.</p>
-          <div class="saved-status" id="movementSavedStatus">No movement saved for today yet.</div>
-          <div class="quick-movement-row">
-            <button class="secondary with-icon" data-quick-movement="Walk" data-duration="20"><span class="ui-icon" data-icon="walk"></span>Walk done</button>
-            <button class="secondary with-icon" data-quick-movement="Movement" data-duration="20"><span class="ui-icon" data-icon="check"></span>Movement done</button>
-            <button class="secondary with-icon" data-quick-movement="Workout" data-duration="30"><span class="ui-icon" data-icon="workout"></span>Workout done</button>
-          </div>
-          <div class="movement-options" id="movementOptions">
-            <button data-duration="10">10 min</button>
-            <button data-duration="20">20 min</button>
-            <button data-duration="30">30 min</button>
-            <button data-duration="45">45 min</button>
-            <button data-duration="60">60 min</button>
-          </div>
-          <label class="field-label" for="movementType">Movement type</label>
-          <select id="movementType">
-            <option>Walk</option>
-            <option>Home workout</option>
-            <option>Gym session</option>
-            <option>Mobility</option>
-            <option>General movement</option>
-            <option>Other</option>
-          </select>
-          <label class="field-label" for="movementNotes">Notes</label>
-          <textarea id="movementNotes" rows="2" placeholder="Optional: how did it feel?"></textarea>
-          <div class="button-row">
-            <button class="primary" id="saveMovementBtn">Save movement</button>
-            <button class="secondary" id="clearMovementBtn">Clear today</button>
-          </div>
-        </article>
+  function getState() {
+    return structuredClone ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+  }
 
-        <article class="card" id="weightEntryCard">
-          <p class="eyebrow gold">Weekly weight</p>
-          <h2>Monday morning weigh-in</h2>
-          <p class="muted">The programme tracks the weekly trend, not daily scale noise. You can still correct/add a weight manually when needed.</p>
-          <div class="form-grid">
-            <label>Date<input type="date" id="weightDate" /></label>
-            <label>Weight (kg)<input type="number" id="weightKg" inputmode="decimal" step="0.1" placeholder="e.g. 84.6" /></label>
-            <label>Waist (cm, optional)<input type="number" id="waistCm" inputmode="decimal" step="0.1" placeholder="e.g. 92" /></label>
-          </div>
-          <label class="field-label" for="weightNotes">Notes</label>
-          <textarea id="weightNotes" rows="2" placeholder="Optional: cycle, stress, weekend, digestion, etc."></textarea>
-          <button class="primary full" id="saveWeightBtn">Save weigh-in</button>
-        </article>
+  function getTodayWater() {
+    const key = todayKey();
+    return state.logs.water[key] || { date: key, ml: 0, entries: [] };
+  }
+
+  function addWater(ml) {
+    const key = todayKey();
+    return update((draft) => {
+      if (!draft.logs.water[key]) draft.logs.water[key] = { date: key, ml: 0, entries: [] };
+      draft.logs.water[key].ml += ml;
+      draft.logs.water[key].entries.push({ ml, ts: new Date().toISOString() });
+    });
+  }
+
+  function undoWater() {
+    const key = todayKey();
+    return update((draft) => {
+      const log = draft.logs.water[key];
+      if (!log || !log.entries.length) return;
+      const last = log.entries.pop();
+      log.ml = Math.max(0, log.ml - last.ml);
+    });
+  }
+
+  function saveMovement(entry) {
+    const key = todayKey();
+    return update((draft) => {
+      draft.logs.movement[key] = {
+        date: key,
+        done: !!entry.done,
+        duration: Number(entry.duration || 0),
+        type: entry.type || 'Walk',
+        notes: entry.notes || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
+
+  function clearMovement() {
+    const key = todayKey();
+    return update((draft) => {
+      delete draft.logs.movement[key];
+    });
+  }
 
 
-        <article class="card" id="measurementsCard">
-          <p class="eyebrow pink">Measurements</p>
-          <h2>Update measurements</h2>
-          <p class="muted">Use this when measurements are due. Waist is the main one, but the others help show non-scale progress.</p>
-          <div class="form-grid">
-            <label>Date<input type="date" id="measurementDate" /></label>
-            <label>Waist (cm)<input type="number" id="measureWaist" inputmode="decimal" step="0.1" placeholder="e.g. 92" /></label>
-            <label>Hips (cm)<input type="number" id="measureHips" inputmode="decimal" step="0.1" placeholder="optional" /></label>
-            <label>Chest (cm)<input type="number" id="measureChest" inputmode="decimal" step="0.1" placeholder="optional" /></label>
-            <label>Thigh (cm)<input type="number" id="measureThigh" inputmode="decimal" step="0.1" placeholder="optional" /></label>
-            <label>Arm (cm)<input type="number" id="measureArm" inputmode="decimal" step="0.1" placeholder="optional" /></label>
-          </div>
-          <label class="field-label" for="measurementNotes">Notes</label>
-          <textarea id="measurementNotes" rows="2" placeholder="Optional: bloating, cycle, clothing fit, etc."></textarea>
-          <button class="primary full" id="saveMeasurementsBtn">Save measurements</button>
-        </article>
 
-        <article class="card" id="weeklyCheckinCard">
-          <p class="eyebrow gold">Weekly check-in</p>
-          <h2>How did this week go?</h2>
-          <p class="muted">A quick weekly reflection. It stays on this phone for now and can feed a coach dashboard later.</p>
-          <div class="form-grid">
-            <label>Date<input type="date" id="checkinDate" /></label>
-            <label>Meal plan consistency
-              <select id="checkinMeals">
-                <option value="">Choose</option>
-                <option>Great</option>
-                <option>Good</option>
-                <option>Mixed</option>
-                <option>Struggled</option>
-              </select>
-            </label>
-            <label>Water consistency
-              <select id="checkinWater">
-                <option value="">Choose</option>
-                <option>Great</option>
-                <option>Good</option>
-                <option>Mixed</option>
-                <option>Struggled</option>
-              </select>
-            </label>
-            <label>Movement consistency
-              <select id="checkinMovement">
-                <option value="">Choose</option>
-                <option>Great</option>
-                <option>Good</option>
-                <option>Mixed</option>
-                <option>Struggled</option>
-              </select>
-            </label>
-            <label>Energy
-              <select id="checkinEnergy">
-                <option value="">Choose</option>
-                <option>High</option>
-                <option>Okay</option>
-                <option>Low</option>
-              </select>
-            </label>
-            <label>Stress
-              <select id="checkinStress">
-                <option value="">Choose</option>
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-              </select>
-            </label>
-          </div>
-          <label class="field-label" for="checkinWin">Biggest win</label>
-          <textarea id="checkinWin" rows="2" placeholder="What went well this week?"></textarea>
-          <label class="field-label" for="checkinStruggle">Biggest struggle</label>
-          <textarea id="checkinStruggle" rows="2" placeholder="What was hardest this week?"></textarea>
-          <label class="field-label" for="checkinHelp">What do you need help with?</label>
-          <textarea id="checkinHelp" rows="2" placeholder="Optional question or note for your coach"></textarea>
-          <button class="primary full" id="saveCheckinBtn">Save weekly check-in</button>
-        </article>
-      </section>
+  function walkingWeekNumber(dateKey = todayKey()) {
+    const start = state.walkingProgram?.startDate;
+    if (!state.walkingProgram?.started || !start) return 1;
+    const startDate = new Date(`${start}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
 
-      <section class="page" id="page-programs" data-page="programs">
-        <article class="card soft-card programs-header-card">
-          <p class="eyebrow pink">Programs</p>
-          <h2>Your coaching programs</h2>
-          <p class="muted">Choose one current program at a time. The active program opens up, while the others stay neat and minimal.</p>
-          <div class="current-program-banner" id="currentProgramBanner">
-            <span class="ui-icon" data-icon="program"></span>
-            <div>
-              <strong>No current program yet</strong>
-              <small>Start walking or jogging when you are ready.</small>
-            </div>
-          </div>
-        </article>
+  function startWalkingProgram({ targetWalksPerWeek = 4, targetSteps = '' } = {}) {
+    const date = todayKey();
+    return update((draft) => {
+      draft.walkingProgram.started = true;
+      draft.walkingProgram.startDate = draft.walkingProgram.startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = 'walking';
+      draft.walkingProgram.targetWalksPerWeek = Math.max(1, Math.min(7, Number(targetWalksPerWeek || 4)));
+      if (targetSteps !== '' && targetSteps !== null && targetSteps !== undefined) {
+        const steps = Number(targetSteps);
+        if (steps && !Number.isNaN(steps)) draft.walkingProgram.weeklyTargets['1'] = steps;
+      }
+    });
+  }
 
-        <article class="card walking-program-card program-card" id="walkingProgramCard">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow gold">8-week walking program</p>
-              <h2>Log your 60-minute walks</h2>
-              <p class="muted">Walk 4–5 times per week. After each 60-minute walk, enter the total steps from your phone, watch or pedometer.</p>
-            </div>
-            <span class="program-pill" id="walkingWeekPill">Week 1</span>
-          </div>
+  function saveWalkingTarget({ week, targetSteps }) {
+    const cleanWeek = Math.min(8, Math.max(1, Number(week || 1)));
+    const steps = Number(targetSteps);
+    return update((draft) => {
+      if (!draft.walkingProgram.started) {
+        draft.walkingProgram.started = true;
+        draft.walkingProgram.startDate = draft.walkingProgram.startDate || todayKey();
+      }
+      if (steps && !Number.isNaN(steps)) draft.walkingProgram.weeklyTargets[String(cleanWeek)] = steps;
+      else delete draft.walkingProgram.weeklyTargets[String(cleanWeek)];
+    });
+  }
 
-          <div class="compact-program-panel" id="walkingCompactPanel">
-            <div>
-              <strong>8-week walking program</strong>
-              <small>60-minute walks • 4–5/week • step average tracking</small>
-            </div>
-            <button class="secondary" id="openWalkingProgramBtn" type="button">Start / view</button>
-          </div>
+  function saveWalkSession({ date, steps, notes }) {
+    const cleanDate = date || todayKey();
+    const cleanSteps = Number(steps);
+    if (!cleanSteps || Number.isNaN(cleanSteps)) return state;
+    const week = walkingWeekNumber(cleanDate);
+    return update((draft) => {
+      if (!draft.walkingProgram.started) {
+        draft.walkingProgram.started = true;
+        draft.walkingProgram.startDate = draft.walkingProgram.startDate || cleanDate;
+      }
+      if (!draft.programs) draft.programs = { active: null };
+      if (!draft.programs.active) draft.programs.active = 'walking';
+      if (!Array.isArray(draft.logs.walks)) draft.logs.walks = [];
+      draft.logs.walks.push({
+        id: uid('walk'),
+        date: cleanDate,
+        week,
+        durationMinutes: 60,
+        steps: Math.round(cleanSteps),
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+    });
+  }
 
-          <div class="walking-start" id="walkingStartPanel">
-            <div class="mini-card">
-              <h3>How it works</h3>
-              <p>Start with your normal pace in Week 1. Each week, aim to gently improve your average steps per 60-minute walk if you feel good.</p>
-            </div>
-            <div class="form-grid">
-              <label>Walks per week
-                <select id="walkingTargetWalks">
-                  <option value="4">4 walks</option>
-                  <option value="5">5 walks</option>
-                </select>
-              </label>
-              <label>Week 1 step target, optional<input type="number" id="walkingStartTarget" inputmode="numeric" placeholder="e.g. 5500" /></label>
-            </div>
-            <button class="primary full" id="startWalkingProgramBtn">Start walking program</button>
-          </div>
+  function deleteWalkSession(id) {
+    return update((draft) => {
+      draft.logs.walks = (draft.logs.walks || []).filter((item) => item.id !== id);
+    });
+  }
 
-          <div class="walking-active" id="walkingActivePanel" hidden>
-            <div class="grid three walk-stats-grid">
-              <article class="mini-stat"><span>Current week</span><strong id="walkingCurrentWeek">1 of 8</strong></article>
-              <article class="mini-stat"><span>Walks this week</span><strong id="walkingThisWeekCount">0/4</strong></article>
-              <article class="mini-stat"><span>Average steps</span><strong id="walkingThisWeekAvg">—</strong></article>
-            </div>
+  function sortedWalks() {
+    return (state.logs.walks || [])
+      .filter((item) => item && item.date && typeof item.steps === 'number')
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
 
-            <div class="form-grid">
-              <label>This week’s step target<input type="number" id="walkingWeekTarget" inputmode="numeric" placeholder="Optional" /></label>
-              <label>Walk date<input type="date" id="walkDate" /></label>
-              <label>Steps this walk<input type="number" id="walkSteps" inputmode="numeric" placeholder="e.g. 6200" /></label>
-            </div>
-            <label class="field-label" for="walkNotes">Notes</label>
-            <textarea id="walkNotes" rows="2" placeholder="Optional: route, shoes, energy, weather, etc."></textarea>
-            <div class="button-row">
-              <button class="primary" id="saveWalkBtn">Save walk</button>
-              <button class="secondary" id="saveWalkingTargetBtn">Save target</button>
-            </div>
+  function joggingWeekNumber(dateKey = todayKey()) {
+    const start = state.joggingProgram?.startDate;
+    if (!state.joggingProgram?.started || !start) return 1;
+    const startDate = new Date(`${start}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(8, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
 
-            <div class="walk-advice" id="walkingAdvice">Week 1 is your baseline week. Record your walks without forcing the pace.</div>
-            <div class="summary-list" id="walkingSessionList"></div>
-          </div>
-        </article>
+  function startJoggingProgram() {
+    const date = todayKey();
+    return update((draft) => {
+      draft.joggingProgram.started = true;
+      draft.joggingProgram.startDate = draft.joggingProgram.startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = 'jogging';
+      if (!Array.isArray(draft.logs.runs)) draft.logs.runs = [];
+    });
+  }
 
-        <article class="card jogging-program-card program-card" id="joggingProgramCard">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">5 km jogging program</p>
-              <h2>Build up to your first 5 km</h2>
-              <p class="muted">A simple 8-week beginner jogging plan. Log each session, distance, time and effort.</p>
-            </div>
-            <span class="program-pill pink-pill" id="joggingWeekPill">Not started</span>
-          </div>
+  function saveRunSession({ date, sessionKey, sessionLabel, targetKm, distanceKm, timeMinutes, rpe, notes }) {
+    const cleanDate = date || todayKey();
+    const km = Number(distanceKm);
+    if (!km || Number.isNaN(km)) return state;
+    const week = joggingWeekNumber(cleanDate);
+    return update((draft) => {
+      if (!draft.joggingProgram.started) {
+        draft.joggingProgram.started = true;
+        draft.joggingProgram.startDate = draft.joggingProgram.startDate || cleanDate;
+      }
+      if (!draft.programs) draft.programs = { active: null };
+      if (!draft.programs.active) draft.programs.active = 'jogging';
+      if (!Array.isArray(draft.logs.runs)) draft.logs.runs = [];
+      draft.logs.runs.push({
+        id: uid('run'),
+        date: cleanDate,
+        week,
+        sessionKey: sessionKey || 'run',
+        sessionLabel: sessionLabel || 'Jogging session',
+        targetKm: Number(targetKm || 0),
+        distanceKm: Math.round(km * 100) / 100,
+        timeMinutes: timeMinutes === '' || timeMinutes === null || timeMinutes === undefined ? null : Number(timeMinutes),
+        rpe: rpe === '' || rpe === null || rpe === undefined ? null : Number(rpe),
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+    });
+  }
 
-          <div class="compact-program-panel" id="joggingCompactPanel">
-            <div>
-              <strong>5 km jogging program</strong>
-              <small>8-week beginner plan • 3 core sessions/week</small>
-            </div>
-            <button class="secondary" id="openJoggingProgramBtn" type="button">Start / view</button>
-          </div>
+  function deleteRunSession(id) {
+    return update((draft) => {
+      draft.logs.runs = (draft.logs.runs || []).filter((item) => item.id !== id);
+    });
+  }
 
-          <div class="walking-start" id="joggingStartPanel">
-            <div class="mini-card">
-              <h3>How it works</h3>
-              <p>Run or walk-jog 3 core sessions per week. Keep the pace easy and build up gradually toward 5 km.</p>
-            </div>
-            <button class="primary full" id="startJoggingProgramBtn">Start 5 km jogging program</button>
-          </div>
-
-          <div class="walking-active" id="joggingActivePanel" hidden>
-            <div class="grid three walk-stats-grid">
-              <article class="mini-stat"><span>Current week</span><strong id="joggingCurrentWeek">1 of 8</strong></article>
-              <article class="mini-stat"><span>Sessions this week</span><strong id="joggingThisWeekCount">0/3</strong></article>
-              <article class="mini-stat"><span>Distance logged</span><strong id="joggingThisWeekKm">—</strong></article>
-            </div>
-
-            <div class="jogging-plan-list" id="joggingPlanList"></div>
-
-            <div class="form-grid">
-              <label>Session
-                <select id="runSessionType"></select>
-              </label>
-              <label>Run date<input type="date" id="runDate" /></label>
-              <label>Distance completed (km)<input type="number" id="runDistance" inputmode="decimal" step="0.1" placeholder="e.g. 2.5" /></label>
-              <label>Time, optional (minutes)<input type="number" id="runTime" inputmode="numeric" placeholder="e.g. 28" /></label>
-              <label>Effort / RPE, optional
-                <select id="runRpe">
-                  <option value="">Choose</option>
-                  <option value="3">3 — easy</option>
-                  <option value="4">4 — comfortable</option>
-                  <option value="5">5 — moderate</option>
-                  <option value="6">6 — hard but controlled</option>
-                  <option value="7">7 — too hard for most beginner runs</option>
-                </select>
-              </label>
-            </div>
-            <p class="small muted" id="joggingSessionHint">Choose a session to see the focus.</p>
-            <label class="field-label" for="runNotes">Notes</label>
-            <textarea id="runNotes" rows="2" placeholder="Optional: route, walk breaks, shoes, energy, weather, etc."></textarea>
-            <button class="primary full" id="saveRunBtn">Save jogging session</button>
-
-            <div class="walk-advice" id="joggingAdvice">Keep beginner runs easy. You should not be gasping or in pain.</div>
-            <div class="summary-list" id="joggingSessionList"></div>
-          </div>
-        </article>
-
-      </section>
-
-      <section class="page" id="page-progress" data-page="progress">
-        <div class="grid two">
-          <article class="card stat-card"><p class="label">Starting weight</p><h3 id="startWeight">—</h3></article>
-          <article class="card stat-card"><p class="label">Latest weight</p><h3 id="latestWeight">—</h3></article>
-          <article class="card stat-card"><p class="label">Total change</p><h3 id="totalChange">—</h3></article>
-          <article class="card stat-card"><p class="label">Weigh-ins</p><h3 id="weighInCount">0</h3></article>
-        </div>
-
-        <article class="card photo-compare-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Photo progress</p>
-              <h2>Compare photos</h2>
-              <p class="small muted">This is the photo comparison tool. Add at least two dated photo sets, then choose Front, Side or Back.</p>
-            </div>
-            <button class="text-button" data-nav="photos">Add photos</button>
-          </div>
-
-          <div id="compareEmpty" class="photo-preview-empty"><strong>Photo compare is ready.</strong><br>Add at least two photo sets to compare progress side by side.</div>
-
-          <div id="photoComparePanel" class="photo-compare-panel" hidden>
-            <div class="compare-controls">
-              <label>Date A<select id="compareDateA"></select></label>
-              <label>Date B<select id="compareDateB"></select></label>
-            </div>
-            <div class="angle-row" role="group" aria-label="Photo angle">
-              <button class="angle-btn active" data-compare-angle="front" type="button">Front</button>
-              <button class="angle-btn" data-compare-angle="side" type="button">Side</button>
-              <button class="angle-btn" data-compare-angle="back" type="button">Back</button>
-            </div>
-            <div class="compare-grid">
-              <div class="compare-frame-card">
-                <p class="compare-label" id="compareLabelA">Date A</p>
-                <div class="compare-frame" id="compareFrameA"></div>
-              </div>
-              <div class="compare-frame-card">
-                <p class="compare-label" id="compareLabelB">Date B</p>
-                <div class="compare-frame" id="compareFrameB"></div>
-              </div>
-            </div>
-            <p class="small muted" id="compareHint">For the best comparison, use the same angle, lighting and distance each time.</p>
-          </div>
-        </article>
+  function sortedRuns() {
+    return (state.logs.runs || [])
+      .filter((item) => item && item.date && typeof item.distanceKm === 'number')
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
 
 
-        <article class="card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Trend</p>
-              <h2>Weekly weight</h2>
-            </div>
-          </div>
-          <canvas id="weightChart" width="600" height="280" aria-label="Weight trend chart"></canvas>
-          <p class="small muted" id="chartEmpty">Add at least two weigh-ins to see the trend.</p>
-        </article>
+  function numOrNull(value) {
+    if (value === '' || value === null || value === undefined) return null;
+    const n = Number(value);
+    return Number.isNaN(n) ? null : n;
+  }
 
-        <article class="card">
-          <p class="eyebrow gold">Consistency</p>
-          <h2>This week</h2>
-          <div class="summary-list" id="progressSummary"></div>
-        </article>
+  function saveMeasurements(entry) {
+    const date = entry.date || todayKey();
+    return update((draft) => {
+      draft.logs.measurements[date] = {
+        date,
+        waist: numOrNull(entry.waist),
+        hips: numOrNull(entry.hips),
+        chest: numOrNull(entry.chest),
+        thigh: numOrNull(entry.thigh),
+        arm: numOrNull(entry.arm),
+        notes: entry.notes || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
 
+  function sortedMeasurements() {
+    return Object.values(state.logs.measurements || {})
+      .filter((item) => item && item.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
 
-        <article class="card" id="measurementProgressCard">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Measurements</p>
-              <h2>Body measurements</h2>
-              <p class="small muted">Compare your first and latest saved measurements.</p>
-            </div>
-            <button class="text-button" data-nav="track">Add</button>
-          </div>
-          <div class="grid two" id="measurementStats"></div>
-          <div class="summary-list" id="measurementHistory"></div>
-        </article>
+  function saveCheckin(entry) {
+    const date = entry.date || todayKey();
+    return update((draft) => {
+      draft.logs.checkins[date] = {
+        date,
+        meals: entry.meals || '',
+        water: entry.water || '',
+        movement: entry.movement || '',
+        energy: entry.energy || '',
+        stress: entry.stress || '',
+        win: entry.win || '',
+        struggle: entry.struggle || '',
+        help: entry.help || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
 
-        <article class="card" id="monthlyReportCard">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow gold">Progress report</p>
-              <h2>Last 30 days</h2>
-              <p class="small muted">A simple summary of weight, waist, water, movement and check-ins.</p>
-            </div>
-            <button class="text-button" data-nav="track">Check in</button>
-          </div>
-          <div class="report-grid" id="monthlyReportGrid"></div>
-          <div class="latest-checkin" id="latestCheckinBox"></div>
-        </article>
-
-        <article class="card walking-progress-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow gold">Walking program</p>
-              <h2>Walking progress</h2>
-              <p class="small muted" id="walkingChartSummary">Start the walking program to see weekly averages.</p>
-            </div>
-            <button class="text-button" data-nav="programs">Log walk</button>
-          </div>
-          <canvas id="walkingChart" width="600" height="300" aria-label="Weekly walking average bar chart"></canvas>
-          <p class="small muted" id="walkingChartEmpty">Log at least one walk to see your walking trend.</p>
-          <div class="movement-delta-list" id="walkingWeekList"></div>
-        </article>
-
-        <article class="card jogging-progress-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">5 km jogging program</p>
-              <h2>Jogging progress</h2>
-              <p class="small muted" id="joggingChartSummary">Start the 5 km jogging program to see weekly distance.</p>
-            </div>
-            <button class="text-button" data-nav="programs">Log jog</button>
-          </div>
-          <canvas id="joggingChart" width="600" height="300" aria-label="Weekly jogging distance bar chart"></canvas>
-          <p class="small muted" id="joggingChartEmpty">Log at least one jogging session to see your 5 km progress.</p>
-          <div class="movement-delta-list" id="joggingWeekList"></div>
-        </article>
-
-        <article class="card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow pink">Movement trend</p>
-              <h2>Movement by type</h2>
-              <p class="small muted" id="movementChartSummary">Save movement this week to see your trend.</p>
-            </div>
-            <button class="text-button" data-nav="track">Add movement</button>
-          </div>
-          <canvas id="movementChart" width="600" height="320" aria-label="Movement by type bar chart"></canvas>
-          <p class="small muted" id="movementChartEmpty">Save movement entries to see a bar graph.</p>
-          <div class="movement-delta-list" id="movementDeltaList"></div>
-        </article>
+  function sortedCheckins() {
+    return Object.values(state.logs.checkins || {})
+      .filter((item) => item && item.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
 
 
-      </section>
+  function cleanStrengthType(type) {
+    return type === 'gym' ? 'gym' : 'home';
+  }
 
-      <section class="page" id="page-photos" data-page="photos">
-        <article class="card photo-compare-shortcut">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow gold">Photo comparison</p>
-              <h2>Compare saved photos</h2>
-              <p class="muted">The side-by-side compare tool is on the Progress page, directly under the weight summary.</p>
-            </div>
-            <button class="primary" data-nav="progress">Open compare</button>
-          </div>
-        </article>
+  function strengthProgramKey(type) {
+    return cleanStrengthType(type) === 'gym' ? 'gymStrength' : 'homeStrength';
+  }
 
-        <article class="card">
-          <p class="eyebrow pink">Progress photos</p>
-          <h2>Add a photo set</h2>
-          <p class="muted">For best comparison, use the same lighting, outfit and angle. Front, side and back are optional but recommended.</p>
-          <div class="form-grid">
-            <label>Date<input type="date" id="photoDate" /></label>
-          </div>
-          <div class="photo-inputs">
-            <div class="photo-slot">
-              <h3><span class="camera-badge ui-icon" data-icon="camera"></span> Front photo</h3>
-              <div class="photo-actions">
-                <label class="photo-action primary-photo"><span class="ui-icon" data-icon="camera"></span>Take photo<input type="file" id="photoFrontCamera" accept="image/*" capture="environment" /></label>
-                <label class="photo-action"><span class="ui-icon" data-icon="upload"></span>Upload<input type="file" id="photoFront" accept="image/*" /></label>
-              </div>
-              <p class="small muted" id="photoFrontSelected">No photo chosen</p>
-            </div>
-            <div class="photo-slot">
-              <h3><span class="camera-badge ui-icon" data-icon="camera"></span> Side photo</h3>
-              <div class="photo-actions">
-                <label class="photo-action primary-photo"><span class="ui-icon" data-icon="camera"></span>Take photo<input type="file" id="photoSideCamera" accept="image/*" capture="environment" /></label>
-                <label class="photo-action"><span class="ui-icon" data-icon="upload"></span>Upload<input type="file" id="photoSide" accept="image/*" /></label>
-              </div>
-              <p class="small muted" id="photoSideSelected">No photo chosen</p>
-            </div>
-            <div class="photo-slot">
-              <h3><span class="camera-badge ui-icon" data-icon="camera"></span> Back photo</h3>
-              <div class="photo-actions">
-                <label class="photo-action primary-photo"><span class="ui-icon" data-icon="camera"></span>Take photo<input type="file" id="photoBackCamera" accept="image/*" capture="environment" /></label>
-                <label class="photo-action"><span class="ui-icon" data-icon="upload"></span>Upload<input type="file" id="photoBack" accept="image/*" /></label>
-              </div>
-              <p class="small muted" id="photoBackSelected">No photo chosen</p>
-            </div>
-          </div>
-          <label class="field-label" for="photoNotes">Notes</label>
-          <textarea id="photoNotes" rows="2" placeholder="Optional notes for this photo set"></textarea>
-          <button class="primary full" id="savePhotoSetBtn">Save photo set</button>
-          <p class="small muted">Photos are stored locally on this device in IndexedDB. They are not uploaded anywhere in this version.</p>
-        </article>
-        <div id="photoGallery" class="photo-gallery"></div>
-      </section>
+  function strengthWeekNumber(type = 'home', dateKey = todayKey()) {
+    const cleanType = cleanStrengthType(type);
+    const program = state.strengthProgram?.[cleanType] || {};
+    if (!program.started || !program.startDate) return 1;
+    const startDate = new Date(`${program.startDate}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(12, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
 
-      <section class="page" id="page-recipes" data-page="recipes">
-        <article class="card meal-generator-card">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow gold">Mini meal generator</p>
-              <h2>Spin for an idea</h2>
-              <p class="muted">Choose the meal type, spin the wheel, and get a simple Perfect Women-style idea.</p>
-            </div>
-          </div>
+  function startStrengthProgram(type = 'home') {
+    const cleanType = cleanStrengthType(type);
+    const date = todayKey();
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+      if (!Array.isArray(draft.logs.strengthSessions)) draft.logs.strengthSessions = [];
+    });
+  }
 
-          <div class="meal-generator-grid">
-            <div>
-              <label for="mealGeneratorType">What do you need?</label>
-              <select id="mealGeneratorType">
-                <option value="breakfast">Breakfast</option>
-                <option value="snack">Snack</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-              </select>
-              <button class="primary full with-icon" id="spinMealBtn" type="button"><span class="ui-icon" data-icon="spark"></span>Spin the meal wheel</button>
-              <button class="secondary full" id="showAllMealIdeasBtn" type="button">Show all ideas</button>
-            </div>
+  function roundLoad(value, increment) {
+    const n = Math.max(0, Number(value || 0));
+    const step = Math.max(0.5, Number(increment || 1));
+    return Math.round(n / step) * step;
+  }
 
-            <div class="meal-wheel-wrap" aria-hidden="true">
-              <div class="meal-wheel" id="mealWheel">
-                <span id="mealWheelLabel">SPIN</span>
-              </div>
-            </div>
-          </div>
+  function strengthIncrement(type, key) {
+    if (type === 'gym') return key === 'squat' ? 5 : 2.5;
+    return 1;
+  }
 
-          <div class="meal-result" id="mealIdeaResult">
-            <p class="eyebrow pink">Ready</p>
-            <h3>Pick a meal type and spin.</h3>
-            <p class="muted">The ideas follow the basic Perfect Women structure: protein, vegetables, and starch only where the plan allows it.</p>
-          </div>
+  function applyStrengthProgress(draft, type, exercises) {
+    if (!draft.strengthProgram.progress) draft.strengthProgram.progress = {};
+    const maxHomeLevels = { squat: 4, push: 6, pull: 4, hinge: 3, core: 3, legExtension: 1 };
+    (Array.isArray(exercises) ? exercises : []).forEach((exercise) => {
+      const key = exercise?.key;
+      const sets = Array.isArray(exercise?.sets) ? exercise.sets : [];
+      if (!key || !sets.length) return;
+      if (!draft.strengthProgram.progress[key]) draft.strengthProgram.progress[key] = { homeLevel: 1, homeWeightKg: 0, gymWeight: 0, nextWeightKg: { home: 0, gym: 0 } };
+      const progress = draft.strengthProgram.progress[key];
+      const workingSets = sets.filter((set) => set && set.setType === 'working');
+      const finalSet = workingSets[workingSets.length - 1] || sets[sets.length - 1];
+      if (!finalSet) return;
+      const reps = Math.max(0, Number(finalSet.reps || 0));
+      const weight = Math.max(0, Number(finalSet.weightKg || 0));
+      const targetMin = Math.max(1, Number(exercise.targetMin || 8));
+      const targetMax = Math.max(targetMin, Number(exercise.targetMax || 12));
+      const increment = strengthIncrement(type, key);
+      const hitTop = reps >= targetMax;
+      const underTarget = reps > 0 && reps < targetMin;
+      let nextWeight = weight;
+      let recommendation = 'Repeat this weight next session.';
 
-          <div class="meal-idea-list" id="mealIdeaList" hidden></div>
-        </article>
+      if (hitTop && weight > 0) {
+        nextWeight = roundLoad(weight + increment, increment);
+        recommendation = `Increase to ${nextWeight} kg next session.`;
+      } else if (underTarget && weight > 0) {
+        recommendation = `Keep ${weight} kg and build back to ${targetMin}–${targetMax} reps.`;
+      } else if (weight > 0) {
+        recommendation = `Keep ${weight} kg until you reach ${targetMax} controlled reps.`;
+      } else if (type === 'home' && hitTop && maxHomeLevels[key] > 1) {
+        progress.homeTopWins = Number(progress.homeTopWins || 0) + 1;
+        if (progress.homeTopWins >= 2) {
+          progress.homeLevel = Math.min(maxHomeLevels[key], Number(progress.homeLevel || 1) + 1);
+          progress.homeTopWins = 0;
+          recommendation = 'Move to the next bodyweight variation next session.';
+        } else {
+          recommendation = 'Repeat once more at the top of the rep range, then progress the variation.';
+        }
+      } else if (type === 'home') {
+        recommendation = `Keep this variation until you reach ${targetMax} controlled reps.`;
+      }
 
-        <article class="card">
-          <p class="eyebrow pink">Recipe book</p>
-          <h2>Perfect Women recipes</h2>
-          <p class="muted">Search the recipe library or tap a category like Fun Meals, Sunday Meals, Casserole or Braai.</p>
-          <input id="recipeSearch" type="search" placeholder="Search fun meals, Sunday meals, casserole, braai..." />
-          <div class="filter-row" id="recipeFilters"></div>
-        </article>
-        <div id="recipeList" class="recipe-list"></div>
-      </section>
+      progress.lastWorkingWeightKg = weight;
+      progress.lastWorkingReps = reps;
+      progress.lastSetDate = exercise.date || todayKey();
+      progress.lastRecommendation = recommendation;
+      if (!progress.nextWeightKg || typeof progress.nextWeightKg !== 'object') progress.nextWeightKg = { home: 0, gym: 0 };
+      progress.nextWeightKg[type] = nextWeight;
+      if (type === 'gym') progress.gymWeight = nextWeight;
+      else progress.homeWeightKg = nextWeight;
+    });
+  }
 
-      <section class="page" id="page-settings" data-page="settings">
-        <article class="card">
-          <p class="eyebrow pink">Client settings</p>
-          <h2>Personal details</h2>
-          <div class="form-grid">
-            <label>Name<input id="clientName" placeholder="Client name" /></label>
-            <label>Water target (ml)<input id="waterTarget" type="number" step="250" min="500" /></label>
-          </div>
-          <p class="small muted">Weigh-in day is fixed to Monday morning for this version.</p>
-          <button class="primary full" id="saveSettingsBtn">Save settings</button>
-        </article>
+  function saveStrengthSession({
+    type = 'home',
+    date,
+    exercises = [],
+    notes = '',
+    workoutId = '',
+    workoutTitle = '',
+    durationSeconds = 0,
+    roundsCompleted = 0,
+    completionPercent = 100,
+    weekOverride = null
+  } = {}) {
+    const cleanType = cleanStrengthType(type);
+    const cleanDate = date || todayKey();
+    const week = weekOverride || strengthWeekNumber(cleanType, cleanDate);
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || cleanDate;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+      if (!Array.isArray(draft.logs.strengthSessions)) draft.logs.strengthSessions = [];
+      const cleanExercises = Array.isArray(exercises) ? exercises : [];
+      draft.logs.strengthSessions.push({
+        id: uid('strength'),
+        date: cleanDate,
+        week: Number(week || 1),
+        programType: cleanType,
+        workoutId: workoutId || '',
+        workoutTitle: workoutTitle || '',
+        durationSeconds: Math.max(0, Number(durationSeconds || 0)),
+        roundsCompleted: Math.max(0, Number(roundsCompleted || 0)),
+        completionPercent: Math.max(0, Math.min(100, Number(completionPercent || 100))),
+        exercises: cleanExercises,
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+      applyStrengthProgress(draft, cleanType, cleanExercises.map((exercise) => ({ ...exercise, date: cleanDate })));
+      if (draft.strengthProgram?.[cleanType]) draft.strengthProgram[cleanType].activeWorkout = null;
+    });
+  }
 
-        <article class="card">
-          <p class="eyebrow gold">Data</p>
-          <h2>Local data tools</h2>
-          <p class="muted">This version stores data only on this phone/browser. Export before clearing browser data or moving phones.</p>
-          <div class="button-row">
-            <button class="secondary" id="exportDataBtn">Export JSON</button>
-            <button class="danger" id="resetDataBtn">Reset local data</button>
-          </div>
-        </article>
+  function saveStrengthWorkoutProgress(type, progress) {
+    const cleanType = cleanStrengthType(type);
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      if (!draft.strengthProgram[cleanType]) draft.strengthProgram[cleanType] = { started: true, startDate: todayKey(), activeWorkout: null };
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || todayKey();
+      draft.strengthProgram[cleanType].activeWorkout = progress ? { ...progress, savedAt: new Date().toISOString() } : null;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+    });
+  }
 
-        <article class="card">
-          <p class="eyebrow gold">Install app</p>
-          <h2>Add to home screen</h2>
-          <div class="install-grid">
-            <div class="mini-card">
-              <h3>Android</h3>
-              <p>Open the hosted app link in Chrome → tap the three-dot menu → <strong>Install app</strong> or <strong>Add to Home screen</strong> → confirm.</p>
-            </div>
-            <div class="mini-card">
-              <h3>iPhone</h3>
-              <p>Open the hosted app link in Safari → tap <strong>Share</strong> → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</p>
-            </div>
-          </div>
-          <button class="primary full install-now-btn" id="installAppBtn" type="button" hidden>Install app on this phone</button>
-          <p class="small muted" id="installStatusText">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
-          <button class="secondary full" id="showOnboardingBtn">Show setup guide again</button>
-        </article>
+  function clearStrengthWorkoutProgress(type) {
+    const cleanType = cleanStrengthType(type);
+    return update((draft) => {
+      if (draft.strengthProgram?.[cleanType]) draft.strengthProgram[cleanType].activeWorkout = null;
+    });
+  }
 
-        <article class="card soft-card">
-          <p class="eyebrow pink">Future-ready</p>
-          <h2>Prepared for later layers</h2>
-          <p class="muted">The local data schema includes versioning, update timestamps and a local client id so login, Supabase sync and a coach dashboard can be added later without rebuilding the tracker.</p>
-        </article>
-      </section>
-    </main>
+  function saveHomeWorkoutProgress(progress) { return saveStrengthWorkoutProgress('home', progress); }
+  function clearHomeWorkoutProgress() { return clearStrengthWorkoutProgress('home'); }
 
-    <nav class="bottom-nav" aria-label="Main navigation">
-      <button class="nav-btn active" data-nav="home"><span class="ui-icon" data-icon="home"></span>Home</button>
-      <button class="nav-btn" data-nav="track"><span class="ui-icon" data-icon="check"></span>Track</button>
-      <button class="nav-btn" data-nav="programs"><span class="ui-icon" data-icon="program"></span>Programs</button>
-      <button class="nav-btn" data-nav="progress"><span class="ui-icon" data-icon="chart"></span>Progress</button>
-      <button class="nav-btn" data-nav="photos"><span class="ui-icon" data-icon="camera"></span>Photos</button>
-      <button class="nav-btn" data-nav="recipes"><span class="ui-icon" data-icon="plate"></span>Recipes</button>
-    </nav>
-  </div>
+  function deleteStrengthSession(id) {
+    return update((draft) => {
+      draft.logs.strengthSessions = (draft.logs.strengthSessions || []).filter((item) => item.id !== id);
+    });
+  }
 
-  <dialog id="recipeModal" class="recipe-modal">
-    <div id="recipeModalContent"></div>
-    <button class="secondary full" id="closeRecipeModal">Close</button>
-  </dialog>
+  function sortedStrengthSessions(type = '') {
+    const cleanType = type ? cleanStrengthType(type) : '';
+    return (state.logs.strengthSessions || [])
+      .filter((item) => item && item.date && (!cleanType || item.programType === cleanType))
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
 
-  <script src="js/pw-storage.js" defer></script>
-  <script src="js/pw-recipes-data.js" defer></script>
-  <script src="js/pw-meal-ideas-data.js" defer></script>
-  <script src="js/pw-app.js" defer></script>
-</body>
-</html>
+
+  function setActiveProgram(program) {
+    const clean = ['walking', 'jogging', 'homeStrength', 'gymStrength'].includes(program) ? program : null;
+    if (!clean) return state;
+    return update((draft) => {
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = clean;
+    });
+  }
+
+  function saveWeight(entry) {
+    const date = entry.date || todayKey();
+    return update((draft) => {
+      draft.logs.weights[date] = {
+        date,
+        kg: Number(entry.kg),
+        waistCm: entry.waistCm === '' || entry.waistCm === null || entry.waistCm === undefined ? null : Number(entry.waistCm),
+        notes: entry.notes || '',
+        ts: new Date().toISOString()
+      };
+    });
+  }
+
+  function sortedWeights() {
+    return Object.values(state.logs.weights || {})
+      .filter((w) => typeof w.kg === 'number' && !Number.isNaN(w.kg))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  function weekKeys(date = new Date()) {
+    const start = mondayStart(date);
+    return Array.from({ length: 7 }, (_, i) => todayKey(addDays(start, i)));
+  }
+
+  function saveSettings({ name, waterTargetMl }) {
+    return update((draft) => {
+      draft.client.name = (name || '').trim();
+      draft.settings.waterTargetMl = Math.max(500, Number(waterTargetMl || 2000));
+    });
+  }
+
+  function completeOnboarding({ name, startingWeightKg }) {
+    const cleanName = (name || '').trim();
+    const weight = Number(startingWeightKg);
+    const date = todayKey();
+    return update((draft) => {
+      draft.client.name = cleanName;
+      draft.client.onboarded = true;
+      draft.client.startDate = draft.client.startDate || date;
+      if (weight && !Number.isNaN(weight)) {
+        draft.client.startingWeightKg = weight;
+        draft.logs.weights[date] = {
+          date,
+          kg: weight,
+          waistCm: null,
+          notes: 'Starting weight from onboarding',
+          ts: new Date().toISOString()
+        };
+      }
+    });
+  }
+
+  function markOnboardingDone() {
+    return update((draft) => {
+      draft.client.onboarded = true;
+    });
+  }
+
+
+  function toggleRecipeFavourite(recipeId) {
+    if (!recipeId) return getState();
+    return update((draft) => {
+      if (!draft.recipes) draft.recipes = { favourites: [] };
+      if (!Array.isArray(draft.recipes.favourites)) draft.recipes.favourites = [];
+      const index = draft.recipes.favourites.indexOf(recipeId);
+      if (index >= 0) draft.recipes.favourites.splice(index, 1);
+      else draft.recipes.favourites.push(recipeId);
+    });
+  }
+
+  function isRecipeFavourite(recipeId) {
+    return !!recipeId && Array.isArray(state.recipes?.favourites) && state.recipes.favourites.includes(recipeId);
+  }
+
+  function resetData() {
+    state = defaultState();
+    localStorage.setItem(KEY, JSON.stringify(state));
+    return state;
+  }
+
+  function exportData() {
+    return JSON.stringify(getState(), null, 2);
+  }
+
+  function openPhotoDb() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(PHOTO_DB, 1);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(PHOTO_STORE)) db.createObjectStore(PHOTO_STORE);
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function putPhoto(key, blob) {
+    const db = await openPhotoDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(PHOTO_STORE, 'readwrite');
+      tx.objectStore(PHOTO_STORE).put(blob, key);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function getPhoto(key) {
+    const db = await openPhotoDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(PHOTO_STORE, 'readonly');
+      const request = tx.objectStore(PHOTO_STORE).get(key);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function deletePhoto(key) {
+    const db = await openPhotoDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(PHOTO_STORE, 'readwrite');
+      tx.objectStore(PHOTO_STORE).delete(key);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function savePhotoSet({ date, notes, front, side, back }) {
+    const setId = uid('photo_set');
+    const files = { front, side, back };
+    const photoKeys = {};
+    for (const [kind, file] of Object.entries(files)) {
+      if (file) {
+        const key = `${setId}:${kind}`;
+        await putPhoto(key, file);
+        photoKeys[kind] = key;
+      }
+    }
+    update((draft) => {
+      draft.photos.sets.unshift({
+        id: setId,
+        date: date || todayKey(),
+        notes: notes || '',
+        photoKeys,
+        createdAt: new Date().toISOString()
+      });
+    });
+    return setId;
+  }
+
+  async function deletePhotoSet(setId) {
+    const set = state.photos.sets.find((item) => item.id === setId);
+    if (set && set.photoKeys) {
+      await Promise.all(Object.values(set.photoKeys).map((key) => deletePhoto(key)));
+    }
+    update((draft) => {
+      draft.photos.sets = draft.photos.sets.filter((item) => item.id !== setId);
+    });
+  }
+
+  window.PWStore = {
+    todayKey,
+    mondayStart,
+    weekKeys,
+    getState,
+    addWater,
+    undoWater,
+    getTodayWater,
+    saveMovement,
+    clearMovement,
+    startWalkingProgram,
+    setActiveProgram,
+    saveWalkingTarget,
+    saveWalkSession,
+    deleteWalkSession,
+    sortedWalks,
+    walkingWeekNumber,
+    startJoggingProgram,
+    saveRunSession,
+    deleteRunSession,
+    sortedRuns,
+    joggingWeekNumber,
+    startStrengthProgram,
+    saveStrengthSession,
+    saveHomeWorkoutProgress,
+    clearHomeWorkoutProgress,
+    saveStrengthWorkoutProgress,
+    clearStrengthWorkoutProgress,
+    deleteStrengthSession,
+    sortedStrengthSessions,
+    strengthWeekNumber,
+    saveWeight,
+    saveMeasurements,
+    sortedMeasurements,
+    saveCheckin,
+    sortedCheckins,
+    sortedWeights,
+    saveSettings,
+    completeOnboarding,
+    markOnboardingDone,
+    toggleRecipeFavourite,
+    isRecipeFavourite,
+    resetData,
+    exportData,
+    savePhotoSet,
+    getPhoto,
+    deletePhotoSet
+  };
+})();
