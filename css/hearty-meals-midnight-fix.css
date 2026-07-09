@@ -1,0 +1,131 @@
+/* Hearty v101 — Meals Midnight contrast fix
+   Loaded after the shared theme CSS so legacy light meal/prep panels cannot win. */
+html[data-theme="midnight"] body[data-page="meals"]{
+  --meal-panel:linear-gradient(180deg,rgba(17,24,48,.96),rgba(9,14,31,.94));
+  --meal-panel-soft:linear-gradient(180deg,rgba(24,33,63,.94),rgba(13,19,39,.94));
+  --meal-chip:rgba(31,42,76,.92);
+  --meal-border:rgba(203,211,255,.16);
+  --meal-border-strong:rgba(143,174,255,.30);
+  --meal-text:#f7f9ff;
+  --meal-muted:#bcc7e5;
+  --meal-accent:#aebcff;
+  color:var(--meal-text)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-plan-summary,
+html[data-theme="midnight"] body[data-page="meals"] .planner-card > .meal-prep-card,
+html[data-theme="midnight"] body[data-page="meals"] .meal-day-summary,
+html[data-theme="midnight"] body[data-page="meals"] .meal-visible-portion,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-panel,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-collapse,
+html[data-theme="midnight"] body[data-page="meals"] .prep-cook-item,
+html[data-theme="midnight"] body[data-page="meals"] .container-summary,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-details,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-stats span{
+  background:var(--meal-panel)!important;
+  border-color:var(--meal-border)!important;
+  color:var(--meal-text)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 30px rgba(0,0,0,.20)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-scenario-btn,
+html[data-theme="midnight"] body[data-page="meals"] .bulk-prep-field input,
+html[data-theme="midnight"] body[data-page="meals"] .bulk-prep-field select,
+html[data-theme="midnight"] body[data-page="meals"] .bulk-checkbox-row label,
+html[data-theme="midnight"] body[data-page="meals"] .prep-batch-row span,
+html[data-theme="midnight"] body[data-page="meals"] .meal-meta-row span,
+html[data-theme="midnight"] body[data-page="meals"] .prep-label-preview span{
+  background:var(--meal-chip)!important;
+  border-color:var(--meal-border)!important;
+  color:var(--meal-text)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-scenario-btn:hover{
+  background:linear-gradient(180deg,rgba(45,58,103,.98),rgba(24,33,66,.96))!important;
+  border-color:var(--meal-border-strong)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-scenario-btn.is-active{
+  background:linear-gradient(180deg,rgba(38,54,99,.98),rgba(19,29,63,.96))!important;
+  border-color:rgba(112,151,255,.54)!important;
+  box-shadow:0 12px 28px rgba(37,75,162,.20),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .meal-total-pill,
+html[data-theme="midnight"] body[data-page="meals"] .prep-summary-pill{
+  background:linear-gradient(180deg,rgba(81,106,186,.62),rgba(49,65,126,.66))!important;
+  border-color:rgba(150,176,255,.30)!important;
+  color:#f7f9ff!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-mini-row span,
+html[data-theme="midnight"] body[data-page="meals"] .meal-pack-note span{
+  background:rgba(38,151,119,.18)!important;
+  border-color:rgba(92,220,181,.24)!important;
+  color:#9aebcf!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .meal-prep-note,
+html[data-theme="midnight"] body[data-page="meals"] .prep-pack-strip{
+  background:rgba(64,107,198,.14)!important;
+  border-color:rgba(112,151,255,.22)!important;
+  color:var(--meal-muted)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .meal-support-note{
+  background:rgba(171,95,244,.14)!important;
+  border-color:rgba(187,126,255,.24)!important;
+  color:#f4edff!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-summary-main strong,
+html[data-theme="midnight"] body[data-page="meals"] .prep-scenario-btn strong,
+html[data-theme="midnight"] body[data-page="meals"] .container-summary strong,
+html[data-theme="midnight"] body[data-page="meals"] .meal-day-summary h3,
+html[data-theme="midnight"] body[data-page="meals"] .meal-visible-portion strong,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-panel strong,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-title,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-stats strong,
+html[data-theme="midnight"] body[data-page="meals"] .prep-cook-title,
+html[data-theme="midnight"] body[data-page="meals"] .prep-cook-item strong,
+html[data-theme="midnight"] body[data-page="meals"] .prep-pack-strip strong,
+html[data-theme="midnight"] body[data-page="meals"] .meal-card__title,
+html[data-theme="midnight"] body[data-page="meals"] .meal-card__protein,
+html[data-theme="midnight"] body[data-page="meals"] .meal-day-macros span:first-child{
+  color:var(--meal-text)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-summary-main span:not(.prep-summary-pill),
+html[data-theme="midnight"] body[data-page="meals"] .prep-scenario-btn span,
+html[data-theme="midnight"] body[data-page="meals"] .bulk-prep-field,
+html[data-theme="midnight"] body[data-page="meals"] .container-summary,
+html[data-theme="midnight"] body[data-page="meals"] .meal-day-summary p,
+html[data-theme="midnight"] body[data-page="meals"] .meal-visible-portion,
+html[data-theme="midnight"] body[data-page="meals"] .meal-card__subtitle,
+html[data-theme="midnight"] body[data-page="meals"] .meal-card__desc,
+html[data-theme="midnight"] body[data-page="meals"] .meal-serving-note,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-panel ul,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-panel ol,
+html[data-theme="midnight"] body[data-page="meals"] .meal-macro-strip span,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-head p,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-details ol,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-details ul,
+html[data-theme="midnight"] body[data-page="meals"] .prep-cook-item p,
+html[data-theme="midnight"] body[data-page="meals"] .prep-label-preview span{
+  color:var(--meal-muted)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .prep-cook-item span,
+html[data-theme="midnight"] body[data-page="meals"] .meal-detail-collapse summary,
+html[data-theme="midnight"] body[data-page="meals"] .saved-prep-details summary{
+  color:var(--meal-accent)!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .bulk-prep-field input::placeholder{
+  color:#8f9bbb!important;
+}
+
+html[data-theme="midnight"] body[data-page="meals"] .bulk-prep-field select option{
+  background:#11172f;
+  color:#f7f9ff;
+}
