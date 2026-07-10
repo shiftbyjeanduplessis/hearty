@@ -6,192 +6,48 @@
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <script id="hearty-theme-preboot">(function(){try{var v=(localStorage.getItem('heartyTheme')||localStorage.getItem('hearty-theme')||document.documentElement.getAttribute('data-theme')||'clean_blue');v=String(v).trim().toLowerCase().replace(/[-\s]+/g,'_');if(!/^(clean_blue|pink_lemonade|midnight|soft_rose|deep_berry)$/.test(v))v='clean_blue';document.documentElement.setAttribute('data-theme',v);var bg={clean_blue:'#eef8fc',pink_lemonade:'#e93578',midnight:'#090b15',soft_rose:'#e6b57b',deep_berry:'#2a1551'};document.documentElement.style.background=bg[v]||bg.clean_blue;document.documentElement.style.colorScheme=(v==='midnight'?'dark':'light');var st=document.createElement('style');st.textContent='html,body{background:'+(bg[v]||bg.clean_blue)+' !important;}';document.head.appendChild(st);}catch(e){}})();</script>
 
-<title>Hearty — Exercise</title>
+<title>Hearty — Home</title>
+<meta content="#f6f9fe" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Hearty" name="apple-mobile-web-app-title"/>
 <link href="manifest.json" rel="manifest"/>
-<script>
-(function(){
-  const VALID = ['clean_blue','pink_lemonade','midnight','soft_rose','deep_berry','partner_neutral'];
-  const DEFAULT = 'clean_blue';
-  function valid(t){ t=String(t||'').replace(/[-\s]+/g,'_'); const legacy={sunlit:'pink_lemonade',rose_aurora:'soft_rose',fresh_green:'partner_neutral'}; t=legacy[t]||t; return VALID.includes(t) ? t : DEFAULT; }
-  function readTheme(){
-    try { return valid(localStorage.getItem('heartyTheme') || localStorage.getItem('hearty-theme') || document.documentElement.getAttribute('data-theme') || DEFAULT); }
-    catch(e){ return DEFAULT; }
-  }
-  function applyTheme(t, userSelected){
-    t = valid(t);
-    document.documentElement.setAttribute('data-theme', t);
-    if(document.body) document.body.setAttribute('data-theme', t);
-    try {
-      localStorage.setItem('heartyTheme', t);
-      localStorage.setItem('hearty-theme', t);
-      if(userSelected) localStorage.setItem('heartyThemeUserSelected', 'true');
-    } catch(e) {}
-    try {
-      document.querySelectorAll('[data-theme], [data-theme-choice]').forEach(el => {
-        const choice = el.getAttribute('data-theme') || el.getAttribute('data-theme-choice');
-        if(!VALID.includes(choice)) return;
-        const on = choice === t;
-        el.classList.toggle('active', on);
-        el.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
-    } catch(e) {}
-  }
-  window.heartyApplyTheme = t => applyTheme(t, true);
-  window.heartyReadTheme = readTheme;
-  applyTheme(readTheme(), false);
-  document.addEventListener('DOMContentLoaded', () => applyTheme(readTheme(), false));
-  window.addEventListener('storage', e => {
-    if(['heartyTheme','hearty-theme','heartyThemeUserSelected'].includes(e.key)) applyTheme(readTheme(), false);
-  });
-})();
-</script>
-<style>
-:root,html[data-theme="clean_blue"]{color-scheme:light;--bg-base:#f6f9fe;--bg-1:#eef4fb;--bg-2:#fbfdff;--ink:#132235;--muted:#6f7c8d;--line:rgba(143,163,184,.22);--card:rgba(255,255,255,.94);--surface-top:rgba(255,255,255,.84);--surface-bottom:rgba(255,255,255,.68);--surface-button:rgba(255,255,255,.94);--surface-chip:rgba(255,255,255,.92);--surface-inner:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,250,255,.94));--shadow:0 18px 44px rgba(14,31,53,.08);--shadow-soft:0 8px 22px rgba(14,31,53,.055);--accent:#2f6df6;--accent-2:#18b8a6;--success:#16a36a;--warning:#d99522;--danger:#ef5d7a;--nav-active-bg:linear-gradient(180deg,rgba(233,242,255,.98),rgba(255,255,255,.96));--nav-active-ink:#1f4ec0}
-html[data-theme="legacy_sunlit_disabled"]{color-scheme:light;--bg-base:#fbfaf6;--bg-1:#f5efe3;--bg-2:#fffdf8;--ink:#1f2a2d;--muted:#68766f;--line:rgba(168,150,111,.24);--card:rgba(255,255,255,.93);--surface-top:rgba(255,255,255,.88);--surface-bottom:rgba(255,250,240,.74);--surface-button:rgba(255,255,255,.95);--surface-chip:rgba(255,252,246,.92);--surface-inner:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,250,240,.94));--shadow:0 20px 48px rgba(73,59,31,.095);--shadow-soft:0 9px 24px rgba(73,59,31,.065);--accent:#a66f25;--accent-2:#6f9f7b;--success:#608f6d;--warning:#bd7f22;--danger:#b86577;--nav-active-bg:linear-gradient(180deg,rgba(255,248,236,.98),rgba(255,255,255,.94));--nav-active-ink:#9a6418}
-html[data-theme="midnight"]{color-scheme:dark;--bg-base:#08111c;--bg-1:#0b1522;--bg-2:#111d2c;--ink:#edf4fb;--muted:#a7b6c8;--line:rgba(145,168,200,.18);--card:rgba(16,27,42,.84);--surface-top:rgba(22,34,50,.88);--surface-bottom:rgba(13,24,38,.74);--surface-button:rgba(24,37,55,.92);--surface-chip:rgba(22,34,50,.90);--surface-inner:linear-gradient(180deg,rgba(24,35,50,.94),rgba(15,23,36,.90));--shadow:0 24px 58px rgba(1,7,18,.46);--shadow-soft:0 12px 30px rgba(1,7,18,.34);--accent:#8fb2ff;--accent-2:#46d5c5;--success:#53d69a;--warning:#d7ad5c;--danger:#e49ab0;--nav-active-bg:linear-gradient(180deg,rgba(42,58,84,.96),rgba(21,30,43,.94));--nav-active-ink:#b8c9ff}
-html[data-theme="legacy_rose_aurora_disabled"]{color-scheme:dark;--bg-base:#0f0a11;--bg-1:#130d18;--bg-2:#201322;--ink:#fbf2f7;--muted:#c4aebb;--line:rgba(211,158,184,.18);--card:rgba(28,18,32,.85);--surface-top:rgba(37,24,43,.90);--surface-bottom:rgba(24,16,30,.76);--surface-button:rgba(42,29,48,.92);--surface-chip:rgba(40,27,46,.92);--surface-inner:linear-gradient(180deg,rgba(34,24,40,.94),rgba(22,16,28,.90));--shadow:0 26px 64px rgba(7,2,10,.52);--shadow-soft:0 12px 32px rgba(7,2,10,.36);--accent:#d0a66d;--accent-2:#d989a9;--success:#c9b07a;--warning:#d0a66d;--danger:#d989a9;--nav-active-bg:linear-gradient(180deg,rgba(55,38,60,.96),rgba(34,24,40,.94));--nav-active-ink:#e3b97d}
-*{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100%}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(1200px 500px at 0% -10%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 50%),radial-gradient(1000px 450px at 100% 0%,color-mix(in srgb,var(--accent-2) 9%,transparent),transparent 45%),linear-gradient(180deg,var(--bg-2),var(--bg-1));overflow-x:hidden}.nav-item svg,
-.wo-close svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.status-strip{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:4px 0 20px;padding:24px;border-radius:28px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}.eyebrow,.section-label{font-size:.74rem;font-weight:800;letter-spacing:.17em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}.subline{margin:10px 0 0;max-width:56rem;color:var(--muted);font-size:1rem;line-height:1.55;font-weight:500}.stack{display:grid;gap:16px}.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden}.hero{padding:24px;background:var(--card)}.hero-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}.hero-title{font-size:1.45rem;letter-spacing:-.03em;line-height:1.02;margin:0 0 8px;font-weight:800;color:var(--ink)}p,.compact-copy{color:var(--muted);font-size:.95rem;line-height:1.45}.pill-row,.status-mini-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.soft-pill,.status-mini-pill,.weight-pill,.ladder-tag,.set-pill{padding:8px 11px;border-radius:999px;background:var(--surface-chip);border:1px solid var(--line);color:var(--ink);font-size:.8rem;font-weight:800;box-shadow:var(--shadow-soft)}.status-mini-pill.support{background:color-mix(in srgb,var(--warning) 16%,var(--surface-chip));color:var(--warning)}.status-mini-pill.walk{background:color-mix(in srgb,var(--success) 14%,var(--surface-chip));color:var(--success)}.location-toggle{display:inline-flex;border-radius:999px;background:color-mix(in srgb,var(--muted) 10%,transparent);border:1px solid var(--line);overflow:hidden}.loc-btn{min-width:104px;padding:9px 16px;border:none;background:transparent;color:var(--muted);font-size:.86rem;font-weight:800;cursor:pointer;border-radius:999px}.loc-btn.active{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff}.start-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 0 6px}.start-btn{width:168px;height:168px;border:none;border-radius:50%;cursor:pointer;color:#fff;background:linear-gradient(135deg,#ff8a3d 0%,#ff4f7a 38%,#8b5cf6 70%,var(--accent) 100%);box-shadow:0 24px 58px rgba(120,90,220,.28),0 12px 26px rgba(255,95,120,.20),0 0 0 10px rgba(255,255,255,.32),inset 0 1px 0 rgba(255,255,255,.30);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:1rem;font-weight:900;letter-spacing:.06em;transition:transform .18s ease}.start-btn:hover{transform:translateY(-2px)}.start-btn.disabled{background:linear-gradient(145deg,#9aaccc,#bccae3);box-shadow:none;cursor:not-allowed}.start-btn svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.start-hint,.last-session-inline{font-size:.87rem;color:var(--muted);text-align:center;font-weight:700}.mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.compact-title{font-size:1.04rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}.count-big{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;margin-top:2px}.week-dots{display:flex;gap:10px;margin-top:12px}.week-dot{width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,var(--muted) 10%,transparent);border:2px solid var(--line);display:flex;align-items:center;justify-content:center}.week-dot.done{background:linear-gradient(145deg,var(--success),color-mix(in srgb,var(--success) 75%,white));border-color:var(--success)}.week-dot.done svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.indicator{display:flex;align-items:flex-start;gap:12px}.led{width:12px;height:12px;border-radius:50%;background:color-mix(in srgb,var(--muted) 35%,transparent);box-shadow:0 0 0 5px color-mix(in srgb,var(--muted) 12%,transparent);margin-top:5px;flex:0 0 auto}.led.on.warning{background:var(--warning);box-shadow:0 0 0 5px color-mix(in srgb,var(--warning) 16%,transparent),0 0 18px color-mix(in srgb,var(--warning) 38%,transparent)}.led.on.success{background:var(--success);box-shadow:0 0 0 5px color-mix(in srgb,var(--success) 14%,transparent),0 0 18px color-mix(in srgb,var(--success) 34%,transparent)}.support-card.active{background:linear-gradient(180deg,color-mix(in srgb,var(--warning) 16%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--warning) 30%,var(--line))}.walk-complete-card.complete{background:linear-gradient(180deg,color-mix(in srgb,var(--success) 14%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--success) 28%,var(--line))}.ladder-card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;background:none;border:none;width:100%;padding:0;text-align:left;color:inherit}.ladder-toggle-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent);transition:transform .2s ease}.ladder-toggle-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ladder-card.collapsed .ladder-toggle-icon{transform:rotate(-180deg)}.ladder-body{margin-top:14px}.ladder-body[hidden]{display:none}.ladder-row{padding:14px;border-radius:20px;border:1px solid var(--line);background:var(--surface-inner)}.ladder-row+.ladder-row{margin-top:10px}.ladder-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}.ladder-name{font-size:.96rem;font-weight:800}.steps{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.step{padding:8px 10px;border-radius:999px;background:color-mix(in srgb,var(--muted) 8%,transparent);color:var(--muted);font-size:.79rem;font-weight:800;border:1px solid var(--line)}.step.current{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}.step.done{background:color-mix(in srgb,var(--success) 14%,transparent);color:var(--success)}.arrow{color:var(--muted);font-size:.9rem;font-weight:900}.ladder-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}.meta-note{font-size:.84rem;color:var(--muted)}.ladder-row-v2{display:grid;gap:12px}.ladder-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.ladder-current{font-size:1.04rem;font-weight:900;letter-spacing:-.03em;color:var(--ink);margin-top:3px}.ladder-detail-pill{flex:0 0 auto;padding:8px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 9%,transparent);border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line));color:var(--accent);font-size:.76rem;font-weight:900;white-space:nowrap}.ladder-next-box{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:18px;background:color-mix(in srgb,var(--muted) 6%,transparent);border:1px solid var(--line)}.ladder-small-label{font-size:.64rem;font-weight:900;letter-spacing:.14em;color:var(--muted);margin-bottom:3px}.ladder-next-name{font-size:.9rem;font-weight:900;color:var(--ink);line-height:1.2}.ladder-percent{font-size:.82rem;font-weight:900;color:var(--accent);padding:7px 9px;border-radius:999px;background:var(--surface-chip);border:1px solid var(--line)}.ladder-rail{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;align-items:center}.ladder-mini-step{height:8px;border-radius:999px;background:color-mix(in srgb,var(--muted) 12%,transparent);border:1px solid var(--line)}.ladder-mini-step.done{background:color-mix(in srgb,var(--success) 48%,transparent);border-color:color-mix(in srgb,var(--success) 42%,var(--line))}.ladder-mini-step.current{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%,var(--accent-2)));border-color:transparent;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent)}.ladder-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;color:var(--muted);font-size:.72rem;font-weight:800}.ladder-bottom span:nth-child(2){text-align:center;color:var(--ink)}.ladder-bottom span:nth-child(3){text-align:right}.bottom-nav{margin-top:18px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;padding:8px;border-radius:24px;background:color-mix(in srgb,var(--surface-chip) 78%,transparent);border:1px solid var(--line);box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:sticky;bottom:12px;z-index:40}.nav-item{display:grid;gap:4px;justify-items:center;align-items:center;align-content:center;min-height:54px;padding:9px 4px 7px;border-radius:16px;color:var(--muted);text-align:center;font-size:.72rem;font-weight:700;text-decoration:none}.nav-item.active,.nav-item[aria-current="page"]{color:var(--nav-active-ink);background:var(--nav-active-bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 16px color-mix(in srgb,var(--accent) 12%,transparent)}#workoutOverlay[hidden],#recoveryOverlay[hidden]{display:none!important}#workoutOverlay,#recoveryOverlay{position:fixed;inset:0;z-index:2147482500;background:linear-gradient(180deg,var(--bg-2),var(--bg-1));overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:calc(190px + env(safe-area-inset-bottom,0px))}.wo-shell{max-width:520px;margin:0 auto;padding:20px 16px calc(190px + env(safe-area-inset-bottom,0px))}body.workout-open{overflow:hidden}.wo-header{position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:90;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface-top);border-radius:22px;border:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:var(--shadow-soft);margin-bottom:14px}.wo-close{width:auto;min-width:76px;height:40px;padding:0 12px;border-radius:14px;border:1px solid var(--line);background:var(--surface-button);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--ink);font-size:.78rem;font-weight:900}.wo-title{text-align:center}.wo-session-title{font-size:.72rem;font-weight:800;letter-spacing:.15em;color:var(--muted)}.wo-ex-progress{font-size:.88rem;font-weight:800;color:var(--ink)}.ex-card,.complete-card,.walk-box{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:22px;backdrop-filter:blur(10px)}.ex-movement{font-size:.72rem;font-weight:800;letter-spacing:.18em;color:var(--accent);margin-bottom:6px}.ex-name{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin-bottom:12px}.overlay-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:color-mix(in srgb,var(--warning) 16%,var(--surface-chip));color:var(--warning);font-size:.78rem;font-weight:800;margin-bottom:12px;border:1px solid color-mix(in srgb,var(--warning) 24%,var(--line))}.ex-image{width:100%;min-height:220px;border-radius:18px;background:var(--surface-inner);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:16px;overflow:hidden}.ex-image img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;border-radius:16px}.image-fallback{padding:20px;text-align:center;color:var(--muted);font-size:.86rem;font-weight:800}.ex-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.ex-meta-item{background:var(--surface-inner);border:1px solid var(--line);border-radius:15px;padding:10px 12px}.ex-meta-label{font-size:.68rem;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:3px}.ex-meta-val{font-size:.98rem;font-weight:800;color:var(--ink)}.set-dots{display:flex;gap:8px;justify-content:center;margin-bottom:14px}.set-dot{width:12px;height:12px;border-radius:50%;background:color-mix(in srgb,var(--muted) 12%,transparent);border:2px solid var(--line)}.set-dot.done{background:var(--success);border-color:var(--success)}.set-dot.active{background:color-mix(in srgb,var(--accent) 26%,transparent);border-color:var(--accent);transform:scale(1.12)}.technique{border-top:1px solid var(--line);padding-top:14px}.technique-title{font-size:.9rem;font-weight:900;color:var(--ink);margin-bottom:10px}.technique-body{display:grid;gap:8px}.technique-bullet{font-size:.9rem;line-height:1.42;color:var(--muted);display:flex;gap:8px}.technique-bullet::before{content:"·";color:var(--accent);font-size:1.15rem;line-height:1}.action-area{position:sticky;bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:80;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;margin-top:14px;border-radius:22px;background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid var(--line);box-shadow:0 14px 34px rgba(10,22,40,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.action-btn{width:100%;max-width:340px;min-height:58px;border-radius:18px;font-size:1rem;font-weight:900;letter-spacing:.04em;cursor:pointer;border:1px solid var(--line);background:var(--surface-button);color:var(--ink);box-shadow:var(--shadow-soft)}.action-btn.primary{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent;box-shadow:0 14px 28px color-mix(in srgb,var(--accent) 22%,transparent)}.rep-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:360px}.rep-extra{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:360px;margin-top:8px}.rep-btn{height:56px;border-radius:14px;border:1px solid var(--line);background:var(--surface-button);color:var(--ink);font-size:1.08rem;font-weight:900;cursor:pointer;box-shadow:var(--shadow-soft)}.rep-btn.selected{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}.rest-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}.rest-count{font-size:3rem;font-weight:900;color:var(--ink);letter-spacing:-.06em}.rest-box{width:190px;height:190px;border-radius:50%;background:var(--surface-button);border:1px solid var(--line);box-shadow:var(--shadow-soft);display:grid;place-items:center}.rest-flash{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:.04em;display:none}.complete-card{text-align:center}.complete-check{width:66px;height:66px;border-radius:50%;background:color-mix(in srgb,var(--success) 14%,transparent);display:grid;place-items:center;margin:0 auto 14px;border:2px solid color-mix(in srgb,var(--success) 24%,transparent)}.complete-check svg{width:28px;height:28px;stroke:var(--success);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.sets-result{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.progress-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;background:color-mix(in srgb,var(--success) 12%,transparent);border:1px solid color-mix(in srgb,var(--success) 18%,transparent);border-radius:14px;margin-top:12px;color:var(--success);font-size:.82rem;font-weight:800}.wo-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.wo-stat{background:var(--surface-inner);border:1px solid var(--line);border-radius:16px;padding:14px 10px}.wo-stat-val{font-size:1.4rem;font-weight:900;color:var(--ink);letter-spacing:-.03em}.wo-stat-label{font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--muted);margin-top:2px}.wo-mv-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:.9rem}.wo-mv-row:not(:last-child){border-bottom:1px solid var(--line)}.wo-mv-name{font-weight:800}.wo-mv-tag{font-size:.78rem;font-weight:900;padding:4px 10px;border-radius:999px}.wo-mv-tag.up{background:color-mix(in srgb,var(--success) 12%,transparent);color:var(--success)}.wo-mv-tag.hold{background:color-mix(in srgb,var(--muted) 8%,transparent);color:var(--muted)}.exit-overlay{display:none;position:fixed;inset:0;z-index:2147483646;background:rgba(10,22,40,.5);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px}.exit-overlay.active{display:flex}.exit-box{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;max-width:340px;width:100%;box-shadow:0 32px 72px rgba(10,22,40,.22);text-align:center}.walk-title{font-size:1.36rem;font-weight:900;letter-spacing:-.03em;margin-bottom:6px}.walk-copy{font-size:.9rem;color:var(--muted);margin-bottom:16px}.walk-timer{font-size:3rem;font-weight:900;letter-spacing:-.06em;color:var(--ink);line-height:1;margin-bottom:6px}.walk-sub{font-size:.86rem;color:var(--muted);margin-bottom:18px}.recovery-list{display:grid;gap:10px}.recovery-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface-inner)}.recovery-name{font-size:.92rem;font-weight:900}.recovery-sub{font-size:.82rem;color:var(--muted);margin-top:3px}.recovery-btn{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-button);color:var(--accent);font-size:.78rem;font-weight:900;cursor:pointer;white-space:nowrap}.recovery-btn.primary{background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 75%,#000));color:#fff;border-color:transparent}@media(max-width:900px){.mini-grid{grid-template-columns:1fr}}@media(max-width:760px){.status-strip{padding:18px;border-radius:22px;flex-direction:column}.hero{padding:18px;border-radius:22px}.bottom-nav{gap:4px;padding:6px;border-radius:18px}.nav-item{min-height:50px;padding:7px 2px 6px;font-size:.62rem}.nav-item svg{width:18px;height:18px}.ex-meta{grid-template-columns:1fr 1fr}.ex-meta-item:last-child{grid-column:1/-1}.start-btn{width:148px;height:148px}.rep-grid{grid-template-columns:repeat(4,1fr)}}
-
-.support-status-controls{align-items:center}
-.support-top-action{
-  min-height:36px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 13px;
-  border-radius:999px;
-  border:1px solid rgba(47,109,246,.16);
-  background:linear-gradient(180deg,#3f82ff,#1550b3);
-  color:#fff;
-  font-size:.78rem;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:0 10px 22px rgba(21,80,179,.16);
-  white-space:nowrap;
-}
-.support-top-action.off{
-  background:#fff;
-  color:#5f7084;
-  border-color:rgba(143,163,184,.24);
-  box-shadow:var(--shadow-soft);
-}
-.status-mini-pill.support{
-  border-color:rgba(245,158,11,.28);
-  background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(255,255,255,.96));
-  color:#a15c00;
-}
-.support-card{display:none!important}
-
-
-.exercise-guide-btn{
-  min-height:36px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 13px;
-  border-radius:999px;
-  border:1px solid rgba(47,109,246,.16);
-  background:var(--surface-button);
-  color:var(--accent);
-  font-size:.78rem;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:var(--shadow-soft);
-  white-space:nowrap;
-  cursor:pointer;
-}
-.exercise-guide-modal[hidden]{display:none!important}
-.exercise-guide-modal{
-  position:fixed;
-  inset:0;
-  z-index:130;
-  display:grid;
-  place-items:center;
-  padding:18px;
-  background:rgba(12,24,40,.46);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-.exercise-guide-panel{
-  width:min(680px,100%);
-  max-height:min(82vh,760px);
-  overflow:auto;
-  border-radius:28px;
-  border:1px solid var(--line);
-  background:var(--card);
-  box-shadow:0 28px 72px rgba(14,31,53,.22);
-  padding:22px;
-}
-.exercise-guide-head{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  align-items:flex-start;
-  margin-bottom:14px;
-}
-.exercise-guide-title{
-  margin:0;
-  font-size:1.35rem;
-  line-height:1.05;
-  letter-spacing:-.035em;
-  color:var(--ink);
-}
-.exercise-guide-close{
-  width:40px;
-  height:40px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:var(--surface-button);
-  color:var(--muted);
-  font-size:1.45rem;
-  line-height:1;
-  cursor:pointer;
-  box-shadow:var(--shadow-soft);
-}
-.exercise-guide-section{
-  padding:13px 0;
-  border-top:1px solid var(--line);
-}
-.exercise-guide-section:first-of-type{border-top:none}
-.exercise-guide-section h3{
-  margin:0 0 6px;
-  font-size:.96rem;
-  letter-spacing:-.015em;
-  color:var(--ink);
-}
-.exercise-guide-section p,
-.exercise-guide-section li{
-  margin:0;
-  color:var(--muted);
-  font-size:.9rem;
-  line-height:1.5;
-}
-.exercise-guide-section ul{
-  margin:7px 0 0;
-  padding-left:18px;
-  display:grid;
-  gap:4px;
-}
-
-</style>
-<!-- Shared Hearty theme system -->
+<link href="icons/hearty-icon-192.png" rel="apple-touch-icon"/>
+<link as="style" href="css/hearty-home-v15-refactor-aesthetic.css?v=59" rel="preload"/>
+<link href="css/hearty-home-v15-refactor-aesthetic.css?v=59" rel="stylesheet"/>
+<script src="js/hearty-data-layer.v1.js"></script>
+<script src="hearty-target-calculator.js"></script>
+<script defer="" src="js/hearty-home-v15-refactor-aesthetic.js?v=95"></script>
+<meta content="yes" name="mobile-web-app-capable"/>
+<style id="hearty-medication-day-picker-css">
+    .day-toggle-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-top:10px;
+    }
+    .day-toggle-grid button{
+      min-height:44px;
+      border-radius:14px;
+      border:1px solid var(--line, rgba(143,163,184,.24));
+      background:var(--surface-button, rgba(255,255,255,.9));
+      color:var(--muted, #6d7b8c);
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft, 0 8px 22px rgba(14,31,53,.06));
+    }
+    .day-toggle-grid button.active{
+      background:linear-gradient(180deg, rgba(233,242,255,.98), rgba(255,255,255,.96));
+      color:var(--theme-accent, #2f6df6);
+      border-color:rgba(47,109,246,.26);
+    }
+    @media(max-width:520px){
+      .day-toggle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+  </style>
 <link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
 <script src="js/hearty-theme.js?v=92"></script>
-
-<script id="exercise-logo-src-lock">
-(function(){
-  function fixLogo(){
-    var img=document.querySelector('.topbar .brand-logo');
-    if(!img) return;
-    if(!img.getAttribute('src') || img.getAttribute('src') === 'hearty-logo.png') img.setAttribute('src','/hearty-logo.png');
-    img.setAttribute('data-default-logo','/hearty-logo.png');
-    img.setAttribute('data-rose-aurora-logo','/hearty-logo-gold.png');
-  }
-  fixLogo();
-  document.addEventListener('DOMContentLoaded', fixLogo);
-})();
-</script>
 <link href="css/hearty-phase1-visual-fixes.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-atmosphere.css?v=60" rel="stylesheet"/>
 <link href="css/hearty-step5i-shell-fix.css?v=60" rel="stylesheet"/>
@@ -199,17 +55,131 @@ html[data-theme="legacy_rose_aurora_disabled"]{color-scheme:dark;--bg-base:#0f0a
 <link href="css/hearty-shell-template.css?v=95" rel="stylesheet"/>
 <link href="css/hearty-step5n-theme-beauty.css?v=88" rel="stylesheet"/>
 <script src="js/hearty-production-guard.js?v=54"></script>
-</head>
-<body data-page="exercise">
-<div class="shell"><div data-shell-mount="topbar"></div>
+  <link rel="stylesheet" href="pwa-install.css?v=94">
 
-<section aria-label="Exercise overview" class="status-strip"><div><div class="eyebrow">EXERCISE</div><h1 class="page-heading">Training</h1><p class="subline">Choose home or gym and start the right session for today.</p></div></section>
-<main class="stack">
-<section class="card hero">
-<div class="hero-top"><div><div class="section-label">STRENGTH</div><h2 class="hero-title">Start your session</h2><p>One clear starting point. Choose home or gym, then get straight into your session.</p><div class="pill-row support-status-controls"><div class="soft-pill" id="heroModePill">Home workout</div><div class="soft-pill" id="heroSessionsPill">0 of 3 this week</div><button class="exercise-guide-btn" id="openExerciseGuideBtn" type="button">How Exercise Works</button><div class="status-mini-pill support" hidden="" id="heroSupportMiniPill">Support active</div></div></div><div aria-label="Workout location" class="location-toggle"><button class="loc-btn active" id="locHome" type="button">Home</button><button class="loc-btn" id="locGym" type="button">Gym</button></div></div>
-<div class="start-wrap"><button class="start-btn" id="startBtn" type="button"><svg viewbox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 5 7 7-7 7"></path></svg><span id="startBtnLabel">START</span></button><div class="start-hint" id="startHint">Tap start when you're ready.</div><div class="last-session-inline" id="lastSessionInline">Last session: —</div></div>
+<style id="hearty-v84-update-card-css">
+  .hearty-update-card{border-color:color-mix(in srgb,var(--theme-accent,#2f6df6) 22%,var(--line,rgba(143,163,184,.24)));background:linear-gradient(180deg,color-mix(in srgb,var(--theme-accent,#2f6df6) 7%,var(--card,#fff)),var(--card,#fff));}
+  .hearty-update-card[hidden]{display:none!important;}
+  .update-list{margin:10px 0 0;padding-left:18px;color:var(--muted,#6f7c8d);font-size:.86rem;line-height:1.45;font-weight:650;}
+  .update-list li{margin:3px 0;}
+</style>
+</head>
+<body data-page="home">
+<div class="shell" id="app"><div data-shell-mount="topbar"></div>
+
+<section aria-label="Home overview" class="status-strip">
+<div>
+<div class="eyebrow">HOME</div>
+<h1 class="page-heading" id="welcomeTitle">Welcome to Hearty</h1>
+<p class="subline">Your daily GLP-1 rhythm in one place.</p>
+</div>
 </section>
-<section class="card hearty-support-panel" data-hearty-support-panel data-support-context="exercise" aria-label="Support today">
+<section aria-label="How to use Hearty" class="first-time-guide-card" id="firstTimeGuideCard">
+<div>
+<div class="eyebrow">New to Hearty?</div>
+<h2 class="section-title" style="margin:0 0 6px">Start with the quick guide</h2>
+<p class="subline" style="margin:0">Learn what to do first, how Meals works, when to use Support Mode, and how to install the app.</p>
+</div>
+<div class="guide-actions">
+<a class="action-btn primary" href="how-to-use.html">How to use Hearty</a>
+<button class="btn secondary" id="dismissGuideBanner" type="button">Dismiss</button>
+</div>
+</section>
+<section aria-label="Profile setup" class="first-time-guide-card" id="profileSetupCard">
+<div>
+<div class="eyebrow">Profile setup</div>
+<h2 class="section-title" style="margin:0 0 6px">Personalise your estimates</h2>
+<p class="subline" style="margin:0">Add your body stats, activity level and medication rhythm. Meals can use this information without forcing food preferences.</p>
+</div>
+<div class="guide-actions">
+<a class="action-btn primary" href="onboarding.html">Set up profile</a>
+</div>
+</section>
+
+<section aria-label="What is new in Hearty" class="first-time-guide-card hearty-update-card" id="heartyUpdateCard" hidden>
+<div>
+<div class="eyebrow">What’s new</div>
+<h2 class="section-title" style="margin:0 0 6px">Hearty has been upgraded</h2>
+<p class="subline" style="margin:0">Meals now has prep modes and clearer portions, Progress has photo comparison and weekly consistency, Support now handles injection tracking, and Recipes has replaced Social.</p>
+<ul class="update-list">
+<li>Meals rebuilt with cook-fresh, leftovers and weekly prep options.</li>
+<li>Progress photos and comparison added.</li>
+<li>Injection tracking moved into Support.</li>
+<li>Recipe library added with GLP-1 friendly meal ideas.</li>
+<li>Support Mode cleaned up across the app.</li>
+</ul>
+</div>
+<div class="guide-actions">
+<button class="action-btn primary" id="dismissUpdateCard" type="button">Got it</button>
+</div>
+</section>
+
+<main class="home-grid">
+<section class="main-stack">
+<section aria-label="Progress summary" class="card hero-card">
+<div class="rings">
+<article class="ring-block">
+<div aria-hidden="true" class="ring-wrap" data-ring="adherence">
+<svg fill="none" height="132" viewbox="0 0 132 132" width="132"><circle class="ring-track" cx="66" cy="66" fill="none" r="54"></circle><circle class="ring-progress ring-orange" cx="66" cy="66" fill="none" id="adherenceRing" r="54"></circle></svg>
+<div class="ring-center"><div><div class="ring-value" id="adherenceValue">0%</div><div class="ring-unit">TODAY</div></div></div>
+</div>
+<h2 class="ring-title">Daily protocol</h2>
+<p class="ring-caption" id="adherenceCaption">Complete your core tasks.</p>
+</article>
+<article class="ring-block">
+<div aria-hidden="true" class="ring-wrap" data-ring="water">
+<svg fill="none" height="132" viewbox="0 0 132 132" width="132"><circle class="ring-track" cx="66" cy="66" fill="none" r="54"></circle><circle class="ring-progress ring-teal" cx="66" cy="66" fill="none" id="waterRing" r="54"></circle></svg>
+<div class="ring-center"><div><div class="ring-value" id="waterValue">0/8</div><div class="ring-unit">GLASSES</div></div></div>
+</div>
+<h2 class="ring-title">Hydration</h2>
+<p class="ring-caption" id="waterCaption">Tap the water card to log.</p>
+</article>
+</div>
+<div aria-label="Weight progress" class="progress-band">
+<div class="progress-top">
+<div>
+<div class="section-label">Weight progress</div>
+<div class="progress-main" id="weightProgressMain">Add your first weigh-in</div>
+</div>
+<div class="progress-meta" id="weightProgressMeta">Target weight must be provided by your doctor.</div>
+</div>
+<div aria-hidden="true" class="goalbar"><div class="goalbar-fill" id="goalbarFill"></div><div class="goal-marker" id="goalMarker"></div></div>
+<div class="goal-labels"><span id="startWeightLabel">Start —</span><span id="targetWeightLabel">Target —</span></div>
+</div>
+</section>
+<section aria-label="Today's protocol" class="card rhythm-card" id="todaysRhythmCard">
+<div class="protocol-head">
+<div><div class="section-label">Today’s protocol</div><h2 class="card-title">Small actions, repeated.</h2></div>
+<div class="protocol-state" id="protocolSummary">0 of 3 complete</div>
+</div>
+<div class="next-action" id="nextAction"><div><div class="next-action-label">Next action</div><div class="next-action-text" id="nextActionText">Record today’s weight</div></div></div>
+<div class="protocol-list" id="protocolList">
+<article class="protocol-item" id="weighInTask">
+<div class="task-main"><div class="task-title">Daily weigh-in</div><div class="task-sub">Weigh yourself first thing in the morning, before eating or drinking.</div></div>
+<button aria-label="Open daily weigh-in" class="task-icon-btn" id="openWeightBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-weight.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item" id="walkTask">
+<div class="task-main"><div class="task-title">Movement baseline</div><div class="task-sub">Complete your 20–30 minute movement target.</div></div>
+<button aria-label="Mark movement done" class="task-icon-btn" id="toggleWalkBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-movement.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item" id="photoTask">
+<div class="task-main"><div class="task-title">Progress photos</div><div class="task-sub" id="photoTaskSub">Due every 3 weeks.</div></div>
+<button aria-label="Open photo check-in" class="task-icon-btn" id="openPhotoBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-photo.png"/><span class="task-check">✓</span></button>
+</article>
+<article class="protocol-item lesson-task-item" id="lessonTaskItem">
+<div class="task-main">
+<div class="lesson-card-bar" id="lessonCardCounter"><span class="lesson-mini-icon">📘</span> Lesson 1/10</div>
+<div class="task-title">Today’s lesson</div>
+<div class="task-sub" id="lessonSub">A 2–3 minute practical read.</div>
+</div>
+<button aria-label="Open today's lesson" class="task-icon-btn" id="openLessonBtn" type="button"><img alt="" aria-hidden="true" class="icon-main-img" src="icons/home-lesson.png"/><span class="task-check">✓</span></button>
+</article>
+</div>
+<div class="protocol-complete" id="protocolComplete">✓ Today’s protocol complete</div>
+</section>
+</section>
+<aside class="side-stack">
+<section class="card hearty-support-panel" data-hearty-support-panel data-support-context="home" aria-label="Support today">
 <div class="hearty-support-head">
   <div class="hearty-support-title">
     <div class="section-label">TODAY</div>
@@ -230,154 +200,128 @@ html[data-theme="legacy_rose_aurora_disabled"]{color-scheme:dark;--bg-base:#0f0a
 </div>
 <p class="hearty-support-mini" data-support-status-copy>Normal day. Tap a chip if you need extra support.</p>
 </section>
-<section class="mini-grid">
-<section class="card"><div class="section-label">WEEKLY PROGRESS</div><div class="compact-title">Keep the rhythm.</div><div class="count-big" id="weekLabel">0 of 3</div><div class="compact-copy" id="weekSub">Your first session is ready.</div><div class="week-dots"><div class="week-dot" id="wd0"></div><div class="week-dot" id="wd1"></div><div class="week-dot" id="wd2"></div></div></section>
-<section class="card"><div class="section-label">TOTAL WORKOUTS</div><div class="compact-title">All strength sessions.</div><div class="count-big" id="totalWorkoutLabel">0</div><div class="compact-copy" id="totalWorkoutSub">No workouts completed yet.</div></section>
-<section class="card"><div class="section-label">3-WEEK STREAK</div><div class="compact-title">Three workouts per week.</div><div class="count-big" id="streakLabel">0 weeks</div><div class="compact-copy" id="streakSub">Complete 3 workouts this week to start the streak.</div><div class="week-dots"><div class="week-dot" id="sd0"></div><div class="week-dot" id="sd1"></div><div class="week-dot" id="sd2"></div></div></section>
-
+<section aria-label="Hydration logger" class="card hydration-card">
+<div class="compact-head hydration-head"><div><div class="section-label">Hydration</div></div></div>
+<div class="hydration-logger-clean">
+<button aria-label="Log one glass of water" class="hydration-drop-btn" id="waterGlass" type="button">
+<span class="hydration-drop-wrap"><svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="26"><path d="M12 3s6 6.4 6 11a6 6 0 0 1-12 0c0-4.6 6-11 6-11z" fill="none"></path></svg></span>
+<span class="hydration-add-label">+250ml</span>
+</button>
+<div class="hydration-main">
+<div aria-hidden="true" class="hydration-progress"><span id="waterProgressBar"></span></div>
+<div class="hydration-count-chip" id="waterCountChip">
+<strong id="waterCountValue">0</strong>
+<span id="waterCountHint">Tap once for each glass</span>
+</div>
+</div>
+<button aria-label="Undo water glass" class="water-undo-clean" id="waterUndo" type="button"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="22"><path d="M9 14 4 9l5-5" fill="none"></path><path d="M4 9h10a6 6 0 0 1 0 12h-1" fill="none"></path></svg></button>
+</div>
 </section>
-<section class="card ladder-card collapsed" id="ladderCard"><button aria-controls="ladderBody" aria-expanded="false" class="ladder-card-head" id="ladderToggleBtn" type="button"><div><div class="section-label">PROGRESSION LADDER</div><div class="compact-title" style="margin-bottom:4px">See exactly where you are.</div><div class="compact-copy">A cleaner mobile view of your current step, next step, and overall ladder position.</div></div><div aria-hidden="true" class="ladder-toggle-icon"><svg viewbox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></div></button><div class="ladder-body" hidden="" id="ladderBody"><div id="ladderRows"></div></div></section>
+<section aria-label="Support and injection tracking" class="card medication-card" id="supportInjectionCard">
+<div class="section-label">Support</div>
+<h2 class="card-title">Support & injection tracking</h2>
+<p class="card-copy">Side-effect support and injection rhythm now live together on the Support page.</p>
+<div class="support-actions-row" style="justify-content:flex-start"><a class="soft-btn" href="support.html">Open Support</a></div>
+</section>
+</aside>
 </main>
 
-<section aria-hidden="true" class="exercise-guide-modal" hidden="" id="exerciseGuideModal">
-<div aria-labelledby="exerciseGuideTitle" aria-modal="true" class="exercise-guide-panel" role="dialog">
-<div class="exercise-guide-head">
-<div>
-<div class="section-label">EXERCISE GUIDE</div>
-<h2 class="exercise-guide-title" id="exerciseGuideTitle">How Exercise Works</h2>
-<p class="compact-copy">Exercise in Hearty is built to protect strength, keep progression simple, and reduce pressure on hard GLP-1 days.</p>
-</div>
-<button aria-label="Close" class="exercise-guide-close" id="closeExerciseGuideBtn" type="button">×</button>
-</div>
-<div class="exercise-guide-section">
-<h3>Why strength matters</h3>
-<p>During weight loss, the goal is not only to lose weight. The goal is to protect muscle, strength, and daily function as much as possible.</p>
-</div>
-<div class="exercise-guide-section">
-<h3>How often to train</h3>
-<p>Aim for three strength sessions per week. The app tracks your weekly rhythm and your three-workout streak.</p>
-</div>
-<div class="exercise-guide-section">
-<h3>Home or gym</h3>
-<p>Choose Home or Gym before starting. Home uses bodyweight and band progressions. Gym uses machine-based progressions.</p>
-</div>
-<div class="exercise-guide-section">
-<h3>How progression works</h3>
-<ul>
-<li>Complete your sets with control.</li>
-<li>When you hit the top of the rep range often enough, Hearty moves you toward the next step.</li>
-<li>The progression ladder shows your current step and the next step.</li>
-</ul>
-</div>
-<div class="exercise-guide-section">
-<h3>What counts as a workout</h3>
-<p>A workout counts when you complete the strength session and tap Finish. Daily walking or general movement is handled separately from strength workouts.</p>
-</div>
-<div class="exercise-guide-section">
-<h3>Support Mode</h3>
-<p>Support Mode is for harder GLP-1 days. When it is active, exercise difficulty is reduced by about 25%. It helps you keep the rhythm without forcing a full-intensity session.</p>
-</div>
-<div class="exercise-guide-section">
-<h3>Low-energy days</h3>
-<p>If energy is low, use Support Mode, choose the easier version, move slowly, and stop if you feel unwell. The goal is consistency, not punishment.</p>
-</div>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="weightSheet">
+<div aria-labelledby="weightSheetTitle" aria-modal="true" class="task-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><h2 class="sheet-title" id="weightSheetTitle">Daily weigh-in</h2><p class="sheet-copy">Weigh yourself first thing in the morning, before eating or drinking.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="weight-readout"><input class="weight-input" id="weightValueInput" inputmode="decimal" max="400" min="20" placeholder="0.0" step="0.1" type="number"/><div class="weight-unit" id="weightUnitLabel">KG</div></div>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" id="saveWeightBtn" type="button">Save weight</button></div>
 </div>
 </section>
-<div hidden="" id="workoutOverlay"><div class="wo-shell"><div class="wo-header"><button aria-label="Exit workout" class="wo-close" id="closeWorkoutBtn" title="Exit workout" type="button"><svg viewbox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg><span>Exit</span></button><div class="wo-title"><div class="wo-session-title">STRENGTH SESSION</div><div class="wo-ex-progress" id="woProgress">Exercise 1 of 5</div></div><div style="width:76px"></div></div><div id="screenActive"><div class="ex-card"><div class="ex-movement" id="exMovement">LOWER BODY</div><div class="ex-name" id="exName">Assisted Sit-to-Stand</div><div class="overlay-badge" hidden="" id="overlaySupportBadge">Support mode activated — exercise reduced by 25%</div><div class="ex-image" id="exImage"></div><div class="ex-meta"><div class="ex-meta-item"><div class="ex-meta-label">TARGET</div><div class="ex-meta-val" id="exTarget">8–12 reps</div></div><div class="ex-meta-item"><div class="ex-meta-label">WEIGHT</div><div class="ex-meta-val" id="exWeight">Bodyweight</div></div><div class="ex-meta-item"><div class="ex-meta-label">SET</div><div class="ex-meta-val" id="exSetOf">1 of 3</div></div></div><div class="set-dots" id="setDots"></div><div class="technique"><div class="technique-title">How to do it</div><div class="technique-body" id="techniqueBullets"></div></div></div><div class="action-area"><button class="action-btn primary" id="setActionBtn" type="button">START SET</button></div></div><div id="screenReps" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:16px"><div class="section-label">HOW MANY REPS DID YOU COMPLETE?</div><div id="repSetLabel" style="font-size:.88rem;color:var(--muted)">Set 1 of 3</div></div><div style="display:flex;flex-direction:column;align-items:center"><div class="rep-grid" id="repGrid"></div><div class="rep-extra" id="repExtra"></div></div></div><div class="action-area" id="repConfirmArea" style="display:none"><button class="action-btn primary" id="confirmSetBtn" type="button">CONFIRM SET</button></div></div><div id="screenRest" style="display:none"><div class="ex-card"><div style="text-align:center;margin-bottom:12px"><div class="section-label">REST</div><div id="restNextLabel" style="font-size:.88rem;color:var(--muted)">Set 2 starts soon</div></div><div class="rest-wrap"><div class="rest-box"><div><div class="rest-count" id="restCount">75</div><div style="font-size:.72rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-align:center">SECONDS</div></div></div><div class="rest-flash" id="restFlash">Ready — let's go!</div></div></div><div class="action-area"><button class="action-btn primary" id="nextSetBtn" type="button">START NEXT SET</button></div></div><div id="screenExComplete" style="display:none"><div class="complete-card"><div class="complete-check"><svg viewbox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></svg></div><div id="exCompleteTitle" style="font-size:1.32rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">EXERCISE COMPLETE</div><div id="exCompleteSub" style="font-size:.86rem;color:var(--muted);margin-bottom:12px">Sets logged</div><div class="sets-result" id="setsResult"></div><div class="progress-badge" id="progressReadyBadge" style="display:none">Progress building — ready to advance next session</div></div><div class="action-area"><button class="action-btn primary" id="nextExerciseBtn" type="button">NEXT EXERCISE →</button></div></div><div id="screenWoComplete" style="display:none"><div class="complete-card"><div style="font-size:2.4rem;margin-bottom:10px;color:var(--success)">✓</div><div style="font-size:1.4rem;font-weight:900;letter-spacing:-.02em;margin-bottom:4px">WORKOUT COMPLETE</div><div style="font-size:.86rem;color:var(--muted);margin-bottom:4px">Consistency builds strength.</div><div class="wo-stat-row"><div class="wo-stat"><div class="wo-stat-val" id="wStatEx">5</div><div class="wo-stat-label">EXERCISES</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatSets">15</div><div class="wo-stat-label">SETS</div></div><div class="wo-stat"><div class="wo-stat-val" id="wStatTime">—</div><div class="wo-stat-label">MINUTES</div></div></div><div id="mvFeedbackRows"></div></div><div class="action-area"><button class="action-btn primary" id="finishWorkoutBtn" type="button">FINISH</button></div></div></div></div>
-<div class="exit-overlay" id="exitOverlay"><div class="exit-box"><div style="font-size:1.1rem;font-weight:900;margin-bottom:6px">Exit workout?</div><div style="font-size:.88rem;color:var(--muted);line-height:1.5">Your in-progress session will be discarded.</div><div class="action-area"><button class="action-btn primary" id="continueWorkoutBtn" type="button">CONTINUE WORKOUT</button><button class="action-btn" id="exitWorkoutBtn" type="button">EXIT SESSION</button></div></div></div>
-<script src="js/hearty-support-state.js?v=65"></script>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="photoSheet">
+<div aria-labelledby="photoSheetTitle" aria-modal="true" class="task-sheet photo-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><h2 class="sheet-title" id="photoSheetTitle">Progress photo check-in</h2><p class="sheet-copy">Front photo required. Side and back are optional.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="photo-action-list" id="photoSlots">
+<button class="photo-action-row" data-photo-slot="front" type="button"><span><strong>Front</strong><small>Required</small></span><em>Choose</em><img alt="Front preview" hidden=""/></button>
+<button class="photo-action-row" data-photo-slot="side" type="button"><span><strong>Side</strong><small>Optional</small></span><em>Choose</em><img alt="Side preview" hidden=""/></button>
+<button class="photo-action-row" data-photo-slot="back" type="button"><span><strong>Back</strong><small>Optional</small></span><em>Choose</em><img alt="Back preview" hidden=""/></button>
+</div>
+<input accept="image/*" capture="environment" class="sr-only" id="photoInput" type="file"/>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Cancel</button><button class="sheet-btn sheet-btn-primary" disabled="" id="completePhotoBtn" type="button">Add front photo to complete</button></div>
+</div>
+</section>
+<section aria-hidden="true" class="sheet-overlay" hidden="" id="lessonSheet">
+<div aria-labelledby="lessonTitle" aria-modal="true" class="task-sheet" role="dialog">
+<div class="sheet-handle"></div>
+<div class="sheet-head"><div><div class="lesson-counter" id="lessonCounter">Lesson 1/10</div><h2 class="sheet-title" id="lessonTitle">Today’s lesson</h2><p class="sheet-copy" id="lessonSheetSub">One short practical lesson each day.</p></div><button aria-label="Close" class="sheet-close" data-close-sheet="" type="button">×</button></div>
+<div class="lesson-copy" id="lessonBody"></div>
+<div class="sheet-actions"><button class="sheet-btn sheet-btn-secondary" data-close-sheet="" type="button">Close</button><button class="sheet-btn sheet-btn-primary" id="completeLessonBtn" type="button">Mark lesson complete</button></div>
+</div>
+</section>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+<!-- Hearty v40: old home-only Support Mode script removed. Shared js/hearty-support-state.js is the only support contract. -->
+<script id="hearty-home-first-load-stability">
+  (function(){
+    function markHomeStable(){
+      try {
+        localStorage.setItem('heartyHomeFirstLoadComplete', 'true');
+        localStorage.setItem('heartyHomeLastStableAt', new Date().toISOString());
+      } catch(e) {}
+      window.dispatchEvent(new CustomEvent('hearty:home-stable'));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function(){
+        requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
+      });
+    } else {
+      requestAnimationFrame(function(){ setTimeout(markHomeStable, 600); });
+    }
+  })();
+  </script>
+<script id="hearty-safe-service-worker-registration-v22">
+  /* Hearty v22: registration only. No automatic reload on service-worker controllerchange. */
+  if(location.protocol !== 'file:' && 'serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(){
+        return navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+      });
+    });
+  }
+  </script>
 <script>
-const MOVEMENTS={squat:{title:'Lower Body',homeChain:['Assisted Sit-to-Stand','Sit-to-Stand','Chair Squat Hover','Bodyweight Squat'],gymChain:['Leg Press'],homeImages:['images/exercises/home/squat/sit_to_stand_assisted.webp','images/exercises/home/squat/sit_to_stand.webp','images/exercises/home/squat/chair_squat_hover.webp','images/exercises/home/squat/bodyweight_squat.webp'],gymImages:['images/exercises/gym/leg_press.webp'],tips:{'Assisted Sit-to-Stand':['Sit on a stable chair with feet flat.','Use your hands lightly for support.','Stand up slowly, then sit down with control.'],'Sit-to-Stand':['Sit tall with feet flat.','Lean slightly forward.','Stand without using your hands, then lower slowly.'],'Chair Squat Hover':['Stand in front of the chair.','Push hips back and hover just above the chair.','Stand back up without sitting fully.'],'Bodyweight Squat':['Stand tall with feet comfortable.','Push hips back and bend knees naturally.','Lower to a controlled depth, then stand smoothly.'],'Leg Press':['Set your back firmly against the pad.','Place both feet flat on the platform.','Push without locking your knees, then return slowly.']}},push:{title:'Upper Body Push',homeChain:['Wall Push-Up — Close','Wall Push-Up — Medium','Wall Push-Up — Far','Incline Push-Up — High','Incline Push-Up — Low','Floor Push-Up'],gymChain:['Chest Press Machine'],homeImages:['images/exercises/home/push/wall_pushup_close.webp','images/exercises/home/push/wall_pushup_medium.webp','images/exercises/home/push/wall_pushup_far.webp','images/exercises/home/push/incline_pushup_high.webp','images/exercises/home/push/incline_pushup_low.webp','images/exercises/home/push/floor_pushup.webp'],gymImages:['images/exercises/gym/chest_press.webp'],tips:{'Wall Push-Up — Close':['Stand close to the wall with hands at chest height.','Keep your body long from shoulders to heels.','Bend elbows slightly, then press back to standing tall.'],'Wall Push-Up — Medium':['Step a little further from the wall.','Keep ribs down and shoulders relaxed.','Lower toward the wall with control, then press back.'],'Wall Push-Up — Far':['Stand further from the wall so the body angle is harder.','Keep the body straight.','Lower slowly, then press back without shrugging.'],'Incline Push-Up — High':['Place hands on a sturdy high surface.','Keep shoulders-to-heels in a straight line.','Lower with control, then press back up.'],'Incline Push-Up — Low':['Place hands on a lower sturdy surface.','Keep hips from sagging.','Lower and press back up smoothly.'],'Floor Push-Up':['Start in a straight plank position.','Lower with control.','Press back up without letting hips sag.'],'Chest Press Machine':['Sit tall with back supported.','Hold handles close to chest with shoulders relaxed.','Press forward without locking elbows, then return slowly.']}},pull:{title:'Upper Body Pull',homeChain:['Band Row — Close Stance','Band Row — Step Back','Band Row — Further Back','Band Row — 1-Second Pause'],gymChain:['Seated Row'],homeImages:['images/exercises/home/pull/band_row_level1.webp','images/exercises/home/pull/band_row_level2.webp','images/exercises/home/pull/band_row_level3.webp','images/exercises/home/pull/band_row_level4.webp'],gymImages:['images/exercises/gym/seated_row.webp'],tips:{'Band Row — Close Stance':['Attach the band securely to a door handle.','Stand close enough that the tension feels light.','Pull elbows back toward your sides, then return slowly.'],'Band Row — Step Back':['Attach the band securely to a door handle.','Take a small step back to increase tension.','Pull to the ribs and control the return.'],'Band Row — Further Back':['Step further back until the band feels moderately challenging.','Keep chest open and shoulders relaxed.','Pull elbows back, pause briefly, and return slowly.'],'Band Row — 1-Second Pause':['Use a strong but controlled band position.','Pull elbows back and pause for one second.','Return slowly without letting the band snap forward.'],'Seated Row':['Sit tall with feet braced.','Start with arms extended and shoulders relaxed.','Pull handles toward lower chest or upper stomach, then return slowly.']}},hinge:{title:'Hinge / Posterior Chain',homeChain:['Glute Bridge','Long Lever Glute Bridge','Bridge March'],gymChain:['Lat Pulldown'],homeImages:['images/exercises/home/hinge/glute_bridge.webp','images/exercises/home/hinge/long_lever_bridge.webp','images/exercises/home/hinge/bridge_march.webp'],gymImages:['images/exercises/gym/lat_pulldown.webp'],tips:{'Glute Bridge':['Lie on your back with knees bent and feet flat.','Press through heels and lift hips smoothly.','Lower back down with control.'],'Long Lever Glute Bridge':['Lie on your back with feet further from your body.','Lift hips while keeping ribs controlled.','Lower slowly without over-arching.'],'Bridge March':['Lift into a bridge with hips level.','Raise one bent knee slightly toward your chest.','Place it down and alternate sides with control.'],'Lat Pulldown':['Sit under the bar and hold it wide.','Keep chest lifted with a slight natural lean back.','Pull the bar to upper chest, then return slowly overhead.']}},core:{title:'Core / Shoulder Press',homeChain:['Seated Core Brace','Incline Plank','Floor Plank'],gymChain:['Shoulder Press Machine'],homeImages:['images/exercises/home/core/core_brace.webp','images/exercises/home/core/incline_plank.webp','images/exercises/home/core/plank.webp'],gymImages:['images/exercises/gym/shoulder_press.webp'],tips:{'Seated Core Brace':['Sit tall with feet flat and shoulders relaxed.','Gently tighten your midsection as if preparing for a cough.','Breathe normally and hold the brace without straining.'],'Incline Plank':['Place hands on a bench or sturdy surface.','Step feet back until your body forms a straight line.','Hold with hips steady and breathe normally.'],'Floor Plank':['Place hands on the floor under shoulders.','Step feet back into a straight line from shoulders to heels.','Hold without sagging hips or over-arching.'],'Shoulder Press Machine':['Sit tall with back supported.','Start with handles at shoulder height and elbows slightly forward.','Press upward without locking elbows, then lower with control.']}}};
-const ORDER=['squat','push','pull','hinge','core'];
-const DEFAULT_STATE={location:'home',movementProgress:{squat:{homeLevel:1,gymLevel:0,gymWeight:40,recentTopWins:0,eligibleCount:0,readyToProgress:false},push:{homeLevel:1,gymLevel:0,gymWeight:15,recentTopWins:0,eligibleCount:0,readyToProgress:false},pull:{homeLevel:1,gymLevel:0,gymWeight:20,recentTopWins:0,eligibleCount:0,readyToProgress:false},hinge:{homeLevel:1,gymLevel:0,gymWeight:20,recentTopWins:0,eligibleCount:0,readyToProgress:false},core:{homeLevel:1,gymLevel:0,gymWeight:10,recentTopWins:0,eligibleCount:0,readyToProgress:false}},sessions:[]};
-function clone(x){return JSON.parse(JSON.stringify(x))}function readJSON(k,f){try{const r=localStorage.getItem(k);return r?JSON.parse(r):f}catch(e){return f}}function writeJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}function mergeState(base,stored){const out=clone(base);if(stored&&typeof stored==='object'){Object.assign(out,stored);out.movementProgress=Object.assign({},base.movementProgress,stored.movementProgress||{});ORDER.forEach(k=>out.movementProgress[k]=Object.assign({},base.movementProgress[k],(stored.movementProgress||{})[k]||{}));out.sessions=Array.isArray(stored.sessions)?stored.sessions:[]}return out}let ST=mergeState(DEFAULT_STATE,readJSON('hearty_exercise',null));function saveState(){writeJSON('hearty_exercise',ST)}
-let supportMode='';let SESSION={workout:[],exIndex:0,currentSet:1,selectedReps:null,restTimer:null,restRemaining:75,startTime:null};
-function getSupportMode(){
-  try{
-    if(window.HeartySupport && typeof window.HeartySupport.getReason === 'function') return window.HeartySupport.getReason() || '';
-    const raw=localStorage.getItem('hearty_support_mode_v1');
-    if(raw){const obj=JSON.parse(raw); if(obj&&(obj.active===true||obj.isActive===true)) return String(obj.reason||obj.symptom||''); return '';}
-    return '';
-  }catch(e){return ''}
-}
-function clearExerciseSupport(){
-  try{
-    if(window.HeartySupport && typeof window.HeartySupport.off === 'function') window.HeartySupport.off('exercise');
-    else localStorage.setItem('hearty_support_mode_v1', JSON.stringify({active:false,isActive:false,reason:null,mode:'off',sourcePage:'exercise',updatedAt:new Date().toISOString()}));
-    supportMode='';
-    try{window.dispatchEvent(new CustomEvent('hearty:support-mode-changed',{detail:{active:false,sourcePage:'exercise'}}))}catch(_e){}
-    refresh();
-  }catch(e){location.reload()}
-}
-function getWeekStart(){const now=new Date();const d=new Date(now);d.setDate(d.getDate()-((d.getDay()+6)%7));d.setHours(0,0,0,0);return d.toISOString().slice(0,10)}function getThisWeekCount(){const ws=getWeekStart();return (ST.sessions||[]).filter(s=>(s.date||'').slice(0,10)>=ws&&s.completed&&['train','support','workout',undefined,null].includes(s.type)).length}
-function isWorkoutSession(s){return !!(s&&s.completed&&['train','support','workout',undefined,null].includes(s.type))}
-function getTotalWorkoutCount(){return (ST.sessions||[]).filter(isWorkoutSession).length}
-function shiftISODate(iso,days){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
-function getWeekWorkoutCount(weekStartISO){const weekEnd=shiftISODate(weekStartISO,7);return (ST.sessions||[]).filter(s=>isWorkoutSession(s)&&(s.date||'').slice(0,10)>=weekStartISO&&(s.date||'').slice(0,10)<weekEnd).length}
-function getThreeWorkoutWeekStreak(){let streak=0;let ws=getWeekStart();for(let i=0;i<52;i++){if(getWeekWorkoutCount(ws)>=3){streak++;ws=shiftISODate(ws,-7)}else break}return streak}
-function renderWorkoutCounters(){const total=getTotalWorkoutCount();const streak=getThreeWorkoutWeekStreak();document.getElementById('totalWorkoutLabel').textContent=String(total);document.getElementById('totalWorkoutSub').textContent=total===0?'No workouts completed yet.':total===1?'1 strength workout completed.':`${total} strength workouts completed.`;document.getElementById('streakLabel').textContent=`${streak} ${streak===1?'week':'weeks'}`;document.getElementById('streakSub').textContent=streak>=3?'3-week streak complete. Keep it rolling.':streak===0?'Complete 3 workouts this week to start the streak.':`${Math.max(0,3-streak)} more full ${Math.max(0,3-streak)===1?'week':'weeks'} to reach a 3-week streak.`;for(let i=0;i<3;i++){const el=document.getElementById('sd'+i);if(!el)continue;if(i<Math.min(streak,3)){el.classList.add('done');el.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>'}else{el.classList.remove('done');el.innerHTML=''}}}
-
-function setLocation(loc){ST.location=loc;saveState();document.getElementById('locHome').classList.toggle('active',loc==='home');document.getElementById('locGym').classList.toggle('active',loc==='gym');document.getElementById('heroModePill').textContent=loc==='gym'?'Gym workout':'Home workout';renderLadder()}
-function renderWeekly(){const count=getThisWeekCount();document.getElementById('heroSessionsPill').textContent=`${count} of 3 this week`;document.getElementById('weekLabel').textContent=`${count} of 3`;document.getElementById('weekSub').textContent=count===0?'Your first session is ready.':count===1?'Good start. Two more this week.':count===2?'One more session completes the week.':'Week complete. Recover well.';const done=count>=3;document.getElementById('startBtn').classList.toggle('disabled',done);document.getElementById('startBtnLabel').textContent=done?'WEEK DONE':'START';document.getElementById('startHint').textContent=done?'Rest and recover.':'Tap start when you\'re ready.';for(let i=0;i<3;i++){const el=document.getElementById('wd'+i);if(i<count){el.classList.add('done');el.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>'}else{el.classList.remove('done');el.innerHTML=''}}}
-function renderSupport(){
-  supportMode=getSupportMode();
-  const active=!!supportMode;
-  const pill=document.getElementById('heroSupportMiniPill');
-  if(pill){pill.hidden=!active;pill.textContent=active?'Support active':'Support active'}
-  try{ if(window.HeartySupport && typeof window.HeartySupport.paint === 'function') window.HeartySupport.paint(window.HeartySupport.read()); }catch(e){}
-}
-function renderLastSession(){const target=document.getElementById('lastSessionInline');const last=(ST.sessions||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date))[0];if(!last){target.textContent='Last session: —';return}const ex=last.exercises&&last.exercises[0];target.textContent=ex?`Last session: ${ex.name} — ${(ex.sets||[]).join(' / ')}`:'Last session: Strength session complete'}
-function homeIndex(key){const prog=ST.movementProgress[key]||{};const base=Math.max(0,Number(prog.homeLevel||1)-1);return supportMode?Math.max(0,base-1):base}function currentStepName(key,loc){const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{};if(loc==='gym')return def.gymChain[Math.max(0,Math.min(def.gymChain.length-1,Number(prog.gymLevel||0)))];return def.homeChain[Math.max(0,Math.min(def.homeChain.length-1,homeIndex(key)))]}function currentImage(key,loc){const def=MOVEMENTS[key];if(loc==='gym')return def.gymImages[0]||'';return def.homeImages[Math.max(0,Math.min(def.homeImages.length-1,homeIndex(key)))]||''}
-function renderLadder(){const loc=ST.location||'home',wrap=document.getElementById('ladderRows');wrap.innerHTML='';ORDER.forEach(key=>{const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{},chain=loc==='gym'?def.gymChain:def.homeChain,current=loc==='gym'?Math.max(0,Math.min(chain.length-1,Number(prog.gymLevel||0))):Math.max(0,Math.min(chain.length-1,homeIndex(key)));const currentName=chain[current]||chain[0]||'Current step';const nextName=chain[current+1]||'Maintain this step';const prevName=current>0?chain[current-1]:'Start';const pct=chain.length>1?Math.round((current/(chain.length-1))*100):100;const rail=chain.map((label,idx)=>`<span class="ladder-mini-step ${idx<current?'done':idx===current?'current':''}" title="${label}"></span>`).join('');const detail=loc==='gym'?`<div class="ladder-detail-pill">${Number(prog.gymWeight||0)>0?`${supportMode?roundWeight(Number(prog.gymWeight)*.75):prog.gymWeight} kg working weight`:'Start light'}</div>`:`<div class="ladder-detail-pill">Home progression</div>`;wrap.insertAdjacentHTML('beforeend',`<div class="ladder-row ladder-row-v2"><div class="ladder-topline"><div><div class="ladder-name">${def.title}</div><div class="ladder-current">${currentName}</div></div>${detail}</div><div class="ladder-next-box"><div><div class="ladder-small-label">NEXT STEP</div><div class="ladder-next-name">${nextName}</div></div><div class="ladder-percent">${pct}%</div></div><div class="ladder-rail" aria-label="${def.title} progression">${rail}</div><div class="ladder-bottom"><span>${prevName}</span><span>${currentName}</span><span>${nextName}</span></div></div>`)})}
-function roundWeight(n){return Math.max(0,Math.round(n/2.5)*2.5)}function buildWorkout(loc){supportMode=getSupportMode();return ORDER.map(key=>{const def=MOVEMENTS[key],prog=ST.movementProgress[key]||{},name=currentStepName(key,loc);let totalSets=supportMode?2:3,target=supportMode?'6–9 reps':'8–12 reps',weight='Bodyweight';if(loc==='gym'){const raw=Number(prog.gymWeight||0);const w=supportMode?roundWeight(raw*.75):raw;weight=w>0?`${w} kg`:'Start light'}let tips=(def.tips[name]||[]).slice();if(supportMode)tips.unshift('Support mode is active: use about 25% less difficulty today.');return{key,movement:def.title.toUpperCase(),name,totalSets,target,weight,img:currentImage(key,loc),tips,sets:[]}})}
-function showScreen(id){['screenActive','screenReps','screenRest','screenExComplete','screenWoComplete'].forEach(x=>document.getElementById(x).style.display=x===id?'':'none')}function startWorkout(){if(getThisWeekCount()>=3)return;SESSION={workout:buildWorkout(ST.location||'home'),exIndex:0,currentSet:1,selectedReps:null,restTimer:null,restRemaining:supportMode?90:75,startTime:Date.now()};document.body.classList.add('workout-open');document.getElementById('workoutOverlay').hidden=false;renderExercise();showScreen('screenActive')}
-function requestExit(){document.getElementById('exitOverlay').classList.add('active')}function closeExitDialog(){document.getElementById('exitOverlay').classList.remove('active')}function confirmExit(){clearInterval(SESSION.restTimer);document.getElementById('workoutOverlay').hidden=true;document.getElementById('exitOverlay').classList.remove('active');document.body.classList.remove('workout-open')}
-function renderExercise(){const ex=SESSION.workout[SESSION.exIndex];document.getElementById('woProgress').textContent=`Exercise ${SESSION.exIndex+1} of ${SESSION.workout.length}`;document.getElementById('exMovement').textContent=ex.movement;document.getElementById('exName').textContent=ex.name;document.getElementById('exTarget').textContent=ex.target;document.getElementById('exWeight').textContent=ex.weight;document.getElementById('exSetOf').textContent=`${SESSION.currentSet} of ${ex.totalSets}`;document.getElementById('overlaySupportBadge').hidden=!supportMode;const img=document.getElementById('exImage');img.innerHTML=ex.img?`<img src="${ex.img}" alt="${ex.name}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=&quot;image-fallback&quot;>Exercise image not found:<br>${ex.img}</div>'">`:`<div class="image-fallback">Exercise image not configured</div>`;const dots=document.getElementById('setDots');dots.innerHTML='';for(let i=1;i<=ex.totalSets;i++)dots.insertAdjacentHTML('beforeend',`<div class="${i<SESSION.currentSet?'set-dot done':i===SESSION.currentSet?'set-dot active':'set-dot'}"></div>`);document.getElementById('techniqueBullets').innerHTML=ex.tips.map(t=>`<div class="technique-bullet">${t}</div>`).join('')}
-function handleSetAction(){SESSION.selectedReps=null;document.getElementById('repConfirmArea').style.display='none';document.getElementById('repSetLabel').textContent=`Set ${SESSION.currentSet} of ${SESSION.workout[SESSION.exIndex].totalSets}`;buildRepButtons();showScreen('screenReps')}function buildRepButtons(){const grid=document.getElementById('repGrid'),extra=document.getElementById('repExtra');grid.innerHTML='';extra.innerHTML='';[6,7,8,9,10,11,12,13].forEach((n,i)=>{const html=`<button class="rep-btn" type="button" data-reps="${n}">${n}</button>`;(i<5?grid:extra).insertAdjacentHTML('beforeend',html)});document.querySelectorAll('.rep-btn').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.rep-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');SESSION.selectedReps=btn.dataset.reps;document.getElementById('repConfirmArea').style.display='flex'})}
-function confirmReps(){const ex=SESSION.workout[SESSION.exIndex];if(!SESSION.selectedReps)return;ex.sets.push(String(SESSION.selectedReps));if(SESSION.currentSet<ex.totalSets){SESSION.currentSet++;startRest()}else renderExerciseComplete()}function startRest(){showScreen('screenRest');document.getElementById('restNextLabel').textContent=`Set ${SESSION.currentSet} starts soon`;const total=supportMode?90:75;SESSION.restRemaining=total;document.getElementById('restFlash').style.display='none';clearInterval(SESSION.restTimer);const tick=()=>{document.getElementById('restCount').textContent=SESSION.restRemaining;if(SESSION.restRemaining<=0){clearInterval(SESSION.restTimer);document.getElementById('restFlash').style.display='block'}else SESSION.restRemaining--};tick();SESSION.restTimer=setInterval(tick,1000)}function advanceAfterRest(){clearInterval(SESSION.restTimer);showScreen('screenActive');renderExercise()}
-function renderExerciseComplete(){const ex=SESSION.workout[SESSION.exIndex];document.getElementById('exCompleteTitle').textContent=`${ex.name.toUpperCase()} COMPLETE`;document.getElementById('exCompleteSub').textContent=`${ex.totalSets} sets logged`;document.getElementById('setsResult').innerHTML=ex.sets.map(s=>`<div class="set-pill">${s} reps</div>`).join('');document.getElementById('progressReadyBadge').style.display=ex.sets.some(s=>parseInt(s,10)>=12)?'inline-flex':'none';showScreen('screenExComplete')}function nextExercise(){if(SESSION.exIndex<SESSION.workout.length-1){SESSION.exIndex++;SESSION.currentSet=1;renderExercise();showScreen('screenActive')}else renderWorkoutComplete()}function renderWorkoutComplete(){const minutes=Math.max(1,Math.round((Date.now()-SESSION.startTime)/60000));document.getElementById('wStatEx').textContent=String(SESSION.workout.length);document.getElementById('wStatSets').textContent=String(SESSION.workout.reduce((n,ex)=>n+ex.sets.length,0));document.getElementById('wStatTime').textContent=String(minutes);const rows=document.getElementById('mvFeedbackRows');rows.innerHTML='';SESSION.workout.forEach(ex=>{const hitTop=ex.sets.some(s=>parseInt(s,10)>=12);rows.insertAdjacentHTML('beforeend',`<div class="wo-mv-row"><div class="wo-mv-name">${ex.name}</div><div class="wo-mv-tag ${hitTop?'up':'hold'}">${hitTop?'Progressing':'Hold'}</div></div>`)});showScreen('screenWoComplete')}
-function updateProgressFromWorkout(){const loc=ST.location||'home';if(supportMode)return;SESSION.workout.forEach(ex=>{const prog=ST.movementProgress[ex.key];prog.eligibleCount=Number(prog.eligibleCount||0)+1;const hitTop=ex.sets.some(s=>parseInt(s,10)>=12);if(hitTop)prog.recentTopWins=Number(prog.recentTopWins||0)+1;if(loc==='home'){if(prog.recentTopWins>=2&&prog.eligibleCount>=2){prog.homeLevel=Math.min(MOVEMENTS[ex.key].homeChain.length,Number(prog.homeLevel||1)+1);prog.readyToProgress=true;prog.recentTopWins=0;prog.eligibleCount=0}else prog.readyToProgress=false}else{if(hitTop){prog.gymWeight=roundWeight(Number(prog.gymWeight||0)+(ex.key==='squat'?5:2.5));prog.readyToProgress=true}else prog.readyToProgress=false}})}
-function finishWorkout(){updateProgressFromWorkout();const session={date:new Date().toISOString(),completed:true,type:supportMode?'support':'train',location:ST.location||'home',support_mode_active:!!supportMode,exercises:SESSION.workout.map(ex=>({key:ex.key,name:ex.name,sets:ex.sets,weight:ex.weight,target:ex.target}))};ST.sessions.push(session);saveState();queueExerciseSync(session);renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession();document.getElementById('workoutOverlay').hidden=true;document.body.classList.remove('workout-open')}
-async function queueExerciseSync(session){try{const mod=await import('./frontend/exercise_sync_adapter.js');const client=await import('./supabase-client.js');const id=session.client_session_id||`exercise_${Date.now()}_${Math.random().toString(36).slice(2)}`;session.client_session_id=id;mod.queueExerciseSyncEvent({client_event_id:`${id}_completed`,event_type:'exercise_session_completed',payload:{source:'exercise.html',mode:session.location||ST.location||'home',support_mode_active:!!session.support_mode_active,completed_at:session.date||new Date().toISOString(),session,progress:ST.movementProgress||{}}});mod.flushExerciseSyncQueue(client.supabase)}catch(e){}}
-
-function openExerciseGuide(){
-  const modal=document.getElementById('exerciseGuideModal');
-  if(!modal)return;
-  modal.hidden=false;
-  modal.setAttribute('aria-hidden','false');
-  try{localStorage.setItem('heartyExerciseGuideSeen','true')}catch(e){}
-}
-function closeExerciseGuide(){
-  const modal=document.getElementById('exerciseGuideModal');
-  if(!modal)return;
-  modal.hidden=true;
-  modal.setAttribute('aria-hidden','true');
-}
-function bind(){
-  const on=(id,fn)=>{const el=document.getElementById(id); if(el) el.onclick=fn;};
-  const guideBtn=document.getElementById('openExerciseGuideBtn');if(guideBtn)guideBtn.onclick=openExerciseGuide;
-  const guideClose=document.getElementById('closeExerciseGuideBtn');if(guideClose)guideClose.onclick=closeExerciseGuide;
-  const guideModal=document.getElementById('exerciseGuideModal');if(guideModal)guideModal.addEventListener('click',e=>{if(e.target===guideModal)closeExerciseGuide()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeExerciseGuide()});
-  on('locHome',()=>setLocation('home'));
-  on('locGym',()=>setLocation('gym'));
-  on('startBtn',startWorkout);
-  on('exerciseSupportOff',clearExerciseSupport);
-  on('ladderToggleBtn',()=>{const card=document.getElementById('ladderCard'),body=document.getElementById('ladderBody'),btn=document.getElementById('ladderToggleBtn'); if(!card||!body||!btn)return; const open=body.hasAttribute('hidden');if(open){body.removeAttribute('hidden');card.classList.remove('collapsed');btn.setAttribute('aria-expanded','true')}else{body.setAttribute('hidden','');card.classList.add('collapsed');btn.setAttribute('aria-expanded','false')}});
-  on('setActionBtn',handleSetAction);
-  on('confirmSetBtn',confirmReps);
-  on('nextSetBtn',advanceAfterRest);
-  on('nextExerciseBtn',nextExercise);
-  on('finishWorkoutBtn',finishWorkout);
-  on('closeWorkoutBtn',requestExit);
-  on('continueWorkoutBtn',closeExitDialog);
-  on('exitWorkoutBtn',confirmExit);
-}
-function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
+(function(){
+  const key = 'hearty_help_banner_dismissed';
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    const card = document.getElementById('firstTimeGuideCard');
+    const dismiss = document.getElementById('dismissGuideBanner');
+    if(!card) return;
+    try{ if(localStorage.getItem(key) === 'true') card.hidden = true; }catch(e){}
+    dismiss?.addEventListener('click', function(){
+      card.hidden = true;
+      try{ localStorage.setItem(key, 'true'); }catch(e){}
+    });
+  });
+})();
 </script>
-<script src="js/hearty-updater.js?v=1.0.1"></script>
-<script defer="" src="js/hearty-shell-template.js?v=95"></script>
-<div style="position:fixed;right:6px;bottom:6px;z-index:99999;font:10px/1 monospace;color:rgba(255,255,255,.55);pointer-events:none">ex v6</div>
+
+<script id="hearty-v84-update-card-script">
+(function(){
+  var version = 'v84';
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    var card = document.getElementById('heartyUpdateCard');
+    var btn = document.getElementById('dismissUpdateCard');
+    if(!card) return;
+    try{ if(localStorage.getItem('hearty_last_seen_update_version') !== version) card.hidden = false; }catch(e){ card.hidden = false; }
+    btn && btn.addEventListener('click', function(){
+      card.hidden = true;
+      try{ localStorage.setItem('hearty_last_seen_update_version', version); }catch(e){}
+    });
+  });
+})();
+</script>
+<script src="js/hearty-support-state.js?v=65"></script>
+<script defer="" src="js/hearty-shell-template.js?v=105"></script>
+<script defer src="pwa-install.js?v=94"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 
 <script defer src="js/hearty-usage-tracker.js?v=99"></script>

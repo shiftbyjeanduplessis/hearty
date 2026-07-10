@@ -4,14 +4,52 @@
   const DEFAULT_LOGO_SRC = './hearty-logo.png?v=92';
   const MAIN_PAGES = new Set(['home','meals','exercise','progress','support','recipes','social','community','settings','how-to-use','help','onboarding']);
   const NAV = [
-    { id:'home', label:'Home', href:'./home.html', icon:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>' },
-    { id:'meals', label:'Meals', href:'./meals.html', icon:'<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>' },
-    { id:'exercise', label:'Exercise', href:'./exercise.html', icon:'<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>' },
-    { id:'progress', label:'Progress', href:'./progress.html', icon:'<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>' },
-    { id:'support', label:'Support', href:'./support.html', icon:'<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>' },
-    { id:'recipes', label:'Recipes', href:'./recipes.html', icon:'<path d="M6 4.5h10.5a2.5 2.5 0 0 1 2.5 2.5v12.5H7.5A2.5 2.5 0 0 1 5 17V5.5c0-.55.45-1 1-1z"></path><path d="M8.5 8h7"></path><path d="M8.5 11.5h6"></path><path d="M8.5 15h4"></path>' },
-    { id:'settings', label:'Settings', href:'./settings.html', icon:'<path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.4 7.4 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.38 2.65a7.4 7.4 0 0 0-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65a7.9 7.9 0 0 0 0 1.96l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.51.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.49.42h4c.24 0 .45-.18.49-.42l.38-2.65c.61-.25 1.18-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"></path>' }
+    { id:'home', label:'Home', href:'/home.html', icon:'<path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M9.5 20v-6h5v6"></path>' },
+    { id:'meals', label:'Meals', href:'/meals.html', icon:'<path d="M4 3v8"></path><path d="M8 3v8"></path><path d="M6 3v18"></path><path d="M15 3v18"></path><path d="M15 3c3 2 4.5 5 4.5 8H15"></path>' },
+    { id:'exercise', label:'Exercise', href:'/exercise.html', icon:'<path d="M6 7v10"></path><path d="M18 7v10"></path><path d="M3 10v4"></path><path d="M21 10v4"></path><path d="M6 12h12"></path>' },
+    { id:'progress', label:'Progress', href:'/progress.html', icon:'<path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l3-3 3 2 5-7"></path>' },
+    { id:'support', label:'Support', href:'/support.html', icon:'<path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9z"></path>' },
+    { id:'recipes', label:'Recipes', href:'/recipes.html', icon:'<path d="M6 4.5h10.5a2.5 2.5 0 0 1 2.5 2.5v12.5H7.5A2.5 2.5 0 0 1 5 17V5.5c0-.55.45-1 1-1z"></path><path d="M8.5 8h7"></path><path d="M8.5 11.5h6"></path><path d="M8.5 15h4"></path>' },
+    { id:'settings', label:'Settings', href:'/settings.html', icon:'<path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.4 7.4 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.38 2.65a7.4 7.4 0 0 0-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65a7.9 7.9 0 0 0 0 1.96l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.51.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.49.42h4c.24 0 .45-.18.49-.42l.38-2.65c.61-.25 1.18-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"></path>' }
   ];
+
+  const ROUTES = Object.freeze({
+    home:'/home.html', meals:'/meals.html', exercise:'/exercise.html',
+    progress:'/progress.html', support:'/support.html', recipes:'/recipes.html',
+    settings:'/settings.html'
+  });
+
+  function navigateTo(target){
+    const route = ROUTES[target];
+    if(!route) return;
+    try{ window.location.assign(route); }
+    catch(_error){ window.location.href = route; }
+  }
+
+  function bindNavigation(){
+    document.querySelectorAll('#bottomNav a.nav-item[data-nav-target]').forEach(link => {
+      if(link.dataset.heartyNavBound === 'true') return;
+      link.dataset.heartyNavBound = 'true';
+      link.addEventListener('click', function(event){
+        const target = this.getAttribute('data-nav-target');
+        if(!ROUTES[target]) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        navigateTo(target);
+      }, true);
+    });
+    document.querySelectorAll('[data-shell-template="topbar"] a.brand').forEach(link => {
+      if(link.dataset.heartyNavBound === 'true') return;
+      link.dataset.heartyNavBound = 'true';
+      link.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        if(event.stopImmediatePropagation) event.stopImmediatePropagation();
+        navigateTo('home');
+      }, true);
+    });
+  }
 
   function pageId(){
     const bodyPage = document.body && document.body.getAttribute('data-page');
@@ -42,8 +80,8 @@
   function topbarMarkup(active){
     const settingsCurrent = active === 'settings' ? ' aria-current="page"' : '';
     return '<header class="topbar" data-shell-template="topbar" data-active-page="' + active + '">' +
-      '<a class="brand" href="./home.html" aria-label="Hearty Home" data-logo-source="real-asset"><img class="brand-logo" src="' + logoSrc() + '" alt="Hearty"></a>' +
-      '<a class="icon-btn" href="./settings.html" aria-label="Settings"' + settingsCurrent + '>' +
+      '<a class="brand" href="/home.html" aria-label="Hearty Home" data-logo-source="real-asset"><img class="brand-logo" src="' + logoSrc() + '" alt="Hearty"></a>' +
+      '<a class="icon-btn" href="/settings.html" aria-label="Settings"' + settingsCurrent + '>' +
       '<svg viewBox="0 0 24 24" data-hearty-gear="true" aria-hidden="true" focusable="false"><path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.4 7.4 0 0 0-1.69-.98l-.38-2.65A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.38 2.65a7.4 7.4 0 0 0-1.69.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65a7.9 7.9 0 0 0 0 1.96l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46a.5.5 0 0 0 .6.22l2.49-1c.51.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.49.42h4c.24 0 .45-.18.49-.42l.38-2.65c.61-.25 1.18-.58 1.69-.98l2.49 1a.5.5 0 0 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"></path></svg>' +
       '</a></header>';
   }
@@ -119,7 +157,7 @@
       lockup.className = 'auth-brand-lockup';
       logo.insertAdjacentElement('afterend', lockup);
     }
-    lockup.innerHTML = '<a class="brand" href="./home.html" aria-label="Hearty Home"><img class="brand-logo" src="' + logoSrc() + '" alt="Hearty"></a>';
+    lockup.innerHTML = '<a class="brand" href="/home.html" aria-label="Hearty Home"><img class="brand-logo" src="' + logoSrc() + '" alt="Hearty"></a>';
   }
 
   function truthySupportValue(value){
@@ -194,6 +232,7 @@
         const host = shellHost();
         renderTopbar(host, active);
         renderNav(host, active);
+        bindNavigation();
       }
       normaliseSupportState();
     }finally{
@@ -211,5 +250,5 @@
   ['hearty:support-change','hearty:support-mode-changed','hearty:support-mode-change','hearty:support-changed'].forEach(eventName => {
     window.addEventListener(eventName, normaliseSupportState);
   });
-  window.HeartyShellTemplate = { render, buildNav, NAV };
+  window.HeartyShellTemplate = { render, buildNav, bindNavigation, navigateTo, NAV, ROUTES };
 })();

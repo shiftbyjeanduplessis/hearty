@@ -411,44 +411,13 @@ function bind(){
 }
 function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 </script>
-<script src="js/hearty-updater.js?v=104"></script>
-<script defer="" src="js/hearty-shell-template.js?v=95"></script>
+<script src="js/hearty-updater.js?v=105"></script>
+<script defer="" src="js/hearty-shell-template.js?v=105"></script>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 
 <script defer src="js/hearty-usage-tracker.js?v=99"></script>
 
 
-
-<script id="exercise-native-nav-handoff">
-(function(){
-  function stopWorkoutForNavigation(){
-    try{
-      if(typeof SESSION !== 'undefined' && SESSION && SESSION.restTimer){
-        clearInterval(SESSION.restTimer);
-        SESSION.restTimer=null;
-      }
-      var workout=document.getElementById('workoutOverlay');
-      var recovery=document.getElementById('recoveryOverlay');
-      var exit=document.getElementById('exitOverlay');
-      if(workout) workout.hidden=true;
-      if(recovery) recovery.hidden=true;
-      if(exit) exit.classList.remove('active');
-      document.body.classList.remove('workout-open');
-    }catch(_error){}
-  }
-  document.addEventListener('click',function(event){
-    var target=event.target instanceof Element ? event.target : event.target && event.target.parentElement;
-    var link=target && target.closest ? target.closest('#bottomNav a.nav-item[href], [data-shell-mount="topbar"] a.brand[href]') : null;
-    if(!link) return;
-    var href=link.href || link.getAttribute('href');
-    if(!href) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    stopWorkoutForNavigation();
-    window.location.href=href;
-  },true);
-})();
-</script>
 
 </body>
 </html>
