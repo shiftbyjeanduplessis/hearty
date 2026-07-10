@@ -192,6 +192,18 @@ body[data-page="exercise"] .stack > .card:last-child{
     padding-bottom:28px;
   }
 }
+
+/* v103 exercise navigation click rescue */
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
+body[data-page="exercise"] [data-shell-mount="topbar"] .brand{
+  pointer-events:auto!important;
+}
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"]{
+  z-index:2147483647!important;
+}
+
 </style>
 <!-- Shared Hearty theme system -->
 <link href="css/hearty-theme.css?v=57" rel="stylesheet"/>
@@ -402,5 +414,31 @@ function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();render
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 
 <script defer src="js/hearty-usage-tracker.js?v=99"></script>
+
+<script id="exercise-nav-route-rescue">
+(function(){
+  function leaveExercise(href){
+    try{
+      if(window.SESSION && SESSION.restTimer) clearInterval(SESSION.restTimer);
+      var workout=document.getElementById('workoutOverlay');
+      var exit=document.getElementById('exitOverlay');
+      if(workout) workout.hidden=true;
+      if(exit) exit.classList.remove('active');
+      document.body.classList.remove('workout-open');
+    }catch(e){}
+    window.location.assign(new URL(href, window.location.href).href);
+  }
+  document.addEventListener('click',function(event){
+    var link=event.target.closest('#bottomNav a.nav-item[href], [data-shell-mount="topbar"] a.brand[href]');
+    if(!link) return;
+    var href=link.getAttribute('href');
+    if(!href) return;
+    event.preventDefault();
+    event.stopPropagation();
+    leaveExercise(href);
+  },true);
+})();
+</script>
+
 </body>
 </html>
