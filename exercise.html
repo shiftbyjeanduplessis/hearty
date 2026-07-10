@@ -193,16 +193,19 @@ body[data-page="exercise"] .stack > .card:last-child{
   }
 }
 
-/* v103 exercise navigation click rescue */
-body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"],
-body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav,
-body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] .nav-item,
-body[data-page="exercise"] [data-shell-mount="topbar"] .brand{
-  pointer-events:auto!important;
+/* v104 workout/nav boundary: keep the workout clear of the fixed app navigation. */
+body[data-page="exercise"].workout-open #workoutOverlay,
+body[data-page="exercise"].workout-open #recoveryOverlay{
+  bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
 }
 body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"]{
-  z-index:2147483647!important;
+  pointer-events:none!important;
 }
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] > nav.bottom-nav[data-shell-template="bottom-nav"],
+body[data-page="exercise"] #bottomNav[data-shell-mount="bottom-nav"] .nav-item{
+  pointer-events:auto!important;
+}
+
 
 </style>
 <!-- Shared Hearty theme system -->
@@ -408,34 +411,41 @@ function bind(){
 }
 function refresh(){renderSupport();renderWeekly();renderWorkoutCounters();renderLadder();renderLastSession()}document.addEventListener('DOMContentLoaded',()=>{bind();setLocation(ST.location||'home');refresh()});window.addEventListener('storage',()=>setTimeout(refresh,50));window.addEventListener('hearty:support-mode-changed',()=>setTimeout(refresh,50));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 </script>
-<script src="js/hearty-updater.js?v=1.0.1"></script>
+<script src="js/hearty-updater.js?v=104"></script>
 <script defer="" src="js/hearty-shell-template.js?v=95"></script>
-<div style="position:fixed;right:6px;bottom:6px;z-index:99999;font:10px/1 monospace;color:rgba(255,255,255,.55);pointer-events:none">ex v6</div>
 <div id="bottomNav" data-shell-mount="bottom-nav"></div>
 
 <script defer src="js/hearty-usage-tracker.js?v=99"></script>
 
-<script id="exercise-nav-route-rescue">
+
+
+<script id="exercise-native-nav-handoff">
 (function(){
-  function leaveExercise(href){
+  function stopWorkoutForNavigation(){
     try{
-      if(window.SESSION && SESSION.restTimer) clearInterval(SESSION.restTimer);
+      if(typeof SESSION !== 'undefined' && SESSION && SESSION.restTimer){
+        clearInterval(SESSION.restTimer);
+        SESSION.restTimer=null;
+      }
       var workout=document.getElementById('workoutOverlay');
+      var recovery=document.getElementById('recoveryOverlay');
       var exit=document.getElementById('exitOverlay');
       if(workout) workout.hidden=true;
+      if(recovery) recovery.hidden=true;
       if(exit) exit.classList.remove('active');
       document.body.classList.remove('workout-open');
-    }catch(e){}
-    window.location.assign(new URL(href, window.location.href).href);
+    }catch(_error){}
   }
   document.addEventListener('click',function(event){
-    var link=event.target.closest('#bottomNav a.nav-item[href], [data-shell-mount="topbar"] a.brand[href]');
+    var target=event.target instanceof Element ? event.target : event.target && event.target.parentElement;
+    var link=target && target.closest ? target.closest('#bottomNav a.nav-item[href], [data-shell-mount="topbar"] a.brand[href]') : null;
     if(!link) return;
-    var href=link.getAttribute('href');
+    var href=link.href || link.getAttribute('href');
     if(!href) return;
     event.preventDefault();
-    event.stopPropagation();
-    leaveExercise(href);
+    event.stopImmediatePropagation();
+    stopWorkoutForNavigation();
+    window.location.href=href;
   },true);
 })();
 </script>
