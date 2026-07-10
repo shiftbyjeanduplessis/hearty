@@ -89,6 +89,27 @@
   .save-state{margin-top:8px;min-height:18px;color:var(--muted,#6f7c8d);font-size:.8rem;font-weight:650}.save-state:empty{display:none}.empty-soft{padding:14px;border-radius:16px;border:1px solid var(--line,rgba(143,163,184,.22));color:var(--muted,#6f7c8d);font-size:.86rem;font-weight:650;background:var(--surface-chip,rgba(255,255,255,.96))}
   @media(max-width:980px){.med-summary-grid,.metric-grid{grid-template-columns:1fr 1fr}.compare-controls{grid-template-columns:1fr}.check-grid{grid-template-columns:1fr 1fr}}
   @media(max-width:760px){:root{--progress-card-pad:15px;--progress-radius:22px}.progress-stack{gap:12px;margin-top:12px}.progress-card-head,.progress-hero-top{display:grid}.weight-log-form,.photo-add-grid,.med-summary-grid,.metric-grid,.compare-grid,.gallery-thumbs,.check-grid{grid-template-columns:1fr}.trend-wrap{min-height:230px}.trend-svg{min-height:210px}.recent-row{grid-template-columns:minmax(0,1fr) auto}.recent-row .tiny-btn{grid-column:1/-1;justify-self:start}.photo-tabs{margin-inline:-2px}.compare-image{min-height:245px}}
+
+/* v102 fixed-nav clearance: forms and save buttons can scroll fully above the menu. */
+body[data-page="progress"] .shell,
+body[data-page="progress"] .progress-stack{
+  padding-bottom:calc(170px + env(safe-area-inset-bottom, 0px))!important;
+}
+body[data-page="progress"] #weightLogForm,
+body[data-page="progress"] #photoAddForm,
+body[data-page="progress"] #weeklyCheckinForm,
+body[data-page="progress"] .progress-btn{
+  scroll-margin-bottom:calc(170px + env(safe-area-inset-bottom, 0px));
+}
+@media(max-width:760px){
+  body[data-page="progress"] .shell,
+  body[data-page="progress"] .progress-stack{
+    padding-bottom:calc(190px + env(safe-area-inset-bottom, 0px))!important;
+  }
+  body[data-page="progress"] .progress-card:last-child{
+    margin-bottom:24px;
+  }
+}
 </style>
 </head>
 <body data-page="progress">
