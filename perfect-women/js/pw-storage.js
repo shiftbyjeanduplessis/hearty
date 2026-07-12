@@ -34,7 +34,7 @@
 
   function defaultState() {
     return {
-      schemaVersion: 6,
+      schemaVersion: 8,
       localClientId: uid('pw_client'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -64,7 +64,8 @@
         measurements: {},
         checkins: {},
         walks: [],
-        runs: []
+        runs: [],
+        strengthSessions: []
       },
       programs: {
         active: null
@@ -78,6 +79,18 @@
       joggingProgram: {
         started: false,
         startDate: null
+      },
+      strengthProgram: {
+        home: { started: false, startDate: null, activeWorkout: null },
+        gym: { started: false, startDate: null, activeWorkout: null },
+        progress: {
+          squat: { homeLevel: 1, homeWeightKg: 0, gymWeight: 40, nextWeightKg: { home: 0, gym: 40 } },
+          push: { homeLevel: 1, homeWeightKg: 0, gymWeight: 15, nextWeightKg: { home: 0, gym: 15 } },
+          pull: { homeLevel: 1, homeWeightKg: 0, gymWeight: 20, nextWeightKg: { home: 0, gym: 20 } },
+          hinge: { homeLevel: 1, homeWeightKg: 0, gymWeight: 20, nextWeightKg: { home: 0, gym: 20 } },
+          core: { homeLevel: 1, homeWeightKg: 0, gymWeight: 10, nextWeightKg: { home: 0, gym: 10 } },
+          legExtension: { homeLevel: 1, homeWeightKg: 0, gymWeight: 0, nextWeightKg: { home: 0, gym: 0 } }
+        }
       },
       photos: {
         sets: []
@@ -118,20 +131,34 @@
 
   function save(nextState) {
     nextState.updatedAt = new Date().toISOString();
-    nextState.sync.pending = true;
+    if (!nextState.sync || typeof nextState.sync !== 'object') {
+      nextState.sync = { status: 'local-only', pending: true, lastSyncedAt: null };
+    } else {
+      nextState.sync.pending = true;
+    }
+    const serialized = JSON.stringify(nextState);
+    localStorage.setItem(KEY, serialized);
     state = nextState;
-    localStorage.setItem(KEY, JSON.stringify(state));
     return state;
   }
 
+  function cloneState(value) {
+    if (typeof window !== 'undefined' && typeof window.structuredClone === 'function') {
+      try { return window.structuredClone(value); } catch (err) {
+        console.warn('Perfect Women tracker: structured clone failed; using JSON clone.', err);
+      }
+    }
+    return JSON.parse(JSON.stringify(value));
+  }
+
   function update(mutator) {
-    const draft = structuredClone ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+    const draft = cloneState(state);
     mutator(draft);
     return save(draft);
   }
 
   function getState() {
-    return structuredClone ? structuredClone(state) : JSON.parse(JSON.stringify(state));
+    return cloneState(state);
   }
 
   function getTodayWater() {
@@ -372,8 +399,183 @@
   }
 
 
+  function cleanStrengthType(type) {
+    return type === 'gym' ? 'gym' : 'home';
+  }
+
+  function strengthProgramKey(type) {
+    return cleanStrengthType(type) === 'gym' ? 'gymStrength' : 'homeStrength';
+  }
+
+  function strengthWeekNumber(type = 'home', dateKey = todayKey()) {
+    const cleanType = cleanStrengthType(type);
+    const program = state.strengthProgram?.[cleanType] || {};
+    if (!program.started || !program.startDate) return 1;
+    const startDate = new Date(`${program.startDate}T00:00:00`);
+    const date = new Date(`${dateKey}T00:00:00`);
+    const diffDays = Math.floor((date - startDate) / 86400000);
+    return Math.min(12, Math.max(1, Math.floor(diffDays / 7) + 1));
+  }
+
+  function startStrengthProgram(type = 'home') {
+    const cleanType = cleanStrengthType(type);
+    const date = todayKey();
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || date;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+      if (!Array.isArray(draft.logs.strengthSessions)) draft.logs.strengthSessions = [];
+    });
+  }
+
+  function roundLoad(value, increment) {
+    const n = Math.max(0, Number(value || 0));
+    const step = Math.max(0.5, Number(increment || 1));
+    return Math.round(n / step) * step;
+  }
+
+  function strengthIncrement(type, key) {
+    if (type === 'gym') return key === 'squat' ? 5 : 2.5;
+    return 1;
+  }
+
+  function applyStrengthProgress(draft, type, exercises) {
+    if (!draft.strengthProgram.progress) draft.strengthProgram.progress = {};
+    const maxHomeLevels = { squat: 4, push: 6, pull: 4, hinge: 3, core: 3, legExtension: 1 };
+    (Array.isArray(exercises) ? exercises : []).forEach((exercise) => {
+      const key = exercise?.key;
+      const sets = Array.isArray(exercise?.sets) ? exercise.sets : [];
+      if (!key || !sets.length) return;
+      if (!draft.strengthProgram.progress[key]) draft.strengthProgram.progress[key] = { homeLevel: 1, homeWeightKg: 0, gymWeight: 0, nextWeightKg: { home: 0, gym: 0 } };
+      const progress = draft.strengthProgram.progress[key];
+      const workingSets = sets.filter((set) => set && set.setType === 'working');
+      const finalSet = workingSets[workingSets.length - 1] || sets[sets.length - 1];
+      if (!finalSet) return;
+      const reps = Math.max(0, Number(finalSet.reps || 0));
+      const weight = Math.max(0, Number(finalSet.weightKg || 0));
+      const targetMin = Math.max(1, Number(exercise.targetMin || 8));
+      const targetMax = Math.max(targetMin, Number(exercise.targetMax || 12));
+      const increment = strengthIncrement(type, key);
+      const hitTop = reps >= targetMax;
+      const underTarget = reps > 0 && reps < targetMin;
+      let nextWeight = weight;
+      let recommendation = 'Repeat this weight next session.';
+
+      if (hitTop && weight > 0) {
+        nextWeight = roundLoad(weight + increment, increment);
+        recommendation = `Increase to ${nextWeight} kg next session.`;
+      } else if (underTarget && weight > 0) {
+        recommendation = `Keep ${weight} kg and build back to ${targetMin}–${targetMax} reps.`;
+      } else if (weight > 0) {
+        recommendation = `Keep ${weight} kg until you reach ${targetMax} controlled reps.`;
+      } else if (type === 'home' && hitTop && maxHomeLevels[key] > 1) {
+        progress.homeTopWins = Number(progress.homeTopWins || 0) + 1;
+        if (progress.homeTopWins >= 2) {
+          progress.homeLevel = Math.min(maxHomeLevels[key], Number(progress.homeLevel || 1) + 1);
+          progress.homeTopWins = 0;
+          recommendation = 'Move to the next bodyweight variation next session.';
+        } else {
+          recommendation = 'Repeat once more at the top of the rep range, then progress the variation.';
+        }
+      } else if (type === 'home') {
+        recommendation = `Keep this variation until you reach ${targetMax} controlled reps.`;
+      }
+
+      progress.lastWorkingWeightKg = weight;
+      progress.lastWorkingReps = reps;
+      progress.lastSetDate = exercise.date || todayKey();
+      progress.lastRecommendation = recommendation;
+      if (!progress.nextWeightKg || typeof progress.nextWeightKg !== 'object') progress.nextWeightKg = { home: 0, gym: 0 };
+      progress.nextWeightKg[type] = nextWeight;
+      if (type === 'gym') progress.gymWeight = nextWeight;
+      else progress.homeWeightKg = nextWeight;
+    });
+  }
+
+  function saveStrengthSession({
+    type = 'home',
+    date,
+    exercises = [],
+    notes = '',
+    workoutId = '',
+    workoutTitle = '',
+    durationSeconds = 0,
+    roundsCompleted = 0,
+    completionPercent = 100,
+    weekOverride = null
+  } = {}) {
+    const cleanType = cleanStrengthType(type);
+    const cleanDate = date || todayKey();
+    const week = weekOverride || strengthWeekNumber(cleanType, cleanDate);
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || cleanDate;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+      if (!Array.isArray(draft.logs.strengthSessions)) draft.logs.strengthSessions = [];
+      const cleanExercises = Array.isArray(exercises) ? exercises : [];
+      draft.logs.strengthSessions.push({
+        id: uid('strength'),
+        date: cleanDate,
+        week: Number(week || 1),
+        programType: cleanType,
+        workoutId: workoutId || '',
+        workoutTitle: workoutTitle || '',
+        durationSeconds: Math.max(0, Number(durationSeconds || 0)),
+        roundsCompleted: Math.max(0, Number(roundsCompleted || 0)),
+        completionPercent: Math.max(0, Math.min(100, Number(completionPercent || 100))),
+        exercises: cleanExercises,
+        notes: notes || '',
+        ts: new Date().toISOString()
+      });
+      applyStrengthProgress(draft, cleanType, cleanExercises.map((exercise) => ({ ...exercise, date: cleanDate })));
+      if (draft.strengthProgram?.[cleanType]) draft.strengthProgram[cleanType].activeWorkout = null;
+    });
+  }
+
+  function saveStrengthWorkoutProgress(type, progress) {
+    const cleanType = cleanStrengthType(type);
+    return update((draft) => {
+      if (!draft.strengthProgram) draft.strengthProgram = defaultState().strengthProgram;
+      if (!draft.strengthProgram[cleanType]) draft.strengthProgram[cleanType] = { started: true, startDate: todayKey(), activeWorkout: null };
+      draft.strengthProgram[cleanType].started = true;
+      draft.strengthProgram[cleanType].startDate = draft.strengthProgram[cleanType].startDate || todayKey();
+      draft.strengthProgram[cleanType].activeWorkout = progress ? { ...progress, savedAt: new Date().toISOString() } : null;
+      if (!draft.programs) draft.programs = { active: null };
+      draft.programs.active = strengthProgramKey(cleanType);
+    });
+  }
+
+  function clearStrengthWorkoutProgress(type) {
+    const cleanType = cleanStrengthType(type);
+    return update((draft) => {
+      if (draft.strengthProgram?.[cleanType]) draft.strengthProgram[cleanType].activeWorkout = null;
+    });
+  }
+
+  function saveHomeWorkoutProgress(progress) { return saveStrengthWorkoutProgress('home', progress); }
+  function clearHomeWorkoutProgress() { return clearStrengthWorkoutProgress('home'); }
+
+  function deleteStrengthSession(id) {
+    return update((draft) => {
+      draft.logs.strengthSessions = (draft.logs.strengthSessions || []).filter((item) => item.id !== id);
+    });
+  }
+
+  function sortedStrengthSessions(type = '') {
+    const cleanType = type ? cleanStrengthType(type) : '';
+    return (state.logs.strengthSessions || [])
+      .filter((item) => item && item.date && (!cleanType || item.programType === cleanType))
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.ts || '').localeCompare(a.ts || ''));
+  }
+
+
   function setActiveProgram(program) {
-    const clean = ['walking', 'jogging'].includes(program) ? program : null;
+    const clean = ['walking', 'jogging', 'homeStrength', 'gymStrength'].includes(program) ? program : null;
     if (!clean) return state;
     return update((draft) => {
       if (!draft.programs) draft.programs = { active: null };
@@ -437,6 +639,22 @@
     return update((draft) => {
       draft.client.onboarded = true;
     });
+  }
+
+
+  function toggleRecipeFavourite(recipeId) {
+    if (!recipeId) return getState();
+    return update((draft) => {
+      if (!draft.recipes) draft.recipes = { favourites: [] };
+      if (!Array.isArray(draft.recipes.favourites)) draft.recipes.favourites = [];
+      const index = draft.recipes.favourites.indexOf(recipeId);
+      if (index >= 0) draft.recipes.favourites.splice(index, 1);
+      else draft.recipes.favourites.push(recipeId);
+    });
+  }
+
+  function isRecipeFavourite(recipeId) {
+    return !!recipeId && Array.isArray(state.recipes?.favourites) && state.recipes.favourites.includes(recipeId);
   }
 
   function resetData() {
@@ -546,6 +764,15 @@
     deleteRunSession,
     sortedRuns,
     joggingWeekNumber,
+    startStrengthProgram,
+    saveStrengthSession,
+    saveHomeWorkoutProgress,
+    clearHomeWorkoutProgress,
+    saveStrengthWorkoutProgress,
+    clearStrengthWorkoutProgress,
+    deleteStrengthSession,
+    sortedStrengthSessions,
+    strengthWeekNumber,
     saveWeight,
     saveMeasurements,
     sortedMeasurements,
@@ -555,6 +782,8 @@
     saveSettings,
     completeOnboarding,
     markOnboardingDone,
+    toggleRecipeFavourite,
+    isRecipeFavourite,
     resetData,
     exportData,
     savePhotoSet,
