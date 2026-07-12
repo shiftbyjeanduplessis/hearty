@@ -1,0 +1,5 @@
+PERFECT WOMEN V1.4.1 HTML REPAIR
+
+Upload index.html and sw.js into your existing /perfect-women/ folder.
+The correct index.html begins with: <!doctype html>
+Do not upload a PNG, JPG or WEBP file as index.html.
