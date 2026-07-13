@@ -1,12 +1,14 @@
 {
   "name": "Perfect Women Tracker",
   "short_name": "Perfect Women",
-  "description": "Local-first Perfect Women client tracker for water, movement, weekly weigh-ins, programs, walking-program logs, 5 km jogging-program logs, beginner strength programs, measurements, weekly check-ins, progress photo comparison, recipes and mini meal ideas.",
+  "description": "Perfect Women client tracker for water, movement, weigh-ins, programs, strength progression, measurements, check-ins, progress photos, recipes and meal ideas.",
   "start_url": "/perfect-women/",
+  "scope": "/perfect-women/",
+  "id": "/perfect-women/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#06122F",
   "theme_color": "#06122F",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "/perfect-women/assets/icon-192.png",
@@ -20,7 +22,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "scope": "/perfect-women/",
-  "id": "/perfect-women/"
+  ]
 }

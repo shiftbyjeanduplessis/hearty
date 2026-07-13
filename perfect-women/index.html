@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#06122F" />
-  <title>Perfect Women Tracker</title>
-  <meta name="pw-build" content="1.4.2">
-  <link rel="manifest" href="/perfect-women/manifest.json" />
-  <link rel="apple-touch-icon" href="/perfect-women/assets/icon-192.png" />
+  <title>Perfect Women</title>
+  <meta name="pw-build" content="1.5.1-ux">
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
   <style id="pw-inline-css">
 :root {
   --bg: #06122f;
@@ -2458,6 +2458,8 @@ button:disabled {
   }
 }
 
+
+
 </style>
 
   <style id="pw-workout-v140-styles">
@@ -2737,6 +2739,153 @@ button:disabled {
       #workoutPlayerModal.pw-workout-v140 .workout-header-actions .compact::before { content:'Ⅱ'; font-size:.92rem; }
     }
   </style>
+
+
+<style id="pw-ux-clean-v151">
+/* Perfect Women 1.5.1 standard UX cleanup */
+:root { --nav-h: 74px; }
+body.pw-ux-clean .app-header { padding: 10px 12px 0; }
+body.pw-ux-clean .app-brand-card {
+  min-height: 78px; padding: 12px 14px; gap: 10px; border-radius: 0 0 22px 22px;
+}
+body.pw-ux-clean .topbar-logo { width: 52px !important; height: 52px !important; object-fit:contain; }
+body.pw-ux-clean .topbar-logo-wrap { width: 54px !important; height: 54px !important; }
+body.pw-ux-clean .brand-copy .eyebrow { margin-bottom:2px; font-size:9px; }
+body.pw-ux-clean .brand-copy h1 { font-size:23px; }
+body.pw-ux-clean .brand-subtitle { display:none; }
+
+body.pw-ux-clean .page-wrap { padding-top: 6px; }
+body.pw-ux-clean .card { margin: 10px 0; border-radius:22px; padding:16px; }
+body.pw-ux-clean .bottom-nav { grid-template-columns:repeat(5,1fr) !important; gap:2px; padding:6px 7px calc(6px + env(safe-area-inset-bottom)); }
+body.pw-ux-clean .bottom-nav .nav-btn[data-nav="photos"] { display:none !important; }
+body.pw-ux-clean .bottom-nav .nav-btn { min-width:0; font-size:10px; padding:7px 3px; }
+body.pw-ux-clean .bottom-nav .nav-btn .ui-icon { width:19px; height:19px; }
+
+/* Home: four clear areas only */
+body.pw-ux-clean #page-home > .welcome-card,
+body.pw-ux-clean #page-home > #weighInCard,
+body.pw-ux-clean #page-home > #homeCheckinCard,
+body.pw-ux-clean #page-home > #homeWalkingCard,
+body.pw-ux-clean #page-home > #progressRhythmCard,
+body.pw-ux-clean #page-home > article.soft-card { display:none !important; }
+body.pw-ux-clean #page-home #nextActionCard { padding:20px; background:linear-gradient(135deg,rgba(232,0,117,.25),rgba(255,255,255,.08)); }
+body.pw-ux-clean #page-home #nextActionCard h3 { font-size:22px; }
+body.pw-ux-clean .ux-section-label { margin:18px 4px 7px; font-size:11px; font-weight:900; letter-spacing:.13em; text-transform:uppercase; color:rgba(248,250,252,.58); }
+body.pw-ux-clean #page-home > .grid.two { gap:9px; }
+body.pw-ux-clean #page-home > .grid.two .card { margin:0; padding:14px; }
+body.pw-ux-clean #page-home > .grid.two .small { font-size:11px; }
+body.pw-ux-clean #uxHomeProgramCard { border-color:rgba(217,167,46,.28); }
+body.pw-ux-clean .ux-program-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+body.pw-ux-clean .ux-program-meta { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+body.pw-ux-clean .ux-chip { padding:7px 9px; border-radius:12px; font-size:11px; font-weight:800; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09); color:#e8e9f5; }
+body.pw-ux-clean .ux-weight-line { font-size:12px; color:var(--muted); line-height:1.5; margin:0 0 12px; }
+body.pw-ux-clean #page-home .weekly-strip { margin-top:8px; }
+
+/* Context/date labels */
+body.pw-ux-clean .ux-context-date { margin:9px 2px 13px; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); color:#d8d9e8; font-size:12px; font-weight:750; }
+body.pw-ux-clean .ux-auto-date-label { display:none !important; }
+
+/* Track: simple today + collapsed weekly/monthly */
+body.pw-ux-clean .ux-track-heading { margin:20px 2px 7px; }
+body.pw-ux-clean .ux-track-heading h2 { margin:0 0 3px; font-size:20px; }
+body.pw-ux-clean .ux-track-heading p { margin:0; }
+body.pw-ux-clean #movementEntryCard > p.muted { display:none; }
+body.pw-ux-clean .quick-movement-row { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+body.pw-ux-clean .quick-movement-row button { min-width:0; padding:11px 6px; font-size:11px; }
+body.pw-ux-clean .ux-more-options { margin-top:12px; border-top:1px solid rgba(255,255,255,.08); padding-top:10px; }
+body.pw-ux-clean .ux-more-options summary { cursor:pointer; color:var(--muted); font-size:12px; font-weight:850; list-style:none; }
+body.pw-ux-clean .ux-more-options summary::-webkit-details-marker { display:none; }
+body.pw-ux-clean .ux-more-options summary::after { content:' +'; color:var(--pink-soft); }
+body.pw-ux-clean .ux-more-options[open] summary::after { content:' −'; }
+body.pw-ux-clean .ux-more-options-body { padding-top:12px; }
+body.pw-ux-clean .ux-collapsible { padding:0 !important; overflow:hidden; }
+body.pw-ux-clean .ux-collapse-toggle { width:100%; min-height:70px; padding:14px 16px; border-radius:0; background:transparent; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; }
+body.pw-ux-clean .ux-collapse-toggle span { min-width:0; }
+body.pw-ux-clean .ux-collapse-toggle strong { display:block; font-size:16px; color:#fff; margin-bottom:3px; }
+body.pw-ux-clean .ux-collapse-toggle small { display:block; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:270px; }
+body.pw-ux-clean .ux-collapse-toggle b { width:28px; height:28px; display:grid; place-items:center; border-radius:10px; background:rgba(255,255,255,.06); color:var(--pink-soft); font-size:18px; }
+body.pw-ux-clean .ux-collapse-body { display:none; padding:0 16px 16px; }
+body.pw-ux-clean .ux-collapsible.is-open .ux-collapse-body { display:block; }
+body.pw-ux-clean .ux-collapsible.is-open .ux-collapse-toggle b { transform:rotate(45deg); }
+body.pw-ux-clean .ux-collapse-body > .eyebrow,
+body.pw-ux-clean .ux-collapse-body > h2,
+body.pw-ux-clean .ux-collapse-body > p.muted:first-of-type { display:none; }
+body.pw-ux-clean #weeklyCheckinCard .form-grid { grid-template-columns:1fr 1fr; }
+body.pw-ux-clean #weeklyCheckinCard textarea { min-height:72px; }
+
+/* Programs: current dominates; others are genuinely tiny */
+body.pw-ux-clean .programs-header-card { padding:12px 14px; }
+body.pw-ux-clean .programs-header-card > .eyebrow,
+body.pw-ux-clean .programs-header-card > h2,
+body.pw-ux-clean .programs-header-card > p.muted { display:none; }
+body.pw-ux-clean .programs-header-card .current-program-banner { margin:0; }
+body.pw-ux-clean .programs-list-label { margin-top:13px; }
+body.pw-ux-clean .program-card.is-active-program { margin-top:10px; }
+body.pw-ux-clean .program-card.is-active-program > .section-heading .muted { font-size:12px; line-height:1.45; }
+body.pw-ux-clean .program-card.is-compact-program .compact-program-panel { min-height:50px !important; padding:8px 10px !important; border-radius:14px !important; }
+body.pw-ux-clean .program-card.is-compact-program .compact-program-icon { width:30px; height:30px; }
+body.pw-ux-clean .program-card.is-compact-program .compact-program-copy small { display:none; }
+body.pw-ux-clean #gymStrengthSessionList > *:nth-child(n+4),
+body.pw-ux-clean #homeStrengthSessionList > *:nth-child(n+4) { display:none !important; }
+body.pw-ux-clean .ux-progression-details { margin:12px 0; padding:12px; border-radius:16px; background:rgba(217,167,46,.07); border:1px solid rgba(217,167,46,.18); }
+body.pw-ux-clean .ux-progression-details summary { cursor:pointer; font-weight:900; color:#f5d780; }
+body.pw-ux-clean .ux-progression-details p { margin:10px 0 0; font-size:12px; line-height:1.55; color:var(--muted); }
+
+/* Progress: overview, chart, photos, activity tabs */
+body.pw-ux-clean .ux-progress-overview { margin-top:10px; }
+body.pw-ux-clean .ux-progress-overview > .grid.two { margin:0; gap:8px; }
+body.pw-ux-clean .ux-progress-overview > .grid.two .card { margin:0; padding:12px; border-radius:16px; box-shadow:none; background:rgba(255,255,255,.045); }
+body.pw-ux-clean .ux-progress-overview > .grid.two h3 { font-size:18px; }
+body.pw-ux-clean #measurementProgressCard.ux-measurement-inline { margin:12px 0 0; padding:12px; border-radius:16px; box-shadow:none; background:rgba(255,255,255,.035); }
+body.pw-ux-clean #measurementProgressCard.ux-measurement-inline .section-heading h2 { font-size:17px; }
+body.pw-ux-clean #measurementHistory { display:none !important; }
+body.pw-ux-clean #uxConsistencySummary { margin-top:10px; display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+body.pw-ux-clean #uxConsistencySummary .ux-mini { padding:9px; border-radius:13px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); }
+body.pw-ux-clean #uxConsistencySummary .ux-mini strong { display:block; font-size:14px; }
+body.pw-ux-clean #uxConsistencySummary .ux-mini span { display:block; font-size:9px; color:var(--muted); margin-top:2px; }
+body.pw-ux-clean #page-progress > article:not(#photoCompareCard):not(.ux-keep-progress),
+body.pw-ux-clean #page-progress > .grid.two { }
+body.pw-ux-clean #monthlyReportCard,
+body.pw-ux-clean #page-progress > article.card:has(#progressSummary) { display:none !important; }
+body.pw-ux-clean .ux-activity-wrap { margin:10px 0; }
+body.pw-ux-clean .ux-activity-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:12px 0; }
+body.pw-ux-clean .ux-activity-tabs button { min-height:38px; padding:8px 4px; border-radius:11px; font-size:10px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); color:var(--muted); }
+body.pw-ux-clean .ux-activity-tabs button.active { color:#fff; background:rgba(232,0,117,.18); border-color:rgba(255,79,163,.32); }
+body.pw-ux-clean .ux-activity-panel { display:none; margin:0; padding:0; border:0; box-shadow:none; background:transparent; }
+body.pw-ux-clean .ux-activity-panel.active { display:block; }
+body.pw-ux-clean .ux-activity-panel .section-heading { margin-bottom:8px; }
+body.pw-ux-clean .ux-activity-panel canvas { max-height:230px; }
+
+/* Guided photos */
+body.pw-ux-clean #page-photos .photo-compare-shortcut { padding:12px 14px; }
+body.pw-ux-clean #page-photos .photo-compare-shortcut p.muted { display:none; }
+body.pw-ux-clean .ux-photo-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:13px 0; }
+body.pw-ux-clean .ux-photo-step { min-height:38px; padding:8px; border-radius:11px; font-size:11px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); color:var(--muted); }
+body.pw-ux-clean .ux-photo-step.active { background:rgba(232,0,117,.18); color:#fff; border-color:rgba(255,79,163,.30); }
+body.pw-ux-clean #page-photos .photo-inputs { display:block; }
+body.pw-ux-clean #page-photos .photo-slot { display:none; margin:0; min-height:190px; }
+body.pw-ux-clean #page-photos .photo-slot.ux-active-slot { display:block; }
+body.pw-ux-clean .ux-photo-nav { display:flex; gap:8px; margin:10px 0 14px; }
+body.pw-ux-clean .ux-photo-nav button { flex:1; }
+body.pw-ux-clean .ux-photo-notes { margin:10px 0; }
+body.pw-ux-clean .ux-photo-notes summary { cursor:pointer; color:var(--muted); font-size:12px; font-weight:800; }
+body.pw-ux-clean #page-photos > article.card:nth-of-type(2) > p.small.muted:last-child { display:none; }
+
+/* Settings */
+body.pw-ux-clean #page-settings > article.soft-card { display:none !important; }
+body.pw-ux-clean .ux-settings-details { margin:10px 0; }
+body.pw-ux-clean .ux-settings-details > summary { padding:14px 16px; border-radius:18px; cursor:pointer; font-weight:900; color:#fff; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.09); }
+body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
+
+@media(max-width:430px){
+  body.pw-ux-clean .grid.two { grid-template-columns:1fr 1fr; }
+  body.pw-ux-clean #weeklyCheckinCard .form-grid { grid-template-columns:1fr; }
+  body.pw-ux-clean .quick-movement-row { grid-template-columns:1fr 1fr 1fr; }
+  body.pw-ux-clean .quick-movement-row .ui-icon { display:none; }
+  body.pw-ux-clean #uxConsistencySummary { grid-template-columns:repeat(3,1fr); }
+  body.pw-ux-clean .ux-activity-tabs { overflow-x:auto; grid-template-columns:repeat(4,minmax(72px,1fr)); }
+}
+</style>
 
 </head>
 <body>
@@ -3590,7 +3739,7 @@ button:disabled {
           <button class="primary full install-now-btn" id="installAppBtn" type="button" hidden>Install app on this phone</button>
           <p class="small muted" id="installStatusText">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
           <button class="secondary full" id="showOnboardingBtn">Show setup guide again</button>
-          <p class="small muted" style="margin-top:12px">App build 1.4.2</p>
+          <p class="small muted" style="margin-top:12px">App build 1.5.1-ux</p>
         </article>
 
         <article class="card soft-card">
@@ -3738,7 +3887,7 @@ button:disabled {
   </div>
 
   <script>
-  window.PW_APP_BUILD = '1.4.2';
+  window.PW_APP_BUILD = '1.5.1-ux';
   window.addEventListener('error', function (event) {
     console.error('Perfect Women startup error:', event.error || event.message);
   });
@@ -7657,16 +7806,21 @@ button:disabled {
     });
     ctx.stroke();
 
+    const labelIndexes = new Set([0, Math.round((weights.length - 1) * 0.25), Math.round((weights.length - 1) * 0.5), Math.round((weights.length - 1) * 0.75), weights.length - 1]);
     weights.forEach((item, i) => {
       const x = xFor(i);
       const y = yFor(item.kg);
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.arc(x, y, labelIndexes.has(i) ? 5 : 3, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#b8bbd0';
-      ctx.font = '18px system-ui';
-      ctx.fillText(String(item.kg.toFixed(1)), Math.min(x + 8, w - 78), y - 8);
+      if (!labelIndexes.has(i)) return;
+      ctx.fillStyle = '#d8d9e8';
+      ctx.font = '600 15px system-ui';
+      const label = String(item.kg.toFixed(1));
+      const textWidth = ctx.measureText(label).width;
+      const tx = Math.max(6, Math.min(x - textWidth / 2, w - textWidth - 6));
+      ctx.fillText(label, tx, Math.max(18, y - 11));
     });
   }
 
@@ -9275,6 +9429,7 @@ button:disabled {
   async function getPhotoUrl(set, kind) {
     const key = set?.photoKeys?.[kind];
     if (!key) return '';
+    if (typeof key === 'string' && key.startsWith('static:')) return key.slice(7);
     const blob = await window.PWStore.getPhoto(key);
     return blob ? URL.createObjectURL(blob) : '';
   }
@@ -9359,8 +9514,12 @@ button:disabled {
         chunks.push(`<div class="photo-tile">${kind}</div>`);
         continue;
       }
-      const blob = await window.PWStore.getPhoto(key);
-      const url = blob ? URL.createObjectURL(blob) : '';
+      let url = '';
+      if (typeof key === 'string' && key.startsWith('static:')) url = key.slice(7);
+      else {
+        const blob = await window.PWStore.getPhoto(key);
+        url = blob ? URL.createObjectURL(blob) : '';
+      }
       chunks.push(`<div class="photo-tile">${url ? `<img src="${url}" alt="${kind} progress photo" />` : kind}</div>`);
     }
     return chunks.join('');
@@ -10310,11 +10469,227 @@ button:disabled {
         var banner = document.createElement('div');
         banner.id = 'pwStartupError';
         banner.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;z-index:999999;padding:14px 16px;border-radius:14px;background:#7a163b;color:#fff;font:600 15px/1.35 system-ui;box-shadow:0 10px 30px rgba(0,0,0,.35)';
-        banner.textContent = 'The app did not finish loading. Refresh once. Build 1.4.0.';
+        banner.textContent = 'The app did not finish loading. Refresh once. Build 1.5.1-ux.';
         document.body.appendChild(banner);
       }
     }, 250);
   });
   </script>
+
+<script id="pw-ux-clean-v151-script">
+(function(){
+  'use strict';
+  const q=(s,r=document)=>r.querySelector(s);
+  const qa=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const dateKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const mondayOf=(d=new Date())=>{const n=new Date(d);const day=n.getDay();n.setDate(n.getDate()+(day===0?-6:1-day));n.setHours(12,0,0,0);return n;};
+  const pretty=(d)=>new Intl.DateTimeFormat('en-ZA',{weekday:'long',day:'numeric',month:'long'}).format(d);
+  const state=()=>window.PWStore&&window.PWStore.getState?window.PWStore.getState():null;
+
+  function addSectionLabel(before,text){
+    if(!before||before.previousElementSibling?.classList.contains('ux-section-label')) return;
+    const el=document.createElement('div');el.className='ux-section-label';el.textContent=text;before.before(el);
+  }
+
+  function setupHome(){
+    const page=q('#page-home'); if(!page) return;
+    const todayGrid=page.querySelector(':scope > .grid.two');
+    addSectionLabel(todayGrid,'Today');
+    const weekCard=q('#homeWeekStrip')?.closest('article.card');
+    if(!q('#uxHomeProgramCard')){
+      const card=document.createElement('article');
+      card.id='uxHomeProgramCard';card.className='card';
+      card.innerHTML='<div class="ux-program-top"><div><p class="eyebrow gold">Current program</p><h3 id="uxHomeProgramTitle">Your program</h3><p class="muted small" id="uxHomeProgramSub"></p></div><span class="ui-icon" data-icon="program"></span></div><div class="ux-program-meta" id="uxHomeProgramMeta"></div><p class="ux-weight-line" id="uxHomeProgramWeights"></p><button class="primary full" id="uxHomeProgramBtn" type="button">Open program</button>';
+      const currentLabel=document.createElement('div');currentLabel.id='uxCurrentProgramLabel';currentLabel.className='ux-section-label';currentLabel.textContent='Current program';
+      if(weekCard) weekCard.before(currentLabel,card); else page.append(currentLabel,card);
+      if(weekCard&&!q('#uxThisWeekLabel')){const weekLabel=document.createElement('div');weekLabel.id='uxThisWeekLabel';weekLabel.className='ux-section-label';weekLabel.textContent='This week';weekCard.before(weekLabel);}
+      q('#uxHomeProgramBtn').addEventListener('click',()=>{
+        const s=state(); const active=s?.programs?.active;
+        if(active==='gymStrength'){
+          const activeRun=s.strengthProgram?.gym?.activeWorkout;
+          const btn=q(activeRun?'#resumeGymWorkoutBtn':'#startGymWorkoutBtn'); if(btn){btn.click();return;}
+        }
+        if(active==='homeStrength'){
+          const activeRun=s.strengthProgram?.home?.activeWorkout;
+          const btn=q(activeRun?'#resumeFoundationWorkoutBtn':'[data-start-foundation-workout]'); if(btn){btn.click();return;}
+        }
+        q('.nav-btn[data-nav="programs"]')?.click();
+      });
+    }
+  }
+
+  function weekStartKey(){return dateKey(mondayOf(new Date()));}
+  function currentWeekSessions(s,type){return (s?.logs?.strengthSessions||[]).filter(x=>x.programType===type && x.date>=weekStartKey());}
+  function programWeek(startDate){if(!startDate)return 1;const start=new Date(startDate+'T12:00:00');return Math.max(1,Math.floor((mondayOf(new Date())-mondayOf(start))/604800000)+1);}
+  function renderHomeProgram(){
+    const s=state(); if(!s||!q('#uxHomeProgramCard')) return;
+    const active=s.programs?.active||'gymStrength';
+    let title='Choose a program',sub='Open Programs to choose your current plan.',meta=[],weights='',label='Open programs';
+    if(active==='gymStrength' && s.strengthProgram?.gym?.started){
+      const count=currentWeekSessions(s,'gym').length;const week=programWeek(s.strengthProgram.gym.startDate);
+      title='Gym Beginner Strength';sub=`Week ${week} • next full-body machine session`;
+      meta=[`${count}/3 sessions this week`,'Set-by-set rest timer','Weights carried forward'];
+      const p=s.strengthProgram.progress||{};
+      weights=`Suggested today: Leg press ${p.squat?.nextWeightKg?.gym||p.squat?.gymWeight||0} kg · Chest press ${p.push?.nextWeightKg?.gym||p.push?.gymWeight||0} kg · Row ${p.pull?.nextWeightKg?.gym||p.pull?.gymWeight||0} kg`;
+      label=s.strengthProgram.gym.activeWorkout?'Resume workout':'Start next workout';
+    } else if(active==='homeStrength' && s.strengthProgram?.home?.started){
+      const count=currentWeekSessions(s,'home').length;const week=Math.min(4,programWeek(s.strengthProgram.home.startDate));
+      title='Foundation Home Program';sub=`Week ${week} of 4 • guided home session`;
+      meta=[`${count} sessions this week`,'Guided timers','Progress saved'];weights='Your next session opens at the correct week and workout.';label=s.strengthProgram.home.activeWorkout?'Resume workout':'Start next workout';
+    } else if(active==='walking'){
+      title='8-Week Walking Program';sub='Your current walking plan';meta=['4–5 walks per week','Weekly averages'];weights='Open the program to log today’s walk.';
+    } else if(active==='jogging'){
+      title='Beginner 5 km Program';sub='Your current running plan';meta=['3 sessions per week','Distance progression'];weights='Open the program to see today’s session.';
+    }
+    q('#uxHomeProgramTitle').textContent=title;q('#uxHomeProgramSub').textContent=sub;q('#uxHomeProgramWeights').textContent=weights;q('#uxHomeProgramBtn').textContent=label;
+    q('#uxHomeProgramMeta').innerHTML=meta.map(x=>`<span class="ux-chip">${x}</span>`).join('');
+  }
+
+  function hideAutoDates(){
+    const today=dateKey(); const monday=dateKey(mondayOf(new Date()));
+    const map={weightDate:monday,measurementDate:today,checkinDate:today,walkDate:today,runDate:today,photoDate:today};
+    Object.entries(map).forEach(([id,val])=>{const input=q('#'+id);if(!input)return;input.value=val;input.closest('label')?.classList.add('ux-auto-date-label');});
+    const track=q('#page-track');
+    if(track&&!q('#uxTrackDate')){const el=document.createElement('div');el.id='uxTrackDate';el.className='ux-context-date';track.prepend(el);}
+    if(q('#uxTrackDate')) q('#uxTrackDate').textContent=`Logging for today — ${pretty(new Date())}. Dates are added automatically.`;
+    const photos=q('#page-photos article.card:nth-of-type(2)');
+    if(photos&&!q('#uxPhotoDate')){const el=document.createElement('div');el.id='uxPhotoDate';el.className='ux-context-date';photos.querySelector('p.muted')?.after(el);}
+    if(q('#uxPhotoDate')) q('#uxPhotoDate').textContent=`Photo set date — ${pretty(new Date())}`;
+  }
+
+  function moveNodesIntoDetails(){
+    const movement=q('#movementEntryCard');
+    if(movement&&!q('#uxMovementMore')){
+      const details=document.createElement('details');details.id='uxMovementMore';details.className='ux-more-options';details.innerHTML='<summary>More options</summary><div class="ux-more-options-body"></div>';
+      const body=q('.ux-more-options-body',details);
+      const opt=q('#movementOptions'); if(opt) body.append(opt);
+      const type=q('#movementType'); if(type){const label=type.previousElementSibling;if(label?.tagName==='LABEL')body.append(label);body.append(type);}
+      const notes=q('#movementNotes'); if(notes){const label=notes.previousElementSibling;if(label?.tagName==='LABEL')body.append(label);body.append(notes);}
+      const row=q('#saveMovementBtn')?.closest('.button-row'); if(row)body.append(row);
+      movement.append(details);
+    }
+  }
+
+  function makeCollapsible(card,title,metaFn,open=false){
+    if(!card||card.dataset.uxCollapsible)return;
+    card.dataset.uxCollapsible='1';card.classList.add('ux-collapsible');
+    const body=document.createElement('div');body.className='ux-collapse-body';
+    while(card.firstChild)body.append(card.firstChild);
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='ux-collapse-toggle';toggle.innerHTML=`<span><strong>${title}</strong><small></small></span><b>+</b>`;
+    card.append(toggle,body);
+    if(open)card.classList.add('is-open');
+    toggle.addEventListener('click',()=>card.classList.toggle('is-open'));
+    card._uxMetaFn=metaFn;
+  }
+
+  function setupTrack(){
+    const page=q('#page-track');if(!page)return;
+    const water=q('#trackWaterCard'), movement=q('#movementEntryCard'), weight=q('#weightEntryCard'), measurements=q('#measurementsCard'), checkin=q('#weeklyCheckinCard');
+    if(water&&!q('#uxTrackTodayHeading')){const h=document.createElement('div');h.id='uxTrackTodayHeading';h.className='ux-track-heading';h.innerHTML='<h2>Today</h2><p class="small muted">Water and movement only. Keep it quick.</p>';water.before(h);}
+    if(weight&&!q('#uxTrackWeeklyHeading')){const h=document.createElement('div');h.id='uxTrackWeeklyHeading';h.className='ux-track-heading';h.innerHTML='<h2>Weekly & monthly</h2><p class="small muted">Open these only when they are due.</p>';weight.before(h);}
+    moveNodesIntoDetails();
+    const s=state(); const monday=weekStartKey();
+    makeCollapsible(weight,'Monday weigh-in',()=>{const saved=!!s?.logs?.weights?.[monday];return saved?`Saved for ${pretty(mondayOf(new Date()))}`:`Automatically dated ${pretty(mondayOf(new Date()))}`;},false);
+    makeCollapsible(checkin,'Weekly check-in',()=>{const found=Object.keys(state()?.logs?.checkins||{}).some(d=>d>=monday);return found?'Completed this week':'A short reflection when the week ends';},false);
+    makeCollapsible(measurements,'Measurements',()=>{const dates=Object.keys(state()?.logs?.measurements||{}).sort();return dates.length?`Last updated ${dates[dates.length-1]}`:'Update every 4 weeks';},false);
+  }
+
+  function updateCollapseMeta(){
+    qa('.ux-collapsible').forEach(card=>{const small=q('.ux-collapse-toggle small',card);if(small&&card._uxMetaFn)small.textContent=card._uxMetaFn();});
+  }
+
+  function setupPrograms(){
+    const gym=q('#gymStrengthActivePanel');
+    if(gym&&!q('#uxGymProgressionHelp')){
+      const details=document.createElement('details');details.id='uxGymProgressionHelp';details.className='ux-progression-details';
+      details.innerHTML='<summary>How progressive overload works</summary><p>Set 1 is a light warm-up. Set 2 is a slightly heavier build-up. Set 3 is the working set. When you reach the top of the rep range with controlled form, the app increases the recommended weight next session. If you are inside the range, repeat the weight. If you fall below it, keep or reduce the weight and rebuild your reps.</p>';
+      const advice=q('#gymStrengthAdvice'); if(advice){advice.textContent='Your previous working weights and next recommendations are shown on each exercise.'; advice.after(details);} else gym.append(details);
+    }
+  }
+
+  function setupProgress(){
+    const page=q('#page-progress');if(!page||q('#uxProgressOverview'))return;
+    const summary=page.querySelector(':scope > .grid.two');
+    const measurement=q('#measurementProgressCard');
+    const chart=q('#weightChart')?.closest('article.card');
+    const photos=q('#photoCompareCard');
+    const consistency=q('#progressSummary')?.closest('article.card');
+    const monthly=q('#monthlyReportCard');
+    if(consistency)consistency.style.display='none'; if(monthly)monthly.style.display='none';
+    const overview=document.createElement('article');overview.id='uxProgressOverview';overview.className='card ux-progress-overview';overview.innerHTML='<p class="eyebrow pink">Overall progress</p><h2>Your progress</h2><p class="small muted">Weight, measurements and this week’s consistency in one place.</p>';
+    if(summary)overview.append(summary);
+    if(measurement){measurement.classList.add('ux-measurement-inline');overview.append(measurement);}
+    const cs=document.createElement('div');cs.id='uxConsistencySummary';overview.append(cs);
+    page.prepend(overview);
+    if(chart)overview.after(chart);
+    if(photos&&chart)chart.after(photos);
+
+    const activity=document.createElement('article');activity.id='uxActivityWrap';activity.className='card ux-activity-wrap';
+    activity.innerHTML='<p class="eyebrow gold">Activity progress</p><h2>Training and movement</h2><div class="ux-activity-tabs"><button type="button" data-ux-activity="strength" class="active">Strength</button><button type="button" data-ux-activity="walking">Walking</button><button type="button" data-ux-activity="jogging">Jogging</button><button type="button" data-ux-activity="movement">Movement</button></div><div id="uxActivityPanels"></div>';
+    const panels=q('#uxActivityPanels',activity);
+    const items=[['strength',q('.strength-progress-card')],['walking',q('.walking-progress-card')],['jogging',q('.jogging-progress-card')],['movement',q('#movementChart')?.closest('article.card')]];
+    items.forEach(([key,card])=>{if(card){card.classList.add('ux-activity-panel');card.dataset.uxActivityPanel=key;if(key==='strength')card.classList.add('active');panels.append(card);}});
+    (photos||chart||overview).after(activity);
+    q('.ux-activity-tabs',activity).addEventListener('click',e=>{const b=e.target.closest('[data-ux-activity]');if(!b)return;qa('[data-ux-activity]',activity).forEach(x=>x.classList.toggle('active',x===b));qa('[data-ux-activity-panel]',activity).forEach(x=>x.classList.toggle('active',x.dataset.uxActivityPanel===b.dataset.uxActivity));});
+  }
+
+  function renderConsistency(){
+    const box=q('#uxConsistencySummary'),s=state();if(!box||!s)return;
+    const monday=weekStartKey();
+    const waterDays=Object.entries(s.logs.water||{}).filter(([d,v])=>d>=monday&&(v.ml||0)>=(s.settings.waterTargetMl||2000)).length;
+    const movementDays=Object.entries(s.logs.movement||{}).filter(([d,v])=>d>=monday&&v.done).length;
+    const workouts=(s.logs.strengthSessions||[]).filter(x=>x.date>=monday).length;
+    box.innerHTML=`<div class="ux-mini"><strong>${workouts}</strong><span>workouts</span></div><div class="ux-mini"><strong>${waterDays}/7</strong><span>water target</span></div><div class="ux-mini"><strong>${movementDays}/7</strong><span>movement days</span></div>`;
+  }
+
+  function setupPhotos(){
+    const page=q('#page-photos');const card=page?.querySelector('article.card:nth-of-type(2)');if(!card||q('#uxPhotoSteps'))return;
+    const slots=qa('.photo-slot',card);if(!slots.length)return;
+    const steps=document.createElement('div');steps.id='uxPhotoSteps';steps.className='ux-photo-steps';
+    ['Front','Side','Back'].forEach((name,i)=>{const b=document.createElement('button');b.type='button';b.className='ux-photo-step'+(i===0?' active':'');b.textContent=`${i+1}. ${name}`;b.dataset.step=i;steps.append(b);});
+    q('.photo-inputs',card).before(steps);
+    const nav=document.createElement('div');nav.className='ux-photo-nav';nav.innerHTML='<button class="secondary" id="uxPhotoBack" type="button">Back</button><button class="primary" id="uxPhotoNext" type="button">Next</button>';
+    q('.photo-inputs',card).after(nav);
+    const notes=q('#photoNotes');if(notes){const label=notes.previousElementSibling;const details=document.createElement('details');details.className='ux-photo-notes';details.innerHTML='<summary>Add an optional note</summary>';if(label)details.append(label);details.append(notes);nav.after(details);}
+    let idx=0;
+    function show(i){idx=Math.max(0,Math.min(2,i));slots.forEach((x,n)=>x.classList.toggle('ux-active-slot',n===idx));qa('.ux-photo-step',steps).forEach((x,n)=>x.classList.toggle('active',n===idx));q('#uxPhotoBack').disabled=idx===0;q('#uxPhotoNext').textContent=idx===2?'Review':'Next';q('#savePhotoSetBtn').style.display=idx===2?'block':'none';}
+    steps.addEventListener('click',e=>{const b=e.target.closest('[data-step]');if(b)show(Number(b.dataset.step));});
+    q('#uxPhotoBack').addEventListener('click',()=>show(idx-1));q('#uxPhotoNext').addEventListener('click',()=>show(idx+1));
+    [['photoFrontCamera',0],['photoFront',0],['photoSideCamera',1],['photoSide',1],['photoBackCamera',2],['photoBack',2]].forEach(([id,n])=>q('#'+id)?.addEventListener('change',()=>setTimeout(()=>show(Math.min(2,n+1)),150)));
+    show(0);
+  }
+
+  function setupSettings(){
+    const page=q('#page-settings');if(!page||q('.ux-settings-details'))return;
+    const cards=qa(':scope > article.card',page);
+    cards.slice(1,3).forEach((card,i)=>{const d=document.createElement('details');d.className='ux-settings-details';d.innerHTML=`<summary>${i===0?'App data and backup':'Install and setup'}</summary>`;card.before(d);d.append(card);});
+  }
+
+  function refresh(){
+    hideAutoDates();renderHomeProgram();updateCollapseMeta();renderConsistency();
+    const buildText=qa('#page-settings p.small.muted').find(x=>x.textContent.includes('App build'));if(buildText)buildText.textContent='App build 1.5.1-ux';
+  }
+
+  function setup(){
+    document.body.classList.add('pw-ux-clean');
+    setupHome();setupTrack();setupPrograms();setupProgress();setupPhotos();setupSettings();hideAutoDates();refresh();
+    document.addEventListener('click',e=>{
+      const sc=e.target.closest('[data-scroll-to],#nextActionBtn');
+      if(sc){const id=sc.dataset.scrollTo||sc.dataset.nextScrollTo;setTimeout(()=>{const card=id&&q('#'+id);if(card?.classList.contains('ux-collapsible'))card.classList.add('is-open');},70);}
+      setTimeout(refresh,100);
+    });
+    window.addEventListener('hashchange',()=>setTimeout(refresh,100));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+    document.addEventListener('click',e=>{
+      const id=e.target.closest('button')?.id;
+      const map={saveWeightBtn:['weightDate',dateKey(mondayOf(new Date()))],saveMeasurementsBtn:['measurementDate',dateKey()],saveCheckinBtn:['checkinDate',dateKey()],saveWalkBtn:['walkDate',dateKey()],saveRunBtn:['runDate',dateKey()],savePhotoSetBtn:['photoDate',dateKey()]};
+      if(map[id]){const [field,val]=map[id];const input=q('#'+field);if(input)input.value=val;}
+    },true);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(setup,40));else setTimeout(setup,40);
+})();
+</script>
+
 </body>
 </html>
