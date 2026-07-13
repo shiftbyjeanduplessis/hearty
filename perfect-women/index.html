@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#06122F" />
   <title>Perfect Women</title>
-  <meta name="pw-build" content="1.5.1-ux">
+  <meta name="pw-build" content="1.5.2-home-actions">
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="./assets/icon-192.png" />
   <style id="pw-inline-css">
@@ -2742,7 +2742,7 @@ button:disabled {
 
 
 <style id="pw-ux-clean-v151">
-/* Perfect Women 1.5.1 standard UX cleanup */
+/* Perfect Women 1.5.2 home quick-actions cleanup */
 :root { --nav-h: 74px; }
 body.pw-ux-clean .app-header { padding: 10px 12px 0; }
 body.pw-ux-clean .app-brand-card {
@@ -2771,15 +2771,47 @@ body.pw-ux-clean #page-home > article.soft-card { display:none !important; }
 body.pw-ux-clean #page-home #nextActionCard { padding:20px; background:linear-gradient(135deg,rgba(232,0,117,.25),rgba(255,255,255,.08)); }
 body.pw-ux-clean #page-home #nextActionCard h3 { font-size:22px; }
 body.pw-ux-clean .ux-section-label { margin:18px 4px 7px; font-size:11px; font-weight:900; letter-spacing:.13em; text-transform:uppercase; color:rgba(248,250,252,.58); }
-body.pw-ux-clean #page-home > .grid.two { gap:9px; }
-body.pw-ux-clean #page-home > .grid.two .card { margin:0; padding:14px; }
-body.pw-ux-clean #page-home > .grid.two .small { font-size:11px; }
 body.pw-ux-clean #uxHomeProgramCard { border-color:rgba(217,167,46,.28); }
 body.pw-ux-clean .ux-program-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 body.pw-ux-clean .ux-program-meta { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
 body.pw-ux-clean .ux-chip { padding:7px 9px; border-radius:12px; font-size:11px; font-weight:800; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09); color:#e8e9f5; }
 body.pw-ux-clean .ux-weight-line { font-size:12px; color:var(--muted); line-height:1.5; margin:0 0 12px; }
 body.pw-ux-clean #page-home .weekly-strip { margin-top:8px; }
+
+/* Home quick-action centre */
+body.pw-ux-clean #homeQuickActionsCard { padding:17px; }
+body.pw-ux-clean .quick-actions-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:8px; }
+body.pw-ux-clean .quick-actions-heading h2 { margin:1px 0 2px; font-size:21px; }
+body.pw-ux-clean .quick-date { flex:0 0 auto; padding:7px 9px; border-radius:12px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09); color:#e8e9f5; font-size:11px; font-weight:850; }
+body.pw-ux-clean .home-quick-row { padding:13px 0; border-top:1px solid rgba(255,255,255,.085); }
+body.pw-ux-clean .home-quick-copy { display:flex; align-items:center; gap:10px; min-width:0; }
+body.pw-ux-clean .home-quick-copy .card-icon { flex:0 0 auto; width:36px; height:36px; }
+body.pw-ux-clean .home-quick-copy > div { min-width:0; display:grid; gap:1px; }
+body.pw-ux-clean .home-quick-label { color:var(--pink-soft); font-size:10px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
+body.pw-ux-clean .home-quick-copy strong { color:#fff; font-size:15px; line-height:1.25; }
+body.pw-ux-clean .home-quick-copy small { display:block; font-size:11px; line-height:1.35; }
+body.pw-ux-clean .home-quick-buttons { display:flex; gap:7px; margin-top:10px; }
+body.pw-ux-clean .home-quick-buttons button { min-height:39px; padding:9px 12px; }
+body.pw-ux-clean .compact-water-buttons .primary { flex:1; }
+body.pw-ux-clean .home-quick-meter { margin-top:10px; }
+body.pw-ux-clean .home-movement-buttons { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:10px; }
+body.pw-ux-clean .home-movement-buttons button { min-width:0; min-height:43px; padding:8px 5px; display:flex; align-items:center; justify-content:center; gap:5px; font-size:11px; }
+body.pw-ux-clean .home-movement-buttons .ui-icon { width:16px; height:16px; }
+body.pw-ux-clean .home-movement-btn.is-active { background:rgba(232,0,117,.2); border-color:rgba(255,83,157,.6); color:#fff; }
+body.pw-ux-clean .home-weight-entry { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; margin-top:10px; }
+body.pw-ux-clean .home-weight-input-wrap { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:6px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.045); border-radius:14px; padding-right:12px; }
+body.pw-ux-clean .home-weight-input-wrap input { margin:0; border:0; background:transparent; min-width:0; padding:11px 12px; box-shadow:none; }
+body.pw-ux-clean .home-weight-input-wrap span { color:var(--muted); font-size:12px; font-weight:800; }
+body.pw-ux-clean .home-weight-entry button { min-width:78px; }
+body.pw-ux-clean .home-extra-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; padding-top:13px; border-top:1px solid rgba(255,255,255,.085); }
+body.pw-ux-clean .home-extra-actions button { min-width:0; min-height:48px; padding:8px 4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font-size:10px; }
+body.pw-ux-clean .home-extra-actions .ui-icon { width:17px; height:17px; }
+body.pw-ux-clean .sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip:rect(0,0,0,0) !important; white-space:nowrap !important; border:0 !important; }
+@media (min-width:700px){
+  body.pw-ux-clean .home-quick-row { display:grid; grid-template-columns:minmax(220px,1fr) minmax(260px,1fr); column-gap:18px; align-items:center; }
+  body.pw-ux-clean .home-water-quick .home-quick-meter { grid-column:1/-1; }
+  body.pw-ux-clean .home-quick-buttons, body.pw-ux-clean .home-movement-buttons, body.pw-ux-clean .home-weight-entry { margin-top:0; }
+}
 
 /* Context/date labels */
 body.pw-ux-clean .ux-context-date { margin:9px 2px 13px; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.08); color:#d8d9e8; font-size:12px; font-weight:750; }
@@ -2963,29 +2995,72 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
           </div>
         </article>
 
-        <div class="grid two">
-          <article class="card stat-card clickable-card" id="homeWaterCard" role="button" tabindex="0" aria-label="Add 250 ml water">
-            <span class="card-icon ui-icon" data-icon="water"></span>
-            <p class="label">Water today</p>
-            <h3 id="homeWaterStat">0 / 2,000 ml</h3>
-            <p class="small muted">Tap card to add 250 ml</p>
-            <div class="meter"><span id="homeWaterMeter"></span></div>
-          </article>
-          <article class="card stat-card">
-            <span class="card-icon ui-icon" data-icon="walk"></span>
-            <p class="label">Movement</p>
-            <h3 id="homeMovementStat">Not done</h3>
-            <p class="small muted" id="homeMovementDetail">A walk or simple movement counts.</p>
-          </article>
-        </div>
-
-        <article class="card callout" id="weighInCard">
-          <div>
-            <p class="eyebrow gold">Monday weigh-in</p>
-            <h3 id="weighInTitle">Weekly weight routine</h3>
-            <p class="muted" id="weighInText">Your main weigh-in is Monday morning.</p>
+        <article class="card home-quick-actions" id="homeQuickActionsCard">
+          <div class="quick-actions-heading">
+            <div>
+              <p class="eyebrow pink">Quick actions</p>
+              <h2>Today</h2>
+              <p class="small muted">Log the basics here without leaving Home.</p>
+            </div>
+            <span class="quick-date" id="homeQuickDate">Today</span>
           </div>
-          <button class="secondary" data-nav="track" data-scroll-to="weightEntryCard">Log weight</button>
+
+          <section class="home-quick-row home-water-quick" aria-label="Water quick actions">
+            <div class="home-quick-copy">
+              <span class="card-icon ui-icon" data-icon="water"></span>
+              <div>
+                <span class="home-quick-label">Water</span>
+                <strong id="homeWaterStat">0 / 2,000 ml</strong>
+              </div>
+            </div>
+            <div class="home-quick-buttons compact-water-buttons">
+              <button class="primary" type="button" data-add-water="250">+250</button>
+              <button class="primary" type="button" data-add-water="500">+500</button>
+              <button class="secondary icon-only-action" id="homeUndoWaterBtn" type="button" aria-label="Undo last water entry">Undo</button>
+            </div>
+            <div class="meter home-quick-meter"><span id="homeWaterMeter"></span></div>
+          </section>
+
+          <section class="home-quick-row" aria-label="Movement quick actions">
+            <div class="home-quick-copy">
+              <span class="card-icon ui-icon" data-icon="walk"></span>
+              <div>
+                <span class="home-quick-label">Movement</span>
+                <strong id="homeMovementStat">Not done</strong>
+                <small class="muted" id="homeMovementDetail">A walk or simple movement counts.</small>
+              </div>
+            </div>
+            <div class="home-movement-buttons">
+              <button class="secondary home-movement-btn" type="button" data-quick-movement="Walk" data-duration="20"><span class="ui-icon" data-icon="walk"></span>Walk</button>
+              <button class="secondary home-movement-btn" type="button" data-quick-movement="Movement" data-duration="20"><span class="ui-icon" data-icon="check"></span>Movement</button>
+              <button class="secondary home-movement-btn" type="button" data-quick-movement="Workout" data-duration="30"><span class="ui-icon" data-icon="workout"></span>Workout</button>
+            </div>
+          </section>
+
+          <section class="home-quick-row home-weight-quick" aria-label="Weekly weigh-in quick action">
+            <div class="home-quick-copy">
+              <span class="card-icon ui-icon" data-icon="chart"></span>
+              <div>
+                <span class="home-quick-label">Monday weigh-in</span>
+                <strong id="weighInTitle">Weekly weight routine</strong>
+                <small class="muted" id="weighInText">Your main weigh-in is Monday morning.</small>
+              </div>
+            </div>
+            <div class="home-weight-entry">
+              <label class="sr-only" for="homeWeightKg">Weight in kilograms</label>
+              <div class="home-weight-input-wrap">
+                <input type="number" id="homeWeightKg" inputmode="decimal" step="0.1" placeholder="Weight" />
+                <span>kg</span>
+              </div>
+              <button class="primary" id="homeSaveWeightBtn" type="button">Save</button>
+            </div>
+          </section>
+
+          <div class="home-extra-actions" aria-label="More quick actions">
+            <button class="secondary" type="button" data-nav="track" data-scroll-to="weeklyCheckinCard"><span class="ui-icon" data-icon="check"></span>Check-in</button>
+            <button class="secondary" type="button" data-nav="photos"><span class="ui-icon" data-icon="camera"></span>Photos</button>
+            <button class="secondary" type="button" data-nav="track" data-scroll-to="measurementsCard"><span class="ui-icon" data-icon="ruler"></span>Measurements</button>
+          </div>
         </article>
 
         <article class="card callout" id="homeCheckinCard">
@@ -3739,7 +3814,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
           <button class="primary full install-now-btn" id="installAppBtn" type="button" hidden>Install app on this phone</button>
           <p class="small muted" id="installStatusText">The downloaded file preview is for testing. Proper install needs the hosted app link.</p>
           <button class="secondary full" id="showOnboardingBtn">Show setup guide again</button>
-          <p class="small muted" style="margin-top:12px">App build 1.5.1-ux</p>
+          <p class="small muted" style="margin-top:12px">App build 1.5.2-home-actions</p>
         </article>
 
         <article class="card soft-card">
@@ -3887,7 +3962,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
   </div>
 
   <script>
-  window.PW_APP_BUILD = '1.5.1-ux';
+  window.PW_APP_BUILD = '1.5.2-home-actions';
   window.addEventListener('error', function (event) {
     console.error('Perfect Women startup error:', event.error || event.message);
   });
@@ -7514,18 +7589,33 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     $('#homeMovementDetail').textContent = movement && movement.done
       ? `${movement.type || 'Movement'} • ${movement.duration || 0} min`
       : 'A walk or simple movement counts.';
+    $$('.home-movement-btn').forEach((btn) => {
+      const label = btn.dataset.quickMovement || '';
+      const savedType = movement?.type || '';
+      const active = !!movement?.done && ((label === 'Walk' && savedType === 'Walk') || (label === 'Workout' && /workout|gym/i.test(savedType)) || (label === 'Movement' && !/walk|workout|gym/i.test(savedType)));
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
 
     const now = new Date();
+    const mondayKey = window.PWStore.todayKey(window.PWStore.mondayStart(now));
+    const weeklyWeight = s.logs.weights[mondayKey] || null;
     const isMonday = now.getDay() === 1;
-    if (isMonday && !weight) {
+    const quickDate = $('#homeQuickDate');
+    if (quickDate) quickDate.textContent = now.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
+    const homeWeightInput = $('#homeWeightKg');
+    if (homeWeightInput && document.activeElement !== homeWeightInput) {
+      homeWeightInput.placeholder = weeklyWeight ? String(weeklyWeight.kg) : 'Weight';
+    }
+    if (isMonday && !weeklyWeight) {
       $('#weighInTitle').textContent = 'Weigh-in due today';
       $('#weighInText').textContent = 'Monday morning is your main scale check. Log it once, then move on with your week.';
-    } else if (isMonday && weight) {
-      $('#weighInTitle').textContent = 'Weigh-in complete';
-      $('#weighInText').textContent = `Saved ${weight.kg} kg for today.`;
+    } else if (weeklyWeight) {
+      $('#weighInTitle').textContent = 'This week is saved';
+      $('#weighInText').textContent = `${weeklyWeight.kg} kg • ${fmtDate(mondayKey)}. Enter a new value only to update it.`;
     } else {
-      $('#weighInTitle').textContent = 'Next weigh-in: Monday';
-      $('#weighInText').textContent = 'We track weekly trend instead of daily scale noise.';
+      $('#weighInTitle').textContent = 'Log this week’s weight';
+      $('#weighInText').textContent = `It will be filed under ${fmtDate(mondayKey)} automatically.`;
     }
 
     const latestCheckin = (window.PWStore.sortedCheckins ? window.PWStore.sortedCheckins() : []).slice(-1)[0];
@@ -9969,10 +10059,33 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
       toast('Last water entry removed');
       renderAll();
     });
+    const homeUndoWaterBtn = $('#homeUndoWaterBtn');
+    if (homeUndoWaterBtn) homeUndoWaterBtn.addEventListener('click', () => {
+      window.PWStore.undoWater();
+      toast('Last water entry removed');
+      renderAll();
+    });
 
-    $('#homeMovementBtn').addEventListener('click', () => {
+    const homeMovementBtn = $('#homeMovementBtn');
+    if (homeMovementBtn) homeMovementBtn.addEventListener('click', () => {
       window.PWStore.saveMovement({ done: true, duration: 20, type: 'Walk', notes: '' });
       toast('Movement ticked off');
+      renderAll();
+    });
+
+    const homeSaveWeightBtn = $('#homeSaveWeightBtn');
+    if (homeSaveWeightBtn) homeSaveWeightBtn.addEventListener('click', () => {
+      const input = $('#homeWeightKg');
+      const kg = Number(input?.value || 0);
+      if (!kg || Number.isNaN(kg)) {
+        toast('Enter your weight first');
+        input?.focus();
+        return;
+      }
+      const mondayKey = window.PWStore.todayKey(window.PWStore.mondayStart(new Date()));
+      window.PWStore.saveWeight({ date: mondayKey, kg, waistCm: '', notes: 'Quick weigh-in from Home' });
+      input.value = '';
+      toast('Weekly weigh-in saved');
       renderAll();
     });
 
@@ -10469,7 +10582,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
         var banner = document.createElement('div');
         banner.id = 'pwStartupError';
         banner.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;z-index:999999;padding:14px 16px;border-radius:14px;background:#7a163b;color:#fff;font:600 15px/1.35 system-ui;box-shadow:0 10px 30px rgba(0,0,0,.35)';
-        banner.textContent = 'The app did not finish loading. Refresh once. Build 1.5.1-ux.';
+        banner.textContent = 'The app did not finish loading. Refresh once. Build 1.5.2-home-actions.';
         document.body.appendChild(banner);
       }
     }, 250);
@@ -10493,8 +10606,6 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
 
   function setupHome(){
     const page=q('#page-home'); if(!page) return;
-    const todayGrid=page.querySelector(':scope > .grid.two');
-    addSectionLabel(todayGrid,'Today');
     const weekCard=q('#homeWeekStrip')?.closest('article.card');
     if(!q('#uxHomeProgramCard')){
       const card=document.createElement('article');
@@ -10551,7 +10662,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     Object.entries(map).forEach(([id,val])=>{const input=q('#'+id);if(!input)return;input.value=val;input.closest('label')?.classList.add('ux-auto-date-label');});
     const track=q('#page-track');
     if(track&&!q('#uxTrackDate')){const el=document.createElement('div');el.id='uxTrackDate';el.className='ux-context-date';track.prepend(el);}
-    if(q('#uxTrackDate')) q('#uxTrackDate').textContent=`Logging for today — ${pretty(new Date())}. Dates are added automatically.`;
+    if(q('#uxTrackDate')) q('#uxTrackDate').textContent=`Dates are added automatically. Water, movement and quick weigh-ins are available on Home.`;
     const photos=q('#page-photos article.card:nth-of-type(2)');
     if(photos&&!q('#uxPhotoDate')){const el=document.createElement('div');el.id='uxPhotoDate';el.className='ux-context-date';photos.querySelector('p.muted')?.after(el);}
     if(q('#uxPhotoDate')) q('#uxPhotoDate').textContent=`Photo set date — ${pretty(new Date())}`;
@@ -10585,11 +10696,12 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
   function setupTrack(){
     const page=q('#page-track');if(!page)return;
     const water=q('#trackWaterCard'), movement=q('#movementEntryCard'), weight=q('#weightEntryCard'), measurements=q('#measurementsCard'), checkin=q('#weeklyCheckinCard');
-    if(water&&!q('#uxTrackTodayHeading')){const h=document.createElement('div');h.id='uxTrackTodayHeading';h.className='ux-track-heading';h.innerHTML='<h2>Today</h2><p class="small muted">Water and movement only. Keep it quick.</p>';water.before(h);}
-    if(weight&&!q('#uxTrackWeeklyHeading')){const h=document.createElement('div');h.id='uxTrackWeeklyHeading';h.className='ux-track-heading';h.innerHTML='<h2>Weekly & monthly</h2><p class="small muted">Open these only when they are due.</p>';weight.before(h);}
+    if(water) water.style.display='none';
+    if(movement&&!q('#uxTrackWeeklyHeading')){const h=document.createElement('div');h.id='uxTrackWeeklyHeading';h.className='ux-track-heading';h.innerHTML='<h2>More tracking</h2><p class="small muted">Your fast daily actions now live on Home. Open these only for extra detail or corrections.</p>';movement.before(h);}
     moveNodesIntoDetails();
-    const s=state(); const monday=weekStartKey();
-    makeCollapsible(weight,'Monday weigh-in',()=>{const saved=!!s?.logs?.weights?.[monday];return saved?`Saved for ${pretty(mondayOf(new Date()))}`:`Automatically dated ${pretty(mondayOf(new Date()))}`;},false);
+    const monday=weekStartKey();
+    makeCollapsible(movement,'Movement details',()=>{const m=state()?.logs?.movement?.[dateKey()];return m?.done?`${m.type||'Movement'} • ${m.duration||0} min saved today`:'Optional notes, duration and corrections';},false);
+    makeCollapsible(weight,'Edit weekly weigh-in',()=>{const saved=!!state()?.logs?.weights?.[monday];return saved?`Saved for ${pretty(mondayOf(new Date()))}`:`Quick weigh-in is available on Home`;},false);
     makeCollapsible(checkin,'Weekly check-in',()=>{const found=Object.keys(state()?.logs?.checkins||{}).some(d=>d>=monday);return found?'Completed this week':'A short reflection when the week ends';},false);
     makeCollapsible(measurements,'Measurements',()=>{const dates=Object.keys(state()?.logs?.measurements||{}).sort();return dates.length?`Last updated ${dates[dates.length-1]}`:'Update every 4 weeks';},false);
   }
@@ -10667,7 +10779,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
 
   function refresh(){
     hideAutoDates();renderHomeProgram();updateCollapseMeta();renderConsistency();
-    const buildText=qa('#page-settings p.small.muted').find(x=>x.textContent.includes('App build'));if(buildText)buildText.textContent='App build 1.5.1-ux';
+    const buildText=qa('#page-settings p.small.muted').find(x=>x.textContent.includes('App build'));if(buildText)buildText.textContent='App build 1.5.2-home-actions';
   }
 
   function setup(){
