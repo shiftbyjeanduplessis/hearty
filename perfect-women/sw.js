@@ -1,4 +1,4 @@
-const CACHE_NAME = 'perfect-women-tracker-v1.5.1-ux';
+const CACHE_NAME = 'perfect-women-tracker-v1.5.3-program-preview-switch';
 const CORE = [
   "./",
   "./index.html",

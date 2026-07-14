@@ -2917,6 +2917,94 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
   body.pw-ux-clean #uxConsistencySummary { grid-template-columns:repeat(3,1fr); }
   body.pw-ux-clean .ux-activity-tabs { overflow-x:auto; grid-template-columns:repeat(4,minmax(72px,1fr)); }
 }
+
+
+/* V1.5.3 — preview programs without switching */
+body.pw-ux-clean .program-card.is-preview-program {
+  padding:18px;
+  margin-top:10px;
+  border-color:rgba(255,79,163,.34);
+  background:linear-gradient(180deg,rgba(255,79,163,.07),rgba(255,255,255,.035));
+  box-shadow:0 16px 42px rgba(0,0,0,.20);
+}
+body.pw-ux-clean .program-card.is-preview-program .section-heading { display:flex !important; }
+body.pw-ux-clean .program-card.is-preview-program .section-heading::after {
+  content:'Preview';
+  align-self:flex-start;
+  border-radius:999px;
+  padding:7px 10px;
+  background:rgba(255,79,163,.12);
+  border:1px solid rgba(255,79,163,.28);
+  color:#ffd2e7;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+body.pw-ux-clean .program-card.is-preview-program .compact-program-panel { display:none !important; }
+body.pw-ux-clean .program-card.is-preview-program button:not(.program-preview-switch):not(.program-preview-close),
+body.pw-ux-clean .program-card.is-preview-program input,
+body.pw-ux-clean .program-card.is-preview-program select,
+body.pw-ux-clean .program-card.is-preview-program textarea {
+  pointer-events:none;
+  opacity:.48;
+}
+.program-preview-action {
+  margin:0 0 14px;
+  padding:13px;
+  border-radius:17px;
+  background:rgba(2,6,23,.28);
+  border:1px solid rgba(255,255,255,.10);
+}
+.program-preview-action strong { display:block; color:#fff; margin-bottom:4px; font-size:14px; }
+.program-preview-action p { margin:0 0 11px; font-size:12px; line-height:1.45; color:var(--muted); }
+.program-preview-action .button-row { margin:0; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+.program-preview-action button { min-height:40px; }
+.program-preview-close { padding:9px 12px; }
+.program-switch-modal {
+  position:fixed;
+  inset:0;
+  z-index:10020;
+  display:grid;
+  place-items:end center;
+  padding:16px;
+  background:rgba(2,6,23,.78);
+  backdrop-filter:blur(8px);
+}
+.program-switch-modal[hidden] { display:none !important; }
+.program-switch-sheet {
+  position:relative;
+  width:min(100%,520px);
+  padding:22px;
+  border-radius:26px;
+  color:#fff;
+  background:linear-gradient(180deg,#211238,#100b21);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 30px 90px rgba(0,0,0,.52);
+}
+.program-switch-sheet h2 { margin:4px 36px 8px 0; font-size:23px; }
+.program-switch-sheet > .muted { margin:0 0 18px; line-height:1.55; }
+.program-switch-close {
+  position:absolute;
+  right:14px;
+  top:12px;
+  width:38px;
+  height:38px;
+  padding:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  font-size:24px;
+}
+.program-switch-actions { display:grid; gap:9px; }
+body.program-switch-open { overflow:hidden; }
+@media(max-width:430px){
+  body.pw-ux-clean .program-card.is-preview-program { padding:15px; }
+  .program-preview-action .button-row { grid-template-columns:1fr; }
+  .program-switch-modal { padding:0; }
+  .program-switch-sheet { border-radius:26px 26px 0 0; padding:22px 18px calc(22px + env(safe-area-inset-bottom)); }
+}
 </style>
 
 </head>
@@ -3278,7 +3366,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
         <article class="card soft-card programs-header-card">
           <p class="eyebrow pink">Programs</p>
           <h2>Your coaching programs</h2>
-          <p class="muted">Choose one current program at a time. The active program opens up, while the others stay neat and minimal.</p>
+          <p class="muted">Keep one current program, but open and review any other program without interrupting your progress.</p>
           <div class="current-program-banner" id="currentProgramBanner">
             <span class="ui-icon" data-icon="program"></span>
             <div>
@@ -3288,6 +3376,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
           </div>
         </article>
 
+        <div class="programs-list-label" id="programPreviewLabel" hidden>Viewing program</div>
         <div class="programs-list-label" id="programsListLabel">Choose a program</div>
 
         <article class="card walking-program-card program-card" id="walkingProgramCard">
@@ -3306,7 +3395,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
               <strong>8-week walking program</strong>
               <small>60-minute walks • 4–5/week • step average tracking</small>
             </div>
-            <button class="secondary" id="openWalkingProgramBtn" type="button">Start / view</button>
+            <button class="secondary" id="openWalkingProgramBtn" type="button">View program</button>
           </div>
 
           <div class="walking-start" id="walkingStartPanel">
@@ -3366,7 +3455,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
               <strong>5 km jogging program</strong>
               <small>8-week beginner plan • 3 core sessions/week</small>
             </div>
-            <button class="secondary" id="openJoggingProgramBtn" type="button">Start / view</button>
+            <button class="secondary" id="openJoggingProgramBtn" type="button">View program</button>
           </div>
 
           <div class="walking-start" id="joggingStartPanel">
@@ -3430,7 +3519,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
               <strong>Foundation Home Program</strong>
               <small>4 weeks • timed workouts • 3–4 sessions/week</small>
             </div>
-            <button class="secondary" id="openHomeStrengthProgramBtn" type="button">Start / view</button>
+            <button class="secondary" id="openHomeStrengthProgramBtn" type="button">View program</button>
           </div>
 
           <div class="walking-start" id="homeStrengthStartPanel">
@@ -3490,7 +3579,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
               <strong>Gym beginner strength</strong>
               <small>3 sessions/week • simple machine-based strength</small>
             </div>
-            <button class="secondary" id="openGymStrengthProgramBtn" type="button">Start / view</button>
+            <button class="secondary" id="openGymStrengthProgramBtn" type="button">View program</button>
           </div>
 
           <div class="walking-start" id="gymStrengthStartPanel">
@@ -3961,8 +4050,22 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     </div>
   </div>
 
+  <div class="program-switch-modal" id="programSwitchModal" role="dialog" aria-modal="true" aria-labelledby="programSwitchTitle" aria-hidden="true" hidden>
+    <div class="program-switch-sheet">
+      <button class="program-switch-close" id="programSwitchCloseBtn" type="button" aria-label="Close">×</button>
+      <p class="eyebrow pink" id="programSwitchEyebrow">Switch program</p>
+      <h2 id="programSwitchTitle">Make this your current program?</h2>
+      <p class="muted" id="programSwitchText"></p>
+      <div class="program-switch-actions" id="programSwitchActions">
+        <button class="secondary full" id="programSwitchCancelBtn" type="button">Keep current program</button>
+        <button class="primary full" id="programSwitchConfirmBtn" type="button">Pause it and switch</button>
+        <button class="text-button full" id="programSwitchDismissBtn" type="button" hidden>Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-  window.PW_APP_BUILD = '1.5.2-home-actions';
+  window.PW_APP_BUILD = '1.5.3-program-preview-switch';
   window.addEventListener('error', function (event) {
     console.error('Perfect Women startup error:', event.error || event.message);
   });
@@ -6887,6 +6990,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
   let mealIdeasVisible = false;
   let deferredInstallPrompt = null;
   let focusedProgramKey = null;
+  let pendingProgramSwitchKey = null;
   let foundationWorkoutRuntime = null;
   let foundationWorkoutTimer = null;
   let foundationLastPersistSecond = -1;
@@ -7435,11 +7539,8 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     const allowed = ['walking', 'jogging', 'homeStrength', 'gymStrength'];
     if (!allowed.includes(key)) return;
     const s = state();
-    if (programIsStarted(s, key)) {
-      window.PWStore.setActiveProgram(key);
-    } else {
-      focusedProgramKey = key;
-    }
+    const active = activeProgramKey(s);
+    focusedProgramKey = key === active ? null : key;
   }
 
   function navigate(page, options = {}) {
@@ -7700,9 +7801,115 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     return Object.keys(started).find((key) => started[key]) || null;
   }
 
+  const PROGRAM_LABELS = {
+    walking: '8-week walking program',
+    jogging: '5 km jogging program',
+    homeStrength: 'Foundation Home Program',
+    gymStrength: 'Gym beginner strength'
+  };
+
+  function activeWorkoutForProgram(s, key) {
+    if (key === 'homeStrength') return s.strengthProgram?.home?.activeWorkout || null;
+    if (key === 'gymStrength') return s.strengthProgram?.gym?.activeWorkout || null;
+    return null;
+  }
+
+  function closeProgramSwitchModal() {
+    const modal = $('#programSwitchModal');
+    if (!modal) return;
+    modal.hidden = true;
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('program-switch-open');
+    pendingProgramSwitchKey = null;
+  }
+
+  function openProgramSwitchModal(targetKey) {
+    const s = state();
+    const active = activeProgramKey(s);
+    if (!targetKey || targetKey === active) return;
+    pendingProgramSwitchKey = targetKey;
+    const modal = $('#programSwitchModal');
+    const currentName = PROGRAM_LABELS[active] || 'your current program';
+    const targetName = PROGRAM_LABELS[targetKey] || 'this program';
+    const unfinished = activeWorkoutForProgram(s, active);
+    $('#programSwitchEyebrow').textContent = unfinished ? 'Workout in progress' : 'Switch current program';
+    $('#programSwitchTitle').textContent = unfinished ? 'Finish or leave your current workout?' : `Make ${targetName} current?`;
+    $('#programSwitchText').textContent = unfinished
+      ? `You have an unfinished workout in ${currentName}. You can return to it, or end that workout and switch. Your completed history and previous program progress will stay saved.`
+      : `${currentName} will be paused, not deleted. Its weeks, sessions, weights and progression history will stay exactly where you left them.`;
+    const cancel = $('#programSwitchCancelBtn');
+    const confirmBtn = $('#programSwitchConfirmBtn');
+    cancel.textContent = unfinished ? 'Return to workout' : 'Keep current program';
+    confirmBtn.textContent = unfinished ? 'End workout and switch' : 'Pause it and switch';
+    cancel.dataset.mode = unfinished ? 'return-workout' : 'cancel';
+    confirmBtn.dataset.endWorkout = unfinished ? 'true' : 'false';
+    const dismiss = $('#programSwitchDismissBtn');
+    if (dismiss) dismiss.hidden = !unfinished;
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('program-switch-open');
+    window.setTimeout(() => cancel.focus(), 40);
+  }
+
+  function activateProgram(targetKey, options = {}) {
+    const s = state();
+    const active = activeProgramKey(s);
+    if (options.endWorkout && active === 'homeStrength') window.PWStore.clearStrengthWorkoutProgress('home');
+    if (options.endWorkout && active === 'gymStrength') window.PWStore.clearStrengthWorkoutProgress('gym');
+
+    const fresh = state();
+    if (targetKey === 'walking') {
+      if (!fresh.walkingProgram?.started) window.PWStore.startWalkingProgram({ targetWalksPerWeek: 4, targetSteps: '' });
+      else window.PWStore.setActiveProgram('walking');
+    } else if (targetKey === 'jogging') {
+      if (!fresh.joggingProgram?.started) window.PWStore.startJoggingProgram();
+      else window.PWStore.setActiveProgram('jogging');
+    } else if (targetKey === 'homeStrength') {
+      if (!fresh.strengthProgram?.home?.started) window.PWStore.startStrengthProgram('home');
+      else window.PWStore.setActiveProgram('homeStrength');
+    } else if (targetKey === 'gymStrength') {
+      if (!fresh.strengthProgram?.gym?.started) window.PWStore.startStrengthProgram('gym');
+      else window.PWStore.setActiveProgram('gymStrength');
+    }
+    focusedProgramKey = null;
+    closeProgramSwitchModal();
+    toast(`${PROGRAM_LABELS[targetKey]} is now your current program`);
+    renderAndRevealProgram(targetKey);
+  }
+
+  function requestProgramSwitch(targetKey) {
+    const s = state();
+    const active = activeProgramKey(s);
+    if (!active || active === targetKey) {
+      activateProgram(targetKey);
+      return;
+    }
+    openProgramSwitchModal(targetKey);
+  }
+
+  function addProgramPreviewAction(card, key, s) {
+    card.querySelector('.program-preview-action')?.remove();
+    if (focusedProgramKey !== key || activeProgramKey(s) === key) return;
+    const started = programIsStarted(s, key);
+    const current = activeProgramKey(s);
+    const panel = document.createElement('div');
+    panel.className = 'program-preview-action';
+    panel.innerHTML = `
+      <strong>${started ? 'Paused program — progress saved' : 'Previewing this program'}</strong>
+      <p>${started ? 'You can review your saved week, sessions and history here. Resume it only when you are ready.' : `Review the structure before deciding. ${current ? `${PROGRAM_LABELS[current]} stays current until you confirm a switch.` : 'Nothing changes until you start it.'}`}</p>
+      <div class="button-row">
+        <button class="primary program-preview-switch" type="button">${started ? 'Resume as current program' : 'Make this my current program'}</button>
+        <button class="secondary program-preview-close" type="button">Close preview</button>
+      </div>`;
+    panel.querySelector('.program-preview-switch').addEventListener('click', () => requestProgramSwitch(key));
+    panel.querySelector('.program-preview-close').addEventListener('click', () => { focusedProgramKey = null; renderAll(); });
+    const heading = card.querySelector('.section-heading');
+    if (heading) heading.insertAdjacentElement('afterend', panel);
+    else card.prepend(panel);
+  }
+
   function renderProgramOverview(s) {
     const active = activeProgramKey(s);
-    focusedProgramKey = null;
     const keys = ['walking', 'jogging', 'homeStrength', 'gymStrength'];
     const cardIds = {
       walking: 'walkingProgramCard',
@@ -7716,26 +7923,37 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
       const card = $(`#${cardIds[key]}`);
       if (!card) return;
       cards[key] = card;
+      const preview = focusedProgramKey === key && active !== key;
       card.classList.toggle('is-active-program', active === key);
-      card.classList.toggle('is-compact-program', active !== key);
-      card.dataset.programLabel = active === key ? 'Current program' : '';
+      card.classList.toggle('is-preview-program', preview);
+      card.classList.toggle('is-compact-program', active !== key && !preview);
+      card.dataset.programLabel = active === key ? 'Current program' : preview ? 'Preview' : '';
+      addProgramPreviewAction(card, key, s);
     });
 
-    // Keep the current program first and fully open. All others stay as slim rows.
     const programsPage = $('#page-programs');
     const headerCard = programsPage?.querySelector('.programs-header-card');
+    const previewLabel = $('#programPreviewLabel');
     const listLabel = $('#programsListLabel');
-    if (programsPage && headerCard && listLabel) {
+    if (programsPage && headerCard && listLabel && previewLabel) {
+      let cursor = headerCard;
       if (active && cards[active]) {
-        headerCard.insertAdjacentElement('afterend', cards[active]);
-        cards[active].insertAdjacentElement('afterend', listLabel);
-        listLabel.textContent = 'Other programs';
-        keys.filter((key) => key !== active).forEach((key) => cards[key] && programsPage.appendChild(cards[key]));
-      } else {
-        headerCard.insertAdjacentElement('afterend', listLabel);
-        listLabel.textContent = 'Choose a program';
-        keys.forEach((key) => cards[key] && programsPage.appendChild(cards[key]));
+        cursor.insertAdjacentElement('afterend', cards[active]);
+        cursor = cards[active];
       }
+      const preview = focusedProgramKey && focusedProgramKey !== active ? cards[focusedProgramKey] : null;
+      if (preview) {
+        cursor.insertAdjacentElement('afterend', previewLabel);
+        previewLabel.hidden = false;
+        previewLabel.textContent = programIsStarted(s, focusedProgramKey) ? 'Paused program preview' : 'Program preview';
+        previewLabel.insertAdjacentElement('afterend', preview);
+        cursor = preview;
+      } else {
+        previewLabel.hidden = true;
+      }
+      cursor.insertAdjacentElement('afterend', listLabel);
+      listLabel.textContent = active ? 'Other programs' : 'Available programs';
+      keys.filter((key) => key !== active && key !== focusedProgramKey).forEach((key) => cards[key] && programsPage.appendChild(cards[key]));
     }
 
     const banner = $('#currentProgramBanner');
@@ -7765,7 +7983,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
         banner.innerHTML = `${icon('workout')}<div><strong>Current program: Gym beginner strength</strong><small>Week ${week} • ${sessions.length}/3 sessions completed this week</small></div>`;
         banner.classList.add('is-active');
       } else {
-        banner.innerHTML = `${icon('program')}<div><strong>No current program</strong><small>Choose one below to start. Only your current program opens fully.</small></div>`;
+        banner.innerHTML = `${icon('program')}<div><strong>No current program</strong><small>Open any program below to review it, then choose whether to start.</small></div>`;
         banner.classList.remove('is-active');
       }
     }
@@ -7783,17 +8001,17 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
       gymStrength: $('#openGymStrengthProgramBtn')
     };
     keys.forEach((key) => {
-      if (buttonMap[key]) buttonMap[key].textContent = started[key] ? 'Switch' : 'Start';
+      if (buttonMap[key]) buttonMap[key].textContent = 'View';
     });
 
     const walkingCompact = $('#walkingCompactPanel small');
-    if (walkingCompact) walkingCompact.textContent = started.walking ? `Week ${walkingWeekNumberForDate(s)} • progress saved` : '8 weeks • 4–5 walks/week';
+    if (walkingCompact) walkingCompact.textContent = started.walking ? `Paused • Week ${walkingWeekNumberForDate(s)} • progress saved` : 'Available • 8 weeks • 4–5 walks/week';
     const joggingCompact = $('#joggingCompactPanel small');
-    if (joggingCompact) joggingCompact.textContent = started.jogging ? `Week ${joggingWeekNumberForDate(s)} • progress saved` : '8 weeks • 3 runs/week';
+    if (joggingCompact) joggingCompact.textContent = started.jogging ? `Paused • Week ${joggingWeekNumberForDate(s)} • progress saved` : 'Available • 8 weeks • 3 runs/week';
     const homeCompact = $('#homeStrengthCompactPanel small');
-    if (homeCompact) homeCompact.textContent = started.homeStrength ? `Week ${strengthWeekNumberForDate(s, 'home')} • progress saved` : '4 weeks • guided timers';
+    if (homeCompact) homeCompact.textContent = started.homeStrength ? `Paused • Week ${strengthWeekNumberForDate(s, 'home')} • progress saved` : 'Available • 4 weeks • guided timers';
     const gymCompact = $('#gymStrengthCompactPanel small');
-    if (gymCompact) gymCompact.textContent = started.gymStrength ? `Week ${strengthWeekNumberForDate(s, 'gym')} • progress saved` : '3 machine sessions/week';
+    if (gymCompact) gymCompact.textContent = started.gymStrength ? `Paused • Week ${strengthWeekNumberForDate(s, 'gym')} • progress saved` : 'Available • 3 machine sessions/week';
   }
 
   function renderPrograms() {
@@ -9988,28 +10206,16 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
       } else if (gymResume) {
         resumeFoundationWorkout('gym');
       } else if (programOpen) {
-        const id = programOpen.id;
-        const s = state();
-        if (id === 'openWalkingProgramBtn') {
-          if (!s.walkingProgram?.started) window.PWStore.startWalkingProgram({ targetWalksPerWeek: 4, targetSteps: '' });
-          else window.PWStore.setActiveProgram('walking');
-          toast('Walking program is now current');
-          renderAndRevealProgram('walking');
-        } else if (id === 'openJoggingProgramBtn') {
-          if (!s.joggingProgram?.started) window.PWStore.startJoggingProgram();
-          else window.PWStore.setActiveProgram('jogging');
-          toast('5 km jogging program is now current');
-          renderAndRevealProgram('jogging');
-        } else if (id === 'openHomeStrengthProgramBtn') {
-          if (!s.strengthProgram?.home?.started) window.PWStore.startStrengthProgram('home');
-          else window.PWStore.setActiveProgram('homeStrength');
-          toast('Foundation Home is now current');
-          renderAndRevealProgram('homeStrength');
-        } else if (id === 'openGymStrengthProgramBtn') {
-          if (!s.strengthProgram?.gym?.started) window.PWStore.startStrengthProgram('gym');
-          else window.PWStore.setActiveProgram('gymStrength');
-          toast('Gym strength is now current');
-          renderAndRevealProgram('gymStrength');
+        const keyById = {
+          openWalkingProgramBtn: 'walking',
+          openJoggingProgramBtn: 'jogging',
+          openHomeStrengthProgramBtn: 'homeStrength',
+          openGymStrengthProgramBtn: 'gymStrength'
+        };
+        const key = keyById[programOpen.id];
+        if (key) {
+          focusedProgramKey = key === activeProgramKey(state()) ? null : key;
+          renderAndRevealProgram(key);
         }
       }
     }, true);
@@ -10021,6 +10227,27 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
       scrollTo: btn.dataset.scrollTo || ''
     })));
     $('#quickSettings').addEventListener('click', () => navigate('settings'));
+    if ($('#programSwitchCloseBtn')) $('#programSwitchCloseBtn').addEventListener('click', closeProgramSwitchModal);
+    if ($('#programSwitchDismissBtn')) $('#programSwitchDismissBtn').addEventListener('click', closeProgramSwitchModal);
+    if ($('#programSwitchCancelBtn')) $('#programSwitchCancelBtn').addEventListener('click', () => {
+      const mode = $('#programSwitchCancelBtn').dataset.mode;
+      const s = state();
+      const active = activeProgramKey(s);
+      closeProgramSwitchModal();
+      if (mode === 'return-workout') {
+        if (active === 'homeStrength') resumeFoundationWorkout('home');
+        if (active === 'gymStrength') resumeFoundationWorkout('gym');
+      }
+    });
+    if ($('#programSwitchConfirmBtn')) $('#programSwitchConfirmBtn').addEventListener('click', () => {
+      const target = pendingProgramSwitchKey;
+      const endWorkout = $('#programSwitchConfirmBtn').dataset.endWorkout === 'true';
+      if (target) activateProgram(target, { endWorkout });
+    });
+    if ($('#programSwitchModal')) $('#programSwitchModal').addEventListener('click', (event) => {
+      if (event.target === $('#programSwitchModal')) closeProgramSwitchModal();
+    });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !$('#programSwitchModal')?.hidden) closeProgramSwitchModal(); });
 
     const addWaterAndRefresh = (ml) => {
       window.PWStore.addWater(Number(ml));
@@ -10124,65 +10351,31 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
 
 
     if ($('#openWalkingProgramBtn')) $('#openWalkingProgramBtn').addEventListener('click', () => {
-      const s = state();
-      if (!s.walkingProgram?.started) {
-        window.PWStore.startWalkingProgram({ targetWalksPerWeek: 4, targetSteps: '' });
-        toast('Walking program started');
-      } else {
-        window.PWStore.setActiveProgram('walking');
-        toast('Walking program is now current');
-      }
+      focusedProgramKey = 'walking' === activeProgramKey(state()) ? null : 'walking';
       renderAndRevealProgram('walking');
     });
 
     if ($('#openJoggingProgramBtn')) $('#openJoggingProgramBtn').addEventListener('click', () => {
-      const s = state();
-      if (!s.joggingProgram?.started) {
-        window.PWStore.startJoggingProgram();
-        toast('5 km jogging program started');
-      } else {
-        window.PWStore.setActiveProgram('jogging');
-        toast('5 km jogging program is now current');
-      }
+      focusedProgramKey = 'jogging' === activeProgramKey(state()) ? null : 'jogging';
       renderAndRevealProgram('jogging');
     });
 
     if ($('#openHomeStrengthProgramBtn')) $('#openHomeStrengthProgramBtn').addEventListener('click', () => {
-      const s = state();
-      if (!s.strengthProgram?.home?.started) {
-        window.PWStore.startStrengthProgram('home');
-        toast('Foundation Home Program started');
-      } else {
-        window.PWStore.setActiveProgram('homeStrength');
-        toast('Foundation Home is now current');
-      }
+      focusedProgramKey = 'homeStrength' === activeProgramKey(state()) ? null : 'homeStrength';
       renderAndRevealProgram('homeStrength');
     });
 
     if ($('#openGymStrengthProgramBtn')) $('#openGymStrengthProgramBtn').addEventListener('click', () => {
-      const s = state();
-      if (!s.strengthProgram?.gym?.started) {
-        window.PWStore.startStrengthProgram('gym');
-        toast('Gym beginner strength started');
-      } else {
-        window.PWStore.setActiveProgram('gymStrength');
-        toast('Gym strength is now current');
-      }
+      focusedProgramKey = 'gymStrength' === activeProgramKey(state()) ? null : 'gymStrength';
       renderAndRevealProgram('gymStrength');
     });
 
     if ($('#startHomeStrengthProgramBtn')) $('#startHomeStrengthProgramBtn').addEventListener('click', () => {
-      window.PWStore.startStrengthProgram('home');
-      focusedProgramKey = null;
-      toast('Foundation Home Program started');
-      renderAndRevealProgram('homeStrength');
+      requestProgramSwitch('homeStrength');
     });
 
     if ($('#startGymStrengthProgramBtn')) $('#startGymStrengthProgramBtn').addEventListener('click', () => {
-      window.PWStore.startStrengthProgram('gym');
-      focusedProgramKey = null;
-      toast('Gym beginner strength started');
-      renderAndRevealProgram('gymStrength');
+      requestProgramSwitch('gymStrength');
     });
 
     if ($('#saveHomeStrengthBtn')) $('#saveHomeStrengthBtn').addEventListener('click', () => {
@@ -10212,13 +10405,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
     });
 
     if ($('#startWalkingProgramBtn')) $('#startWalkingProgramBtn').addEventListener('click', () => {
-      window.PWStore.startWalkingProgram({
-        targetWalksPerWeek: $('#walkingTargetWalks')?.value || 4,
-        targetSteps: $('#walkingStartTarget')?.value || ''
-      });
-      focusedProgramKey = null;
-      toast('Walking program started');
-      renderAll();
+      requestProgramSwitch('walking');
     });
 
     if ($('#saveWalkingTargetBtn')) $('#saveWalkingTargetBtn').addEventListener('click', () => {
@@ -10248,10 +10435,7 @@ body.pw-ux-clean .ux-settings-details > article { margin-top:7px; }
 
 
     if ($('#startJoggingProgramBtn')) $('#startJoggingProgramBtn').addEventListener('click', () => {
-      window.PWStore.startJoggingProgram();
-      focusedProgramKey = null;
-      toast('5 km jogging program started');
-      renderAll();
+      requestProgramSwitch('jogging');
     });
 
     if ($('#saveRunBtn')) $('#saveRunBtn').addEventListener('click', () => {
