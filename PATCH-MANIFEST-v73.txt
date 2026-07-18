@@ -1,0 +1,26 @@
+HEARTY HUB v73 — V66 VISUAL MASTER MERGE
+
+Visual baseline
+- Preserves v66 sage / cream / coral palette.
+- Preserves original Hearty Hub SVG logo and real app screenshots.
+- Restores photo-led hero, app proof and premium section rhythm.
+
+Functional baseline
+- Latest six calculator cold-lander pages.
+- Latest complete starter-plan wizard.
+- Automatic Hub-to-Hearty setup transfer module.
+- Existing v66 interactive demo retained.
+
+Main changed/added files
+- hub.html
+- css/hearty-hub-v73.css
+- css/hearty-hub-v68.css
+- js/hearty-hub-v68.js
+- js/hearty-setup-transfer-v1.js
+- starter-plan.html
+- protein-calculator.html
+- glp1-calorie-guide.html
+- goal-calculator.html
+- hydration-calculator.html
+- meal-plan-creator.html
+- low-appetite-meals.html

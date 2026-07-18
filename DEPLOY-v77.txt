@@ -1,0 +1,17 @@
+HEARTY HUB v77 DEPLOYMENT
+
+1. Back up the current Hub deployment.
+2. Upload the complete v77 contents over the Hub root, or apply the minimal patch over v76.
+3. Keep the directory structure intact, especially assets/, css/ and js/.
+4. Deploy the separate Hearty app importer v2 to the app bundle.
+5. Test these routes on a real phone inside Facebook's in-app browser:
+   start-here.html?src=facebook_profile
+   slow-loss-guide.html?src=facebook_profile
+   glp1-numbers.html?src=facebook_profile
+   mini-recipe-book.html?src=facebook_profile
+   goal-calculator.html?src=facebook_profile
+6. Complete the full plan from each hook and confirm answered fields are skipped.
+7. Generate a simple and a detailed meal plan.
+8. Submit a real email and confirm Supabase/Brevo delivery.
+9. Test international and South African purchase paths.
+10. Confirm the exact seven-day plan appears inside Hearty after login.

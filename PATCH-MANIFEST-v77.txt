@@ -1,0 +1,40 @@
+Hearty Hub v77 — Unified Conversion Funnel
+
+Purpose
+- Make every major Facebook hook feed one coherent personalised-plan journey.
+- Preserve the approved sage, cream and coral Hearty visual system.
+- Reduce duplicate questions and use the existing strong meal builder as the single meal engine.
+
+Primary routes
+- start-here.html — Facebook pinned-post destination
+- slow-loss-guide.html — overall trend plus recent pause
+- glp1-numbers.html — calorie and protein targets
+- mini-recipe-book.html — immediate meal/recipe value
+- goal-calculator.html — realistic goal range
+- starter-plan.html — asks only missing profile/goal/preferences questions
+- free-meal-plan.html — simple or detailed food choices, exact seven-day plan, lead capture and Hearty offer
+
+Major changes
+- Real progressive profiling from hook state
+- fresh=1 clean-start handling and visible Start Over action
+- Starter wizard hands into the existing meal engine; duplicate generic meal generator removed from the core journey
+- Existing Supabase-first meal-plan capture remains the final lead system
+- Exact generated week is packaged for Hearty import
+- Checkout success preserves the setup handoff fragment
+- South African visitors see R200 messaging and route to the South African sales journey
+- International visitors retain the existing Paddle overlay and $29 once-off messaging
+- Slow Loss result separates overall trend from recent scale pattern
+- One main CTA on calculator results
+- New visual system for hooks, trends, protein distribution, milestones, meal choice and app handoff
+- Twelve expanded recipe cards with ingredients and methods
+- Optimised WebP app previews
+- Working privacy and terms pages
+- First-party funnel analytics events without sending health values to Meta
+
+Required companion deployment
+- Apply hearty-app-auto-import-v2.zip to the live Hearty app so object-based meal slots import correctly.
+
+Production checks still required
+- Submit one real plan email and confirm the Supabase/Brevo record arrives.
+- Complete one international Paddle purchase and one South African purchase route.
+- Confirm the setup imports after login on the same browser/device.

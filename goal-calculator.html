@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><title>GLP-1 Goal Timeline Calculator | Hearty</title><meta content="Estimate a realistic GLP-1 goal timeline with milestones, then build the plan behind it." name="description"/><meta content="How long could my GLP-1 goal take?" property="og:title"/><meta content="See a realistic planning range, not an unrealistic promise." property="og:description"/><meta content="https://hearty.health/assets/og/hearty-goal-v77.png" property="og:image"/><meta content="https://hearty.health/goal-calculator.html" property="og:url"/><meta content="summary_large_image" name="twitter:card"/><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="#2A6F5E" name="theme-color"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/><link href="css/hearty-hub.css" rel="stylesheet"/><link href="css/hearty-hub-v73.css" rel="stylesheet"/><link href="css/hearty-hook-pages-v74.css" rel="stylesheet"/><link href="css/hearty-funnel-v75.css" rel="stylesheet"/><link href="css/hearty-funnel-v76.css" rel="stylesheet"/><link href="css/hearty-funnel-v77.css" rel="stylesheet"/><link href="css/hearty-funnel-v78.css" rel="stylesheet"/><link href="css/hearty-hub-v68.css" rel="stylesheet"/><link href="css/hearty-polish-v87.css" rel="stylesheet"/><link href="css/hearty-flow-v89.css" rel="stylesheet"/><link href="css/hearty-progress-v91.css" rel="stylesheet"/><link href="css/hearty-funnel-focus-v92.css" rel="stylesheet"/><link href="css/hearty-sequence-v93.css" rel="stylesheet"/><link href="css/hearty-goal-v94.css" rel="stylesheet"/></head><body class="v76-form-first" data-hook-page="goal" data-plan-stage="goal" data-tool="goal"><header class="topbar v73-topbar hook-topbar"><div class="container nav"><a aria-label="Hearty Hub home" class="brand" href="hub.html"><img alt="Hearty Hub" class="brand-logo" height="74" src="assets/brand/hearty-hub-logo.svg" width="330"/></a><div class="hook-header-actions"><a class="hook-header-link" href="start-here.html">Start here</a><a class="btn btn-soft" href="#goalQuickForm">Set my goal</a></div></div></header><main><section class="hook-detail-hero hook-goal-hero v77-first-screen"><div class="container hook-detail-grid"><div><p class="kicker">Free Goal Timeline</p><h1>How long could your goal take?</h1><p class="lead">See a realistic range—not an unrealistic promise.</p><div class="v77-source-note">Built from your starting point, goal and progress—not a straight-line guess.</div></div><img alt="A path with milestones leading to a goal" class="v77-visual v77-hero-image" src="assets/visuals/hook-goal.webp"/></div></section><section class="calculator-section hook-form-section"><div class="container calculator-shell"><div class="calculator-card hook-form-card">
+<p class="kicker">Your starting point and goal</p>
+<h2>Build a goal estimate that uses more than two weights.</h2>
+<p class="v94-form-intro">This first stage records the body details used later for your calorie calculation, checks the size of your goal, and—when you have already started—uses your own progress history to make the timeline more relevant.</p>
+<div class="v94-method-strip">
+<strong>What shapes the estimate</strong>
+<span>Timeline: current and goal weight · height safety check · treatment stage · progress so far · preferred pace. Age and calorie-estimate sex are saved for Stage 2.</span>
+</div>
+<form data-prefill="hub-state" id="goalQuickForm" novalidate="">
+<div class="v94-form-section">
+<div class="v94-section-heading"><span>1</span><div><strong>About you</strong><small>Saved now so Stage 2 can stay short.</small></div></div>
+<div class="calculator-grid v94-grid">
+<label class="field"><span>For your later calorie estimate</span><select name="sex" required=""><option value="">Choose one</option><option value="female">Female</option><option value="male">Male</option></select></label>
+<label class="field"><span>Age</span><input max="90" min="18" name="age" required="" type="number"/></label>
+<label class="field"><span>Height</span><input max="250" min="90" name="height" required="" step="0.1" type="number"/></label>
+<label class="field"><span>Height unit</span><select name="heightUnit"><option value="cm">cm</option><option value="in">inches</option></select></label>
+</div>
+</div>
+<div class="v94-form-section">
+<div class="v94-section-heading"><span>2</span><div><strong>Your weight goal</strong><small>We check the amount remaining and show meaningful milestones.</small></div></div>
+<div class="calculator-grid v94-grid">
+<label class="field"><span>Current weight</span><input max="800" min="30" name="currentWeight" required="" step="0.1" type="number"/></label>
+<label class="field"><span>Goal weight</span><input max="800" min="30" name="goalWeight" required="" step="0.1" type="number"/></label>
+<label class="field"><span>Weight unit</span><select name="weightUnit"><option value="kg">kg</option><option value="lb">lb</option></select></label>
+<label class="field"><span>Preferred planning pace</span><select name="pace"><option selected="" value="steady">Steady and sustainable</option><option value="strong">A stronger, still sensible range</option></select></label>
+</div>
+</div>
+<div class="v94-form-section">
+<div class="v94-section-heading"><span>3</span><div><strong>Your GLP-1 progress</strong><small>Your own trend improves the estimate when enough history exists.</small></div></div>
+<div class="calculator-grid v94-grid">
+<label class="field full"><span>Where are you in your GLP-1 journey?</span><select name="treatmentStage" required=""><option value="">Choose one</option><option value="not_started">Not started yet / planning</option><option value="early">Started less than 8 weeks ago</option><option value="established">Started 8 weeks or more ago</option></select></label>
+</div>
+<div class="calculator-grid v94-grid v94-history-fields" hidden="" id="v94HistoryFields">
+<label class="field"><span>Weight when you started</span><input max="800" min="30" name="treatmentStartWeight" step="0.1" type="number"/></label>
+<label class="field"><span>Weeks since starting</span><input max="260" min="1" name="treatmentWeeks" step="1" type="number"/></label>
+<label class="field"><span>Weight lost in the last 4 weeks <em>(optional)</em></span><input max="40" min="0" name="recentFourWeekLoss" step="0.1" type="number"/></label>
+<div class="v94-field-note">Use the same weight unit selected above. A recent result is optional because four weeks can still be noisy.</div>
+</div>
+</div>
+<div class="v94-form-section v94-final-section">
+<div class="v94-section-heading"><span>4</span><div><strong>Your timeframe</strong><small>We compare your hoped-for date with the calculated planning range.</small></div></div>
+<div class="calculator-grid v94-grid">
+<label class="field"><span>Timeframe you have in mind <em>(optional)</em></span><input max="520" min="4" name="requestedWeeks" placeholder="e.g. 40 weeks" step="1" type="number"/></label>
+<div class="v94-submit-wrap"><button class="btn btn-primary btn-large" type="submit">Calculate my timeline and milestones →</button></div>
+</div>
+</div>
+</form>
+<div class="tool-result" hidden="" id="toolResult"></div>
+<p class="disclaimer">This is a planning estimate—not a medical prediction, treatment target or promise. Questions about medication, dose or a suitable goal belong with your healthcare professional.</p>
+</div><aside class="calculator-side"><img alt="A path from today through milestones to the goal" class="v77-visual" src="assets/visuals/goal-milestones.svg"/></aside></div></section></main><footer class="footer v73-footer"><div class="container footer-inner"><p><strong>Hearty Hub</strong> provides general food, weight-planning and routine guidance, not medical advice. Follow the guidance of your healthcare professional.</p><div class="v77-footer-links"><a href="start-here.html">Start here</a><a href="hub.html">Full Hub</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div></div></footer><script src="js/hearty-core-v77.js"></script><script defer="" src="js/hearty-setup-transfer-v1.js"></script><script defer="" src="js/hearty-hub-v68.js"></script><script defer="" src="js/hearty-funnel-v75.js"></script><script src="js/hearty-flow-v89.js"></script><script src="js/hearty-progress-v91.js"></script><script defer="" src="js/hearty-funnel-focus-v92.js"></script></body></html>

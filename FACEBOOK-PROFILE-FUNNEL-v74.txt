@@ -1,0 +1,21 @@
+HEARTY FACEBOOK PROFILE FUNNEL — V74
+
+PINNED POST DESTINATION
+Use: start-here.html?src=facebook_profile
+
+RESOURCE NAMES TO USE IN FACEBOOK REPLIES
+1. “Slow Loss Guide” → slow-loss-guide.html
+2. “My GLP-1 Numbers” → glp1-numbers.html
+3. “Mini Recipe Book” → mini-recipe-book.html
+4. “Goal Timeline” → goal-calculator.html
+5. “Free 7-Day Meal Plan” → free-meal-plan.html
+
+REPLY PATTERN
+“I made a free [RESOURCE NAME] for this. It is in the pinned post on my profile — choose ‘[SHORT LABEL]’.”
+
+IMPORTANT
+- Do not send profile visitors to a generic homepage when the Facebook post names a specific resource.
+- Water remains inside My GLP-1 Numbers and the complete setup. It is not a primary hook.
+- The existing meal setup remains unchanged and keeps its simple/detailed choice.
+- Every hook gives value before asking the visitor to complete the full setup.
+- Hook answers use the same browser state as the complete wizard and prefill the known fields.

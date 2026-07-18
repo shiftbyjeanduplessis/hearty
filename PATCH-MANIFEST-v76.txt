@@ -1,0 +1,20 @@
+HEARTY HUB v76 — FAST, TRIGGER-LED PASS
+
+Visual system retained:
+- Original Hearty logo
+- Sage / cream / coral palette
+- Real app screenshots
+- Existing calculators, wizard, meal planner and carry-over logic
+
+Conversion changes:
+- Shorter, problem-led copy
+- Four immediate emotional triggers
+- Forms moved higher
+- One main CTA per hook
+- “Setup” language replaced with “plan” where practical
+- Hub sections consolidated
+- Recipe and result copy shortened
+- Wizard introduction compressed
+
+Primary Facebook route:
+start-here.html?src=facebook_profile

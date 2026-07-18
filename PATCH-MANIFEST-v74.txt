@@ -1,0 +1,24 @@
+HEARTY HUB V74 — FACEBOOK HOOK FUNNEL
+
+NEW
+- start-here.html
+- slow-loss-guide.html
+- glp1-numbers.html
+- mini-recipe-book.html
+- css/hearty-hook-pages-v74.css
+- js/hearty-hooks-v74.js
+- assets/og/hearty-start-here-v74.png
+- assets/og/hearty-recipe-book-v74.png
+- FACEBOOK-PROFILE-FUNNEL-v74.txt
+
+UPDATED
+- hub.html: hook-first acquisition routes; hydration demoted to supporting tool
+- goal-calculator.html: richer goal-setting landing page
+- starter-plan.html: existing hook answers now prefill the wizard
+- js/hearty-hub-v68.js: full-setup CTA wording; false local lead success removed
+
+UNCHANGED
+- free-meal-plan.html and its simple/detailed setup
+- existing detailed meal engine
+- automatic Hearty setup carry-over
+- standalone SEO calculator pages

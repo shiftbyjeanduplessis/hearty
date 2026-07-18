@@ -1,0 +1,47 @@
+HEARTY HUB v75 — CONVERSION + MOBILE CLEANUP
+
+Visual system retained
+- Original Hearty Hub SVG logo
+- Deep sage #2A6F5E
+- Dark green #17332D
+- Warm cream #FFFAF3
+- Coral #EF7F68
+- Existing app screenshots, cards, radii and branded section contrast
+
+Main fixes
+1. Removed horizontal overflow across hook pages and the complete setup wizard.
+2. Simplified mobile headers and shortened the header action to “Full setup”.
+3. Rebuilt the Hub middle flow to remove repeated content while retaining visual depth.
+4. Combined the free-vs-paid and automatic carry-over sections.
+5. Replaced the mismatched blue/pink meal-plan image with a branded sage/coral plan preview.
+6. Made the complete setup the dominant next step from calculator results.
+7. Removed the early paid-app CTA from standalone calculator results.
+8. Changed the final wizard wording to “Your complete setup is ready”.
+9. Separated requested setup delivery from optional marketing consent.
+10. Replaced the wizard H badge with the proper Hearty Hub logo.
+11. Changed mobile wizard progress to one compact current-step indicator.
+12. Moved the recipe-book conversion CTA after recipe four and added “Show all 12”.
+13. Carried vegetarian and low-appetite recipe filters into the next setup state.
+14. Fixed the Slow Loss “None of these” checkbox so it is mutually exclusive.
+15. Clarified the Slow Loss journey-duration question.
+16. Reduced mobile pre-form content on Slow Loss, Numbers and Goal pages.
+17. Restyled the existing simple/detailed meal-plan builder shell into the Hearty sage/cream/coral system without changing its working builder.
+18. Made the analytics choice a smaller bottom notice instead of a story interruption.
+19. Added a mobile swipe cue above real app screenshots.
+
+Files changed
+- hub.html
+- start-here.html
+- slow-loss-guide.html
+- glp1-numbers.html
+- mini-recipe-book.html
+- goal-calculator.html
+- starter-plan.html
+- free-meal-plan.html
+- css/hearty-funnel-v75.css
+- js/hearty-funnel-v75.js
+- js/hearty-hooks-v74.js
+- js/hearty-hub-v68.js
+
+Important deployment note
+The Hub lead endpoint and the Hearty app-side carry-over importer still need to be configured/deployed in the live environment. v75 does not invent or fake an endpoint.
